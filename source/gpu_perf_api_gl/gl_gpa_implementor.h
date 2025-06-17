@@ -20,10 +20,10 @@ public:
     GpaApiType GetApiType() const override final;
 
     /// @copydoc GpaImplementor::GetHwInfoFromApi()
-    bool GetHwInfoFromApi(const GpaContextInfoPtr context_info, GpaHwInfo& hw_info) const override final;
+    bool GetHwInfoFromApi(const GpaContextInfoPtr context_info, GpaOpenContextFlags flags, GpaHwInfo& hw_info) const override final;
 
     /// @copydoc GpaImplementor::VerifyApiHwSupport()
-    bool VerifyApiHwSupport(const GpaContextInfoPtr context_info, const GpaHwInfo& hw_info) const override final;
+    bool VerifyApiHwSupport(const GpaContextInfoPtr context_info, GpaOpenContextFlags flags, const GpaHwInfo& hw_info) const override final;
 
 private:
     friend class TSingleton<GlGpaImplementor>;  ///< Friend declaration to allow access to the constructor.

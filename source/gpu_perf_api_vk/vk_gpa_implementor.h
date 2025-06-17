@@ -22,10 +22,10 @@ public:
     GpaApiType GetApiType() const override;
 
     /// @copydoc GpaImplementor::GetHwInfoFromApi(const GpaContextInfoPtr, GpaHwInfo&)
-    bool GetHwInfoFromApi(const GpaContextInfoPtr context_info, GpaHwInfo& hardware_info) const override final;
+    bool GetHwInfoFromApi(const GpaContextInfoPtr context_info, GpaOpenContextFlags flags, GpaHwInfo& hardware_info) const override final;
 
     /// @copydoc GpaImplementor::VerifyApiHwSupport(const GpaContextInfoPtr, const GpaHwInfo&)
-    bool VerifyApiHwSupport(const GpaContextInfoPtr context_info, const GpaHwInfo& hardware_info) const override final;
+    bool VerifyApiHwSupport(const GpaContextInfoPtr context_info, GpaOpenContextFlags flags, const GpaHwInfo& hardware_info) const override final;
 
     /// @copydoc IGpaImplementor::IsCommandListRequired()
     bool IsCommandListRequired() const override;

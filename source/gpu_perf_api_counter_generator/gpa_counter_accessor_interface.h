@@ -10,9 +10,11 @@
 
 #include <cstdint>
 #include <vector>
+#include <variant>
 
 #include "gpu_performance_api/gpu_perf_api_counters.h"
 #include "gpu_performance_api/gpu_perf_api_types.h"
+#include "gpu_perf_api_common/gpa_array_view.hpp"
 
 #include "gpu_perf_api_counter_generator/gpa_derived_counter.h"
 #include "gpu_perf_api_counter_generator/gpa_hardware_counters.h"
@@ -23,9 +25,9 @@ class GpaHardwareCounters;
 /// @brief Indicates the source or origin of a counter.
 enum class GpaCounterSource : uint32_t
 {
-    kUnknown,   ///< Invalid or unknown counter.
     kPublic,    ///< Counter is defined by GPA using other Hardware counters or hardware info.
     kHardware,  ///< Counter comes from the hardware.
+    kUnknown,   ///< Invalid or unknown counter.
 };
 
 /// @brief Stores the source of the counter and its local index into that family of counters.
@@ -132,8 +134,11 @@ public:
     ///
     /// @param [in] index The index of a public counter.
     ///
-    /// @return A vector of internal counter indices.
-    virtual std::vector<GpaUInt32> GetInternalCountersRequired(GpaUInt32 index) const = 0;
+    /// @return If the counter source is defined by GPA it returns a gpa_array_view<GpaUInt32>
+    ///         If the counter comes from the hardware it returns a uint32_t
+    ///
+    ///         Recommended to index variant using GpaCounterSource::kPublic or GpaCounterSource::kHardware for readabilty
+    virtual std::variant<gpa_array_view<GpaUInt32>, GpaUInt32> GetInternalCountersRequired(GpaUInt32 index) const = 0;
 
     /// @brief Computes a public counter value based on supplied results and hardware info.
     ///

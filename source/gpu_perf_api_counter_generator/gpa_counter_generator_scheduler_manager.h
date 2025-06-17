@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016-2024 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2025 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Class that will get the correct Generator and Scheduler for an API/Generation combination.
@@ -76,19 +76,19 @@ protected:
     /// Key tuple of API + Generation + Sample Type
     struct ApiGenerationSampleType
     {
-        GpaApiType           m_api;
-        GDT_HW_GENERATION    m_generation;
-        GpaSessionSampleType m_sampleType;
+        GpaApiType           api;
+        GDT_HW_GENERATION    generation;
+        GpaSessionSampleType sample_type;
 
         bool operator==(const ApiGenerationSampleType& sampleType) const
         {
-            return m_api == sampleType.m_api && m_generation == sampleType.m_generation && m_sampleType == sampleType.m_sampleType;
+            return api == sampleType.api && generation == sampleType.generation && sample_type == sampleType.sample_type;
         }
 
         bool operator<(const ApiGenerationSampleType& sampleType) const
         {
-            return m_api < sampleType.m_api || ((m_api == sampleType.m_api) && m_generation < sampleType.m_generation) ||
-                   ((m_api == sampleType.m_api) && (m_generation == sampleType.m_generation) && m_sampleType < sampleType.m_sampleType);
+            return api < sampleType.api || ((api == sampleType.api) && generation < sampleType.generation) ||
+                   ((api == sampleType.api) && (generation == sampleType.generation) && sample_type < sampleType.sample_type);
         }
     };
 

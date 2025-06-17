@@ -75,6 +75,7 @@ namespace PublicCounterCompiler
         /// </summary>
         public DerivedCounterFileInput derivedCounterFileInput = null;
 
+
         /// <summary>
         /// A map of Counter Group to a map of counter name to documentation info for Graphics Counters
         /// </summary>
@@ -1195,6 +1196,7 @@ namespace PublicCounterCompiler
                 GenerateDerivedCounterDocFile(true, ref publicCounterDerivedList, ref internalCounterList, outputDir, api, generation, asic, infoHandler, errorHandler);
                 GenerateDerivedCounterDocFile(false, ref publicCounterDerivedList, ref internalCounterList, outputDir, api, generation, asic, infoHandler, errorHandler);
             }
+
             {
                 AddInfoToRSTDocInfo(ref publicCounterDerivedList, generation, docInfoMapGraphicsByGeneration, infoHandler);
             }
@@ -2091,6 +2093,7 @@ namespace PublicCounterCompiler
 
             includeFile.WriteLine("// clang-format off");
 
+
             includeFile.WriteLine("//*** Note, this is an auto-generated file. Do not edit. Execute {0}CounterCompiler to rebuild.", derivedCounterFileInput.compiler_type_str);
             includeFile.WriteLine();
             includeFile.WriteLine("#include \"gpa_derived_counter.h\"");
@@ -2121,6 +2124,7 @@ namespace PublicCounterCompiler
 
             includeFile.WriteLine();
 
+
             includeFile.WriteLine("// clang-format on");
             includeFile.WriteLine("#endif  // {0}_AUTO_GEN_COUNTER_GEN_{1}COUNTER_DEFINITIONS_{2}_{3}{4}_H_",
                 baseDirForHeaderGuard, rootFilename.ToUpper(), api.ToUpper(), generation.ToUpper(),
@@ -2150,8 +2154,11 @@ namespace PublicCounterCompiler
             cppFile.WriteLine("/// @brief {0} Counter Definitions for {1} {2}{3}.", derivedCounterFileInput.compiler_type_str, api.ToUpper(), generation.ToUpper(), asic_prefix_str.ToUpper());
             cppFile.WriteLine("//==============================================================================");
             cppFile.WriteLine();
+            cppFile.WriteLine("#include <array>");
+            cppFile.WriteLine("#include \"gpu_perf_api_common/gpa_array_view.hpp\"");
 
             cppFile.WriteLine("// clang-format off");
+
 
             cppFile.WriteLine("#include \"{0}\"", Gpa.gpaCounterHeaderFileStr);
             cppFile.WriteLine("#include \"auto_generated/gpu_perf_api_counter_generator/{0}counter_definitions_{1}_{2}{3}.h\"", rootFilename.ToLower(), api.ToLower(), generation.ToLower(), asic_prefix_str.ToLower());
@@ -2218,13 +2225,13 @@ namespace PublicCounterCompiler
                 cppFile.WriteLine("    {{ // Index:{0}", counter_index);
                 counter_index++;
 
-                cppFile.WriteLine("        vector<GpaUInt32> internal_counters;");
-                foreach (DerivedCounterDef.HardwareCounterDef counter in c.GetCounters())
+                var counters = c.GetCounters();
+                cppFile.WriteLine("        static constexpr std::array<GpaUInt32, {0}> kHardwareCounters = {{", counters.Count);
+                foreach (DerivedCounterDef.HardwareCounterDef counter in counters)
                 {
-                    cppFile.WriteLine("        internal_counters.push_back({0});", counter.Id);
+                    cppFile.WriteLine("                {0},", counter.Id);
                 }
-
-                cppFile.WriteLine();
+                cppFile.WriteLine("        };");
 
                 if (!asicSpecific)
                 {
@@ -2235,14 +2242,14 @@ namespace PublicCounterCompiler
                     cppFile.WriteLine("                               {0},", c.Usage);
                     cppFile.WriteLine("                               {0},", c.IsDiscreteCounter ? "true" : "false");
                     cppFile.WriteLine("                               {0},", c.IsSpmCounter ? "true" : "false");
-                    cppFile.WriteLine("                               internal_counters,");
+                    cppFile.WriteLine("                               kHardwareCounters,");
                     cppFile.WriteLine("                               \"{0}\",", c.Comp);
                     cppFile.WriteLine("                               \"{0}\");", c.GuidHash.ToString("D"));
                 }
                 else
                 {
                     cppFile.WriteLine("        c.UpdateAsicSpecificDerivedCounter(\"{0}\",", c.Name);
-                    cppFile.WriteLine("                                           internal_counters,");
+                    cppFile.WriteLine("                                           kHardwareCounters,");
                     cppFile.WriteLine("                                           \"{0}\");", c.Comp);
                 }
 

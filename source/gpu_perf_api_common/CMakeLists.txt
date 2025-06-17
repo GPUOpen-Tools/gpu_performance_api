@@ -1,7 +1,9 @@
-## Copyright (c) 2018-2024 Advanced Micro Devices, Inc. All rights reserved.
-cmake_minimum_required(VERSION 3.10)
-
-set(DEPTH "../../")
+## Copyright (c) 2018-2025 Advanced Micro Devices, Inc. All rights reserved.
+block()
+    # Updates gpa_version.h with CMake variables only when neccessary
+    string(TIMESTAMP GPA_CURRENT_YEAR %Y)
+    configure_file("gpa_version.h.in" "${CMAKE_CURRENT_SOURCE_DIR}/gpa_version.h" @ONLY)
+endblock()
 
 set(GPA_PROJECT_NAME GPUPerfAPI-Common)
 set(ProjectName ${GPA_PROJECT_NAME})
@@ -10,27 +12,16 @@ include(${GPA_CMAKE_MODULES_DIR}/common.cmake)
 if(NOT ${skipvulkan})
 include(${GPA_CMAKE_MODULES_DIR}/gpa_vulkan.cmake)
 endif()
-include(${CMAKE_COMMON_LIB_GLOBAL_AMD_ADL})
-include(${CMAKE_COMMON_SRC_GLOBAL_ADL_UTIL})
-include(${CMAKE_COMMON_SRC_GLOBAL_TSINGLETON})
 include(${CMAKE_COMMON_SRC_GLOBAL_DEVICE_INFO})
-include(${CMAKE_COMMON_SRC_GLOBAL_DYNAMIC_LIBRARY_MODULE})
-
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 include_directories(${ADDITIONAL_INCLUDE_DIRECTORIES}
                     ${GPA_PUBLIC_HEADER}
                     ${GPA_SRC})
 
-set(ADDITIONAL_SOURCE
-    ${ADL_UTIL_DIR}/ADLUtil.cpp
-    ${DYNAMIC_LIBRARY_MODULE}/DynamicLibraryModule.cpp
-    ${DEVICE_INFO_SRC})
+set(ADDITIONAL_SOURCE ${DEVICE_INFO_SRC})
 
-set(ADDITIONAL_SOURCE_HEADERS
-    ${ADL_UTIL_DIR}/ADLUtil.h
-    ${DYNAMIC_LIBRARY_MODULE}/DynamicLibraryModule.h
-    ${DEVICE_INFO_HEADERS})
+set(ADDITIONAL_SOURCE_HEADERS ${DEVICE_INFO_HEADERS})
 
 set(PUBLIC_HEADERS  ${GPA_PUBLIC_HEADER}/gpu_performance_api/gpu_perf_api.h
                     ${GPA_PUBLIC_HEADER}/gpu_performance_api/gpu_perf_api_counters.h
@@ -44,7 +35,6 @@ set(PUBLIC_HEADERS  ${GPA_PUBLIC_HEADER}/gpu_performance_api/gpu_perf_api.h
 set(HEADER_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/adapter.h
     ${CMAKE_CURRENT_SOURCE_DIR}/api_rt_module_loader.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/circular_buffer.h
     ${CMAKE_CURRENT_SOURCE_DIR}/dx_get_amd_device_info.h
     ${CMAKE_CURRENT_SOURCE_DIR}/gpa_command_list.h
     ${CMAKE_CURRENT_SOURCE_DIR}/gpa_command_list_interface.h
@@ -100,7 +90,9 @@ set(SOURCES
 ADD_STATIC_LIBRARY(${GPA_PROJECT_NAME} ${SOURCES})
 target_link_libraries(${GPA_PROJECT_NAME}
                       ${LINK_LIBS}
-                      $<$<PLATFORM_ID:Linux>:pthread>)
+                      $<$<PLATFORM_ID:Linux>:pthread>
+                      AMD::adl_util
+                      AMD::dynamic_library_module)
 
 ADD_LINKER_FLAGS()
 

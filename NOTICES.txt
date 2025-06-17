@@ -80,7 +80,7 @@ License Text
 This program is freely distributable without licensing fees  and is provided without guarantee or warrantee expressed or  implied. This program is -not- in the public domain.
 
 
-google-googletest v1.8 (Apache-2.0)
+google-googletest v1.16 (Apache-2.0)
 Copyright 2009 Neal Norwitz All Rights Reserved.
 Portions Copyright 2009 Google Inc. All Rights Reserved.
 Apache License
@@ -121,7 +121,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 See the License for the specific language governing permissions and limitations under the License.
 
 
-google-googletest v1.8.1 (BSD-3-Clause)
+google-googletest v1.16.0 (BSD-3-Clause)
 Copyright 2008, Google Inc.
 All rights reserved.
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:

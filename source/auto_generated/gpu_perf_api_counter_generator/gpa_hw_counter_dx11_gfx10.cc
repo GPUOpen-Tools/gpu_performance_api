@@ -1217,6 +1217,7 @@ namespace counter_dx11_gfx10
     PE_BLOCK_UNKNOWN,
     };
 
+    // DX11: Only supports GPU time duration counters. Unavailable counters indices are assigned -1.
     const unsigned int kHwDx11GpuTimeBottomToBottomDurationIndexGfx10 = 58892; ///< Index of delta between the previous command reaching bottom of pipe and the current command reaching bottom of pipe, will not include latency of first data to travel through pipeline, best for large data sets. for Dx11 for Gfx10 family
     const unsigned int kHwDx11GpuTimeBottomToBottomStartIndexGfx10 = static_cast<unsigned int>(-1); ///< Index of time of the previous command reaching bottom of pipe for Dx11 for Gfx10 family
     const unsigned int kHwDx11GpuTimeBottomToBottomEndIndexGfx10 = static_cast<unsigned int>(-1); ///< Index of time of the current command reaching bottom of pipe for Dx11 for Gfx10 family

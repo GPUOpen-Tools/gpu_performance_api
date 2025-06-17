@@ -50,7 +50,7 @@ void DestroyImplementor(IGpaImplementor* impl)
         delete counter_scheduler_dx11;
         counter_scheduler_dx11 = nullptr;
     }
-    
+
     if (nullptr != impl)
     {
         Dx11GpaImplementor::DeleteInstance();
@@ -60,7 +60,7 @@ void DestroyImplementor(IGpaImplementor* impl)
 /// @brief Converts string from wide to utf-8 encoding.
 ///
 /// @return The converted utf-8 encoded string.
-static std::string wide_to_utf8_converter(const std::wstring wide)
+static std::string wide_to_utf8_converter(const std::wstring& wide)
 {
     int         num_bytes_needed = WideCharToMultiByte(CP_UTF8, 0, wide.data(), (int)wide.size(), nullptr, 0, nullptr, nullptr);
     std::string utf8;
@@ -74,8 +74,10 @@ GpaApiType Dx11GpaImplementor::GetApiType() const
     return kGpaApiDirectx11;
 }
 
-bool Dx11GpaImplementor::GetHwInfoFromApi(const GpaContextInfoPtr context_info, GpaHwInfo& hw_info) const
+bool Dx11GpaImplementor::GetHwInfoFromApi(const GpaContextInfoPtr context_info, GpaOpenContextFlags flags, GpaHwInfo& hw_info) const
 {
+    UNREFERENCED_PARAMETER(flags);
+
     bool is_success = false;
 
     IUnknown*     unknown_ptr  = static_cast<IUnknown*>(context_info);
@@ -151,8 +153,10 @@ bool Dx11GpaImplementor::GetHwInfoFromApi(const GpaContextInfoPtr context_info, 
     return is_success;
 }
 
-bool Dx11GpaImplementor::VerifyApiHwSupport(const GpaContextInfoPtr context_info, const GpaHwInfo& hw_info) const
+bool Dx11GpaImplementor::VerifyApiHwSupport(const GpaContextInfoPtr context_info, GpaOpenContextFlags flags, const GpaHwInfo& hw_info) const
 {
+    UNREFERENCED_PARAMETER(flags);
+
     bool is_supported = false;
 
     IUnknown*     unknown_ptr  = static_cast<IUnknown*>(context_info);
@@ -475,9 +479,9 @@ bool Dx11GpaImplementor::GetAmdHwInfo(ID3D11Device* d3d11_device,
                                                 {
                                                     AmdDxASICInfoHWInfo asic_info = info_param.pASICInfo->hwInfo[gpu_index];
                                                     hw_info.SetNumberCus(asic_info.totalCU);
+                                                    hw_info.SetNumberSimds(asic_info.totalCU * asic_info.numSimdsPerCU);
                                                     hw_info.SetNumberShaderEngines(asic_info.numShaderEngines);
                                                     hw_info.SetNumberShaderArrays(asic_info.numShaderArraysPerSE * asic_info.numShaderEngines);
-                                                    hw_info.SetNumberSimds(asic_info.totalCU * asic_info.numSimdsPerCU);
                                                 }
 
                                                 delete new_asic_info;

@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2018-2024 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2018-2025 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  Unit tests to validate error handling/reporting from GPA APIs
@@ -21,16 +21,10 @@ class GpaApiErrorTest : public ::testing::TestWithParam<GpaApiType>
 {
 public:
     /// @brief Constructor.
-    GpaApiErrorTest()
-        : ::testing::TestWithParam<GpaApiType>()
-        , api_(kGpaApiStart)
-    {
-    }
+    GpaApiErrorTest() = default;
 
     /// @brief Destructor.
-    virtual ~GpaApiErrorTest()
-    {
-    }
+    virtual ~GpaApiErrorTest() = default;
 
     /// @brief Create and set up test resources.
     static void SetUpTestCase();
@@ -52,10 +46,10 @@ protected:
     static void LogFunction(GpaLoggingType logging_type, const char* log_message);
 
     /// A GPA function table.
-    const GpaFunctionTable* gpa_function_table_;
+    const GpaFunctionTable* gpa_function_table_ = nullptr;
 
     /// An API that is supposed by GPA.
-    GpaApiType api_;
+    GpaApiType api_ = kGpaApiStart;
 
 private:
     /// Map of the API names.
@@ -138,9 +132,8 @@ TEST_P(GpaApiErrorTest, TestGPA_InitializeAndDestroy)
     status = gpa_function_table_->GpaDestroy();
     EXPECT_EQ(kGpaStatusErrorGpaNotInitialized, status);
 
-    const GpaUInt32 kInvalidValue2 = 2;
-    status                         = gpa_function_table_->GpaInitialize(static_cast<GpaInitializeFlags>(kInvalidValue2));
-    EXPECT_EQ(kGpaStatusErrorInvalidParameter, status);
+    status = gpa_function_table_->GpaInitialize(kGpaInitializeSimultaneousQueuesEnableBit);
+    EXPECT_EQ(kGpaStatusOk, status);
 
     if (status == kGpaStatusOk)
     {
@@ -168,6 +161,9 @@ TEST_P(GpaApiErrorTest, TestGPA_OpenAndCloseContext)
 
     status = gpa_function_table_->GpaCloseContext(bad_context_id);
     EXPECT_EQ(kGpaStatusErrorContextNotFound, status);
+
+    status = gpa_function_table_->GpaDestroy();
+    EXPECT_EQ(kGpaStatusOk, status);
 }
 
 TEST_P(GpaApiErrorTest, TestGPA_ContextInterrogation)
@@ -263,6 +259,26 @@ TEST_P(GpaApiErrorTest, TestGPA_ContextInterrogation)
 
         EXPECT_EQ(kGpaStatusOk, gpa_function_table_->GpaDestroy());
     }
+}
+
+TEST_P(GpaApiErrorTest, TestGPA_MaxWaveSlots)
+{
+    GpaContextId bad_context_id = reinterpret_cast<GpaContextId>(0xBADF00D);
+
+    // After GPA is initialized, the results will vary based on the parameters.
+    // Earlier parameters should be validated before later parameters.
+    GpaStatus initialization_status = gpa_function_table_->GpaInitialize(kGpaInitializeDefaultBit);
+    ASSERT_EQ(kGpaStatusOk, initialization_status);
+
+    GpaUInt32 max_wave_slots = 0;
+    EXPECT_EQ(kGpaStatusErrorNullPointer, gpa_function_table_->GpaGetDeviceMaxWaveSlots(nullptr, nullptr));
+    EXPECT_EQ(kGpaStatusErrorNullPointer, gpa_function_table_->GpaGetDeviceMaxWaveSlots(nullptr, &max_wave_slots));
+    EXPECT_EQ(0, max_wave_slots);
+    EXPECT_EQ(kGpaStatusErrorContextNotFound, gpa_function_table_->GpaGetDeviceMaxWaveSlots(bad_context_id, nullptr));
+    EXPECT_EQ(kGpaStatusErrorContextNotFound, gpa_function_table_->GpaGetDeviceMaxWaveSlots(bad_context_id, &max_wave_slots));
+    EXPECT_EQ(0, max_wave_slots);
+
+    EXPECT_EQ(kGpaStatusOk, gpa_function_table_->GpaDestroy());
 }
 
 TEST_P(GpaApiErrorTest, TestGPA_CounterInterrogation)
@@ -578,40 +594,30 @@ TEST_P(GpaApiErrorTest, TestGPA_SessionHandling)
     GpaSessionId session_id = nullptr;
     EXPECT_EQ(kGpaStatusErrorGpaNotInitialized, gpa_function_table_->GpaCreateSession(nullptr, kGpaSessionSampleTypeDiscreteCounter, &session_id));
     EXPECT_EQ(nullptr, session_id);
-    const GpaUInt32 kInvalidOption1 = 1;
-    const GpaUInt32 kInvalidOption2 = 2;
-    const GpaUInt32 kInvalidOption3 = 3;
-    EXPECT_EQ(kGpaStatusErrorGpaNotInitialized, gpa_function_table_->GpaCreateSession(nullptr, static_cast<GpaSessionSampleType>(kInvalidOption1), nullptr));
-    EXPECT_EQ(kGpaStatusErrorGpaNotInitialized,
-              gpa_function_table_->GpaCreateSession(nullptr, static_cast<GpaSessionSampleType>(kInvalidOption1), &session_id));
+    EXPECT_EQ(kGpaStatusErrorGpaNotInitialized, gpa_function_table_->GpaCreateSession(nullptr, kGpaSessionSampleTypeStreamingCounter, nullptr));
+    EXPECT_EQ(kGpaStatusErrorGpaNotInitialized, gpa_function_table_->GpaCreateSession(nullptr, kGpaSessionSampleTypeStreamingCounter, &session_id));
     EXPECT_EQ(nullptr, session_id);
-    EXPECT_EQ(kGpaStatusErrorGpaNotInitialized, gpa_function_table_->GpaCreateSession(nullptr, static_cast<GpaSessionSampleType>(kInvalidOption2), nullptr));
-    EXPECT_EQ(kGpaStatusErrorGpaNotInitialized,
-              gpa_function_table_->GpaCreateSession(nullptr, static_cast<GpaSessionSampleType>(kInvalidOption2), &session_id));
+    EXPECT_EQ(kGpaStatusErrorGpaNotInitialized, gpa_function_table_->GpaCreateSession(nullptr, kGpaSessionSampleTypeSqtt, nullptr));
+    EXPECT_EQ(kGpaStatusErrorGpaNotInitialized, gpa_function_table_->GpaCreateSession(nullptr, kGpaSessionSampleTypeSqtt, &session_id));
     EXPECT_EQ(nullptr, session_id);
-    EXPECT_EQ(kGpaStatusErrorGpaNotInitialized, gpa_function_table_->GpaCreateSession(nullptr, static_cast<GpaSessionSampleType>(kInvalidOption3), nullptr));
-    EXPECT_EQ(kGpaStatusErrorGpaNotInitialized,
-              gpa_function_table_->GpaCreateSession(nullptr, static_cast<GpaSessionSampleType>(kInvalidOption3), &session_id));
+    EXPECT_EQ(kGpaStatusErrorGpaNotInitialized, gpa_function_table_->GpaCreateSession(nullptr, kGpaSessionSampleTypeStreamingCounterAndSqtt, nullptr));
+    EXPECT_EQ(kGpaStatusErrorGpaNotInitialized, gpa_function_table_->GpaCreateSession(nullptr, kGpaSessionSampleTypeStreamingCounterAndSqtt, &session_id));
     EXPECT_EQ(nullptr, session_id);
     EXPECT_EQ(kGpaStatusErrorGpaNotInitialized, gpa_function_table_->GpaCreateSession(nullptr, static_cast<GpaSessionSampleType>(0xFFFFFFFF), &session_id));
     EXPECT_EQ(nullptr, session_id);
     EXPECT_EQ(kGpaStatusErrorGpaNotInitialized, gpa_function_table_->GpaCreateSession(bad_context_id, kGpaSessionSampleTypeDiscreteCounter, nullptr));
     EXPECT_EQ(kGpaStatusErrorGpaNotInitialized, gpa_function_table_->GpaCreateSession(bad_context_id, kGpaSessionSampleTypeDiscreteCounter, &session_id));
     EXPECT_EQ(nullptr, session_id);
-    EXPECT_EQ(kGpaStatusErrorGpaNotInitialized,
-              gpa_function_table_->GpaCreateSession(bad_context_id, static_cast<GpaSessionSampleType>(kInvalidOption1), nullptr));
-    EXPECT_EQ(kGpaStatusErrorGpaNotInitialized,
-              gpa_function_table_->GpaCreateSession(bad_context_id, static_cast<GpaSessionSampleType>(kInvalidOption1), &session_id));
+
+    EXPECT_EQ(kGpaStatusErrorGpaNotInitialized, gpa_function_table_->GpaCreateSession(bad_context_id, kGpaSessionSampleTypeStreamingCounter, nullptr));
+    EXPECT_EQ(kGpaStatusErrorGpaNotInitialized, gpa_function_table_->GpaCreateSession(bad_context_id, kGpaSessionSampleTypeStreamingCounter, &session_id));
     EXPECT_EQ(nullptr, session_id);
-    EXPECT_EQ(kGpaStatusErrorGpaNotInitialized,
-              gpa_function_table_->GpaCreateSession(bad_context_id, static_cast<GpaSessionSampleType>(kInvalidOption2), nullptr));
-    EXPECT_EQ(kGpaStatusErrorGpaNotInitialized,
-              gpa_function_table_->GpaCreateSession(bad_context_id, static_cast<GpaSessionSampleType>(kInvalidOption2), &session_id));
+    EXPECT_EQ(kGpaStatusErrorGpaNotInitialized, gpa_function_table_->GpaCreateSession(bad_context_id, kGpaSessionSampleTypeSqtt, nullptr));
+    EXPECT_EQ(kGpaStatusErrorGpaNotInitialized, gpa_function_table_->GpaCreateSession(bad_context_id, kGpaSessionSampleTypeSqtt, &session_id));
     EXPECT_EQ(nullptr, session_id);
+    EXPECT_EQ(kGpaStatusErrorGpaNotInitialized, gpa_function_table_->GpaCreateSession(bad_context_id, kGpaSessionSampleTypeStreamingCounterAndSqtt, nullptr));
     EXPECT_EQ(kGpaStatusErrorGpaNotInitialized,
-              gpa_function_table_->GpaCreateSession(bad_context_id, static_cast<GpaSessionSampleType>(kInvalidOption3), nullptr));
-    EXPECT_EQ(kGpaStatusErrorGpaNotInitialized,
-              gpa_function_table_->GpaCreateSession(bad_context_id, static_cast<GpaSessionSampleType>(kInvalidOption3), &session_id));
+              gpa_function_table_->GpaCreateSession(bad_context_id, kGpaSessionSampleTypeStreamingCounterAndSqtt, &session_id));
     EXPECT_EQ(nullptr, session_id);
 
     EXPECT_EQ(kGpaStatusErrorGpaNotInitialized,
@@ -637,31 +643,27 @@ TEST_P(GpaApiErrorTest, TestGPA_SessionHandling)
 
         EXPECT_EQ(kGpaStatusErrorNullPointer, gpa_function_table_->GpaCreateSession(nullptr, kGpaSessionSampleTypeDiscreteCounter, &session_id));
         EXPECT_EQ(nullptr, session_id);
-        EXPECT_EQ(kGpaStatusErrorNullPointer, gpa_function_table_->GpaCreateSession(nullptr, static_cast<GpaSessionSampleType>(kInvalidOption1), nullptr));
-        EXPECT_EQ(kGpaStatusErrorNullPointer, gpa_function_table_->GpaCreateSession(nullptr, static_cast<GpaSessionSampleType>(kInvalidOption1), &session_id));
+        EXPECT_EQ(kGpaStatusErrorNullPointer, gpa_function_table_->GpaCreateSession(nullptr, kGpaSessionSampleTypeStreamingCounter, nullptr));
+        EXPECT_EQ(kGpaStatusErrorNullPointer, gpa_function_table_->GpaCreateSession(nullptr, kGpaSessionSampleTypeStreamingCounter, &session_id));
         EXPECT_EQ(nullptr, session_id);
-        EXPECT_EQ(kGpaStatusErrorNullPointer, gpa_function_table_->GpaCreateSession(nullptr, static_cast<GpaSessionSampleType>(kInvalidOption2), nullptr));
-        EXPECT_EQ(kGpaStatusErrorNullPointer, gpa_function_table_->GpaCreateSession(nullptr, static_cast<GpaSessionSampleType>(kInvalidOption2), &session_id));
+        EXPECT_EQ(kGpaStatusErrorNullPointer, gpa_function_table_->GpaCreateSession(nullptr, kGpaSessionSampleTypeSqtt, nullptr));
+        EXPECT_EQ(kGpaStatusErrorNullPointer, gpa_function_table_->GpaCreateSession(nullptr, kGpaSessionSampleTypeSqtt, &session_id));
         EXPECT_EQ(nullptr, session_id);
-        EXPECT_EQ(kGpaStatusErrorNullPointer, gpa_function_table_->GpaCreateSession(nullptr, static_cast<GpaSessionSampleType>(kInvalidOption3), nullptr));
-        EXPECT_EQ(kGpaStatusErrorNullPointer, gpa_function_table_->GpaCreateSession(nullptr, static_cast<GpaSessionSampleType>(kInvalidOption3), &session_id));
+        EXPECT_EQ(kGpaStatusErrorNullPointer, gpa_function_table_->GpaCreateSession(nullptr, kGpaSessionSampleTypeStreamingCounterAndSqtt, nullptr));
+        EXPECT_EQ(kGpaStatusErrorNullPointer, gpa_function_table_->GpaCreateSession(nullptr, kGpaSessionSampleTypeStreamingCounterAndSqtt, &session_id));
         EXPECT_EQ(nullptr, session_id);
+
         EXPECT_EQ(kGpaStatusErrorNullPointer, gpa_function_table_->GpaCreateSession(nullptr, static_cast<GpaSessionSampleType>(0xFFFFFFFF), &session_id));
         EXPECT_EQ(kGpaStatusErrorContextNotFound, gpa_function_table_->GpaCreateSession(bad_context_id, kGpaSessionSampleTypeDiscreteCounter, nullptr));
         EXPECT_EQ(kGpaStatusErrorContextNotFound, gpa_function_table_->GpaCreateSession(bad_context_id, kGpaSessionSampleTypeDiscreteCounter, &session_id));
 
+        EXPECT_EQ(kGpaStatusErrorContextNotFound, gpa_function_table_->GpaCreateSession(bad_context_id, kGpaSessionSampleTypeStreamingCounter, nullptr));
+        EXPECT_EQ(kGpaStatusErrorContextNotFound, gpa_function_table_->GpaCreateSession(bad_context_id, kGpaSessionSampleTypeStreamingCounter, &session_id));
+        EXPECT_EQ(kGpaStatusErrorContextNotFound, gpa_function_table_->GpaCreateSession(bad_context_id, kGpaSessionSampleTypeSqtt, nullptr));
+        EXPECT_EQ(kGpaStatusErrorContextNotFound, gpa_function_table_->GpaCreateSession(bad_context_id, kGpaSessionSampleTypeSqtt, &session_id));
+        EXPECT_EQ(kGpaStatusErrorContextNotFound, gpa_function_table_->GpaCreateSession(bad_context_id, kGpaSessionSampleTypeStreamingCounterAndSqtt, nullptr));
         EXPECT_EQ(kGpaStatusErrorContextNotFound,
-                  gpa_function_table_->GpaCreateSession(bad_context_id, static_cast<GpaSessionSampleType>(kInvalidOption1), nullptr));
-        EXPECT_EQ(kGpaStatusErrorContextNotFound,
-                  gpa_function_table_->GpaCreateSession(bad_context_id, static_cast<GpaSessionSampleType>(kInvalidOption1), &session_id));
-        EXPECT_EQ(kGpaStatusErrorContextNotFound,
-                  gpa_function_table_->GpaCreateSession(bad_context_id, static_cast<GpaSessionSampleType>(kInvalidOption2), nullptr));
-        EXPECT_EQ(kGpaStatusErrorContextNotFound,
-                  gpa_function_table_->GpaCreateSession(bad_context_id, static_cast<GpaSessionSampleType>(kInvalidOption2), &session_id));
-        EXPECT_EQ(kGpaStatusErrorContextNotFound,
-                  gpa_function_table_->GpaCreateSession(bad_context_id, static_cast<GpaSessionSampleType>(kInvalidOption3), nullptr));
-        EXPECT_EQ(kGpaStatusErrorContextNotFound,
-                  gpa_function_table_->GpaCreateSession(bad_context_id, static_cast<GpaSessionSampleType>(kInvalidOption3), &session_id));
+                  gpa_function_table_->GpaCreateSession(bad_context_id, kGpaSessionSampleTypeStreamingCounterAndSqtt, &session_id));
 
         EXPECT_EQ(kGpaStatusErrorContextNotFound,
                   gpa_function_table_->GpaCreateSession(bad_context_id, static_cast<GpaSessionSampleType>(0xFFFFFFFF), &session_id));
@@ -1203,6 +1205,75 @@ TEST_P(GpaApiErrorTest, TestGPA_SampleHandling)
     }
 }
 
+TEST_P(GpaApiErrorTest, TestGPA_Sqtt)
+{
+    EXPECT_EQ(kGpaStatusErrorGpaNotInitialized, gpa_function_table_->GpaSqttBegin(nullptr, nullptr));
+    EXPECT_EQ(kGpaStatusErrorGpaNotInitialized, gpa_function_table_->GpaSqttEnd(nullptr, nullptr));
+
+    // After GPA is initialized, the results will vary based on the parameters.
+    // Earlier parameters should be validated before later parameters.
+    GpaStatus status = gpa_function_table_->GpaInitialize(kGpaInitializeDefaultBit);
+    EXPECT_EQ(kGpaStatusOk, status);
+    if (kGpaStatusOk == status)
+    {
+        const GpaSessionId bad_session = reinterpret_cast<GpaSessionId>(0xBADF00D);
+
+        EXPECT_EQ(kGpaStatusErrorNullPointer, gpa_function_table_->GpaSqttBegin(nullptr, nullptr));
+        EXPECT_EQ(kGpaStatusErrorSessionNotFound, gpa_function_table_->GpaSqttBegin(bad_session, nullptr));
+
+        EXPECT_EQ(kGpaStatusErrorNullPointer, gpa_function_table_->GpaSqttEnd(nullptr, nullptr));
+        EXPECT_EQ(kGpaStatusErrorSessionNotFound, gpa_function_table_->GpaSqttEnd(bad_session, nullptr));
+
+        EXPECT_EQ(kGpaStatusOk, gpa_function_table_->GpaDestroy());
+    }
+}
+
+TEST_P(GpaApiErrorTest, TestGPA_Spm)
+{
+    EXPECT_EQ(kGpaStatusErrorGpaNotInitialized, gpa_function_table_->GpaSpmBegin(nullptr, nullptr));
+    EXPECT_EQ(kGpaStatusErrorGpaNotInitialized, gpa_function_table_->GpaSpmEnd(nullptr, nullptr));
+
+    // After GPA is initialized, the results will vary based on the parameters.
+    // Earlier parameters should be validated before later parameters.
+    GpaStatus status = gpa_function_table_->GpaInitialize(kGpaInitializeDefaultBit);
+    EXPECT_EQ(kGpaStatusOk, status);
+    if (kGpaStatusOk == status)
+    {
+        const GpaSessionId bad_session = reinterpret_cast<GpaSessionId>(0xBADF00D);
+
+        EXPECT_EQ(kGpaStatusErrorNullPointer, gpa_function_table_->GpaSpmBegin(nullptr, nullptr));
+        EXPECT_EQ(kGpaStatusErrorSessionNotFound, gpa_function_table_->GpaSpmBegin(bad_session, nullptr));
+
+        EXPECT_EQ(kGpaStatusErrorNullPointer, gpa_function_table_->GpaSpmEnd(nullptr, nullptr));
+        EXPECT_EQ(kGpaStatusErrorSessionNotFound, gpa_function_table_->GpaSpmEnd(bad_session, nullptr));
+
+        EXPECT_EQ(kGpaStatusOk, gpa_function_table_->GpaDestroy());
+    }
+}
+
+TEST_P(GpaApiErrorTest, TestGPA_SqttSpm)
+{
+    EXPECT_EQ(kGpaStatusErrorGpaNotInitialized, gpa_function_table_->GpaSqttSpmBegin(nullptr, nullptr));
+    EXPECT_EQ(kGpaStatusErrorGpaNotInitialized, gpa_function_table_->GpaSqttSpmEnd(nullptr, nullptr));
+
+    // After GPA is initialized, the results will vary based on the parameters.
+    // Earlier parameters should be validated before later parameters.
+    GpaStatus status = gpa_function_table_->GpaInitialize(kGpaInitializeDefaultBit);
+    EXPECT_EQ(kGpaStatusOk, status);
+    if (kGpaStatusOk == status)
+    {
+        const GpaSessionId bad_session = reinterpret_cast<GpaSessionId>(0xBADF00D);
+
+        EXPECT_EQ(kGpaStatusErrorNullPointer, gpa_function_table_->GpaSqttSpmBegin(nullptr, nullptr));
+        EXPECT_EQ(kGpaStatusErrorSessionNotFound, gpa_function_table_->GpaSqttSpmBegin(bad_session, nullptr));
+
+        EXPECT_EQ(kGpaStatusErrorNullPointer, gpa_function_table_->GpaSqttSpmEnd(nullptr, nullptr));
+        EXPECT_EQ(kGpaStatusErrorSessionNotFound, gpa_function_table_->GpaSqttSpmEnd(bad_session, nullptr));
+
+        EXPECT_EQ(kGpaStatusOk, gpa_function_table_->GpaDestroy());
+    }
+}
+
 TEST_P(GpaApiErrorTest, TestGPA_QueryResults)
 {
     // Before GPA is initialized, all the entrypoints should return kGpaStatusErrorGpaNotInitialized, no matter what other parameters are supplied.
@@ -1396,7 +1467,7 @@ TEST_P(GpaApiErrorTest, TestGPA_GPAFunctionTable)
 
     // The table consists of a certain number of void*'s for each function pointer, as well as
     // two GpaUInt32's for the major_version and minor_version.
-    const std::size_t EXPECTED_TABLE_SIZE = (67 * sizeof(void*)) + (2 * sizeof(GpaUInt32));
+    const std::size_t EXPECTED_TABLE_SIZE = (70 * sizeof(void*)) + (2 * sizeof(GpaUInt32));
     EXPECT_EQ(function_table->minor_version, EXPECTED_TABLE_SIZE) << "A GpaFunctionTable properly "
                                                                      "initialized by GpaGetFuncTable should contain the expected number of entry points; "
                                                                      "additional entry should be appended to the end of the function table in "
@@ -1442,15 +1513,15 @@ TEST_P(GpaApiErrorTest, TestGPA_GPAFunctionTable)
            "minor version number even if initialized to an incorrect value.";
 
     // Note: Whenever GPA function table changes, we need to update this with the last function in the GPA function table
-    EXPECT_EQ(nullptr, function_table->GpaGetDeviceGeneration) << "When GpaGetFuncTable receives a GpaFunctionTable with a minor_version set to a value "
-                                                                  "that is less than the size of the internal GPA function table, then all entries in the "
-                                                                  "GpaFunctionTable beyond this value shall be set to a nullptr.";
+    EXPECT_EQ(nullptr, function_table->GpaSqttSpmEnd) << "When GpaGetFuncTable receives a GpaFunctionTable with a minor_version set to a value "
+                                                         "that is less than the size of the internal GPA function table, then all entries in the "
+                                                         "GpaFunctionTable beyond this value shall be set to a nullptr.";
 
     delete function_table;
 }
 
 #ifdef _WIN32
-INSTANTIATE_TEST_CASE_P(WindowsAPI, GpaApiErrorTest, ::testing::Values(kGpaApiDirectx11, kGpaApiDirectx12, kGpaApiVulkan, kGpaApiOpengl));
+INSTANTIATE_TEST_SUITE_P(WindowsAPI, GpaApiErrorTest, ::testing::Values(kGpaApiDirectx11, kGpaApiDirectx12, kGpaApiVulkan, kGpaApiOpengl));
 #else
-INSTANTIATE_TEST_CASE_P(LinuxAPI, GpaApiErrorTest, ::testing::Values(kGpaApiVulkan, kGpaApiOpengl));
+INSTANTIATE_TEST_SUITE_P(LinuxAPI, GpaApiErrorTest, ::testing::Values(kGpaApiVulkan, kGpaApiOpengl));
 #endif

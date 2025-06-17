@@ -66,6 +66,7 @@ void DestroyImplementor(IGpaImplementor* impl)
         Dx12GpaImplementor::DeleteInstance();
     }
 }
+
 GpaStatus Dx12GpaImplementor::Initialize(GpaInitializeFlags flags)
 {
     GpaStatus status = GpaImplementor::Initialize(flags);
@@ -76,7 +77,7 @@ GpaStatus Dx12GpaImplementor::Initialize(GpaInitializeFlags flags)
 /// @brief Converts string from wide to utf-8 encoding.
 ///
 /// @return The converted utf-8 encoded string.
-static std::string wide_to_utf8_converter(const std::wstring wide)
+static std::string wide_to_utf8_converter(const std::wstring& wide)
 {
     int         num_bytes_needed = WideCharToMultiByte(CP_UTF8, 0, wide.data(), (int)wide.size(), nullptr, 0, nullptr, nullptr);
     std::string utf8;
@@ -95,8 +96,10 @@ GpaApiType Dx12GpaImplementor::GetApiType() const
     return kGpaApiDirectx12;
 }
 
-bool Dx12GpaImplementor::GetHwInfoFromApi(const GpaContextInfoPtr context_info, GpaHwInfo& hw_info) const
+bool Dx12GpaImplementor::GetHwInfoFromApi(const GpaContextInfoPtr context_info, GpaOpenContextFlags flags, GpaHwInfo& hw_info) const
 {
+    UNREFERENCED_PARAMETER(flags);
+    
     bool success = false;
 
     IUnknown*     unknown_ptr = static_cast<IUnknown*>(context_info);
@@ -170,9 +173,10 @@ bool Dx12GpaImplementor::GetHwInfoFromApi(const GpaContextInfoPtr context_info, 
     return success;
 }
 
-bool Dx12GpaImplementor::VerifyApiHwSupport(const GpaContextInfoPtr context_info, const GpaHwInfo& hw_info) const
+bool Dx12GpaImplementor::VerifyApiHwSupport(const GpaContextInfoPtr context_info, GpaOpenContextFlags flags, const GpaHwInfo& hw_info) const
 {
     UNREFERENCED_PARAMETER(hw_info);
+    UNREFERENCED_PARAMETER(flags);
 
     bool success = false;
 
@@ -212,7 +216,6 @@ bool Dx12GpaImplementor::VerifyApiHwSupport(const GpaContextInfoPtr context_info
 
 GpaStatus Dx12GpaImplementor::Destroy()
 {
-
     DeleteContexts();
     return GpaImplementor::Destroy();
 }

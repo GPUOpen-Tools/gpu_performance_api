@@ -5,14 +5,14 @@
 /// @brief  Macros used for defining GPUPerfAPI version.
 //==============================================================================
 
-// Note: This file is auto-generated using gpa_version cmake module.
+// Note: This file is auto-generated from the CMake build
 
 #ifndef GPU_PERF_API_COMMMON_GPA_VERSION_H_
 #define GPU_PERF_API_COMMMON_GPA_VERSION_H_
 
 // Make sure to increment GPA_FUNCTION_TABLE_MAJOR_VERSION_NUMBER anytime GPA_MAJOR_VERSION is incremented
 #define GPA_MAJOR_VERSION 4   ///< Macro for GPA major version.
-#define GPA_MINOR_VERSION 0   ///< Macro for GPA minor version.
+#define GPA_MINOR_VERSION 1   ///< Macro for GPA minor version.
 #define GPA_UPDATE_VERSION 0  ///< Macro for GPA update version.
 
 /// Macro for GPA build number

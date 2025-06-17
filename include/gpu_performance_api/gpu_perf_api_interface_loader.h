@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2024 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2025 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief GPA Interface Loader Utility header file
@@ -18,6 +18,7 @@
 // In order to use this header file with a debug build of GPA
 // the "USE_DEBUG_GPA" preprocessor macro should be defined before
 // including this header file
+
 
 #ifndef GPU_PERFORMANCE_API_GPU_PERF_API_INTERFACE_LOADER_H_
 #define GPU_PERFORMANCE_API_GPU_PERF_API_INTERFACE_LOADER_H_
@@ -232,6 +233,7 @@ static inline const LocaleChar* GpaInterfaceLoaderGetLibraryFileName(GpaApiType 
 #ifdef USE_DEBUG_GPA
     STR_CAT(filename_static_string, ARRAY_LENGTH(filename_static_string), GPA_DEBUG_SUFFIX);
 #endif
+
 
     STR_CAT(filename_static_string, ARRAY_LENGTH(filename_static_string), GPA_LIB_SUFFIX);
 
@@ -507,6 +509,8 @@ static inline GpaStatus GpaInterfaceLoaderUnLoadApi(GpaApiType gpa_api_type)
         if (function_table_info_iter->gpa_api_type == gpa_api_type)
         {
             free(function_table_info_iter->gpa_func_table);
+            function_table_info_iter->gpa_func_table = NULL;
+
             LibHandle lib_handle = function_table_info_iter->lib_handle;
 
             if (NULL != lib_handle)
@@ -517,7 +521,6 @@ static inline GpaStatus GpaInterfaceLoaderUnLoadApi(GpaApiType gpa_api_type)
                 dlclose(lib_handle);
 #endif
                 function_table_info_iter->lib_handle     = NULL;
-                function_table_info_iter->gpa_func_table = NULL;
                 function_table_info_iter->gpa_api_type   = kGpaApiNoSupport;
                 status                                   = kGpaStatusOk;
                 break;

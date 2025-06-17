@@ -21,7 +21,7 @@ void GpaInternalLogger(GpaLoggingType log_type, const char* log_msg)
     {
         if (GpaLogger::Instance()->internal_logging_file_stream_.is_open())
         {
-            GpaLogger::Instance()->internal_logging_file_stream_ << "GPA Internal Logging: " << log_msg << std::endl;
+            GpaLogger::Instance()->internal_logging_file_stream_ << "GPA Internal Logging: " << log_msg << '\n' << std::flush;
         }
     }
 }

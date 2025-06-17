@@ -116,7 +116,7 @@ GpaStatus GpaImplementor::OpenContext(void* context, GpaOpenContextFlags flags, 
             return kGpaStatusErrorDriverNotSupported;
         }
 
-        if (IsDeviceSupported(context, &hw_info) != kGpaStatusOk)
+        if (IsDeviceSupported(context, flags, &hw_info) != kGpaStatusOk)
         {
             GPA_LOG_ERROR("Device not supported.");
             gpa_status = kGpaStatusErrorHardwareNotSupported;
@@ -293,13 +293,13 @@ bool GpaImplementor::IsDeviceGenerationSupported(const GpaHwInfo& hw_info) const
     return false;
 }
 
-GpaStatus GpaImplementor::IsDeviceSupported(GpaContextInfoPtr context_info, GpaHwInfo* hw_info) const
+GpaStatus GpaImplementor::IsDeviceSupported(GpaContextInfoPtr context_info, GpaOpenContextFlags flags, GpaHwInfo* hw_info) const
 {
     bool         found_matching_hw_info = false;
     AsicInfoList asic_info_list;
     GpaHwInfo    api_hw_info;
 
-    if (!GetHwInfoFromApi(context_info, api_hw_info))
+    if (!GetHwInfoFromApi(context_info, flags, api_hw_info))
     {
         GPA_LOG_ERROR("Unable to get hardware information from the API.");
         return kGpaStatusErrorFailed;
@@ -325,7 +325,7 @@ GpaStatus GpaImplementor::IsDeviceSupported(GpaContextInfoPtr context_info, GpaH
             GPA_LOG_MESSAGE("Cannot get asicInfoList from ADL.");
         }
 
-        for (auto asic_info : asic_info_list)
+        for (const auto& asic_info : asic_info_list)
         {
             // Skip integrated GPUs that are not supported.
             if (asic_hw_info.IsUnsupportedDeviceId(asic_info.deviceID))
@@ -368,7 +368,7 @@ GpaStatus GpaImplementor::IsDeviceSupported(GpaContextInfoPtr context_info, GpaH
 
         if (adapter.GetAsicInfoList(asic_info_list))
         {
-            for (auto asic_info : asic_info_list)
+            for (const auto& asic_info : asic_info_list)
             {
                 GpaHwInfo asic_hw_info;
                 asic_hw_info.SetVendorId(asic_info.vendorID);
@@ -438,7 +438,7 @@ GpaStatus GpaImplementor::IsDeviceSupported(GpaContextInfoPtr context_info, GpaH
     }
 
     // Give the API-specific implementation a chance to verify that the hardware is supported.
-    GpaStatus status = VerifyApiHwSupport(context_info, api_hw_info) ? kGpaStatusOk : kGpaStatusErrorFailed;
+    GpaStatus status = VerifyApiHwSupport(context_info, flags, api_hw_info) ? kGpaStatusOk : kGpaStatusErrorFailed;
 
     if (kGpaStatusOk == status)
     {

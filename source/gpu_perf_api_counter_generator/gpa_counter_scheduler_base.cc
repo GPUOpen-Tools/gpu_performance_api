@@ -244,16 +244,13 @@ GpaStatus GpaCounterSchedulerBase::GetNumRequiredPasses(GpaUInt32* num_required_
         case GpaCounterSource::kHardware:
         {
             // Hardware counter.
-            std::vector<unsigned int> required_counters = counter_accessor_->GetInternalCountersRequired(*counter_iter);
-            assert(required_counters.size() == 1);
+            constexpr uint32_t kCounterSourceHardware = static_cast<uint32_t>(GpaCounterSource::kHardware);
+            const GpaUInt32    required_counter       = std::get<kCounterSourceHardware>(counter_accessor_->GetInternalCountersRequired(*counter_iter));
 
-            if (required_counters.size() == 1)
-            {
-                GpaHardwareCounterIndices indices = {};
-                indices.public_index              = *counter_iter;
-                indices.hardware_index            = required_counters[0];
-                internal_counters_to_schedule.push_back(indices);
-            }
+            GpaHardwareCounterIndices indices = {};
+            indices.public_index              = *counter_iter;
+            indices.hardware_index            = required_counter;
+            internal_counters_to_schedule.push_back(indices);
 
             break;
         }

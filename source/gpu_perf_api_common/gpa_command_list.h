@@ -87,7 +87,7 @@ public:
     /// @brief Iterate over all the samples in the command list.
     ///
     /// @param [in] function Function to be executed for each object in the list. The function may return false to terminate iteration.
-    void IterateSampleUnorderedMap(std::function<bool(ClientSampleIdGpaSamplePair)> function) const;
+    void IterateSampleUnorderedMap(const std::function<bool(ClientSampleIdGpaSamplePair)>& function) const;
 
 private:
     /// @brief Begin API specific command list.

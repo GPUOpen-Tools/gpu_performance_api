@@ -38,13 +38,13 @@ public:
     /// @param [in] num_isolated_from_sq_groups The number of counter groups that must be isolated from SQ counter groups.
     /// @param [in] isolated_from_sq_groups The list of counter groups that must be isolated from SQ counter groups.
     GpaSplitCountersConsolidated(const std::set<unsigned int>& timestamp_block_ids,
-                               const std::set<unsigned int>& eop_time_counter_indices,
-                               const std::set<unsigned int>& top_time_counter_indices,
-                               unsigned int                  max_sq_counters,
-                               unsigned int                  num_sq_groups,
-                               GpaSqCounterGroupDesc*        sq_counter_block_info,
-                               unsigned int                  num_isolated_from_sq_groups,
-                               const unsigned int*           isolated_from_sq_groups)
+                                 const std::set<unsigned int>& eop_time_counter_indices,
+                                 const std::set<unsigned int>& top_time_counter_indices,
+                                 unsigned int                  max_sq_counters,
+                                 unsigned int                  num_sq_groups,
+                                 GpaSqCounterGroupDesc*        sq_counter_block_info,
+                                 unsigned int                  num_isolated_from_sq_groups,
+                                 const unsigned int*           isolated_from_sq_groups)
         : IGpaSplitCounters(timestamp_block_ids,
                             eop_time_counter_indices,
                             top_time_counter_indices,
@@ -52,10 +52,10 @@ public:
                             num_sq_groups,
                             sq_counter_block_info,
                             num_isolated_from_sq_groups,
-                            isolated_from_sq_groups){};
+                            isolated_from_sq_groups) {};
 
     /// @brief Virtual destructor.
-    virtual ~GpaSplitCountersConsolidated(){};
+    virtual ~GpaSplitCountersConsolidated() {};
 
     /// @brief Splits the counters according to the consolidated approach.
     ///
@@ -625,11 +625,8 @@ private:
         PerPassData            new_pass;
         num_used_counters_per_pass_per_block.push_back(new_pass);
 
-        // Copy the set of unallocated counters.
-        std::vector<GpaUInt32> counters_unallocated = public_counter->internal_counters_required_;
-
         // Iterate through the unallocated counters and put them into the appropriate pass.
-        for (auto counter_iter = counters_unallocated.cbegin(); counter_iter != counters_unallocated.cend(); ++counter_iter)
+        for (const GpaUInt32 counter : public_counter->internal_counters_required_)
         {
             unsigned int pass_index         = 0;
             auto         counters_used_iter = num_used_counters_per_pass_per_block.begin();
@@ -660,7 +657,7 @@ private:
                     ++counter_pass_iter;
                 }
 
-                counter_accessor->SetCounterIndex(*counter_iter);
+                counter_accessor->SetCounterIndex(counter);
                 unsigned int group_index = counter_accessor->GroupIndex();
 
                 // Try to add the counter to the current pass.
@@ -669,7 +666,7 @@ private:
                     CheckForSQCounters(counter_accessor, *counters_used_iter, max_sq_counters_) &&
                     CheckCountersAreCompatible(counter_accessor, *counters_used_iter))
                 {
-                    counter_pass_iter->pass_counter_list.push_back(*counter_iter);
+                    counter_pass_iter->pass_counter_list.push_back(counter);
                     counters_used_iter->num_used_counters_per_block[group_index].push_back(counter_accessor->CounterIndex());
                     done_allocating_counter = true;
                 }

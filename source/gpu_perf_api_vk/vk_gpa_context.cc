@@ -200,12 +200,6 @@ bool VkGpaContext::DeleteVkGpaSession(VkGpaSession* gpa_session)
     return true;
 }
 
-GpaUInt32 VkGpaContext::GetMaxGpaSessions() const
-{
-    // There is no maximum number of sessions.
-    return kGpaSessionNoLimit;
-}
-
 GpaApiType VkGpaContext::GetApiType() const
 {
     return kGpaApiVulkan;

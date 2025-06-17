@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2018-2024 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2018-2025 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Unit tests for GpuPerfApiLoader.
@@ -71,7 +71,7 @@ TEST_P(GpuPerfApiLoaderTest, api)
 }
 
 #ifdef _WIN32
-INSTANTIATE_TEST_CASE_P(WindowsAPI, GpuPerfApiLoaderTest, ::testing::Values(kGpaApiDirectx11, kGpaApiDirectx12, kGpaApiVulkan, kGpaApiOpengl));
+INSTANTIATE_TEST_SUITE_P(WindowsAPI, GpuPerfApiLoaderTest, ::testing::Values(kGpaApiDirectx11, kGpaApiDirectx12, kGpaApiVulkan, kGpaApiOpengl));
 #else
-INSTANTIATE_TEST_CASE_P(LinuxAPI, GpuPerfApiLoaderTest, ::testing::Values(kGpaApiVulkan, kGpaApiOpengl));
+INSTANTIATE_TEST_SUITE_P(LinuxAPI, GpuPerfApiLoaderTest, ::testing::Values(kGpaApiVulkan, kGpaApiOpengl));
 #endif

@@ -239,7 +239,7 @@ CommandListId GpaCommandList::GetId() const
     return command_list_id_;
 }
 
-void GpaCommandList::IterateSampleUnorderedMap(std::function<bool(ClientSampleIdGpaSamplePair)> function) const
+void GpaCommandList::IterateSampleUnorderedMap(const std::function<bool(ClientSampleIdGpaSamplePair)>& function) const
 {
     bool next = true;
 

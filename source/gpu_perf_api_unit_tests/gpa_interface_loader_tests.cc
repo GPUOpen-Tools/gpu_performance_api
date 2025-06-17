@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2024 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2025 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Unit tests for GPAInterfaceLoader.
@@ -137,8 +137,7 @@ TEST_F(GpaInterfaceLoaderTest, TestGetLibraryFullPath)
 #ifdef _WIN32
 
         EXPECT_FALSE(lib_file_name.empty());
-        LocaleString lib_file_name_prefix(L"GPUPerfAPI");
-        lib_file_name_prefix = L"c:/test/" + lib_file_name_prefix;
+        const LocaleString lib_file_name_prefix(L"c:/test/GPUPerfAPI");
         EXPECT_TRUE(0 == lib_file_name.compare(0, lib_file_name_prefix.length(), lib_file_name_prefix));
 
 #else
@@ -248,7 +247,7 @@ TEST_P(GpaInterfaceLoaderTest, Api)
 }
 
 #ifdef _WIN32
-INSTANTIATE_TEST_CASE_P(WindowsAPI, GpaInterfaceLoaderTest, ::testing::Values(kGpaApiDirectx11, kGpaApiDirectx12, kGpaApiVulkan, kGpaApiOpengl));
+INSTANTIATE_TEST_SUITE_P(WindowsAPI, GpaInterfaceLoaderTest, ::testing::Values(kGpaApiDirectx11, kGpaApiDirectx12, kGpaApiVulkan, kGpaApiOpengl));
 #else
-INSTANTIATE_TEST_CASE_P(LinuxAPI, GpaInterfaceLoaderTest, ::testing::Values(kGpaApiVulkan, kGpaApiOpengl));
+INSTANTIATE_TEST_SUITE_P(LinuxAPI, GpaInterfaceLoaderTest, ::testing::Values(kGpaApiVulkan, kGpaApiOpengl));
 #endif

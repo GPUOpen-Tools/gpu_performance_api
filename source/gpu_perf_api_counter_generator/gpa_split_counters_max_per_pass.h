@@ -87,18 +87,17 @@ public:
              ++public_iter)
         {
             // Iterate through the internal counters and put them into the appropriate pass (first available pass).
-            for (std::vector<GpaUInt32>::const_iterator counter_iter = (*public_iter)->internal_counters_required_.begin();
-                 counter_iter != (*public_iter)->internal_counters_required_.end();
-                 ++counter_iter)
+            for (const GpaUInt32 internal_counter : (*public_iter)->internal_counters_required_)
             {
                 // See if the internal counter has already been scheduled.
-                std::map<unsigned int, GpaCounterResultLocation>::iterator found_counter = internal_counter_result_locations.find(*counter_iter);
+                std::map<unsigned int, GpaCounterResultLocation>::iterator found_counter = internal_counter_result_locations.find(internal_counter);
 
                 if (found_counter != internal_counter_result_locations.end())
                 {
                     // Counter has been scheduled.
                     // Use the same result location for this instance of the counter.
-                    AddCounterResultLocation((*public_iter)->counter_index_, *counter_iter, found_counter->second.pass_index_, found_counter->second.offset_);
+                    AddCounterResultLocation(
+                        (*public_iter)->counter_index_, internal_counter, found_counter->second.pass_index_, found_counter->second.offset_);
                 }
                 else
                 {
@@ -122,7 +121,7 @@ public:
                             ++counter_pass_iter;
                         }
 
-                        accessor->SetCounterIndex(*counter_iter);
+                        accessor->SetCounterIndex(internal_counter);
                         unsigned int group_index = accessor->GroupIndex();
 
                         // Try to add the counter to the current pass.
@@ -130,7 +129,7 @@ public:
                             CheckForSQCounters(accessor, *counters_used_iter, max_sq_counters_) && CheckCountersAreCompatible(accessor, *counters_used_iter) &&
                             counter_pass_iter->pass_counter_list.size() < 300)
                         {
-                            counter_pass_iter->pass_counter_list.push_back(*counter_iter);
+                            counter_pass_iter->pass_counter_list.push_back(internal_counter);
                             counters_used_iter->num_used_counters_per_block[group_index].push_back(accessor->CounterIndex());
                             done_allocating_counter = true;
 
@@ -138,10 +137,10 @@ public:
                             GpaCounterResultLocation location;
                             location.pass_index_                              = (GpaUInt16)pass_index;
                             location.offset_                            = (GpaUInt16)counter_pass_iter->pass_counter_list.size() - 1;
-                            internal_counter_result_locations[*counter_iter] = location;
+                            internal_counter_result_locations[internal_counter] = location;
 
                             // Record where to get the result from
-                            AddCounterResultLocation((*public_iter)->counter_index_, *counter_iter, location.pass_index_, location.offset_);
+                            AddCounterResultLocation((*public_iter)->counter_index_, internal_counter, location.pass_index_, location.offset_);
                         }
                         else
                         {

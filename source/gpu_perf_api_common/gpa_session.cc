@@ -9,6 +9,7 @@
 
 #include <chrono>
 #include <thread>
+#include <variant>
 
 #include "gpu_performance_api/gpu_perf_api_types.h"
 
@@ -517,6 +518,12 @@ GpaStatus GpaSession::Begin()
                     status = GpaContextCounterMediator::Instance()->GetRequiredPassCount(this, session_counters_, pass_count);
                 }
 
+                if (kGpaSessionSampleTypeStreamingCounterAndSqtt == sample_type_ && pass_count != 1)
+                {
+                    GPA_LOG_ERROR("Unable to create pass for session. Sqtt + Spm sessions should only have 1 pass");
+                    status = kGpaStatusErrorFailed;
+                }
+
                 if (kGpaStatusOk == status)
                 {
                     // Assume the loop below will succeed, it will get set to false if the loop fails.
@@ -947,7 +954,7 @@ GpaStatus GpaSession::GetSampleResult(GpaUInt32 sample_id, size_t sample_result_
 
         std::vector<const GpaUInt64*> results;
         std::vector<GpaDataType>      types;
-        std::vector<GpaUInt32>        internal_counters_required =
+        const std::variant<gpa_array_view<GpaUInt32>, GpaUInt32> internal_counters_required =
             GpaContextCounterMediator::Instance()->GetCounterAccessor(this)->GetInternalCountersRequired(exposed_counter_index);
         CounterResultLocationMap result_locations = counter_result_locations_[exposed_counter_index];
 
@@ -966,7 +973,9 @@ GpaStatus GpaSession::GetSampleResult(GpaUInt32 sample_id, size_t sample_result_
         {
         case GpaCounterSource::kPublic:
         {
-            size_t required_count = internal_counters_required.size();
+            constexpr uint32_t              kCounterSourcePublic      = static_cast<uint32_t>(GpaCounterSource::kPublic);
+            const gpa_array_view<GpaUInt32> require_hardware_counters = std::get<kCounterSourcePublic>(internal_counters_required);
+            size_t                          required_count            = require_hardware_counters.size();
             results.reserve(required_count);
             types.reserve(required_count);
 
@@ -974,9 +983,7 @@ GpaStatus GpaSession::GetSampleResult(GpaUInt32 sample_id, size_t sample_result_
 
             unsigned int result_index = 0;
 
-            for (std::vector<GpaUInt32>::iterator required_counter_iter = internal_counters_required.begin();
-                 required_counter_iter != internal_counters_required.end();
-                 ++required_counter_iter)
+            for (const GpaUInt32 counter : require_hardware_counters)
             {
                 GpaUInt64* result_buffer = &(all_results.data()[result_index]);
                 ++result_index;
@@ -984,7 +991,7 @@ GpaStatus GpaSession::GetSampleResult(GpaUInt32 sample_id, size_t sample_result_
                 GpaDataType type = kGpaDataTypeUint64;  // All hardware counters are UINT64.
                 types.push_back(type);
 
-                std::map<unsigned int, GpaCounterResultLocation>::iterator result_location_iter = result_locations.find(*required_counter_iter);
+                std::map<unsigned int, GpaCounterResultLocation>::iterator result_location_iter = result_locations.find(counter);
 
                 if (result_location_iter == result_locations.end())
                 {
@@ -992,7 +999,7 @@ GpaStatus GpaSession::GetSampleResult(GpaUInt32 sample_id, size_t sample_result_
                     return kGpaStatusErrorReadingSampleResult;
                 }
 
-                status = passes_[result_location_iter->second.pass_index_]->GetResult(sample_id, *required_counter_iter, result_buffer);
+                status = passes_[result_location_iter->second.pass_index_]->GetResult(sample_id, counter, result_buffer);
 
                 if (kGpaStatusOk != status)
                 {
@@ -1032,10 +1039,11 @@ GpaStatus GpaSession::GetSampleResult(GpaUInt32 sample_id, size_t sample_result_
 
         case GpaCounterSource::kHardware:
         {
-            GpaUInt64* uint64_results = reinterpret_cast<GpaUInt64*>(counter_sample_results) + counter_index_iter;
-            assert(internal_counters_required.size() == 1);  // Hardware counters will always have one internal counter required.
-            GpaUInt16 counter_result_pass = result_locations[internal_counters_required.at(0)].pass_index_;
-            status                        = passes_[counter_result_pass]->GetResult(sample_id, internal_counters_required[0], uint64_results);
+            constexpr uint32_t kCounterSourceHardware = static_cast<uint32_t>(GpaCounterSource::kHardware);
+            const GpaUInt32    hardware_counter       = std::get<kCounterSourceHardware>(internal_counters_required);
+            GpaUInt64* const   uint64_results         = reinterpret_cast<GpaUInt64*>(counter_sample_results) + counter_index_iter;
+            const GpaUInt16    counter_result_pass    = result_locations[hardware_counter].pass_index_;
+            status                                    = passes_[counter_result_pass]->GetResult(sample_id, hardware_counter, uint64_results);
             break;
         }
 
@@ -1158,6 +1166,18 @@ GpaStatus GpaSession::SpmBegin(void* command_list)
 }
 
 GpaStatus GpaSession::SpmEnd(void* command_list)
+{
+    UNREFERENCED_PARAMETER(command_list);
+    return kGpaStatusErrorApiNotSupported;
+}
+
+GpaStatus GpaSession::SqttSpmBegin(void* command_list)
+{
+    UNREFERENCED_PARAMETER(command_list);
+    return kGpaStatusErrorApiNotSupported;
+}
+
+GpaStatus GpaSession::SqttSpmEnd(void* command_list)
 {
     UNREFERENCED_PARAMETER(command_list);
     return kGpaStatusErrorApiNotSupported;

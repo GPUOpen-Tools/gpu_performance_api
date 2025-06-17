@@ -57,7 +57,7 @@ static inline GpaStatus GpaGetDeviceName(GpaContextId gpa_context_id, const char
     RETURN_GPA_SUCCESS;
 }
 
-static inline GpaStatus GpaUpdateDeviceInformation(GpaContextId context_id,
+static inline GpaStatus GpaUpdateDeviceInformation(GpaContextId gpa_context_id,
                                                    GpaUInt32    num_shader_engines,
                                                    GpaUInt32    num_compute_units,
                                                    GpaUInt32    num_simds,
@@ -67,6 +67,11 @@ static inline GpaStatus GpaUpdateDeviceInformation(GpaContextId context_id,
 }
 
 static inline GpaStatus GpaGetDeviceGeneration(GpaContextId gpa_context_id, GpaHwGeneration* hardware_generation)
+{
+    RETURN_GPA_SUCCESS;
+}
+
+static inline GpaStatus GpaGetDeviceMaxWaveSlots(GpaContextId gpa_context_id, GpaUInt32* max_wave_slots)
 {
     RETURN_GPA_SUCCESS;
 }
@@ -225,6 +230,16 @@ static inline GpaStatus GpaSpmCalculateDerivedCounters(GpaSessionId gpa_session_
                                                        GpaSpmData*  spm_data,
                                                        GpaUInt32    derived_counter_count,
                                                        GpaUInt64*   derived_counter_results)
+{
+    RETURN_GPA_SUCCESS;
+}
+
+static inline GpaStatus GpaSqttSpmBegin(GpaSessionId gpa_session_id, void* command_list)
+{
+    RETURN_GPA_SUCCESS;
+}
+
+static inline GpaStatus GpaSqttSpmEnd(GpaSessionId gpa_session_id, void* command_list)
 {
     RETURN_GPA_SUCCESS;
 }

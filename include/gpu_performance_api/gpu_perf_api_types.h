@@ -205,7 +205,11 @@ typedef enum
         0x0020,  ///< The memory clock frequency is set to the minimum level, while the engine clock is set to a power and thermal sustainable level.
     kGpaOpenContextClockModeMinEngineBit =
         0x0040,  ///< The engine clock frequency is set to the minimum level, while the memory clock is set to a power and thermal sustainable level.
-    kGpaOpenContextEnableHardwareCountersBit = 0x0080  ///< Include the hardware counters when exposing counters.
+    kGpaOpenContextEnableHardwareCountersBit = 0x0080,  ///< Include the hardware counters when exposing counters.
+
+    ///< Bits 28 to 31 are reserved for API particular Context Open usecase, please refer to API specific context info definition header.
+    kGpaOpenContextApiSpecificOptionsStart = 0x10000000,
+
 } GpaOpenContextBits;
 
 /// Allows GpaOpenContextBits to be combined into a single parameter.
@@ -321,12 +325,11 @@ typedef GpaFlags GpaContextSampleTypeFlags;
 /// @brief Session Sample types -- used by the client to tell GPUPerfAPI which sample types will be created for a session.
 typedef enum
 {
-    kGpaSessionSampleTypeDiscreteCounter,  ///< Discrete counters sample type -- discrete counters provide a single value per workload measured.
-    kGpaSessionSampleTypeStreamingCounter,  ///< Streaming counters sample type -- streaming counters provide interval-based multiple values per workload measured.
-    kGpaSessionSampleTypeSqtt,  ///< SQTT sample type -- provides detailed wave-level SQTT information per workload measured. For some driver stacks, the SQTT-data may be wrapped in an RGP-file format.
+    kGpaSessionSampleTypeDiscreteCounter,          ///< Discrete counters sample type -- discrete counters provide a single value per workload measured.
+    kGpaSessionSampleTypeStreamingCounter,         ///< Streaming counters sample type -- streaming counters provide interval-based multiple values per workload measured.
+    kGpaSessionSampleTypeSqtt,                     ///< SQTT sample type -- provides detailed wave-level SQTT information per workload measured. For some driver stacks, the SQTT-data may be wrapped in an RGP-file format.
     kGpaSessionSampleTypeStreamingCounterAndSqtt,  ///< Streaming counters and SQTT are enabled.
     kGpaSessionSampleTypeLast                      ///< Marker indicating last element.
-
 } GpaSessionSampleType;
 
 /// @brief Type used to define the mask of instructions included in SQTT data.

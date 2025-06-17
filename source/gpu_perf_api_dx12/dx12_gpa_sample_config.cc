@@ -13,6 +13,11 @@
 #include "dx12_gpa_context.h"
 #include "ADLUtil.h"
 
+static bool IsSampleSpm(GpaSessionSampleType sample)
+{
+    return (kGpaSessionSampleTypeStreamingCounter == sample) || (kGpaSessionSampleTypeStreamingCounterAndSqtt == sample);
+}
+
 Dx12GpaSampleConfig::~Dx12GpaSampleConfig()
 {
     if (amd_ext_sample_config_.perfCounters.pIds != nullptr)
@@ -24,7 +29,7 @@ Dx12GpaSampleConfig::~Dx12GpaSampleConfig()
 
 bool Dx12GpaSampleConfig::UpdateSpmSettings(const IGpaSession* session)
 {
-    if (kGpaSessionSampleTypeStreamingCounter != sample_type_)
+    if (IsSampleSpm(sample_type_) == false)
     {
         return true;
     }
@@ -134,8 +139,7 @@ bool Dx12GpaSampleConfig::Initialize(IGpaSession*       session,
 
     sample_type_ = session->GetSampleType();
 
-    if ((kGpaSessionSampleTypeDiscreteCounter == sample_type_ || kGpaSessionSampleTypeStreamingCounter == sample_type_) &&
-        GpaCounterSource::kHardware == counter_source)
+    if ((kGpaSessionSampleTypeDiscreteCounter == sample_type_ || IsSampleSpm(sample_type_)) && GpaCounterSource::kHardware == counter_source)
     {
         if (kGpaSessionSampleTypeDiscreteCounter == sample_type_ && nullptr == gpa_pass)
         {
@@ -353,7 +357,8 @@ bool Dx12GpaSampleConfig::Initialize(IGpaSession*       session,
             is_sample_config_initialized_ = true;
         }
     }
-    else if (kGpaSessionSampleTypeSqtt == sample_type_)
+
+    if (kGpaSessionSampleTypeSqtt == sample_type_ || kGpaSessionSampleTypeStreamingCounterAndSqtt == sample_type_)
     {
         amd_ext_sample_config_.type                                = AmdExtGpaSampleType::Trace;
         amd_ext_sample_config_.sqtt.flags.enable                   = 1;
@@ -373,7 +378,7 @@ bool Dx12GpaSampleConfig::Initialize(IGpaSession*       session,
     }
 
     // If streaming counters, set additional options - in addition to options set for discrete counters
-    if (kGpaSessionSampleTypeStreamingCounter == sample_type_)
+    if (IsSampleSpm(sample_type_))
     {
         UpdateSpmSettings(session);
     }

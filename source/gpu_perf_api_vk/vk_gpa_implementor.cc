@@ -7,7 +7,7 @@
 
 #include "gpu_perf_api_vk/vk_gpa_implementor.h"
 
-#include <assert.h>
+#include <cassert>
 
 #include "DeviceInfoUtils.h"
 
@@ -61,18 +61,27 @@ GpaApiType VkGpaImplementor::GetApiType() const
     return kGpaApiVulkan;
 }
 
-bool VkGpaImplementor::GetHwInfoFromApi(const GpaContextInfoPtr context_info, GpaHwInfo& hw_info) const
+bool VkGpaImplementor::GetHwInfoFromApi(const GpaContextInfoPtr context_info, GpaOpenContextFlags flags, GpaHwInfo& hw_info) const
 {
     bool is_succeeded = false;
 
     if (nullptr != context_info)
     {
+        PFN_vkGetDeviceProcAddr   get_device_proc_addr   = NULL;  ///< The vulkan device proc query.
+        PFN_vkGetInstanceProcAddr get_instance_proc_addr = NULL;  ///< The vulkan instance proc query.
+
+        if (flags & kGpaOpenContextVkUseInfoType2)
+        {
+            get_device_proc_addr   = (reinterpret_cast<GpaVkContextOpenInfo2*>(context_info))->get_device_proc_addr;
+            get_instance_proc_addr = (reinterpret_cast<GpaVkContextOpenInfo2*>(context_info))->get_instance_proc_addr;
+        }
+
         GpaVkContextOpenInfo* vk_context_info = static_cast<GpaVkContextOpenInfo*>(context_info);
 
         if (VK_NULL_HANDLE != vk_context_info->instance && VK_NULL_HANDLE != vk_context_info->physical_device && VK_NULL_HANDLE != vk_context_info->device)
         {
             // For Vulkan, the context contains the VkInstance and VkDevice.
-            if (vk_utils::InitializeVkEntryPoints(vk_context_info->instance, vk_context_info->device))
+            if (vk_utils::InitializeVkEntryPoints(vk_context_info->instance, vk_context_info->device, get_instance_proc_addr, get_device_proc_addr))
             {
                 if (vk_utils::IsDeviceSupportedForProfiling(vk_context_info->physical_device))
                 {
@@ -143,36 +152,40 @@ bool VkGpaImplementor::GetHwInfoFromApi(const GpaContextInfoPtr context_info, Gp
                                     hw_info.SetHwGeneration(hardware_generation);
                                     hw_info.SetTimeStampFrequency(freq);
 
-                                    size_t num_shader_engines = static_cast<size_t>(shader_core_properties_amd.shaderEngineCount);
-                                    size_t num_total_shader_arrays =
-                                        static_cast<size_t>(shader_core_properties_amd.shaderArraysPerEngineCount * num_shader_engines);
-                                    size_t num_total_compute_units = 0;
-
-                                    if (shader_core_properties_2_amd.activeComputeUnitCount != 0)
-                                    {
-                                        num_total_compute_units = static_cast<size_t>(shader_core_properties_2_amd.activeComputeUnitCount);
-                                    }
-                                    else if (hardware_generation < GDT_HW_GENERATION_GFX10)
-                                    {
-                                        num_total_compute_units =
-                                            static_cast<size_t>(shader_core_properties_amd.computeUnitsPerShaderArray * num_total_shader_arrays);
-                                    }
-                                    else
-                                    {
-                                        num_total_compute_units = hw_info.GetNumberCus();
-                                    }
-
-                                    size_t num_total_simds = static_cast<size_t>(shader_core_properties_amd.simdPerComputeUnit * num_total_compute_units);
-
-                                    if (0 != num_total_simds)
-                                    {
-                                        hw_info.SetNumberSimds(num_total_simds);
-                                        hw_info.SetNumberCus(num_total_compute_units);
-                                        hw_info.SetNumberShaderArrays(num_total_shader_arrays);
-                                        hw_info.SetNumberShaderEngines(num_shader_engines);
-                                    }
-
                                     is_succeeded = true;
+
+                                    const size_t num_shader_engines = static_cast<size_t>(shader_core_properties_amd.shaderEngineCount);
+                                    hw_info.SetNumberShaderEngines(num_shader_engines);
+                                    if (num_shader_engines == 0)
+                                    {
+                                        GPA_LOG_ERROR("Vulkan returned invalid number of shader engines.");
+                                        is_succeeded = false;
+                                    }
+
+                                    const size_t num_total_shader_arrays =
+                                        static_cast<size_t>(shader_core_properties_amd.shaderArraysPerEngineCount * num_shader_engines);
+                                    hw_info.SetNumberShaderArrays(num_total_shader_arrays);
+                                    if (num_total_shader_arrays == 0)
+                                    {
+                                        GPA_LOG_ERROR("Vulkan returned invalid number of shader arrays.");
+                                        is_succeeded = false;
+                                    }
+
+                                    const size_t num_total_compute_units = static_cast<size_t>(shader_core_properties_2_amd.activeComputeUnitCount);
+                                    hw_info.SetNumberCus(num_total_compute_units);
+                                    if (num_total_compute_units == 0)
+                                    {
+                                        GPA_LOG_ERROR("Vulkan returned invalid number of active compute units.");
+                                        is_succeeded = false;
+                                    }
+
+                                    const size_t num_total_simds = static_cast<size_t>(shader_core_properties_amd.simdPerComputeUnit * num_total_compute_units);
+                                    hw_info.SetNumberSimds(num_total_simds);
+                                    if (num_total_simds == 0)
+                                    {
+                                        GPA_LOG_ERROR("Vulkan returned invalid number of SIMDs.");
+                                        is_succeeded = false;
+                                    }
                                 }
                             }
                             else
@@ -215,21 +228,27 @@ bool VkGpaImplementor::GetHwInfoFromApi(const GpaContextInfoPtr context_info, Gp
     return is_succeeded;
 }
 
-bool VkGpaImplementor::VerifyApiHwSupport(const GpaContextInfoPtr context_info, const GpaHwInfo& hardware_info) const
+bool VkGpaImplementor::VerifyApiHwSupport(const GpaContextInfoPtr context_info, GpaOpenContextFlags flags, const GpaHwInfo& hardware_info) const
 {
     bool is_supported = false;
-
-#ifdef _WIN32
     UNREFERENCED_PARAMETER(hardware_info);
-#endif
     if (nullptr != context_info)
     {
+        PFN_vkGetDeviceProcAddr   get_device_proc_addr = NULL;    ///< The vulkan device proc query.
+        PFN_vkGetInstanceProcAddr get_instance_proc_addr = NULL;  ///< The vulkan instance proc query.
+
+        if (flags & kGpaOpenContextVkUseInfoType2)
+        {
+            get_device_proc_addr = (reinterpret_cast<GpaVkContextOpenInfo2*>(context_info))->get_device_proc_addr;
+            get_instance_proc_addr = (reinterpret_cast<GpaVkContextOpenInfo2*>(context_info))->get_instance_proc_addr;
+        }
+
         GpaVkContextOpenInfo* vk_context_info = static_cast<GpaVkContextOpenInfo*>(context_info);
 
         if (VK_NULL_HANDLE != vk_context_info->instance && VK_NULL_HANDLE != vk_context_info->physical_device && VK_NULL_HANDLE != vk_context_info->device)
         {
             // For Vulkan, the context contains the VkInstance.
-            if (vk_utils::InitializeVkEntryPoints(vk_context_info->instance, vk_context_info->device))
+            if (vk_utils::InitializeVkEntryPoints(vk_context_info->instance, vk_context_info->device, get_instance_proc_addr, get_device_proc_addr))
             {
                 is_supported = vk_utils::IsDeviceSupportedForProfiling(vk_context_info->physical_device);
             }
@@ -237,15 +256,6 @@ bool VkGpaImplementor::VerifyApiHwSupport(const GpaContextInfoPtr context_info, 
             {
                 GPA_LOG_ERROR("Unable to initialize Vulkan entrypoints.");
             }
-
-#ifdef _LINUX
-            GpaUInt32 device_id = 0;
-            if (hardware_info.GetDeviceId(device_id) && (device_id == 0x7550))
-            {
-                GPA_LOG_ERROR("The current Vulkan driver does not properly support GPUPerfAPI on this hardware.");
-                is_supported = false;
-            }
-#endif
         }
         else
         {

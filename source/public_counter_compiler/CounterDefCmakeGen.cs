@@ -30,6 +30,7 @@ namespace GpaTools
         /// </summary>
         public static ApiDictionary counterDefs = new ApiDictionary();
 
+
         /// <summary>
         /// Initializes the memory for the file lists
         /// </summary>

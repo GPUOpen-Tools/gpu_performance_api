@@ -93,9 +93,7 @@ public:
             unsigned int current_pass_for_this_int_counter = pass_index;
 
             // Iterate through the internal counters and put them into the appropriate pass.
-            for (std::vector<GpaUInt32>::const_iterator counter_iter = (*public_iter)->internal_counters_required_.begin();
-                 counter_iter != (*public_iter)->internal_counters_required_.end();
-                 ++counter_iter)
+            for (const GpaUInt32 internal_counter : (*public_iter)->internal_counters_required_)
             {
                 // Each internal counter should try to go into the first pass of this public counter.
                 // Reset iterators...
@@ -112,7 +110,7 @@ public:
 
                 while (done_allocating_counter == false)
                 {
-                    accessor->SetCounterIndex(*counter_iter);
+                    accessor->SetCounterIndex(internal_counter);
                     unsigned int group_index = accessor->GroupIndex();
 
                     size_t counters_size = counter_pass_iter->pass_counter_list.size();
@@ -123,14 +121,16 @@ public:
                          CheckForSQCounters(accessor, *counters_used_iter, max_sq_counters_) && CheckCountersAreCompatible(accessor, *counters_used_iter) &&
                          counters_size < 300))
                     {
-                        counter_pass_iter->pass_counter_list.push_back(*counter_iter);
+                        counter_pass_iter->pass_counter_list.push_back(internal_counter);
                         counters_used_iter->num_used_counters_per_block[group_index].push_back(accessor->CounterIndex());
                         num_scheduled_counters += 1;
                         done_allocating_counter = true;
 
                         // Record where to get the result from.
-                        AddCounterResultLocation(
-                            (*public_iter)->counter_index_, *counter_iter, current_pass_for_this_int_counter, (unsigned int)counter_pass_iter->pass_counter_list.size() - 1);
+                        AddCounterResultLocation((*public_iter)->counter_index_,
+                                                 internal_counter,
+                                                 current_pass_for_this_int_counter,
+                                                 (unsigned int)counter_pass_iter->pass_counter_list.size() - 1);
                     }
                     else
                     {

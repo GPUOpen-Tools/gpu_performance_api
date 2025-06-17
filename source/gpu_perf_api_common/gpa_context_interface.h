@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2024 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2025 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Interface representing the GPA context.
@@ -48,16 +48,6 @@ public:
     ///
     /// @return True if operation is successful otherwise false.
     virtual bool DeleteSession(GpaSessionId session_id) = 0;
-
-    /// @brief Returns the maximum number of sessions possible in the context.
-    ///
-    /// @return Maximum number of possible sessions.
-    virtual GpaUInt32 GetMaxGpaSessions() const = 0;
-
-    /// @brief Returns the count of created sessions in the context.
-    ///
-    /// @return Number of sessions created in the context.
-    virtual GpaUInt32 GetSessionCount() const = 0;
 
     /// @brief Checks whether the session current exist or not.
     ///

@@ -1,8 +1,22 @@
 ﻿# GPU Performance API Release Notes
 ---
+# Version 4.1 (06/17/2025)
+* Added support for AMD Radeon RX 9060 XT.
+* Added support for AMD Radeon AI PRO R9700.
+* AMD Radeon RX 9070 Series GPUs are now supported with AMD Radeon Software for Linux 25.10 or newer.
+* New entrypoints added: GpaGetDeviceMaxWaveSlots, GpaSqttSpmBegin, GpaSqttSpmEnd. Binary backwards compatibility is maintained.
+  * See known issues in the README.md regarding GpaGetDeviceMaxWaveSlots
+* GPA Vulkan interface now allows client to provide vkGetInstanceProcAddr/vkGetDeviceProcAddr function pointer to support usage in a Vulkan layer.
+* Fixed PAStalledOnRasterizerCycles counter for AMD RDNA4 GPUs.
+* Fixed GitHub Issue #80 - CMake build will use FetchContent to grab dependencies.
+* Fixed CMake deprecation warnings.
+* Fixed MSVC linker warnings.
+* Use CPack instead of custom python scripts to package binaries.
+* Updated GoogleTest to v1.16
+* Updated C# projects to .NET 8
+
 # Version 4.0 (03/11/2025)
 * Added support for Radeon RX 9070 Series GPUs.
-  * See README.md for known issue related to Vulkan on Linux.
 * Added support for additional RDNA 3 based APUs.
 * Counter interrogation entrypoints now accept a GpaSessionId instead of a GpaContextId.
 * GPUPerfAPI now includes additional entrypoints and enums to support querying streaming counters and SQTT data. These are only intended to support the AmdRadeonPlugin in Microsoft PIX on Windows. No support will be offered on how to use these entrypoints.

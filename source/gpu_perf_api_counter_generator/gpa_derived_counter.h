@@ -14,6 +14,7 @@
 
 #include "gpu_performance_api/gpu_perf_api_counters.h"
 #include "gpu_perf_api_common/gpa_hw_info.h"
+#include "gpu_perf_api_common/gpa_array_view.hpp"
 
 class IGpaCounterAccessor;
 using std::vector;
@@ -35,17 +36,17 @@ public:
     /// @param [in] internal_counters_required The list of hardware counters required by the derived counter.
     /// @param [in] compute_expression The formula used to compute the derived counter.
     /// @param [in] uuid UUID string that uniquely and consistently identifies the derived counter.
-    GpaDerivedCounterInfoClass(unsigned int       index,
-                               const char*        counter_name,
-                               const char*        counter_group,
-                               const char*        counter_description,
-                               GpaDataType        data_type,
-                               GpaUsageType       usage_type,
-                               bool               discrete_counter,
-                               bool               spm_counter,
-                               vector<GpaUInt32>& internal_counters_required,
-                               const char*        compute_expression,
-                               const char*        uuid);
+    GpaDerivedCounterInfoClass(unsigned int              index,
+                               const char*               counter_name,
+                               const char*               counter_group,
+                               const char*               counter_description,
+                               GpaDataType               data_type,
+                               GpaUsageType              usage_type,
+                               bool                      discrete_counter,
+                               bool                      spm_counter,
+                               gpa_array_view<GpaUInt32> internal_counters_required,
+                               const char*               compute_expression,
+                               const char*               uuid);
 
     /// @brief Default Constructor.
     ///
@@ -62,17 +63,17 @@ public:
     /// @return Pointer to derived counter info.
     GpaCounterInfo* GetCounterInfo(const IGpaCounterAccessor* gpa_counter_accessor);
 
-    unsigned int      counter_index_;               ///< Index of this counter.
-    const char*       counter_name_;                ///< The name of the counter.
-    const char*       counter_group_;               ///< A group to which the counter is related.
-    const char*       counter_description_;         ///< A description of what the counter means.
-    GpaDataType       data_type_;                   ///< Data type.
-    GpaUsageType      usage_type_;                  ///< How the counter should be interpreted (percentage, ratio, bytes, etc).
-    bool              discrete_counter_;            ///< Counter is a discrete sample counter.
-    bool              spm_counter_;                 ///< Counter is an SPM counter.
-    vector<GpaUInt32> internal_counters_required_;  ///< List of internal counters that are needed to calculate this derived counter.
-    const char*       compute_expression_;          ///< A string expression that shows how to calculate this counter.
-    GpaUuid           uuid_ = {};                   ///< UUID that uniquely and consistently identifies a counter.
+    unsigned int              counter_index_;               ///< Index of this counter.
+    const char*               counter_name_;                ///< The name of the counter.
+    const char*               counter_group_;               ///< A group to which the counter is related.
+    const char*               counter_description_;         ///< A description of what the counter means.
+    GpaDataType               data_type_;                   ///< Data type.
+    GpaUsageType              usage_type_;                  ///< How the counter should be interpreted (percentage, ratio, bytes, etc).
+    bool                      discrete_counter_;            ///< Counter is a discrete sample counter.
+    bool                      spm_counter_;                 ///< Counter is an SPM counter.
+    gpa_array_view<GpaUInt32> internal_counters_required_;  ///< List of internal counters that are needed to calculate this derived counter.
+    const char*               compute_expression_;          ///< A string expression that shows how to calculate this counter.
+    GpaUuid                   uuid_ = {};                   ///< UUID that uniquely and consistently identifies a counter.
 
 private:
     /// @brief Initializes the derived counter info.
@@ -211,23 +212,25 @@ public:
     /// @param [in] internal_counters_required The list of required internal counters.
     /// @param [in] compute_expression The compute expression of the counter.
     /// @param [in] uuid UUID string that uniquely and consistently identifies the counter.
-    virtual void DefineDerivedCounter(const char*        counter_name,
-                                      const char*        counter_group,
-                                      const char*        counter_description,
-                                      GpaDataType        data_type,
-                                      GpaUsageType       usage_type,
-                                      bool               discrete_counter,
-                                      bool               spm_counter,
-                                      vector<GpaUInt32>& internal_counters_required,
-                                      const char*        compute_expression,
-                                      const char*        uuid);
+    virtual void DefineDerivedCounter(const char*               counter_name,
+                                      const char*               counter_group,
+                                      const char*               counter_description,
+                                      GpaDataType               data_type,
+                                      GpaUsageType              usage_type,
+                                      bool                      discrete_counter,
+                                      bool                      spm_counter,
+                                      gpa_array_view<GpaUInt32> internal_counters_required,
+                                      const char*               compute_expression,
+                                      const char*               uuid);
 
     /// @brief Updates an existing derived counter based on ASIC-specific registers.
     ///
     /// @param [in] counter_name The name of the counter.
     /// @param [in] internal_counters_required The list of required internal counters.
     /// @param [in] compute_expression The compute expression of the counter.
-    virtual void UpdateAsicSpecificDerivedCounter(const char* counter_name, vector<GpaUInt32>& internal_counters_required, const char* compute_expression);
+    virtual void UpdateAsicSpecificDerivedCounter(const char*               counter_name,
+                                                  gpa_array_view<GpaUInt32> internal_counters_required,
+                                                  const char*               compute_expression);
 
     /// @brief Adds a derived counter to the set of available counters.
     ///
@@ -255,8 +258,8 @@ public:
     ///
     /// @param [in] index The index of the requested counter.
     ///
-    /// @return The list of internal counters.
-    virtual const vector<GpaUInt32>& GetInternalCountersRequired(GpaUInt32 index) const
+    /// @return An array view of the internal counters.
+    virtual gpa_array_view<GpaUInt32> GetInternalCountersRequired(GpaUInt32 index) const
     {
         assert(index < derived_counter_list_.size());
         return derived_counter_list_[index].internal_counters_required_;

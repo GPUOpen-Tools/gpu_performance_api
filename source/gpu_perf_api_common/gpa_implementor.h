@@ -71,7 +71,7 @@ protected:
     /// @param [out] hw_info Hardware information if device is supported.
     ///
     /// @return kGpaStatusOk if operation is successful.
-    GpaStatus IsDeviceSupported(GpaContextInfoPtr context_info, GpaHwInfo* hw_info) const;
+    GpaStatus IsDeviceSupported(GpaContextInfoPtr context_info, GpaOpenContextFlags flags, GpaHwInfo* hw_info) const;
 
     /// @brief Checks whether the driver is supported.
     ///
@@ -86,7 +86,7 @@ protected:
     /// @param [out] hw_info Hardware info.
     ///
     /// @return True if operation is successful otherwise false.
-    virtual bool GetHwInfoFromApi(const GpaContextInfoPtr context_info, GpaHwInfo& hw_info) const = 0;
+    virtual bool GetHwInfoFromApi(const GpaContextInfoPtr context_info, GpaOpenContextFlags flags, GpaHwInfo& hw_info) const = 0;
 
     /// @brief Compares two hardware info objects.
     ///
@@ -102,7 +102,7 @@ protected:
     /// @param [in] hw_info Hardware info.
     ///
     /// @return True if API supports the hardware otherwise false.
-    virtual bool VerifyApiHwSupport(const GpaContextInfoPtr context_info, const GpaHwInfo& hw_info) const = 0;
+    virtual bool VerifyApiHwSupport(const GpaContextInfoPtr context_info, GpaOpenContextFlags flags, const GpaHwInfo& hw_info) const = 0;
 
     /// @brief Checks whether the context info exists or not.
     ///

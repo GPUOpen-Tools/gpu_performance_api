@@ -142,7 +142,7 @@ bool GpaCounterGeneratorBase::MapHardwareExposedCounter(GpaHardwareCounters* har
     size_t num_hardware_exposed_counter_groups = hardware_counters->hardware_exposed_counters_.size();
     for (size_t g = 0; g < num_hardware_exposed_counter_groups; ++g)
     {
-        const GpaUInt32 block_counter_start_index = hardware_counters->hardware_exposed_counter_groups_[g].hardware_block_start_index;
+        const GpaUInt32 block_counter_start_index     = hardware_counters->hardware_exposed_counter_groups_[g].hardware_block_start_index;
         const GpaUInt32 num_exposed_counters_in_group = static_cast<GpaUInt32>(hardware_counters->hardware_exposed_counters_[g]->size());
 
         for (unsigned int count_iter = 0; count_iter < num_exposed_counters_in_group; ++count_iter)
@@ -551,46 +551,44 @@ GpaUInt32 GpaCounterGeneratorBase::GetNumPublicCounters() const
     return count;
 }
 
-std::vector<GpaUInt32> GpaCounterGeneratorBase::GetInternalCountersRequired(GpaUInt32 index) const
+std::variant<gpa_array_view<GpaUInt32>, GpaUInt32> GpaCounterGeneratorBase::GetInternalCountersRequired(GpaUInt32 index) const
 {
     if (do_allow_public_counters_)
     {
-        if (index < public_counters_.GetNumCounters())
+        const GpaUInt32 num_public_counters = public_counters_.GetNumCounters();
+        if (index < num_public_counters)
         {
             return public_counters_.GetInternalCountersRequired(index);
         }
         else
         {
-            index -= public_counters_.GetNumCounters();
+            index -= num_public_counters;
         }
     }
 
-    std::vector<GpaUInt32> vec_internal_counters;
-
     if (do_allow_hardware_counters_)
     {
-        if (index < hardware_counters_.GetNumCounters())
+        const GpaUInt32 num_hardware_counters = hardware_counters_.GetNumCounters();
+        if (index < num_hardware_counters)
         {
             // The index is now the same as the needed hardware counter.
-            vec_internal_counters.push_back(index);
-            return vec_internal_counters;
+            return index;
         }
 
-        index -= hardware_counters_.GetNumCounters();
+        index -= num_hardware_counters;
     }
     else if (do_allow_hardware_exposed_counters_)
     {
         if (index < hardware_counters_.GetNumHardwareExposedCounters())
         {
             // The index is now the same as the needed hardware counter.
-            vec_internal_counters.push_back(hardware_counters_.GetHardwareExposedCounterInternalIndex(index));
-            return vec_internal_counters;
+            return hardware_counters_.GetHardwareExposedCounterInternalIndex(index);
         }
-
-        index -= hardware_counters_.GetNumHardwareExposedCounters();
     }
 
-    return vec_internal_counters;
+    // Return an empty span
+    assert(false);
+    return gpa_array_view<GpaUInt32>{};
 }
 
 GpaStatus GpaCounterGeneratorBase::ComputePublicCounterValue(GpaUInt32                       counter_index,

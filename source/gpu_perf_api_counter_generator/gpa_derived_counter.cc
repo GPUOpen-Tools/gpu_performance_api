@@ -20,6 +20,7 @@
 #include "gpu_perf_api_common/gpa_common_defs.h"
 #include "gpu_perf_api_common/logging.h"
 #include "gpu_perf_api_common/utility.h"
+#include "gpu_perf_api_common/gpa_array_view.hpp"
 
 #include "gpu_perf_api_counter_generator/gpa_derived_counter.h"
 #include "gpu_perf_api_counter_generator/gpa_derived_counter_evaluator.hpp"
@@ -40,17 +41,17 @@ GpaDerivedCounterInfoClass::GpaDerivedCounterInfoClass()
 {
 }
 
-GpaDerivedCounterInfoClass::GpaDerivedCounterInfoClass(unsigned int       index,
-                                                       const char*        counter_name,
-                                                       const char*        counter_group,
-                                                       const char*        counter_description,
-                                                       GpaDataType        data_type,
-                                                       GpaUsageType       usage_type,
-                                                       bool               discrete_counter,
-                                                       bool               spm_counter,
-                                                       vector<GpaUInt32>& internal_counters_required,
-                                                       const char*        compute_expression,
-                                                       const char*        uuid)
+GpaDerivedCounterInfoClass::GpaDerivedCounterInfoClass(unsigned int              index,
+                                                       const char*               counter_name,
+                                                       const char*               counter_group,
+                                                       const char*               counter_description,
+                                                       GpaDataType               data_type,
+                                                       GpaUsageType              usage_type,
+                                                       bool                      discrete_counter,
+                                                       bool                      spm_counter,
+                                                       gpa_array_view<GpaUInt32> internal_counters_required,
+                                                       const char*               compute_expression,
+                                                       const char*               uuid)
     : counter_index_(index)
     , counter_name_(counter_name)
     , counter_group_(counter_group)
@@ -146,11 +147,10 @@ bool GpaDerivedCounterInfoClass::InitializeDerivedCounterHardwareInfo(const IGpa
             {
                 const GpaHardwareCounters* hardware_counters = gpa_counter_accessor->GetHardwareCounters();
 
-                for (auto iter = internal_counters_required_.cbegin(); iter != internal_counters_required_.cend(); ++iter)
+                for (const GpaUInt32 internal_counter : internal_counters_required_)
                 {
                     GpaHwCounter hw_counter;
-
-                    if (hardware_counters->GetHardwareInfo(*iter, hw_counter))
+                    if (hardware_counters->GetHardwareInfo(internal_counter, hw_counter))
                     {
                         hw_counter_info_list_.push_back(hw_counter);
                     }
@@ -192,16 +192,16 @@ GpaCounterInfo* GpaDerivedCounterInfoClass::GetCounterInfo(const IGpaCounterAcce
     return nullptr;
 }
 
-void GpaDerivedCounters::DefineDerivedCounter(const char*        counter_name,
-                                              const char*        counter_group,
-                                              const char*        counter_description,
-                                              GpaDataType        data_type,
-                                              GpaUsageType       usage_type,
-                                              bool               discrete_counter,
-                                              bool               spm_counter,
-                                              vector<GpaUInt32>& internal_counters_required,
-                                              const char*        compute_expression,
-                                              const char*        uuid)
+void GpaDerivedCounters::DefineDerivedCounter(const char*               counter_name,
+                                              const char*               counter_group,
+                                              const char*               counter_description,
+                                              GpaDataType               data_type,
+                                              GpaUsageType              usage_type,
+                                              bool                      discrete_counter,
+                                              bool                      spm_counter,
+                                              gpa_array_view<GpaUInt32> internal_counters_required,
+                                              const char*               compute_expression,
+                                              const char*               uuid)
 {
     assert(counter_name);
     assert(counter_group);
@@ -240,15 +240,14 @@ void GpaDerivedCounters::DefineDerivedCounter(const char*        counter_name,
     }
 }
 
-void GpaDerivedCounters::UpdateAsicSpecificDerivedCounter(const char*        counter_name,
-                                                          vector<GpaUInt32>& internal_counters_required,
-                                                          const char*        compute_expression)
+void GpaDerivedCounters::UpdateAsicSpecificDerivedCounter(const char*               counter_name,
+                                                          gpa_array_view<GpaUInt32> internal_counters_required,
+                                                          const char*               compute_expression)
 {
     for (auto& counter : derived_counter_list_)
     {
         if (!_strcmpi(counter_name, counter.counter_name_))
         {
-            counter.internal_counters_required_.clear();
             counter.internal_counters_required_ = internal_counters_required;
             counter.compute_expression_         = compute_expression;
             return;

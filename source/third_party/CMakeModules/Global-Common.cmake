@@ -1,6 +1,4 @@
-## Copyright (c) 2018-2023 Advanced Micro Devices, Inc. All rights reserved.
-cmake_minimum_required(VERSION 3.10)
-
+## Copyright (c) 2018-2025 Advanced Micro Devices, Inc. All rights reserved.
 include(${CMAKE_CURRENT_LIST_DIR}/Global-Internal.cmake)
 
 # ProjectName must be set by each Tools project
@@ -12,12 +10,27 @@ else()
     set(CMAKE_BUILD_TYPE Release)
 endif()
 
-## Check whether 64-bit or 32-bit generator is being used
-if(CMAKE_SIZEOF_VOID_P EQUAL 8)
-    include(${CMAKE_CURRENT_LIST_DIR}/Global-x64.cmake)
-else()
-    include(${CMAKE_CURRENT_LIST_DIR}/Global-x86.cmake)
+if(NOT DEFINED AMDTPlatform)
+    set(AMDTPlatform "x64")
 endif()
+
+if(NOT DEFINED AMDTPlatformExt)
+    set(AMDTPlatformExt "x86_64")
+endif()
+
+if(NOT DEFINED AMDTPlatformSuffix)
+    if(WIN32)
+        set(AMDTPlatformSuffix "-x64")
+    else()
+        set(AMDTPlatformSuffix "")
+    endif()
+endif()
+
+if(NOT DEFINED AMDTPlatformSuffixNumBitsOnly)
+    set(AMDTPlatformSuffixNumBitsOnly "64")
+endif()
+
+set(COMMON_PREPROCESSOR_DEFINITION ${COMMON_PREPROCESSOR_DEFINITION} X64)
 
 if(NOT DEFINED AMDTOutputDir)
     set(AMDTOutputDir "${CMAKE_SOURCE_DIR}/Output")
@@ -100,23 +113,30 @@ set(COMMON_RELEASE_LINKER_FLAGS "")
 ## Define common debug config linker flags
 set(COMMON_DEBUG_LINKER_FLAGS "")
 
+## Enable parallel builds for Visual Studio similar to Ninja
+
+if(NOT CMAKE_VS_GLOBALS MATCHES "(^|;)UseMultiToolTask=")
+    list(APPEND CMAKE_VS_GLOBALS "UseMultiToolTask=true")
+endif()
+
+if(NOT CMAKE_VS_GLOBALS MATCHES "(^|;)EnforceProcessCountAcrossBuilds=")
+    list(APPEND CMAKE_VS_GLOBALS "EnforceProcessCountAcrossBuilds=true")
+endif()
+
 if(WIN32)
     ## Windows Release Compilation flags:
     ## /Z7 :Debug Information
     ## /GF :string pooling
-    ## /MP :Multi-processor compilation
     ## /O2 :Optimization
     ## /MD :Multi-threaded DLL
-    ## /GL :Whole program optimization
 
-    ## Linker options-
-    ## /LTCG : Use link time code generation
+    ## Linker options:
     ## /OPT:REF :References
     ## /DEBUG : generate debug information
     ## /OPT:ICF enable COMDATA folding
     ## /INCREMENTAL:NO : Incremental Link
-    set(COMMON_RELEASE_COMPILATION_FLAGS    /Z7 /GF /MP4 /O2 /MD)
-    set(COMMON_RELEASE_LINKER_FLAGS         "/LTCG /OPT:REF /DEBUG /OPT:ICF /INCREMENTAL:NO /MANIFEST:NO")
+    set(COMMON_RELEASE_COMPILATION_FLAGS    /Z7 /GF /O2 /MD)
+    set(COMMON_RELEASE_LINKER_FLAGS         "/OPT:REF /DEBUG /OPT:ICF /INCREMENTAL:NO /MANIFEST:NO")
 
     ## Debug Compiler Flags:
     ## /RTC1 : Runtime check

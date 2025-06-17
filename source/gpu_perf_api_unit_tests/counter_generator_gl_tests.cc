@@ -238,7 +238,7 @@ TEST(CounterDllTests, OpenGlCounterNamesDeviceIdGfx12)
     std::vector<const char*> counter_names;
     std::vector<const char*> hardware_counter_names;
     GetExpectedCountersForGeneration(kGpaHwGenerationGfx12, counter_names, hardware_counter_names);
-    VerifyCounterNames(kGpaApiOpengl, kDevIdGfx12_0_1, counter_names, hardware_counter_names);
+    VerifyCounterNames(kGpaApiOpengl, kDevIdGfx12_0_0, counter_names, hardware_counter_names);
 }
 
 TEST(CounterDllTests, OpenGlCounterNamesGfx10)

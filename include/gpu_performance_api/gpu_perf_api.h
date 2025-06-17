@@ -228,14 +228,14 @@ GPA_LIB_DECL GpaStatus GpaGetDeviceAndRevisionId(GpaContextId gpa_context_id, Gp
 
 /// @brief Overrides the device information for the specified context.
 ///
-/// @param context_id Unique identifier of the opened context.
+/// @param gpa_context_id Unique identifier of the opened context.
 /// @param num_shader_engines The number of shader engines.
 /// @param num_compute_units The total number of compute units.
 /// @param num_simds The total number of SIMDS.
 /// @param num_waves_per_simd The number of waves per SIMD.
 ///
 /// @return The GPA result status of the operation. kGpaStatusOk is returned if the operation is successful.
-GPA_LIB_DECL GpaStatus GpaUpdateDeviceInformation(GpaContextId context_id,
+GPA_LIB_DECL GpaStatus GpaUpdateDeviceInformation(GpaContextId gpa_context_id,
                                                   GpaUInt32    num_shader_engines,
                                                   GpaUInt32    num_compute_units,
                                                   GpaUInt32    num_simds,
@@ -272,6 +272,20 @@ GPA_LIB_DECL GpaStatus GpaGetDeviceName(GpaContextId gpa_context_id, const char*
 /// @retval kGpaStatusErrorFailed If an internal error has occurred.
 /// @retval kGpaStatusErrorException If an unexpected error has occurred.
 GPA_LIB_DECL GpaStatus GpaGetDeviceGeneration(GpaContextId gpa_context_id, GpaHwGeneration* hardware_generation);
+
+/// @brief Gets the total number of wave slots on the GPU.
+///
+/// @ingroup gpa_context_interrogation
+///
+/// @param [in] gpa_context_id Unique identifier of the opened context.
+/// @param [out] max_wave_slots The value that will be set to the maximum number of waves slots.
+///
+/// @return The GPA result status of the operation.
+/// @retval kGpaStatusOk If the operation is successful.
+/// @retval kGpaStatusErrorNullPointer If any of the parameters are NULL.
+/// @retval kGpaStatusErrorContextNotFound If the supplied context is invalid.
+/// @retval kGpaStatusErrorContextNotOpen If the supplied context has not been opened.
+GPA_LIB_DECL GpaStatus GpaGetDeviceMaxWaveSlots(GpaContextId gpa_context_id, GpaUInt32* max_wave_slots);
 
 /// @defgroup gpa_counter_interrogation GPA Counter Interrogation
 
@@ -726,6 +740,26 @@ GPA_LIB_DECL GpaStatus GpaSpmCalculateDerivedCounters(GpaSessionId gpa_session_i
                                                       GpaSpmData*  spm_data,
                                                       GpaUInt32    derived_counter_count,
                                                       GpaUInt64*   derived_counter_results);
+
+/// Begin collecting SQTT + SPM data
+///
+/// @ingroup gpa_session_interrogation
+///
+/// @param [in] gpa_session_id Unique identifier of the GPA Session Object.
+/// @param [in] command_list the command list to begin collecting data
+///
+/// @return The GPA result status of the operation. kGpaStatusOk is returned if the operation is successful.
+GPA_LIB_DECL GpaStatus GpaSqttSpmBegin(GpaSessionId gpa_session_id, void* command_list);
+
+/// End collecting SQTT + SPM data
+///
+/// @ingroup gpa_session_interrogation
+///
+/// @param [in] gpa_session_id Unique identifier of the GPA Session Object.
+/// @param [in] command_list the command list to end collecting data
+///
+/// @return The GPA result status of the operation. kGpaStatusOk is returned if the operation is successful.
+GPA_LIB_DECL GpaStatus GpaSqttSpmEnd(GpaSessionId gpa_session_id, void* command_list);
 
 /// @brief Ends sampling with the currently enabled set of counters.
 ///

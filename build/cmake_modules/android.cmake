@@ -1,6 +1,4 @@
-## Copyright (c) 2019-2024 Advanced Micro Devices, Inc. All rights reserved.
-cmake_minimum_required(VERSION 3.10)
-
+## Copyright (c) 2019-2025 Advanced Micro Devices, Inc. All rights reserved.
 if (NOT DEFINED ENV{ANDROID_SDK})
     message(FATAL_ERROR "ANDROID_SDK is not defined")
 endif()
@@ -40,16 +38,12 @@ if(NOT DEFINED ANDROID_STL)
 endif()
 
 set(ANDROID_TAGET_PLATFORM_ID ${ANDROID_PLATFORM})
-set(ANDROID_NDK_NATIVE_GLUE_DIR "${ANDROID_NDK_PATH}/sources/android/native_app_glue")
 set(ANDROID_NDK_INC "${ANDROID_NDK_PATH}/sysroot/usr/include")
 set(ANDROID_TARGET_PLATFORM ${ANDROID_SDK_PATH}/platforms/android-${ANDROID_TAGET_PLATFORM_ID})
 set(ANDROID_TARGET_JAR ${ANDROID_TARGET_PLATFORM}/android.jar)
 set(ANDROID_BUILD_TOOLS ${ANDROID_SDK_PATH}/build-tools/24.0.3)
 
-## Build configurations
-set(CMAKE_TOOLCHAIN_FILE ${ANDROID_NDK_PATH}/build/cmake/android.toolchain.cmake)
-set(USE_DEFAULT_COMPILER OFF)
+include(${ANDROID_NDK_PATH}/build/cmake/android.toolchain.cmake)
 
-set(ANDROID_INCLUDE_DIRECTORIES ${ANDROID_NDK_NATIVE_GLUE_DIR}
-                                ${ANDROID_NDK_INC})
+set(ANDROID_INCLUDE_DIRECTORIES ${ANDROID_NDK_INC})
 set(ANDROID_LIBS log android)

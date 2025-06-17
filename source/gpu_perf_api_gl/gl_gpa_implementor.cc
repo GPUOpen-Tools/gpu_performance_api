@@ -55,9 +55,10 @@ GpaApiType GlGpaImplementor::GetApiType() const
     return kGpaApiOpengl;
 }
 
-bool GlGpaImplementor::GetHwInfoFromApi(const GpaContextInfoPtr context_info, GpaHwInfo& hw_info) const
+bool GlGpaImplementor::GetHwInfoFromApi(const GpaContextInfoPtr context_info, GpaOpenContextFlags flags, GpaHwInfo& hw_info) const
 {
     UNREFERENCED_PARAMETER(context_info);
+    UNREFERENCED_PARAMETER(flags);
 
     // Get the entry points.
     is_gl_entry_points_initialized_ = ogl_utils::InitializeGlFunctions();
@@ -171,9 +172,10 @@ bool GlGpaImplementor::GetHwInfoFromApi(const GpaContextInfoPtr context_info, Gp
     return false;
 }
 
-bool GlGpaImplementor::VerifyApiHwSupport(const GpaContextInfoPtr context_info, const GpaHwInfo& hw_info) const
+bool GlGpaImplementor::VerifyApiHwSupport(const GpaContextInfoPtr context_info, GpaOpenContextFlags flags, const GpaHwInfo& hw_info) const
 {
     UNREFERENCED_PARAMETER(context_info);
+    UNREFERENCED_PARAMETER(flags);
 
     bool is_supported = false;
 

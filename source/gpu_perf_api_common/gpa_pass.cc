@@ -562,7 +562,7 @@ void GpaPass::AddClientSample(ClientSampleId sample_id, GpaSample* gpa_sample)
     samples_unordered_map_mutex_.unlock();
 }
 
-void GpaPass::IteratePassCounterList(std::function<bool(const CounterIndex& counter_index)> function) const
+void GpaPass::IteratePassCounterList(const std::function<bool(const CounterIndex& counter_index)>& function) const
 {
     bool next = true;
 
@@ -572,7 +572,7 @@ void GpaPass::IteratePassCounterList(std::function<bool(const CounterIndex& coun
     }
 }
 
-void GpaPass::IterateEnabledCounterList(std::function<bool(const CounterIndex& counter_index)> function) const
+void GpaPass::IterateEnabledCounterList(const std::function<bool(const CounterIndex& counter_index)>& function) const
 {
     bool next = true;
 
@@ -582,7 +582,7 @@ void GpaPass::IterateEnabledCounterList(std::function<bool(const CounterIndex& c
     }
 }
 
-void GpaPass::IterateSkippedCounterList(std::function<bool(const CounterIndex& counter_index)> function) const
+void GpaPass::IterateSkippedCounterList(const std::function<bool(const CounterIndex& counter_index)>& function) const
 {
     bool next = true;
 

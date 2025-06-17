@@ -65,9 +65,6 @@ public:
     /// @copydoc IGpaContext::DoesSessionExist()
     bool DoesSessionExist(GpaSessionId gpa_session_id) const override;
 
-    /// @copydoc IGpaContext::GetSessionCount()
-    GpaUInt32 GetSessionCount() const override;
-
     /// @copydoc IGpaContext::BeginSession()
     GpaStatus BeginSession(IGpaSession* gpa_session) override;
 
@@ -116,7 +113,7 @@ protected:
     /// @brief Iterate over GPA session list for the passed function.
     ///
     /// @param [in] function Function to be executed for each object in the list. The function may return false to terminate iteration.
-    GPA_THREAD_SAFE_FUNCTION void IterateGpaSessionList(std::function<bool(IGpaSession* gpa_session)> function) const;
+    GPA_THREAD_SAFE_FUNCTION void IterateGpaSessionList(const std::function<bool(IGpaSession* gpa_session)>& function) const;
 
     /// @brief Clears the list of the GPA session.
     GPA_THREAD_SAFE_FUNCTION void ClearSessionList();

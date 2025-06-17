@@ -13,6 +13,8 @@
 
 #include "gpu_perf_api_vk/vk_entry_points.h"
 
+#include "gpa_hw_info.h"
+
 bool vk_utils::GetPhysicalDeviceGpaFeaturesAMD(VkPhysicalDevice physical_device, VkPhysicalDeviceGpaFeaturesAMD* gpa_features_amd)
 {
     bool status = false;
@@ -164,57 +166,90 @@ void vk_utils::DebugReportQueueFamilyTimestampBits(VkPhysicalDevice vk_physical_
 
 bool vk_utils::IsDeviceSupportedForProfiling(VkPhysicalDevice vk_physical_device)
 {
-    bool is_supported = false;
-
-    if (vk_utils::are_entry_points_initialized)
+    if (!vk_utils::are_entry_points_initialized)
     {
-        uint32_t queue_family_count = 0;
-        _vkGetPhysicalDeviceQueueFamilyProperties(vk_physical_device, &queue_family_count, nullptr);
+        GPA_LOG_ERROR("Vulkan entrypoints are not initialized.");
+        return false;
+    }
 
-        if (queue_family_count != 0)
+#ifdef _LINUX
+    VkPhysicalDeviceProperties2KHR device_properties = {};
+    device_properties.sType                          = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2_KHR;
+
+    _vkGetPhysicalDeviceProperties2KHR(vk_physical_device, &device_properties);
+
+    const auto vendor_id = device_properties.properties.vendorID;
+
+    // This check isn't robust enough and won't properly handle the MESA RADV driver.
+    if (vendor_id == kAmdVendorId)
+    {
+        const GpaUInt32 device_id      = device_properties.properties.deviceID;
+        const uint32_t  driver_version = device_properties.properties.driverVersion;
+
+        // https://gpuopen.com/learn/decoding-radeon-vulkan-versions/
+        // https://gpuopen.com/version-table/
+        // Extract the version
+        const uint32_t major = (((driver_version) >> 22) & 0x7FU);
+        const uint32_t minor = ((driver_version >> 12) & 0x3FFU);
+        // Our pro drivers always set the minor version to 0!
+        assert(minor == 0);
+        const uint32_t patch = (driver_version & 0xFFFU);
+
+        // IE: Anything less than 2.0.342 is not supported
+        const bool known_bad_driver_rx_9070 = (major <= 2) && (minor == 0) && (patch < 342);
+        const bool amd_radeon_rx_9070       = (device_id == 0x7550);
+
+        if (amd_radeon_rx_9070 && known_bad_driver_rx_9070)
         {
-            VkQueueFamilyProperties* queue_family_propert9es = new (std::nothrow) VkQueueFamilyProperties[queue_family_count];
+            GPA_LOG_ERROR("The Radeon RX 9070 requires AMD Vulkan driver 2.0.342 or newer.");
+            return false;
+        }
+    }
+#endif
 
-            if (queue_family_propert9es == nullptr)
-            {
-                GPA_LOG_ERROR("Failed to allocate memory for QueueFamilyProperties.");
-            }
-            else
-            {
-                _vkGetPhysicalDeviceQueueFamilyProperties(vk_physical_device, &queue_family_count, queue_family_propert9es);
+    bool     is_supported       = false;
+    uint32_t queue_family_count = 0;
+    _vkGetPhysicalDeviceQueueFamilyProperties(vk_physical_device, &queue_family_count, nullptr);
 
-                if (queue_family_propert9es[0].timestampValidBits == 0)
-                {
-                    GPA_LOG_ERROR("QueueFamily 0 does not have any valid timestamp bits; cannot be supported.");
-                }
-                else
-                {
-                    VkPhysicalDeviceGpaFeaturesAMD features_amd = {};
-                    features_amd.sType                          = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_GPA_FEATURES_AMD;
+    if (queue_family_count != 0)
+    {
+        VkQueueFamilyProperties* queue_family_properties = new (std::nothrow) VkQueueFamilyProperties[queue_family_count];
 
-                    VkPhysicalDeviceFeatures2KHR features = {};
-                    features.sType                        = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2_KHR;
-                    features.pNext                        = &features_amd;
-
-                    _vkGetPhysicalDeviceFeatures2KHR(vk_physical_device, &features);
-
-                    if (features_amd.perfCounters == VK_TRUE)
-                    {
-                        is_supported = true;
-                    }
-                }
-
-                delete[] queue_family_propert9es;
-            }
+        if (queue_family_properties == nullptr)
+        {
+            GPA_LOG_ERROR("Failed to allocate memory for QueueFamilyProperties.");
         }
         else
         {
-            GPA_LOG_ERROR("Device does not support any queue families; cannot be supported.");
+            _vkGetPhysicalDeviceQueueFamilyProperties(vk_physical_device, &queue_family_count, queue_family_properties);
+
+            if (queue_family_properties[0].timestampValidBits == 0)
+            {
+                GPA_LOG_ERROR("QueueFamily 0 does not have any valid timestamp bits; cannot be supported.");
+            }
+            else
+            {
+                VkPhysicalDeviceGpaFeaturesAMD features_amd = {};
+                features_amd.sType                          = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_GPA_FEATURES_AMD;
+
+                VkPhysicalDeviceFeatures2KHR features = {};
+                features.sType                        = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2_KHR;
+                features.pNext                        = &features_amd;
+
+                _vkGetPhysicalDeviceFeatures2KHR(vk_physical_device, &features);
+
+                if (features_amd.perfCounters == VK_TRUE)
+                {
+                    is_supported = true;
+                }
+            }
+
+            delete[] queue_family_properties;
         }
     }
     else
     {
-        GPA_LOG_ERROR("Vulkan entrypoints are not initialized.");
+        GPA_LOG_ERROR("Device does not support any queue families; cannot be supported.");
     }
 
     return is_supported;

@@ -104,13 +104,6 @@ bool Dx11GpaContext::DeleteSession(GpaSessionId session_id)
     return success;
 }
 
-GpaUInt32 Dx11GpaContext::GetMaxGpaSessions() const
-{
-    // Reported maximum latency was 4 for r6xx cards
-    // had issues with this value. Had to switch to 32.
-    return 32;
-}
-
 GpaApiType Dx11GpaContext::GetApiType() const
 {
     return kGpaApiDirectx11;

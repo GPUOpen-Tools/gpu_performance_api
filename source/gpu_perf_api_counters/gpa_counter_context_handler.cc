@@ -79,6 +79,9 @@ GpaCounterContextHandler::GpaCounterContextHandler(const GpaApiType&            
             case kGpaHardwareAttributeTimestampFrequency:
                 gpa_hw_info_.SetTimeStampFrequency(attribute_val);
                 break;
+            case kGpaHardwareAttributeNumWavesPerSimd:
+                gpa_hw_info_.SetWavesPerSimd(attribute_val);
+                break;
             case kGpaHardwareAttributeNumRenderBackends:
             case kGpaHardwareAttributeClocksPerPrimitive:
             case kGpaHardwareAttributeNumPrimitivePipes:

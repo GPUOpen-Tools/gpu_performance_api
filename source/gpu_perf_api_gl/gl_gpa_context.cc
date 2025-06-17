@@ -84,12 +84,6 @@ bool GlGpaContext::DeleteSession(GpaSessionId session_id)
     return is_deleted;
 }
 
-GpaUInt32 GlGpaContext::GetMaxGpaSessions() const
-{
-    // Maximum latency is 4 for dx10-capable cards.
-    return 4;
-}
-
 GpaApiType GlGpaContext::GetApiType() const
 {
     return kGpaApiOpengl;
@@ -191,7 +185,6 @@ bool GlGpaContext::PopulateDriverCounterGroupInfo()
     {
         GLint num_groups = 0;
         ogl_utils::ogl_get_perf_monitor_groups_2_amd(&num_groups, 0, nullptr, nullptr);
-
         assert(num_groups > 0);
 
         if (num_groups == 0)

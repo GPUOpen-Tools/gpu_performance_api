@@ -80,7 +80,7 @@ GPU_PERF_API_COUNTERS_DECL GpaStatus GpaCounterLibGetFuncTable(void* gpa_counter
 
     GpaCounterLibFuncTable* counter_lib_func_table = reinterpret_cast<GpaCounterLibFuncTable*>(gpa_counter_lib_function_table);
 
-    bool       major_version_match = GPA_COUNTER_LIB_FUNC_TABLE_MAJOR_VERSION == counter_lib_func_table->gpa_counter_lib_major_version;
+    bool      major_version_match = GPA_COUNTER_LIB_FUNC_TABLE_MAJOR_VERSION == counter_lib_func_table->gpa_counter_lib_major_version;
     GpaUInt32 user_minor_version  = counter_lib_func_table->gpa_counter_lib_minor_version;
 
     if (!major_version_match)
@@ -117,10 +117,7 @@ GPU_PERF_API_COUNTERS_DECL GpaStatus GpaCounterLibOpenCounterContext(GpaApiType 
         return kGpaStatusErrorInvalidParameter;
     }
 
-    return GpaCounterContextManager::Instance()->OpenCounterContext(
-        api,
-        sample_type,
-        gpa_counter_context_hardware_info, context_flags, gpa_virtual_context);
+    return GpaCounterContextManager::Instance()->OpenCounterContext(api, sample_type, gpa_counter_context_hardware_info, context_flags, gpa_virtual_context);
 }
 
 GPU_PERF_API_COUNTERS_DECL GpaStatus GpaCounterLibCloseCounterContext(const GpaCounterContext gpa_virtual_context)
@@ -445,18 +442,31 @@ GPU_PERF_API_COUNTERS_DECL GpaStatus GpaCounterLibComputeDerivedCounterResult(co
     {
         const GpaUInt32 public_counter_count = counter_accessor->GetNumPublicCounters();
 
+        if (public_counter_count == 0)
+        {
+            // User created context with GpaOpenContextHidePublicCountersBit.
+            return kGpaStatusErrorFailed;
+        }
+
         if (gpa_derived_counter_index >= public_counter_count)
         {
             return kGpaStatusErrorFailed;
         }
 
-        if (gpa_hw_counter_result_count != counter_accessor->GetInternalCountersRequired(gpa_derived_counter_index).size())
+        // The above checks guarantee it's safe to index the variant like this.
         {
-            return kGpaStatusErrorFailed;
+            constexpr uint32_t              kCounterSourcePublic = static_cast<uint32_t>(GpaCounterSource::kPublic);
+            const gpa_array_view<GpaUInt32> required_hardware_counters =
+                std::get<kCounterSourcePublic>(counter_accessor->GetInternalCountersRequired(gpa_derived_counter_index));
+
+            if (gpa_hw_counter_result_count != required_hardware_counters.size())
+            {
+                return kGpaStatusErrorFailed;
+            }
         }
 
         std::vector<const GpaUInt64*> hardware_counter_result;
-        std::vector<GpaDataType>     hardware_counter_result_data_type;
+        std::vector<GpaDataType>      hardware_counter_result_data_type;
         for (GpaUInt32 i = 0; i < gpa_hw_counter_result_count; i++)
         {
             hardware_counter_result.push_back(&gpa_hw_counter_result[i]);
@@ -497,7 +507,7 @@ GPU_PERF_API_COUNTERS_DECL GpaStatus GpaCounterLibGetPassCount(const GpaCounterC
     counter_scheduler->DisableAllCounters();
 
     GpaUInt32 counter_index             = 0u;
-    bool       enabled_counters          = true;
+    bool      enabled_counters          = true;
     GpaStatus counter_scheduling_status = kGpaStatusOk;
 
     for (GpaUInt32 counter_index_iter = 0u; counter_index_iter < gpa_counter_count; ++counter_index_iter)
@@ -555,7 +565,7 @@ GPU_PERF_API_COUNTERS_DECL GpaStatus GpaCounterLibGetCountersByPass(const GpaCou
     counter_scheduler->DisableAllCounters();
 
     GpaUInt32 counter_index             = 0u;
-    bool       enabled_counters          = true;
+    bool      enabled_counters          = true;
     GpaStatus counter_scheduling_status = kGpaStatusOk;
 
     for (GpaUInt32 counter_index_iter = 0u; counter_index_iter < gpa_counter_count; ++counter_index_iter)

@@ -5,6 +5,8 @@
 /// @brief Public Counter Definitions for DX11 GFX12.
 //==============================================================================
 
+#include <array>
+#include "gpu_perf_api_common/gpa_array_view.hpp"
 // clang-format off
 #include "gpu_perf_api_counter_generator/gpa_counter.h"
 #include "auto_generated/gpu_perf_api_counter_generator/public_counter_definitions_dx11_gfx12.h"
@@ -14,9 +16,9 @@
 void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
 {
     { // Index:0
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(185658);
-
+        static constexpr std::array<GpaUInt32, 1> kHardwareCounters = {
+                185658,
+        };
         c.DefineDerivedCounter("GPUTime",
                                "Timing",
                                "Time this API command took to execute on the GPU in nanoseconds from the time the previous command reached the bottom of the pipeline (BOP) to the time this command reaches the bottom of the pipeline (BOP). Does not include time that draw calls are processed in parallel.",
@@ -24,15 +26,15 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                kGpaUsageTypeNanoseconds,
                                true,
                                false,
-                               internal_counters,
+                               kHardwareCounters,
                                "0,TS_FREQ,/,(1000000000),*",
                                "cbd338f2-de6c-7b14-92ad-ba724ca2e501");
     }
     { // Index:1
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(276);
-        internal_counters.push_back(252);
-
+        static constexpr std::array<GpaUInt32, 2> kHardwareCounters = {
+                276,
+                252,
+        };
         c.DefineDerivedCounter("GPUBusy",
                                "Timing",
                                "The percentage of time the GPU command processor was busy.",
@@ -40,14 +42,14 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                kGpaUsageTypePercentage,
                                true,
                                false,
-                               internal_counters,
+                               kHardwareCounters,
                                "0,1,/,(100),*,(100),min",
                                "b1ba5363-1abc-fe66-2fdd-1fe6ee8989a0");
     }
     { // Index:2
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(276);
-
+        static constexpr std::array<GpaUInt32, 1> kHardwareCounters = {
+                276,
+        };
         c.DefineDerivedCounter("GPUBusyCycles",
                                "Timing",
                                "Number of GPU cycles that the GPU command processor was busy.",
@@ -55,15 +57,15 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                kGpaUsageTypeCycles,
                                true,
                                false,
-                               internal_counters,
+                               kHardwareCounters,
                                "0",
                                "451cb045-23af-ac44-4603-d5832fa041d9");
     }
     { // Index:3
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(99262);
-        internal_counters.push_back(276);
-
+        static constexpr std::array<GpaUInt32, 2> kHardwareCounters = {
+                99262,
+                276,
+        };
         c.DefineDerivedCounter("TessellatorBusy",
                                "Timing",
                                "The percentage of time the tessellation engine is busy.",
@@ -71,14 +73,14 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                kGpaUsageTypePercentage,
                                true,
                                false,
-                               internal_counters,
+                               kHardwareCounters,
                                "0,1,/,(100),*",
                                "36af6c72-dcfb-8102-4fd4-ce8ddc573365");
     }
     { // Index:4
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(99262);
-
+        static constexpr std::array<GpaUInt32, 1> kHardwareCounters = {
+                99262,
+        };
         c.DefineDerivedCounter("TessellatorBusyCycles",
                                "Timing",
                                "Number of GPU cycles that the tessellation engine is busy.",
@@ -86,22 +88,22 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                kGpaUsageTypeCycles,
                                true,
                                false,
-                               internal_counters,
+                               kHardwareCounters,
                                "0",
                                "60289dcb-7b33-46e7-26d1-8a2121605543");
     }
     { // Index:5
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(42865);
-        internal_counters.push_back(43184);
-        internal_counters.push_back(43503);
-        internal_counters.push_back(43822);
-        internal_counters.push_back(42890);
-        internal_counters.push_back(43209);
-        internal_counters.push_back(43528);
-        internal_counters.push_back(43847);
-        internal_counters.push_back(276);
-
+        static constexpr std::array<GpaUInt32, 9> kHardwareCounters = {
+                42865,
+                43184,
+                43503,
+                43822,
+                42890,
+                43209,
+                43528,
+                43847,
+                276,
+        };
         c.DefineDerivedCounter("VsGsBusy",
                                "Timing",
                                "The percentage of time the ShaderUnit has VS or GS work to do in a VS-[GS-]PS pipeline.",
@@ -109,21 +111,21 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                kGpaUsageTypePercentage,
                                true,
                                false,
-                               internal_counters,
+                               kHardwareCounters,
                                "0,1,2,3,max4,(0),4,5,6,7,sum4,ifnotzero,8,/,(100),*,(100),min",
                                "969c41c7-eb0b-9706-a7a1-98f27c3af56b");
     }
     { // Index:6
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(42865);
-        internal_counters.push_back(43184);
-        internal_counters.push_back(43503);
-        internal_counters.push_back(43822);
-        internal_counters.push_back(42890);
-        internal_counters.push_back(43209);
-        internal_counters.push_back(43528);
-        internal_counters.push_back(43847);
-
+        static constexpr std::array<GpaUInt32, 8> kHardwareCounters = {
+                42865,
+                43184,
+                43503,
+                43822,
+                42890,
+                43209,
+                43528,
+                43847,
+        };
         c.DefineDerivedCounter("VsGsBusyCycles",
                                "Timing",
                                "Number of GPU cycles that the ShaderUnit has VS or GS work to do in a VS-[GS-]PS pipeline.",
@@ -131,23 +133,23 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                kGpaUsageTypeCycles,
                                true,
                                false,
-                               internal_counters,
+                               kHardwareCounters,
                                "0,1,2,3,max4,(0),4,5,6,7,sum4,ifnotzero",
                                "a8420bb7-6bd8-930a-9088-d73b9c039851");
     }
     { // Index:7
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(185658);
-        internal_counters.push_back(42865);
-        internal_counters.push_back(43184);
-        internal_counters.push_back(43503);
-        internal_counters.push_back(43822);
-        internal_counters.push_back(42890);
-        internal_counters.push_back(43209);
-        internal_counters.push_back(43528);
-        internal_counters.push_back(43847);
-        internal_counters.push_back(276);
-
+        static constexpr std::array<GpaUInt32, 10> kHardwareCounters = {
+                185658,
+                42865,
+                43184,
+                43503,
+                43822,
+                42890,
+                43209,
+                43528,
+                43847,
+                276,
+        };
         c.DefineDerivedCounter("VsGsTime",
                                "Timing",
                                "Time VS or GS are busy in nanoseconds in a VS-[GS-]PS pipeline.",
@@ -155,22 +157,22 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                kGpaUsageTypeNanoseconds,
                                true,
                                false,
-                               internal_counters,
+                               kHardwareCounters,
                                "1,2,3,4,max4,(0),5,6,7,8,sum4,ifnotzero,9,/,(1),min,0,TS_FREQ,/,(1000000000),*,*",
                                "3ce33b11-210d-b3de-9b6c-b9f3cd04beff");
     }
     { // Index:8
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(42885);
-        internal_counters.push_back(43204);
-        internal_counters.push_back(43523);
-        internal_counters.push_back(43842);
-        internal_counters.push_back(42890);
-        internal_counters.push_back(43209);
-        internal_counters.push_back(43528);
-        internal_counters.push_back(43847);
-        internal_counters.push_back(276);
-
+        static constexpr std::array<GpaUInt32, 9> kHardwareCounters = {
+                42885,
+                43204,
+                43523,
+                43842,
+                42890,
+                43209,
+                43528,
+                43847,
+                276,
+        };
         c.DefineDerivedCounter("PreTessellationBusy",
                                "Timing",
                                "The percentage of time the ShaderUnit has VS and HS work to do in a pipeline that uses tessellation.",
@@ -178,21 +180,21 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                kGpaUsageTypePercentage,
                                true,
                                false,
-                               internal_counters,
+                               kHardwareCounters,
                                "(0),0,1,2,3,max4,4,5,6,7,sum4,ifnotzero,8,/,(100),*,(100),min",
                                "346c7430-4666-7065-b5b7-1cb8cbb1c01c");
     }
     { // Index:9
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(42885);
-        internal_counters.push_back(43204);
-        internal_counters.push_back(43523);
-        internal_counters.push_back(43842);
-        internal_counters.push_back(42890);
-        internal_counters.push_back(43209);
-        internal_counters.push_back(43528);
-        internal_counters.push_back(43847);
-
+        static constexpr std::array<GpaUInt32, 8> kHardwareCounters = {
+                42885,
+                43204,
+                43523,
+                43842,
+                42890,
+                43209,
+                43528,
+                43847,
+        };
         c.DefineDerivedCounter("PreTessellationBusyCycles",
                                "Timing",
                                "Number of GPU cycles that the ShaderUnit has VS and HS work to do in a pipeline that uses tessellation.",
@@ -200,23 +202,23 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                kGpaUsageTypeCycles,
                                true,
                                false,
-                               internal_counters,
+                               kHardwareCounters,
                                "(0),0,1,2,3,max4,4,5,6,7,sum4,ifnotzero",
                                "dac68e38-0e3a-9364-2674-308e63bee2d2");
     }
     { // Index:10
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(185658);
-        internal_counters.push_back(42885);
-        internal_counters.push_back(43204);
-        internal_counters.push_back(43523);
-        internal_counters.push_back(43842);
-        internal_counters.push_back(42890);
-        internal_counters.push_back(43209);
-        internal_counters.push_back(43528);
-        internal_counters.push_back(43847);
-        internal_counters.push_back(276);
-
+        static constexpr std::array<GpaUInt32, 10> kHardwareCounters = {
+                185658,
+                42885,
+                43204,
+                43523,
+                43842,
+                42890,
+                43209,
+                43528,
+                43847,
+                276,
+        };
         c.DefineDerivedCounter("PreTessellationTime",
                                "Timing",
                                "Time VS and HS are busy in nanoseconds in a pipeline that uses tessellation.",
@@ -224,22 +226,22 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                kGpaUsageTypeNanoseconds,
                                true,
                                false,
-                               internal_counters,
+                               kHardwareCounters,
                                "(0),1,2,3,4,max4,5,6,7,8,sum4,ifnotzero,9,/,(1),min,0,TS_FREQ,/,(1000000000),*,*",
                                "d5e6c54c-5ffb-b173-6118-bece61f0281c");
     }
     { // Index:11
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(42865);
-        internal_counters.push_back(43184);
-        internal_counters.push_back(43503);
-        internal_counters.push_back(43822);
-        internal_counters.push_back(42890);
-        internal_counters.push_back(43209);
-        internal_counters.push_back(43528);
-        internal_counters.push_back(43847);
-        internal_counters.push_back(276);
-
+        static constexpr std::array<GpaUInt32, 9> kHardwareCounters = {
+                42865,
+                43184,
+                43503,
+                43822,
+                42890,
+                43209,
+                43528,
+                43847,
+                276,
+        };
         c.DefineDerivedCounter("PostTessellationBusy",
                                "Timing",
                                "The percentage of time the ShaderUnit has DS or GS work to do in a pipeline that uses tessellation.",
@@ -247,21 +249,21 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                kGpaUsageTypePercentage,
                                true,
                                false,
-                               internal_counters,
+                               kHardwareCounters,
                                "(0),0,1,2,3,max4,4,5,6,7,sum4,ifnotzero,8,/,(100),*,(100),min",
                                "1a275c68-9340-f358-71c6-a2648390381d");
     }
     { // Index:12
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(42865);
-        internal_counters.push_back(43184);
-        internal_counters.push_back(43503);
-        internal_counters.push_back(43822);
-        internal_counters.push_back(42890);
-        internal_counters.push_back(43209);
-        internal_counters.push_back(43528);
-        internal_counters.push_back(43847);
-
+        static constexpr std::array<GpaUInt32, 8> kHardwareCounters = {
+                42865,
+                43184,
+                43503,
+                43822,
+                42890,
+                43209,
+                43528,
+                43847,
+        };
         c.DefineDerivedCounter("PostTessellationBusyCycles",
                                "Timing",
                                "Number of GPU cycles that the ShaderUnit has DS or GS work to do in a pipeline that uses tessellation.",
@@ -269,23 +271,23 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                kGpaUsageTypeCycles,
                                true,
                                false,
-                               internal_counters,
+                               kHardwareCounters,
                                "(0),0,1,2,3,max4,4,5,6,7,sum4,ifnotzero",
                                "a5ed943b-13ef-942b-56fb-6d519eeb7337");
     }
     { // Index:13
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(185658);
-        internal_counters.push_back(42865);
-        internal_counters.push_back(43184);
-        internal_counters.push_back(43503);
-        internal_counters.push_back(43822);
-        internal_counters.push_back(42890);
-        internal_counters.push_back(43209);
-        internal_counters.push_back(43528);
-        internal_counters.push_back(43847);
-        internal_counters.push_back(276);
-
+        static constexpr std::array<GpaUInt32, 10> kHardwareCounters = {
+                185658,
+                42865,
+                43184,
+                43503,
+                43822,
+                42890,
+                43209,
+                43528,
+                43847,
+                276,
+        };
         c.DefineDerivedCounter("PostTessellationTime",
                                "Timing",
                                "Time DS or GS are busy in nanoseconds in a pipeline that uses tessellation.",
@@ -293,46 +295,46 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                kGpaUsageTypeNanoseconds,
                                true,
                                false,
-                               internal_counters,
+                               kHardwareCounters,
                                "(0),1,2,3,4,max4,5,6,7,8,sum4,ifnotzero,9,/,(1),min,0,TS_FREQ,/,(1000000000),*,*",
                                "9f8dfa40-faee-2014-3467-2630a7d95c1e");
     }
     { // Index:14
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(42920);
-        internal_counters.push_back(43239);
-        internal_counters.push_back(43558);
-        internal_counters.push_back(43877);
-        internal_counters.push_back(42936);
-        internal_counters.push_back(43255);
-        internal_counters.push_back(43574);
-        internal_counters.push_back(43893);
-        internal_counters.push_back(42921);
-        internal_counters.push_back(43240);
-        internal_counters.push_back(43559);
-        internal_counters.push_back(43878);
-        internal_counters.push_back(42937);
-        internal_counters.push_back(43256);
-        internal_counters.push_back(43575);
-        internal_counters.push_back(43894);
-        internal_counters.push_back(42922);
-        internal_counters.push_back(43241);
-        internal_counters.push_back(43560);
-        internal_counters.push_back(43879);
-        internal_counters.push_back(42938);
-        internal_counters.push_back(43257);
-        internal_counters.push_back(43576);
-        internal_counters.push_back(43895);
-        internal_counters.push_back(42923);
-        internal_counters.push_back(43242);
-        internal_counters.push_back(43561);
-        internal_counters.push_back(43880);
-        internal_counters.push_back(42939);
-        internal_counters.push_back(43258);
-        internal_counters.push_back(43577);
-        internal_counters.push_back(43896);
-        internal_counters.push_back(276);
-
+        static constexpr std::array<GpaUInt32, 33> kHardwareCounters = {
+                42920,
+                43239,
+                43558,
+                43877,
+                42936,
+                43255,
+                43574,
+                43893,
+                42921,
+                43240,
+                43559,
+                43878,
+                42937,
+                43256,
+                43575,
+                43894,
+                42922,
+                43241,
+                43560,
+                43879,
+                42938,
+                43257,
+                43576,
+                43895,
+                42923,
+                43242,
+                43561,
+                43880,
+                42939,
+                43258,
+                43577,
+                43896,
+                276,
+        };
         c.DefineDerivedCounter("PSBusy",
                                "Timing",
                                "The percentage of time the ShaderUnit has pixel shader work to do.",
@@ -340,45 +342,45 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                kGpaUsageTypePercentage,
                                true,
                                false,
-                               internal_counters,
+                               kHardwareCounters,
                                "(0),0,1,2,3,max4,4,5,6,7,sum4,ifnotzero,(0),8,9,10,11,max4,12,13,14,15,sum4,ifnotzero,(0),16,17,18,19,max4,20,21,22,23,sum4,ifnotzero,(0),24,25,26,27,max4,28,29,30,31,sum4,ifnotzero,max4,32,/,(100),*,(100),min",
                                "7e772beb-d82c-bd9a-aed0-fe504d416ce5");
     }
     { // Index:15
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(42920);
-        internal_counters.push_back(43239);
-        internal_counters.push_back(43558);
-        internal_counters.push_back(43877);
-        internal_counters.push_back(42936);
-        internal_counters.push_back(43255);
-        internal_counters.push_back(43574);
-        internal_counters.push_back(43893);
-        internal_counters.push_back(42921);
-        internal_counters.push_back(43240);
-        internal_counters.push_back(43559);
-        internal_counters.push_back(43878);
-        internal_counters.push_back(42937);
-        internal_counters.push_back(43256);
-        internal_counters.push_back(43575);
-        internal_counters.push_back(43894);
-        internal_counters.push_back(42922);
-        internal_counters.push_back(43241);
-        internal_counters.push_back(43560);
-        internal_counters.push_back(43879);
-        internal_counters.push_back(42938);
-        internal_counters.push_back(43257);
-        internal_counters.push_back(43576);
-        internal_counters.push_back(43895);
-        internal_counters.push_back(42923);
-        internal_counters.push_back(43242);
-        internal_counters.push_back(43561);
-        internal_counters.push_back(43880);
-        internal_counters.push_back(42939);
-        internal_counters.push_back(43258);
-        internal_counters.push_back(43577);
-        internal_counters.push_back(43896);
-
+        static constexpr std::array<GpaUInt32, 32> kHardwareCounters = {
+                42920,
+                43239,
+                43558,
+                43877,
+                42936,
+                43255,
+                43574,
+                43893,
+                42921,
+                43240,
+                43559,
+                43878,
+                42937,
+                43256,
+                43575,
+                43894,
+                42922,
+                43241,
+                43560,
+                43879,
+                42938,
+                43257,
+                43576,
+                43895,
+                42923,
+                43242,
+                43561,
+                43880,
+                42939,
+                43258,
+                43577,
+                43896,
+        };
         c.DefineDerivedCounter("PSBusyCycles",
                                "Timing",
                                "Number of GPU cycles that the ShaderUnit has pixel shader work to do.",
@@ -386,47 +388,47 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                kGpaUsageTypeCycles,
                                true,
                                false,
-                               internal_counters,
+                               kHardwareCounters,
                                "(0),0,1,2,3,max4,4,5,6,7,sum4,ifnotzero,(0),8,9,10,11,max4,12,13,14,15,sum4,ifnotzero,(0),16,17,18,19,max4,20,21,22,23,sum4,ifnotzero,(0),24,25,26,27,max4,28,29,30,31,sum4,ifnotzero,max4",
                                "b58bea04-ce8e-2984-80f4-8aba7d4c817b");
     }
     { // Index:16
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(185658);
-        internal_counters.push_back(42920);
-        internal_counters.push_back(43239);
-        internal_counters.push_back(43558);
-        internal_counters.push_back(43877);
-        internal_counters.push_back(42936);
-        internal_counters.push_back(43255);
-        internal_counters.push_back(43574);
-        internal_counters.push_back(43893);
-        internal_counters.push_back(42921);
-        internal_counters.push_back(43240);
-        internal_counters.push_back(43559);
-        internal_counters.push_back(43878);
-        internal_counters.push_back(42937);
-        internal_counters.push_back(43256);
-        internal_counters.push_back(43575);
-        internal_counters.push_back(43894);
-        internal_counters.push_back(42922);
-        internal_counters.push_back(43241);
-        internal_counters.push_back(43560);
-        internal_counters.push_back(43879);
-        internal_counters.push_back(42938);
-        internal_counters.push_back(43257);
-        internal_counters.push_back(43576);
-        internal_counters.push_back(43895);
-        internal_counters.push_back(42923);
-        internal_counters.push_back(43242);
-        internal_counters.push_back(43561);
-        internal_counters.push_back(43880);
-        internal_counters.push_back(42939);
-        internal_counters.push_back(43258);
-        internal_counters.push_back(43577);
-        internal_counters.push_back(43896);
-        internal_counters.push_back(276);
-
+        static constexpr std::array<GpaUInt32, 34> kHardwareCounters = {
+                185658,
+                42920,
+                43239,
+                43558,
+                43877,
+                42936,
+                43255,
+                43574,
+                43893,
+                42921,
+                43240,
+                43559,
+                43878,
+                42937,
+                43256,
+                43575,
+                43894,
+                42922,
+                43241,
+                43560,
+                43879,
+                42938,
+                43257,
+                43576,
+                43895,
+                42923,
+                43242,
+                43561,
+                43880,
+                42939,
+                43258,
+                43577,
+                43896,
+                276,
+        };
         c.DefineDerivedCounter("PSTime",
                                "Timing",
                                "Time pixel shaders are busy in nanoseconds.",
@@ -434,30 +436,30 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                kGpaUsageTypeNanoseconds,
                                true,
                                false,
-                               internal_counters,
+                               kHardwareCounters,
                                "(0),1,2,3,4,max4,5,6,7,8,sum4,ifnotzero,(0),9,10,11,12,max4,13,14,15,16,sum4,ifnotzero,(0),17,18,19,20,max4,21,22,23,24,sum4,ifnotzero,(0),25,26,27,28,max4,29,30,31,32,sum4,ifnotzero,max4,33,/,(1),min,0,TS_FREQ,/,(1000000000),*,*",
                                "edca7694-7416-e8a6-0c5a-63a5ad5f3d74");
     }
     { // Index:17
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(42901);
-        internal_counters.push_back(43220);
-        internal_counters.push_back(43539);
-        internal_counters.push_back(43858);
-        internal_counters.push_back(42905);
-        internal_counters.push_back(43224);
-        internal_counters.push_back(43543);
-        internal_counters.push_back(43862);
-        internal_counters.push_back(42909);
-        internal_counters.push_back(43228);
-        internal_counters.push_back(43547);
-        internal_counters.push_back(43866);
-        internal_counters.push_back(42913);
-        internal_counters.push_back(43232);
-        internal_counters.push_back(43551);
-        internal_counters.push_back(43870);
-        internal_counters.push_back(276);
-
+        static constexpr std::array<GpaUInt32, 17> kHardwareCounters = {
+                42901,
+                43220,
+                43539,
+                43858,
+                42905,
+                43224,
+                43543,
+                43862,
+                42909,
+                43228,
+                43547,
+                43866,
+                42913,
+                43232,
+                43551,
+                43870,
+                276,
+        };
         c.DefineDerivedCounter("CSBusy",
                                "Timing",
                                "The percentage of time the ShaderUnit has compute shader work to do.",
@@ -465,29 +467,29 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                kGpaUsageTypePercentage,
                                true,
                                false,
-                               internal_counters,
+                               kHardwareCounters,
                                "0,1,2,3,4,5,6,7,comparemax4,8,9,10,11,12,13,14,15,comparemax4,max,16,/,(100),*,(100),min",
                                "493fdd90-8d2b-a055-5e4e-2d29c3396b8c");
     }
     { // Index:18
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(42901);
-        internal_counters.push_back(43220);
-        internal_counters.push_back(43539);
-        internal_counters.push_back(43858);
-        internal_counters.push_back(42905);
-        internal_counters.push_back(43224);
-        internal_counters.push_back(43543);
-        internal_counters.push_back(43862);
-        internal_counters.push_back(42909);
-        internal_counters.push_back(43228);
-        internal_counters.push_back(43547);
-        internal_counters.push_back(43866);
-        internal_counters.push_back(42913);
-        internal_counters.push_back(43232);
-        internal_counters.push_back(43551);
-        internal_counters.push_back(43870);
-
+        static constexpr std::array<GpaUInt32, 16> kHardwareCounters = {
+                42901,
+                43220,
+                43539,
+                43858,
+                42905,
+                43224,
+                43543,
+                43862,
+                42909,
+                43228,
+                43547,
+                43866,
+                42913,
+                43232,
+                43551,
+                43870,
+        };
         c.DefineDerivedCounter("CSBusyCycles",
                                "Timing",
                                "Number of GPU cycles that the ShaderUnit has compute shader work to do.",
@@ -495,31 +497,31 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                kGpaUsageTypeCycles,
                                true,
                                false,
-                               internal_counters,
+                               kHardwareCounters,
                                "0,1,2,3,4,5,6,7,comparemax4,8,9,10,11,12,13,14,15,comparemax4,max",
                                "39bcf1b8-f6b2-4c37-f9af-0a2bb59512f9");
     }
     { // Index:19
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(185658);
-        internal_counters.push_back(42901);
-        internal_counters.push_back(43220);
-        internal_counters.push_back(43539);
-        internal_counters.push_back(43858);
-        internal_counters.push_back(42905);
-        internal_counters.push_back(43224);
-        internal_counters.push_back(43543);
-        internal_counters.push_back(43862);
-        internal_counters.push_back(42909);
-        internal_counters.push_back(43228);
-        internal_counters.push_back(43547);
-        internal_counters.push_back(43866);
-        internal_counters.push_back(42913);
-        internal_counters.push_back(43232);
-        internal_counters.push_back(43551);
-        internal_counters.push_back(43870);
-        internal_counters.push_back(276);
-
+        static constexpr std::array<GpaUInt32, 18> kHardwareCounters = {
+                185658,
+                42901,
+                43220,
+                43539,
+                43858,
+                42905,
+                43224,
+                43543,
+                43862,
+                42909,
+                43228,
+                43547,
+                43866,
+                42913,
+                43232,
+                43551,
+                43870,
+                276,
+        };
         c.DefineDerivedCounter("CSTime",
                                "Timing",
                                "Time compute shaders are busy in nanoseconds.",
@@ -527,21 +529,21 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                kGpaUsageTypeNanoseconds,
                                true,
                                false,
-                               internal_counters,
+                               kHardwareCounters,
                                "1,2,3,4,5,6,7,8,comparemax4,9,10,11,12,13,14,15,16,comparemax4,max,17,/,(1),min,0,TS_FREQ,/,(1000000000),*,*",
                                "dbc24916-ecb2-7eef-8d63-7afadaaab6bc");
     }
     { // Index:20
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(99423);
-        internal_counters.push_back(99527);
-        internal_counters.push_back(99631);
-        internal_counters.push_back(99735);
-        internal_counters.push_back(42890);
-        internal_counters.push_back(43209);
-        internal_counters.push_back(43528);
-        internal_counters.push_back(43847);
-
+        static constexpr std::array<GpaUInt32, 8> kHardwareCounters = {
+                99423,
+                99527,
+                99631,
+                99735,
+                42890,
+                43209,
+                43528,
+                43847,
+        };
         c.DefineDerivedCounter("VsGsVerticesIn",
                                "VertexGeometry",
                                "The number of unique vertices processed by the VS and GS.",
@@ -549,21 +551,21 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                kGpaUsageTypeItems,
                                true,
                                false,
-                               internal_counters,
+                               kHardwareCounters,
                                "0,1,2,3,sum4,(0),4,5,6,7,sum4,ifnotzero",
                                "17d0c775-3ed5-affb-d5ac-5391a198a4aa");
     }
     { // Index:21
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(99428);
-        internal_counters.push_back(99532);
-        internal_counters.push_back(99636);
-        internal_counters.push_back(99740);
-        internal_counters.push_back(42890);
-        internal_counters.push_back(43209);
-        internal_counters.push_back(43528);
-        internal_counters.push_back(43847);
-
+        static constexpr std::array<GpaUInt32, 8> kHardwareCounters = {
+                99428,
+                99532,
+                99636,
+                99740,
+                42890,
+                43209,
+                43528,
+                43847,
+        };
         c.DefineDerivedCounter("VsGsPrimsIn",
                                "VertexGeometry",
                                "The number of primitives passed into the GS.",
@@ -571,21 +573,21 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                kGpaUsageTypeItems,
                                true,
                                false,
-                               internal_counters,
+                               kHardwareCounters,
                                "0,1,2,3,sum4,(0),4,5,6,7,sum4,ifnotzero",
                                "d9fa5ce8-5329-f5d4-c378-8fbc7e80d9a6");
     }
     { // Index:22
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(99434);
-        internal_counters.push_back(99538);
-        internal_counters.push_back(99642);
-        internal_counters.push_back(99746);
-        internal_counters.push_back(42890);
-        internal_counters.push_back(43209);
-        internal_counters.push_back(43528);
-        internal_counters.push_back(43847);
-
+        static constexpr std::array<GpaUInt32, 8> kHardwareCounters = {
+                99434,
+                99538,
+                99642,
+                99746,
+                42890,
+                43209,
+                43528,
+                43847,
+        };
         c.DefineDerivedCounter("PreTessVerticesIn",
                                "PreTessellation",
                                "The number of unique vertices processed by the VS and HS when using tessellation.",
@@ -593,21 +595,21 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                kGpaUsageTypeItems,
                                true,
                                false,
-                               internal_counters,
+                               kHardwareCounters,
                                "(0),0,1,2,3,sum4,4,5,6,7,sum4,ifnotzero",
                                "84145f0c-ff96-0dfb-ffb7-ccf4c9b3f4c4");
     }
     { // Index:23
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(99412);
-        internal_counters.push_back(99516);
-        internal_counters.push_back(99620);
-        internal_counters.push_back(99724);
-        internal_counters.push_back(42890);
-        internal_counters.push_back(43209);
-        internal_counters.push_back(43528);
-        internal_counters.push_back(43847);
-
+        static constexpr std::array<GpaUInt32, 8> kHardwareCounters = {
+                99412,
+                99516,
+                99620,
+                99724,
+                42890,
+                43209,
+                43528,
+                43847,
+        };
         c.DefineDerivedCounter("PostTessPrimsOut",
                                "PostTessellation",
                                "The number of primitives output by the DS and GS when using tessellation.",
@@ -615,38 +617,38 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                kGpaUsageTypeItems,
                                true,
                                false,
-                               internal_counters,
+                               kHardwareCounters,
                                "(0),0,1,2,3,sum4,4,5,6,7,sum4,ifnotzero",
                                "d38dabe8-1f13-ea34-d3c1-eb5783b737f1");
     }
     { // Index:24
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(12692);
-        internal_counters.push_back(13521);
-        internal_counters.push_back(14350);
-        internal_counters.push_back(15179);
-        internal_counters.push_back(12696);
-        internal_counters.push_back(13525);
-        internal_counters.push_back(14354);
-        internal_counters.push_back(15183);
-        internal_counters.push_back(12648);
-        internal_counters.push_back(13477);
-        internal_counters.push_back(14306);
-        internal_counters.push_back(15135);
-        internal_counters.push_back(12660);
-        internal_counters.push_back(13489);
-        internal_counters.push_back(14318);
-        internal_counters.push_back(15147);
-        internal_counters.push_back(13161);
-        internal_counters.push_back(13990);
-        internal_counters.push_back(14819);
-        internal_counters.push_back(15648);
-        internal_counters.push_back(13173);
-        internal_counters.push_back(14002);
-        internal_counters.push_back(14831);
-        internal_counters.push_back(15660);
-        internal_counters.push_back(276);
-
+        static constexpr std::array<GpaUInt32, 25> kHardwareCounters = {
+                12692,
+                13521,
+                14350,
+                15179,
+                12696,
+                13525,
+                14354,
+                15183,
+                12648,
+                13477,
+                14306,
+                15135,
+                12660,
+                13489,
+                14318,
+                15147,
+                13161,
+                13990,
+                14819,
+                15648,
+                13173,
+                14002,
+                14831,
+                15660,
+                276,
+        };
         c.DefineDerivedCounter("PrimitiveAssemblyBusy",
                                "Timing",
                                "The percentage of GPUTime that primitive assembly (clipping and culling) is busy. High values may be caused by having many small primitives; mid to low values may indicate pixel shader or output buffer bottleneck.",
@@ -654,37 +656,37 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                kGpaUsageTypePercentage,
                                true,
                                false,
-                               internal_counters,
+                               kHardwareCounters,
                                "0,1,2,3,4,5,6,7,vecsub4,SU_CLOCKS_PRIM,8,9,10,11,12,13,14,15,vecsum4,16,17,18,19,vecsum4,(2),20,21,22,23,scalarmul4,vecsum4,scalarmul4,vecsub4,max4,(0),max,24,/,(100),*,(100),min",
                                "54ac5640-c4d7-95e2-20e0-6a9fdfc07333");
     }
     { // Index:25
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(12692);
-        internal_counters.push_back(13521);
-        internal_counters.push_back(14350);
-        internal_counters.push_back(15179);
-        internal_counters.push_back(12696);
-        internal_counters.push_back(13525);
-        internal_counters.push_back(14354);
-        internal_counters.push_back(15183);
-        internal_counters.push_back(12648);
-        internal_counters.push_back(13477);
-        internal_counters.push_back(14306);
-        internal_counters.push_back(15135);
-        internal_counters.push_back(12660);
-        internal_counters.push_back(13489);
-        internal_counters.push_back(14318);
-        internal_counters.push_back(15147);
-        internal_counters.push_back(13161);
-        internal_counters.push_back(13990);
-        internal_counters.push_back(14819);
-        internal_counters.push_back(15648);
-        internal_counters.push_back(13173);
-        internal_counters.push_back(14002);
-        internal_counters.push_back(14831);
-        internal_counters.push_back(15660);
-
+        static constexpr std::array<GpaUInt32, 24> kHardwareCounters = {
+                12692,
+                13521,
+                14350,
+                15179,
+                12696,
+                13525,
+                14354,
+                15183,
+                12648,
+                13477,
+                14306,
+                15135,
+                12660,
+                13489,
+                14318,
+                15147,
+                13161,
+                13990,
+                14819,
+                15648,
+                13173,
+                14002,
+                14831,
+                15660,
+        };
         c.DefineDerivedCounter("PrimitiveAssemblyBusyCycles",
                                "Timing",
                                "Number of GPU cycles the primitive assembly (clipping and culling) is busy. High values may be caused by having many small primitives; mid to low values may indicate pixel shader or output buffer bottleneck.",
@@ -692,17 +694,17 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                kGpaUsageTypeCycles,
                                true,
                                false,
-                               internal_counters,
+                               kHardwareCounters,
                                "0,1,2,3,4,5,6,7,vecsub4,SU_CLOCKS_PRIM,8,9,10,11,12,13,14,15,vecsum4,16,17,18,19,vecsum4,(2),20,21,22,23,scalarmul4,vecsum4,scalarmul4,vecsub4,max4,(0),max",
                                "99777f2d-9626-c78a-a97c-c4505eba1e5f");
     }
     { // Index:26
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(12595);
-        internal_counters.push_back(13424);
-        internal_counters.push_back(14253);
-        internal_counters.push_back(15082);
-
+        static constexpr std::array<GpaUInt32, 4> kHardwareCounters = {
+                12595,
+                13424,
+                14253,
+                15082,
+        };
         c.DefineDerivedCounter("PrimitivesIn",
                                "PrimitiveAssembly",
                                "The number of primitives received by the hardware. This includes primitives generated by tessellation.",
@@ -710,33 +712,33 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                kGpaUsageTypeItems,
                                true,
                                false,
-                               internal_counters,
+                               kHardwareCounters,
                                "0,1,2,3,sum4",
                                "a515b80d-75c3-c7d2-0d2f-d7766b4759a6");
     }
     { // Index:27
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(12601);
-        internal_counters.push_back(13430);
-        internal_counters.push_back(14259);
-        internal_counters.push_back(15088);
-        internal_counters.push_back(12641);
-        internal_counters.push_back(13470);
-        internal_counters.push_back(14299);
-        internal_counters.push_back(15128);
-        internal_counters.push_back(12642);
-        internal_counters.push_back(13471);
-        internal_counters.push_back(14300);
-        internal_counters.push_back(15129);
-        internal_counters.push_back(12643);
-        internal_counters.push_back(13472);
-        internal_counters.push_back(14301);
-        internal_counters.push_back(15130);
-        internal_counters.push_back(12644);
-        internal_counters.push_back(13473);
-        internal_counters.push_back(14302);
-        internal_counters.push_back(15131);
-
+        static constexpr std::array<GpaUInt32, 20> kHardwareCounters = {
+                12601,
+                13430,
+                14259,
+                15088,
+                12641,
+                13470,
+                14299,
+                15128,
+                12642,
+                13471,
+                14300,
+                15129,
+                12643,
+                13472,
+                14301,
+                15130,
+                12644,
+                13473,
+                14302,
+                15131,
+        };
         c.DefineDerivedCounter("CulledPrims",
                                "PrimitiveAssembly",
                                "The number of culled primitives. Typical reasons include scissor, the primitive having zero area, and back or front face culling.",
@@ -744,17 +746,17 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                kGpaUsageTypeItems,
                                true,
                                false,
-                               internal_counters,
+                               kHardwareCounters,
                                "0,1,2,3,sum4,4,5,6,7,sum4,+,8,9,10,11,sum4,+,12,13,14,15,sum4,+,16,17,18,19,sum4,+",
                                "589bdf55-9192-280a-41c3-584bc94f2562");
     }
     { // Index:28
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(13120);
-        internal_counters.push_back(13949);
-        internal_counters.push_back(14778);
-        internal_counters.push_back(15607);
-
+        static constexpr std::array<GpaUInt32, 4> kHardwareCounters = {
+                13120,
+                13949,
+                14778,
+                15607,
+        };
         c.DefineDerivedCounter("ClippedPrims",
                                "PrimitiveAssembly",
                                "The number of primitives that required one or more clipping operations due to intersecting the view volume or user clip planes.",
@@ -762,18 +764,18 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                kGpaUsageTypeItems,
                                true,
                                false,
-                               internal_counters,
+                               kHardwareCounters,
                                "0,1,2,3,sum4",
                                "5ef6f9d5-155e-5baa-163f-8359d9ea9bbf");
     }
     { // Index:29
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(12696);
-        internal_counters.push_back(13525);
-        internal_counters.push_back(14354);
-        internal_counters.push_back(15183);
-        internal_counters.push_back(276);
-
+        static constexpr std::array<GpaUInt32, 5> kHardwareCounters = {
+                12696,
+                13525,
+                14354,
+                15183,
+                276,
+        };
         c.DefineDerivedCounter("PAStalledOnRasterizer",
                                "PrimitiveAssembly",
                                "Percentage of GPUTime that primitive assembly waits for rasterization to be ready to accept data. This roughly indicates for what percentage of time the pipeline is bottlenecked by pixel operations.",
@@ -781,17 +783,17 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                kGpaUsageTypePercentage,
                                true,
                                false,
-                               internal_counters,
+                               kHardwareCounters,
                                "0,1,2,3,max4,4,/,(100),*",
                                "6f9f416b-53c1-0457-f88c-7b6ba8973974");
     }
     { // Index:30
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(12696);
-        internal_counters.push_back(13525);
-        internal_counters.push_back(14354);
-        internal_counters.push_back(15183);
-
+        static constexpr std::array<GpaUInt32, 4> kHardwareCounters = {
+                13208,
+                14037,
+                14866,
+                15695,
+        };
         c.DefineDerivedCounter("PAStalledOnRasterizerCycles",
                                "PrimitiveAssembly",
                                "Number of GPU cycles the primitive assembly waits for rasterization to be ready to accept data. Indicates the number of GPU cycles the pipeline is bottlenecked by pixel operations.",
@@ -799,45 +801,45 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                kGpaUsageTypeCycles,
                                true,
                                false,
-                               internal_counters,
+                               kHardwareCounters,
                                "0,1,2,3,max4",
                                "7a8c492a-c566-9328-6805-760dbff5c0f2");
     }
     { // Index:31
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(42219);
-        internal_counters.push_back(42301);
-        internal_counters.push_back(42383);
-        internal_counters.push_back(42465);
-        internal_counters.push_back(42547);
-        internal_counters.push_back(42629);
-        internal_counters.push_back(42711);
-        internal_counters.push_back(42793);
-        internal_counters.push_back(42224);
-        internal_counters.push_back(42306);
-        internal_counters.push_back(42388);
-        internal_counters.push_back(42470);
-        internal_counters.push_back(42552);
-        internal_counters.push_back(42634);
-        internal_counters.push_back(42716);
-        internal_counters.push_back(42798);
-        internal_counters.push_back(42229);
-        internal_counters.push_back(42311);
-        internal_counters.push_back(42393);
-        internal_counters.push_back(42475);
-        internal_counters.push_back(42557);
-        internal_counters.push_back(42639);
-        internal_counters.push_back(42721);
-        internal_counters.push_back(42803);
-        internal_counters.push_back(42234);
-        internal_counters.push_back(42316);
-        internal_counters.push_back(42398);
-        internal_counters.push_back(42480);
-        internal_counters.push_back(42562);
-        internal_counters.push_back(42644);
-        internal_counters.push_back(42726);
-        internal_counters.push_back(42808);
-
+        static constexpr std::array<GpaUInt32, 32> kHardwareCounters = {
+                42219,
+                42301,
+                42383,
+                42465,
+                42547,
+                42629,
+                42711,
+                42793,
+                42224,
+                42306,
+                42388,
+                42470,
+                42552,
+                42634,
+                42716,
+                42798,
+                42229,
+                42311,
+                42393,
+                42475,
+                42557,
+                42639,
+                42721,
+                42803,
+                42234,
+                42316,
+                42398,
+                42480,
+                42562,
+                42644,
+                42726,
+                42808,
+        };
         c.DefineDerivedCounter("PSPixelsOut",
                                "PixelShader",
                                "Pixels exported from shader to color buffers. Does not include killed or alpha tested pixels; if there are multiple render targets, each render target receives one export, so this will be 2 for 1 pixel written to two RTs.",
@@ -845,46 +847,46 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                kGpaUsageTypeItems,
                                true,
                                false,
-                               internal_counters,
+                               kHardwareCounters,
                                "0,1,2,3,4,5,6,7,sum8,8,9,10,11,12,13,14,15,sum8,16,17,18,19,20,21,22,23,sum8,24,25,26,27,28,29,30,31,sum8,sum4",
                                "24cba16c-baa6-6ecd-95ad-92ecb1338da1");
     }
     { // Index:32
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(42221);
-        internal_counters.push_back(42303);
-        internal_counters.push_back(42385);
-        internal_counters.push_back(42467);
-        internal_counters.push_back(42549);
-        internal_counters.push_back(42631);
-        internal_counters.push_back(42713);
-        internal_counters.push_back(42795);
-        internal_counters.push_back(42226);
-        internal_counters.push_back(42308);
-        internal_counters.push_back(42390);
-        internal_counters.push_back(42472);
-        internal_counters.push_back(42554);
-        internal_counters.push_back(42636);
-        internal_counters.push_back(42718);
-        internal_counters.push_back(42800);
-        internal_counters.push_back(42231);
-        internal_counters.push_back(42313);
-        internal_counters.push_back(42395);
-        internal_counters.push_back(42477);
-        internal_counters.push_back(42559);
-        internal_counters.push_back(42641);
-        internal_counters.push_back(42723);
-        internal_counters.push_back(42805);
-        internal_counters.push_back(42236);
-        internal_counters.push_back(42318);
-        internal_counters.push_back(42400);
-        internal_counters.push_back(42482);
-        internal_counters.push_back(42564);
-        internal_counters.push_back(42646);
-        internal_counters.push_back(42728);
-        internal_counters.push_back(42810);
-        internal_counters.push_back(276);
-
+        static constexpr std::array<GpaUInt32, 33> kHardwareCounters = {
+                42221,
+                42303,
+                42385,
+                42467,
+                42549,
+                42631,
+                42713,
+                42795,
+                42226,
+                42308,
+                42390,
+                42472,
+                42554,
+                42636,
+                42718,
+                42800,
+                42231,
+                42313,
+                42395,
+                42477,
+                42559,
+                42641,
+                42723,
+                42805,
+                42236,
+                42318,
+                42400,
+                42482,
+                42564,
+                42646,
+                42728,
+                42810,
+                276,
+        };
         c.DefineDerivedCounter("PSExportStalls",
                                "PixelShader",
                                "Pixel shader output stalls. Percentage of GPUBusy. Should be zero for PS or further upstream limited cases; if not zero, indicates a bottleneck in late Z testing or in the color buffer.",
@@ -892,45 +894,45 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                kGpaUsageTypePercentage,
                                true,
                                false,
-                               internal_counters,
+                               kHardwareCounters,
                                "0,1,2,3,4,5,6,7,max8,8,9,10,11,12,13,14,15,max8,16,17,18,19,20,21,22,23,max8,24,25,26,27,28,29,30,31,max8,max4,32,/,(100),*",
                                "9b4f466c-ff97-22bb-557d-84d3c4c51895");
     }
     { // Index:33
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(42221);
-        internal_counters.push_back(42303);
-        internal_counters.push_back(42385);
-        internal_counters.push_back(42467);
-        internal_counters.push_back(42549);
-        internal_counters.push_back(42631);
-        internal_counters.push_back(42713);
-        internal_counters.push_back(42795);
-        internal_counters.push_back(42226);
-        internal_counters.push_back(42308);
-        internal_counters.push_back(42390);
-        internal_counters.push_back(42472);
-        internal_counters.push_back(42554);
-        internal_counters.push_back(42636);
-        internal_counters.push_back(42718);
-        internal_counters.push_back(42800);
-        internal_counters.push_back(42231);
-        internal_counters.push_back(42313);
-        internal_counters.push_back(42395);
-        internal_counters.push_back(42477);
-        internal_counters.push_back(42559);
-        internal_counters.push_back(42641);
-        internal_counters.push_back(42723);
-        internal_counters.push_back(42805);
-        internal_counters.push_back(42236);
-        internal_counters.push_back(42318);
-        internal_counters.push_back(42400);
-        internal_counters.push_back(42482);
-        internal_counters.push_back(42564);
-        internal_counters.push_back(42646);
-        internal_counters.push_back(42728);
-        internal_counters.push_back(42810);
-
+        static constexpr std::array<GpaUInt32, 32> kHardwareCounters = {
+                42221,
+                42303,
+                42385,
+                42467,
+                42549,
+                42631,
+                42713,
+                42795,
+                42226,
+                42308,
+                42390,
+                42472,
+                42554,
+                42636,
+                42718,
+                42800,
+                42231,
+                42313,
+                42395,
+                42477,
+                42559,
+                42641,
+                42723,
+                42805,
+                42236,
+                42318,
+                42400,
+                42482,
+                42564,
+                42646,
+                42728,
+                42810,
+        };
         c.DefineDerivedCounter("PSExportStallsCycles",
                                "PixelShader",
                                "Number of GPU cycles the pixel shader output stalls. Should be zero for PS or further upstream limited cases; if not zero, indicates a bottleneck in late Z testing or in the color buffer.",
@@ -938,21 +940,21 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                kGpaUsageTypeCycles,
                                true,
                                false,
-                               internal_counters,
+                               kHardwareCounters,
                                "0,1,2,3,4,5,6,7,max8,8,9,10,11,12,13,14,15,max8,16,17,18,19,20,21,22,23,max8,24,25,26,27,28,29,30,31,max8,max4",
                                "47c72aad-64e6-0864-d533-d8e0bc27c156");
     }
     { // Index:34
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(42902);
-        internal_counters.push_back(43221);
-        internal_counters.push_back(43540);
-        internal_counters.push_back(43859);
-        internal_counters.push_back(42910);
-        internal_counters.push_back(43229);
-        internal_counters.push_back(43548);
-        internal_counters.push_back(43867);
-
+        static constexpr std::array<GpaUInt32, 8> kHardwareCounters = {
+                42902,
+                43221,
+                43540,
+                43859,
+                42910,
+                43229,
+                43548,
+                43867,
+        };
         c.DefineDerivedCounter("CSThreadGroupsLaunched",
                                "ComputeShader",
                                "Total number of thread groups launched.",
@@ -960,21 +962,21 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                kGpaUsageTypeItems,
                                true,
                                false,
-                               internal_counters,
+                               kHardwareCounters,
                                "0,1,2,3,sum4,4,5,6,7,sum4,+",
                                "e1e2f302-868a-1d2e-ca81-9901bbc8b58f");
     }
     { // Index:35
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(42905);
-        internal_counters.push_back(43224);
-        internal_counters.push_back(43543);
-        internal_counters.push_back(43862);
-        internal_counters.push_back(42913);
-        internal_counters.push_back(43232);
-        internal_counters.push_back(43551);
-        internal_counters.push_back(43870);
-
+        static constexpr std::array<GpaUInt32, 8> kHardwareCounters = {
+                42905,
+                43224,
+                43543,
+                43862,
+                42913,
+                43232,
+                43551,
+                43870,
+        };
         c.DefineDerivedCounter("CSWavefrontsLaunched",
                                "ComputeShader",
                                "The total number of wavefronts launched for the CS.",
@@ -982,17 +984,17 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                kGpaUsageTypeItems,
                                true,
                                false,
-                               internal_counters,
+                               kHardwareCounters,
                                "0,1,2,3,sum4,4,5,6,7,sum4,+",
                                "00c49129-6ae5-f6a0-1753-4738cbe17938");
     }
     { // Index:36
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(44897);
-        internal_counters.push_back(44943);
-        internal_counters.push_back(44989);
-        internal_counters.push_back(45035);
-
+        static constexpr std::array<GpaUInt32, 4> kHardwareCounters = {
+                44897,
+                44943,
+                44989,
+                45035,
+        };
         c.DefineDerivedCounter("CSThreadsLaunched",
                                "ComputeShader",
                                "The number of CS threads launched and processed by the hardware.",
@@ -1000,25 +1002,25 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                kGpaUsageTypeItems,
                                true,
                                false,
-                               internal_counters,
+                               kHardwareCounters,
                                "0,1,2,3,sum4",
                                "cbbbf1ba-d164-1c90-9df0-6120c1660fb1");
     }
     { // Index:37
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(44897);
-        internal_counters.push_back(44943);
-        internal_counters.push_back(44989);
-        internal_counters.push_back(45035);
-        internal_counters.push_back(42902);
-        internal_counters.push_back(43221);
-        internal_counters.push_back(43540);
-        internal_counters.push_back(43859);
-        internal_counters.push_back(42910);
-        internal_counters.push_back(43229);
-        internal_counters.push_back(43548);
-        internal_counters.push_back(43867);
-
+        static constexpr std::array<GpaUInt32, 12> kHardwareCounters = {
+                44897,
+                44943,
+                44989,
+                45035,
+                42902,
+                43221,
+                43540,
+                43859,
+                42910,
+                43229,
+                43548,
+                43867,
+        };
         c.DefineDerivedCounter("CSThreadGroupSize",
                                "ComputeShader",
                                "The number of CS threads within each thread group.",
@@ -1026,54 +1028,54 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                kGpaUsageTypeItems,
                                true,
                                false,
-                               internal_counters,
+                               kHardwareCounters,
                                "(0),0,1,2,3,sum4,4,5,6,7,sum4,8,9,10,11,sum4,+,/,4,5,6,7,sum4,8,9,10,11,sum4,+,ifnotzero",
                                "8c65008a-9957-7ca6-4199-f6fe940420f6");
     }
     { // Index:38
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(165652);
-        internal_counters.push_back(166164);
-        internal_counters.push_back(166676);
-        internal_counters.push_back(167188);
-        internal_counters.push_back(167700);
-        internal_counters.push_back(168212);
-        internal_counters.push_back(168724);
-        internal_counters.push_back(169236);
-        internal_counters.push_back(169748);
-        internal_counters.push_back(170260);
-        internal_counters.push_back(170772);
-        internal_counters.push_back(171284);
-        internal_counters.push_back(171796);
-        internal_counters.push_back(172308);
-        internal_counters.push_back(172820);
-        internal_counters.push_back(173332);
-        internal_counters.push_back(173844);
-        internal_counters.push_back(174356);
-        internal_counters.push_back(174868);
-        internal_counters.push_back(175380);
-        internal_counters.push_back(175892);
-        internal_counters.push_back(176404);
-        internal_counters.push_back(176916);
-        internal_counters.push_back(177428);
-        internal_counters.push_back(177940);
-        internal_counters.push_back(178452);
-        internal_counters.push_back(178964);
-        internal_counters.push_back(179476);
-        internal_counters.push_back(179988);
-        internal_counters.push_back(180500);
-        internal_counters.push_back(181012);
-        internal_counters.push_back(181524);
-        internal_counters.push_back(276);
-        internal_counters.push_back(42902);
-        internal_counters.push_back(43221);
-        internal_counters.push_back(43540);
-        internal_counters.push_back(43859);
-        internal_counters.push_back(42910);
-        internal_counters.push_back(43229);
-        internal_counters.push_back(43548);
-        internal_counters.push_back(43867);
-
+        static constexpr std::array<GpaUInt32, 41> kHardwareCounters = {
+                165652,
+                166164,
+                166676,
+                167188,
+                167700,
+                168212,
+                168724,
+                169236,
+                169748,
+                170260,
+                170772,
+                171284,
+                171796,
+                172308,
+                172820,
+                173332,
+                173844,
+                174356,
+                174868,
+                175380,
+                175892,
+                176404,
+                176916,
+                177428,
+                177940,
+                178452,
+                178964,
+                179476,
+                179988,
+                180500,
+                181012,
+                181524,
+                276,
+                42902,
+                43221,
+                43540,
+                43859,
+                42910,
+                43229,
+                43548,
+                43867,
+        };
         c.DefineDerivedCounter("CSLDSBankConflict",
                                "ComputeShader",
                                "The percentage of GPUTime LDS is stalled by bank conflicts. Value range: 0% (optimal) to 100% (bad).",
@@ -1081,53 +1083,53 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                kGpaUsageTypePercentage,
                                true,
                                false,
-                               internal_counters,
+                               kHardwareCounters,
                                "(0),0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,sum32,32,/,NUM_SIMDS,/,(100),*,33,34,35,36,sum4,37,38,39,40,sum4,+,ifnotzero",
                                "1065ee10-2e41-ea41-1eb3-b61b491752f4");
     }
     { // Index:39
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(165652);
-        internal_counters.push_back(166164);
-        internal_counters.push_back(166676);
-        internal_counters.push_back(167188);
-        internal_counters.push_back(167700);
-        internal_counters.push_back(168212);
-        internal_counters.push_back(168724);
-        internal_counters.push_back(169236);
-        internal_counters.push_back(169748);
-        internal_counters.push_back(170260);
-        internal_counters.push_back(170772);
-        internal_counters.push_back(171284);
-        internal_counters.push_back(171796);
-        internal_counters.push_back(172308);
-        internal_counters.push_back(172820);
-        internal_counters.push_back(173332);
-        internal_counters.push_back(173844);
-        internal_counters.push_back(174356);
-        internal_counters.push_back(174868);
-        internal_counters.push_back(175380);
-        internal_counters.push_back(175892);
-        internal_counters.push_back(176404);
-        internal_counters.push_back(176916);
-        internal_counters.push_back(177428);
-        internal_counters.push_back(177940);
-        internal_counters.push_back(178452);
-        internal_counters.push_back(178964);
-        internal_counters.push_back(179476);
-        internal_counters.push_back(179988);
-        internal_counters.push_back(180500);
-        internal_counters.push_back(181012);
-        internal_counters.push_back(181524);
-        internal_counters.push_back(42902);
-        internal_counters.push_back(43221);
-        internal_counters.push_back(43540);
-        internal_counters.push_back(43859);
-        internal_counters.push_back(42910);
-        internal_counters.push_back(43229);
-        internal_counters.push_back(43548);
-        internal_counters.push_back(43867);
-
+        static constexpr std::array<GpaUInt32, 40> kHardwareCounters = {
+                165652,
+                166164,
+                166676,
+                167188,
+                167700,
+                168212,
+                168724,
+                169236,
+                169748,
+                170260,
+                170772,
+                171284,
+                171796,
+                172308,
+                172820,
+                173332,
+                173844,
+                174356,
+                174868,
+                175380,
+                175892,
+                176404,
+                176916,
+                177428,
+                177940,
+                178452,
+                178964,
+                179476,
+                179988,
+                180500,
+                181012,
+                181524,
+                42902,
+                43221,
+                43540,
+                43859,
+                42910,
+                43229,
+                43548,
+                43867,
+        };
         c.DefineDerivedCounter("CSLDSBankConflictCycles",
                                "ComputeShader",
                                "Number of GPU cycles the LDS is stalled by bank conflicts. Value range: 0 (optimal) to GPUBusyCycles (bad).",
@@ -1135,78 +1137,78 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                kGpaUsageTypeCycles,
                                true,
                                false,
-                               internal_counters,
+                               kHardwareCounters,
                                "(0),0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,sum32,NUM_SIMDS,/,32,33,34,35,sum4,36,37,38,39,sum4,+,ifnotzero",
                                "1fd1adf3-c51e-94fd-083e-c482a0a0809e");
     }
     { // Index:40
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(45074);
-        internal_counters.push_back(45329);
-        internal_counters.push_back(45584);
-        internal_counters.push_back(45839);
-        internal_counters.push_back(46094);
-        internal_counters.push_back(46349);
-        internal_counters.push_back(46604);
-        internal_counters.push_back(46859);
-        internal_counters.push_back(47114);
-        internal_counters.push_back(47369);
-        internal_counters.push_back(47624);
-        internal_counters.push_back(47879);
-        internal_counters.push_back(48134);
-        internal_counters.push_back(48389);
-        internal_counters.push_back(48644);
-        internal_counters.push_back(48899);
-        internal_counters.push_back(49154);
-        internal_counters.push_back(49409);
-        internal_counters.push_back(49664);
-        internal_counters.push_back(49919);
-        internal_counters.push_back(50174);
-        internal_counters.push_back(50429);
-        internal_counters.push_back(50684);
-        internal_counters.push_back(50939);
-        internal_counters.push_back(51194);
-        internal_counters.push_back(51449);
-        internal_counters.push_back(51704);
-        internal_counters.push_back(51959);
-        internal_counters.push_back(52214);
-        internal_counters.push_back(52469);
-        internal_counters.push_back(52724);
-        internal_counters.push_back(52979);
-        internal_counters.push_back(53234);
-        internal_counters.push_back(53489);
-        internal_counters.push_back(53744);
-        internal_counters.push_back(53999);
-        internal_counters.push_back(54254);
-        internal_counters.push_back(54509);
-        internal_counters.push_back(54764);
-        internal_counters.push_back(55019);
-        internal_counters.push_back(55274);
-        internal_counters.push_back(55529);
-        internal_counters.push_back(55784);
-        internal_counters.push_back(56039);
-        internal_counters.push_back(56294);
-        internal_counters.push_back(56549);
-        internal_counters.push_back(56804);
-        internal_counters.push_back(57059);
-        internal_counters.push_back(57314);
-        internal_counters.push_back(57569);
-        internal_counters.push_back(57824);
-        internal_counters.push_back(58079);
-        internal_counters.push_back(58334);
-        internal_counters.push_back(58589);
-        internal_counters.push_back(58844);
-        internal_counters.push_back(59099);
-        internal_counters.push_back(59354);
-        internal_counters.push_back(59609);
-        internal_counters.push_back(59864);
-        internal_counters.push_back(60119);
-        internal_counters.push_back(60374);
-        internal_counters.push_back(60629);
-        internal_counters.push_back(60884);
-        internal_counters.push_back(61139);
-        internal_counters.push_back(276);
-
+        static constexpr std::array<GpaUInt32, 65> kHardwareCounters = {
+                45074,
+                45329,
+                45584,
+                45839,
+                46094,
+                46349,
+                46604,
+                46859,
+                47114,
+                47369,
+                47624,
+                47879,
+                48134,
+                48389,
+                48644,
+                48899,
+                49154,
+                49409,
+                49664,
+                49919,
+                50174,
+                50429,
+                50684,
+                50939,
+                51194,
+                51449,
+                51704,
+                51959,
+                52214,
+                52469,
+                52724,
+                52979,
+                53234,
+                53489,
+                53744,
+                53999,
+                54254,
+                54509,
+                54764,
+                55019,
+                55274,
+                55529,
+                55784,
+                56039,
+                56294,
+                56549,
+                56804,
+                57059,
+                57314,
+                57569,
+                57824,
+                58079,
+                58334,
+                58589,
+                58844,
+                59099,
+                59354,
+                59609,
+                59864,
+                60119,
+                60374,
+                60629,
+                60884,
+                61139,
+                276,
+        };
         c.DefineDerivedCounter("TexUnitBusy",
                                "Timing",
                                "The percentage of GPUTime the texture unit is active. This is measured with all extra fetches and any cache or memory effects taken into account.",
@@ -1214,77 +1216,77 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                kGpaUsageTypePercentage,
                                true,
                                false,
-                               internal_counters,
+                               kHardwareCounters,
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,max64,64,/,(100),*",
                                "36afb8d9-42fc-aafe-66c5-449542153b2c");
     }
     { // Index:41
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(45074);
-        internal_counters.push_back(45329);
-        internal_counters.push_back(45584);
-        internal_counters.push_back(45839);
-        internal_counters.push_back(46094);
-        internal_counters.push_back(46349);
-        internal_counters.push_back(46604);
-        internal_counters.push_back(46859);
-        internal_counters.push_back(47114);
-        internal_counters.push_back(47369);
-        internal_counters.push_back(47624);
-        internal_counters.push_back(47879);
-        internal_counters.push_back(48134);
-        internal_counters.push_back(48389);
-        internal_counters.push_back(48644);
-        internal_counters.push_back(48899);
-        internal_counters.push_back(49154);
-        internal_counters.push_back(49409);
-        internal_counters.push_back(49664);
-        internal_counters.push_back(49919);
-        internal_counters.push_back(50174);
-        internal_counters.push_back(50429);
-        internal_counters.push_back(50684);
-        internal_counters.push_back(50939);
-        internal_counters.push_back(51194);
-        internal_counters.push_back(51449);
-        internal_counters.push_back(51704);
-        internal_counters.push_back(51959);
-        internal_counters.push_back(52214);
-        internal_counters.push_back(52469);
-        internal_counters.push_back(52724);
-        internal_counters.push_back(52979);
-        internal_counters.push_back(53234);
-        internal_counters.push_back(53489);
-        internal_counters.push_back(53744);
-        internal_counters.push_back(53999);
-        internal_counters.push_back(54254);
-        internal_counters.push_back(54509);
-        internal_counters.push_back(54764);
-        internal_counters.push_back(55019);
-        internal_counters.push_back(55274);
-        internal_counters.push_back(55529);
-        internal_counters.push_back(55784);
-        internal_counters.push_back(56039);
-        internal_counters.push_back(56294);
-        internal_counters.push_back(56549);
-        internal_counters.push_back(56804);
-        internal_counters.push_back(57059);
-        internal_counters.push_back(57314);
-        internal_counters.push_back(57569);
-        internal_counters.push_back(57824);
-        internal_counters.push_back(58079);
-        internal_counters.push_back(58334);
-        internal_counters.push_back(58589);
-        internal_counters.push_back(58844);
-        internal_counters.push_back(59099);
-        internal_counters.push_back(59354);
-        internal_counters.push_back(59609);
-        internal_counters.push_back(59864);
-        internal_counters.push_back(60119);
-        internal_counters.push_back(60374);
-        internal_counters.push_back(60629);
-        internal_counters.push_back(60884);
-        internal_counters.push_back(61139);
-
+        static constexpr std::array<GpaUInt32, 64> kHardwareCounters = {
+                45074,
+                45329,
+                45584,
+                45839,
+                46094,
+                46349,
+                46604,
+                46859,
+                47114,
+                47369,
+                47624,
+                47879,
+                48134,
+                48389,
+                48644,
+                48899,
+                49154,
+                49409,
+                49664,
+                49919,
+                50174,
+                50429,
+                50684,
+                50939,
+                51194,
+                51449,
+                51704,
+                51959,
+                52214,
+                52469,
+                52724,
+                52979,
+                53234,
+                53489,
+                53744,
+                53999,
+                54254,
+                54509,
+                54764,
+                55019,
+                55274,
+                55529,
+                55784,
+                56039,
+                56294,
+                56549,
+                56804,
+                57059,
+                57314,
+                57569,
+                57824,
+                58079,
+                58334,
+                58589,
+                58844,
+                59099,
+                59354,
+                59609,
+                59864,
+                60119,
+                60374,
+                60629,
+                60884,
+                61139,
+        };
         c.DefineDerivedCounter("TexUnitBusyCycles",
                                "Timing",
                                "Number of GPU cycles the texture unit is active. This is measured with all extra fetches and any cache or memory effects taken into account.",
@@ -1292,141 +1294,141 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                kGpaUsageTypeCycles,
                                true,
                                false,
-                               internal_counters,
+                               kHardwareCounters,
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,max64",
                                "c68761f2-248c-4f39-6528-c308b1c0807c");
     }
     { // Index:42
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(45128);
-        internal_counters.push_back(45383);
-        internal_counters.push_back(45638);
-        internal_counters.push_back(45893);
-        internal_counters.push_back(46148);
-        internal_counters.push_back(46403);
-        internal_counters.push_back(46658);
-        internal_counters.push_back(46913);
-        internal_counters.push_back(47168);
-        internal_counters.push_back(47423);
-        internal_counters.push_back(47678);
-        internal_counters.push_back(47933);
-        internal_counters.push_back(48188);
-        internal_counters.push_back(48443);
-        internal_counters.push_back(48698);
-        internal_counters.push_back(48953);
-        internal_counters.push_back(49208);
-        internal_counters.push_back(49463);
-        internal_counters.push_back(49718);
-        internal_counters.push_back(49973);
-        internal_counters.push_back(50228);
-        internal_counters.push_back(50483);
-        internal_counters.push_back(50738);
-        internal_counters.push_back(50993);
-        internal_counters.push_back(51248);
-        internal_counters.push_back(51503);
-        internal_counters.push_back(51758);
-        internal_counters.push_back(52013);
-        internal_counters.push_back(52268);
-        internal_counters.push_back(52523);
-        internal_counters.push_back(52778);
-        internal_counters.push_back(53033);
-        internal_counters.push_back(53288);
-        internal_counters.push_back(53543);
-        internal_counters.push_back(53798);
-        internal_counters.push_back(54053);
-        internal_counters.push_back(54308);
-        internal_counters.push_back(54563);
-        internal_counters.push_back(54818);
-        internal_counters.push_back(55073);
-        internal_counters.push_back(55328);
-        internal_counters.push_back(55583);
-        internal_counters.push_back(55838);
-        internal_counters.push_back(56093);
-        internal_counters.push_back(56348);
-        internal_counters.push_back(56603);
-        internal_counters.push_back(56858);
-        internal_counters.push_back(57113);
-        internal_counters.push_back(57368);
-        internal_counters.push_back(57623);
-        internal_counters.push_back(57878);
-        internal_counters.push_back(58133);
-        internal_counters.push_back(58388);
-        internal_counters.push_back(58643);
-        internal_counters.push_back(58898);
-        internal_counters.push_back(59153);
-        internal_counters.push_back(59408);
-        internal_counters.push_back(59663);
-        internal_counters.push_back(59918);
-        internal_counters.push_back(60173);
-        internal_counters.push_back(60428);
-        internal_counters.push_back(60683);
-        internal_counters.push_back(60938);
-        internal_counters.push_back(61193);
-        internal_counters.push_back(45127);
-        internal_counters.push_back(45382);
-        internal_counters.push_back(45637);
-        internal_counters.push_back(45892);
-        internal_counters.push_back(46147);
-        internal_counters.push_back(46402);
-        internal_counters.push_back(46657);
-        internal_counters.push_back(46912);
-        internal_counters.push_back(47167);
-        internal_counters.push_back(47422);
-        internal_counters.push_back(47677);
-        internal_counters.push_back(47932);
-        internal_counters.push_back(48187);
-        internal_counters.push_back(48442);
-        internal_counters.push_back(48697);
-        internal_counters.push_back(48952);
-        internal_counters.push_back(49207);
-        internal_counters.push_back(49462);
-        internal_counters.push_back(49717);
-        internal_counters.push_back(49972);
-        internal_counters.push_back(50227);
-        internal_counters.push_back(50482);
-        internal_counters.push_back(50737);
-        internal_counters.push_back(50992);
-        internal_counters.push_back(51247);
-        internal_counters.push_back(51502);
-        internal_counters.push_back(51757);
-        internal_counters.push_back(52012);
-        internal_counters.push_back(52267);
-        internal_counters.push_back(52522);
-        internal_counters.push_back(52777);
-        internal_counters.push_back(53032);
-        internal_counters.push_back(53287);
-        internal_counters.push_back(53542);
-        internal_counters.push_back(53797);
-        internal_counters.push_back(54052);
-        internal_counters.push_back(54307);
-        internal_counters.push_back(54562);
-        internal_counters.push_back(54817);
-        internal_counters.push_back(55072);
-        internal_counters.push_back(55327);
-        internal_counters.push_back(55582);
-        internal_counters.push_back(55837);
-        internal_counters.push_back(56092);
-        internal_counters.push_back(56347);
-        internal_counters.push_back(56602);
-        internal_counters.push_back(56857);
-        internal_counters.push_back(57112);
-        internal_counters.push_back(57367);
-        internal_counters.push_back(57622);
-        internal_counters.push_back(57877);
-        internal_counters.push_back(58132);
-        internal_counters.push_back(58387);
-        internal_counters.push_back(58642);
-        internal_counters.push_back(58897);
-        internal_counters.push_back(59152);
-        internal_counters.push_back(59407);
-        internal_counters.push_back(59662);
-        internal_counters.push_back(59917);
-        internal_counters.push_back(60172);
-        internal_counters.push_back(60427);
-        internal_counters.push_back(60682);
-        internal_counters.push_back(60937);
-        internal_counters.push_back(61192);
-
+        static constexpr std::array<GpaUInt32, 128> kHardwareCounters = {
+                45128,
+                45383,
+                45638,
+                45893,
+                46148,
+                46403,
+                46658,
+                46913,
+                47168,
+                47423,
+                47678,
+                47933,
+                48188,
+                48443,
+                48698,
+                48953,
+                49208,
+                49463,
+                49718,
+                49973,
+                50228,
+                50483,
+                50738,
+                50993,
+                51248,
+                51503,
+                51758,
+                52013,
+                52268,
+                52523,
+                52778,
+                53033,
+                53288,
+                53543,
+                53798,
+                54053,
+                54308,
+                54563,
+                54818,
+                55073,
+                55328,
+                55583,
+                55838,
+                56093,
+                56348,
+                56603,
+                56858,
+                57113,
+                57368,
+                57623,
+                57878,
+                58133,
+                58388,
+                58643,
+                58898,
+                59153,
+                59408,
+                59663,
+                59918,
+                60173,
+                60428,
+                60683,
+                60938,
+                61193,
+                45127,
+                45382,
+                45637,
+                45892,
+                46147,
+                46402,
+                46657,
+                46912,
+                47167,
+                47422,
+                47677,
+                47932,
+                48187,
+                48442,
+                48697,
+                48952,
+                49207,
+                49462,
+                49717,
+                49972,
+                50227,
+                50482,
+                50737,
+                50992,
+                51247,
+                51502,
+                51757,
+                52012,
+                52267,
+                52522,
+                52777,
+                53032,
+                53287,
+                53542,
+                53797,
+                54052,
+                54307,
+                54562,
+                54817,
+                55072,
+                55327,
+                55582,
+                55837,
+                56092,
+                56347,
+                56602,
+                56857,
+                57112,
+                57367,
+                57622,
+                57877,
+                58132,
+                58387,
+                58642,
+                58897,
+                59152,
+                59407,
+                59662,
+                59917,
+                60172,
+                60427,
+                60682,
+                60937,
+                61192,
+        };
         c.DefineDerivedCounter("TexTriFilteringPct",
                                "TextureUnit",
                                "Percentage of pixels that received trilinear filtering. Note that not all pixels for which trilinear filtering is enabled will receive it (e.g. if the texture is magnified).",
@@ -1434,77 +1436,77 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                kGpaUsageTypePercentage,
                                true,
                                false,
-                               internal_counters,
+                               kHardwareCounters,
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,sum64,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,sum64,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,sum64,+,/,(100),*",
                                "1affc3c8-b917-5c81-622b-7004527208ae");
     }
     { // Index:43
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(45128);
-        internal_counters.push_back(45383);
-        internal_counters.push_back(45638);
-        internal_counters.push_back(45893);
-        internal_counters.push_back(46148);
-        internal_counters.push_back(46403);
-        internal_counters.push_back(46658);
-        internal_counters.push_back(46913);
-        internal_counters.push_back(47168);
-        internal_counters.push_back(47423);
-        internal_counters.push_back(47678);
-        internal_counters.push_back(47933);
-        internal_counters.push_back(48188);
-        internal_counters.push_back(48443);
-        internal_counters.push_back(48698);
-        internal_counters.push_back(48953);
-        internal_counters.push_back(49208);
-        internal_counters.push_back(49463);
-        internal_counters.push_back(49718);
-        internal_counters.push_back(49973);
-        internal_counters.push_back(50228);
-        internal_counters.push_back(50483);
-        internal_counters.push_back(50738);
-        internal_counters.push_back(50993);
-        internal_counters.push_back(51248);
-        internal_counters.push_back(51503);
-        internal_counters.push_back(51758);
-        internal_counters.push_back(52013);
-        internal_counters.push_back(52268);
-        internal_counters.push_back(52523);
-        internal_counters.push_back(52778);
-        internal_counters.push_back(53033);
-        internal_counters.push_back(53288);
-        internal_counters.push_back(53543);
-        internal_counters.push_back(53798);
-        internal_counters.push_back(54053);
-        internal_counters.push_back(54308);
-        internal_counters.push_back(54563);
-        internal_counters.push_back(54818);
-        internal_counters.push_back(55073);
-        internal_counters.push_back(55328);
-        internal_counters.push_back(55583);
-        internal_counters.push_back(55838);
-        internal_counters.push_back(56093);
-        internal_counters.push_back(56348);
-        internal_counters.push_back(56603);
-        internal_counters.push_back(56858);
-        internal_counters.push_back(57113);
-        internal_counters.push_back(57368);
-        internal_counters.push_back(57623);
-        internal_counters.push_back(57878);
-        internal_counters.push_back(58133);
-        internal_counters.push_back(58388);
-        internal_counters.push_back(58643);
-        internal_counters.push_back(58898);
-        internal_counters.push_back(59153);
-        internal_counters.push_back(59408);
-        internal_counters.push_back(59663);
-        internal_counters.push_back(59918);
-        internal_counters.push_back(60173);
-        internal_counters.push_back(60428);
-        internal_counters.push_back(60683);
-        internal_counters.push_back(60938);
-        internal_counters.push_back(61193);
-
+        static constexpr std::array<GpaUInt32, 64> kHardwareCounters = {
+                45128,
+                45383,
+                45638,
+                45893,
+                46148,
+                46403,
+                46658,
+                46913,
+                47168,
+                47423,
+                47678,
+                47933,
+                48188,
+                48443,
+                48698,
+                48953,
+                49208,
+                49463,
+                49718,
+                49973,
+                50228,
+                50483,
+                50738,
+                50993,
+                51248,
+                51503,
+                51758,
+                52013,
+                52268,
+                52523,
+                52778,
+                53033,
+                53288,
+                53543,
+                53798,
+                54053,
+                54308,
+                54563,
+                54818,
+                55073,
+                55328,
+                55583,
+                55838,
+                56093,
+                56348,
+                56603,
+                56858,
+                57113,
+                57368,
+                57623,
+                57878,
+                58133,
+                58388,
+                58643,
+                58898,
+                59153,
+                59408,
+                59663,
+                59918,
+                60173,
+                60428,
+                60683,
+                60938,
+                61193,
+        };
         c.DefineDerivedCounter("TexTriFilteringCount",
                                "TextureUnit",
                                "Count of pixels that received trilinear filtering. Note that not all pixels for which trilinear filtering is enabled will receive it (e.g. if the texture is magnified).",
@@ -1512,77 +1514,77 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                kGpaUsageTypeItems,
                                true,
                                false,
-                               internal_counters,
+                               kHardwareCounters,
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,sum64,(4),*",
                                "5785b3a1-a513-18db-4b1c-bdeef75bb2b6");
     }
     { // Index:44
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(45127);
-        internal_counters.push_back(45382);
-        internal_counters.push_back(45637);
-        internal_counters.push_back(45892);
-        internal_counters.push_back(46147);
-        internal_counters.push_back(46402);
-        internal_counters.push_back(46657);
-        internal_counters.push_back(46912);
-        internal_counters.push_back(47167);
-        internal_counters.push_back(47422);
-        internal_counters.push_back(47677);
-        internal_counters.push_back(47932);
-        internal_counters.push_back(48187);
-        internal_counters.push_back(48442);
-        internal_counters.push_back(48697);
-        internal_counters.push_back(48952);
-        internal_counters.push_back(49207);
-        internal_counters.push_back(49462);
-        internal_counters.push_back(49717);
-        internal_counters.push_back(49972);
-        internal_counters.push_back(50227);
-        internal_counters.push_back(50482);
-        internal_counters.push_back(50737);
-        internal_counters.push_back(50992);
-        internal_counters.push_back(51247);
-        internal_counters.push_back(51502);
-        internal_counters.push_back(51757);
-        internal_counters.push_back(52012);
-        internal_counters.push_back(52267);
-        internal_counters.push_back(52522);
-        internal_counters.push_back(52777);
-        internal_counters.push_back(53032);
-        internal_counters.push_back(53287);
-        internal_counters.push_back(53542);
-        internal_counters.push_back(53797);
-        internal_counters.push_back(54052);
-        internal_counters.push_back(54307);
-        internal_counters.push_back(54562);
-        internal_counters.push_back(54817);
-        internal_counters.push_back(55072);
-        internal_counters.push_back(55327);
-        internal_counters.push_back(55582);
-        internal_counters.push_back(55837);
-        internal_counters.push_back(56092);
-        internal_counters.push_back(56347);
-        internal_counters.push_back(56602);
-        internal_counters.push_back(56857);
-        internal_counters.push_back(57112);
-        internal_counters.push_back(57367);
-        internal_counters.push_back(57622);
-        internal_counters.push_back(57877);
-        internal_counters.push_back(58132);
-        internal_counters.push_back(58387);
-        internal_counters.push_back(58642);
-        internal_counters.push_back(58897);
-        internal_counters.push_back(59152);
-        internal_counters.push_back(59407);
-        internal_counters.push_back(59662);
-        internal_counters.push_back(59917);
-        internal_counters.push_back(60172);
-        internal_counters.push_back(60427);
-        internal_counters.push_back(60682);
-        internal_counters.push_back(60937);
-        internal_counters.push_back(61192);
-
+        static constexpr std::array<GpaUInt32, 64> kHardwareCounters = {
+                45127,
+                45382,
+                45637,
+                45892,
+                46147,
+                46402,
+                46657,
+                46912,
+                47167,
+                47422,
+                47677,
+                47932,
+                48187,
+                48442,
+                48697,
+                48952,
+                49207,
+                49462,
+                49717,
+                49972,
+                50227,
+                50482,
+                50737,
+                50992,
+                51247,
+                51502,
+                51757,
+                52012,
+                52267,
+                52522,
+                52777,
+                53032,
+                53287,
+                53542,
+                53797,
+                54052,
+                54307,
+                54562,
+                54817,
+                55072,
+                55327,
+                55582,
+                55837,
+                56092,
+                56347,
+                56602,
+                56857,
+                57112,
+                57367,
+                57622,
+                57877,
+                58132,
+                58387,
+                58642,
+                58897,
+                59152,
+                59407,
+                59662,
+                59917,
+                60172,
+                60427,
+                60682,
+                60937,
+                61192,
+        };
         c.DefineDerivedCounter("NoTexTriFilteringCount",
                                "TextureUnit",
                                "Count of pixels that did not receive trilinear filtering.",
@@ -1590,141 +1592,141 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                kGpaUsageTypeItems,
                                true,
                                false,
-                               internal_counters,
+                               kHardwareCounters,
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,sum64,(4),*",
                                "179da29a-81af-c06e-ce8c-a0a731ea030d");
     }
     { // Index:45
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(45130);
-        internal_counters.push_back(45385);
-        internal_counters.push_back(45640);
-        internal_counters.push_back(45895);
-        internal_counters.push_back(46150);
-        internal_counters.push_back(46405);
-        internal_counters.push_back(46660);
-        internal_counters.push_back(46915);
-        internal_counters.push_back(47170);
-        internal_counters.push_back(47425);
-        internal_counters.push_back(47680);
-        internal_counters.push_back(47935);
-        internal_counters.push_back(48190);
-        internal_counters.push_back(48445);
-        internal_counters.push_back(48700);
-        internal_counters.push_back(48955);
-        internal_counters.push_back(49210);
-        internal_counters.push_back(49465);
-        internal_counters.push_back(49720);
-        internal_counters.push_back(49975);
-        internal_counters.push_back(50230);
-        internal_counters.push_back(50485);
-        internal_counters.push_back(50740);
-        internal_counters.push_back(50995);
-        internal_counters.push_back(51250);
-        internal_counters.push_back(51505);
-        internal_counters.push_back(51760);
-        internal_counters.push_back(52015);
-        internal_counters.push_back(52270);
-        internal_counters.push_back(52525);
-        internal_counters.push_back(52780);
-        internal_counters.push_back(53035);
-        internal_counters.push_back(53290);
-        internal_counters.push_back(53545);
-        internal_counters.push_back(53800);
-        internal_counters.push_back(54055);
-        internal_counters.push_back(54310);
-        internal_counters.push_back(54565);
-        internal_counters.push_back(54820);
-        internal_counters.push_back(55075);
-        internal_counters.push_back(55330);
-        internal_counters.push_back(55585);
-        internal_counters.push_back(55840);
-        internal_counters.push_back(56095);
-        internal_counters.push_back(56350);
-        internal_counters.push_back(56605);
-        internal_counters.push_back(56860);
-        internal_counters.push_back(57115);
-        internal_counters.push_back(57370);
-        internal_counters.push_back(57625);
-        internal_counters.push_back(57880);
-        internal_counters.push_back(58135);
-        internal_counters.push_back(58390);
-        internal_counters.push_back(58645);
-        internal_counters.push_back(58900);
-        internal_counters.push_back(59155);
-        internal_counters.push_back(59410);
-        internal_counters.push_back(59665);
-        internal_counters.push_back(59920);
-        internal_counters.push_back(60175);
-        internal_counters.push_back(60430);
-        internal_counters.push_back(60685);
-        internal_counters.push_back(60940);
-        internal_counters.push_back(61195);
-        internal_counters.push_back(45129);
-        internal_counters.push_back(45384);
-        internal_counters.push_back(45639);
-        internal_counters.push_back(45894);
-        internal_counters.push_back(46149);
-        internal_counters.push_back(46404);
-        internal_counters.push_back(46659);
-        internal_counters.push_back(46914);
-        internal_counters.push_back(47169);
-        internal_counters.push_back(47424);
-        internal_counters.push_back(47679);
-        internal_counters.push_back(47934);
-        internal_counters.push_back(48189);
-        internal_counters.push_back(48444);
-        internal_counters.push_back(48699);
-        internal_counters.push_back(48954);
-        internal_counters.push_back(49209);
-        internal_counters.push_back(49464);
-        internal_counters.push_back(49719);
-        internal_counters.push_back(49974);
-        internal_counters.push_back(50229);
-        internal_counters.push_back(50484);
-        internal_counters.push_back(50739);
-        internal_counters.push_back(50994);
-        internal_counters.push_back(51249);
-        internal_counters.push_back(51504);
-        internal_counters.push_back(51759);
-        internal_counters.push_back(52014);
-        internal_counters.push_back(52269);
-        internal_counters.push_back(52524);
-        internal_counters.push_back(52779);
-        internal_counters.push_back(53034);
-        internal_counters.push_back(53289);
-        internal_counters.push_back(53544);
-        internal_counters.push_back(53799);
-        internal_counters.push_back(54054);
-        internal_counters.push_back(54309);
-        internal_counters.push_back(54564);
-        internal_counters.push_back(54819);
-        internal_counters.push_back(55074);
-        internal_counters.push_back(55329);
-        internal_counters.push_back(55584);
-        internal_counters.push_back(55839);
-        internal_counters.push_back(56094);
-        internal_counters.push_back(56349);
-        internal_counters.push_back(56604);
-        internal_counters.push_back(56859);
-        internal_counters.push_back(57114);
-        internal_counters.push_back(57369);
-        internal_counters.push_back(57624);
-        internal_counters.push_back(57879);
-        internal_counters.push_back(58134);
-        internal_counters.push_back(58389);
-        internal_counters.push_back(58644);
-        internal_counters.push_back(58899);
-        internal_counters.push_back(59154);
-        internal_counters.push_back(59409);
-        internal_counters.push_back(59664);
-        internal_counters.push_back(59919);
-        internal_counters.push_back(60174);
-        internal_counters.push_back(60429);
-        internal_counters.push_back(60684);
-        internal_counters.push_back(60939);
-        internal_counters.push_back(61194);
-
+        static constexpr std::array<GpaUInt32, 128> kHardwareCounters = {
+                45130,
+                45385,
+                45640,
+                45895,
+                46150,
+                46405,
+                46660,
+                46915,
+                47170,
+                47425,
+                47680,
+                47935,
+                48190,
+                48445,
+                48700,
+                48955,
+                49210,
+                49465,
+                49720,
+                49975,
+                50230,
+                50485,
+                50740,
+                50995,
+                51250,
+                51505,
+                51760,
+                52015,
+                52270,
+                52525,
+                52780,
+                53035,
+                53290,
+                53545,
+                53800,
+                54055,
+                54310,
+                54565,
+                54820,
+                55075,
+                55330,
+                55585,
+                55840,
+                56095,
+                56350,
+                56605,
+                56860,
+                57115,
+                57370,
+                57625,
+                57880,
+                58135,
+                58390,
+                58645,
+                58900,
+                59155,
+                59410,
+                59665,
+                59920,
+                60175,
+                60430,
+                60685,
+                60940,
+                61195,
+                45129,
+                45384,
+                45639,
+                45894,
+                46149,
+                46404,
+                46659,
+                46914,
+                47169,
+                47424,
+                47679,
+                47934,
+                48189,
+                48444,
+                48699,
+                48954,
+                49209,
+                49464,
+                49719,
+                49974,
+                50229,
+                50484,
+                50739,
+                50994,
+                51249,
+                51504,
+                51759,
+                52014,
+                52269,
+                52524,
+                52779,
+                53034,
+                53289,
+                53544,
+                53799,
+                54054,
+                54309,
+                54564,
+                54819,
+                55074,
+                55329,
+                55584,
+                55839,
+                56094,
+                56349,
+                56604,
+                56859,
+                57114,
+                57369,
+                57624,
+                57879,
+                58134,
+                58389,
+                58644,
+                58899,
+                59154,
+                59409,
+                59664,
+                59919,
+                60174,
+                60429,
+                60684,
+                60939,
+                61194,
+        };
         c.DefineDerivedCounter("TexVolFilteringPct",
                                "TextureUnit",
                                "Percentage of pixels that received volume filtering.",
@@ -1732,77 +1734,77 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                kGpaUsageTypePercentage,
                                true,
                                false,
-                               internal_counters,
+                               kHardwareCounters,
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,sum64,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,sum64,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,sum64,+,/,(100),*",
                                "b5ff6bed-3178-aee4-42dd-c74391c02a2d");
     }
     { // Index:46
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(45130);
-        internal_counters.push_back(45385);
-        internal_counters.push_back(45640);
-        internal_counters.push_back(45895);
-        internal_counters.push_back(46150);
-        internal_counters.push_back(46405);
-        internal_counters.push_back(46660);
-        internal_counters.push_back(46915);
-        internal_counters.push_back(47170);
-        internal_counters.push_back(47425);
-        internal_counters.push_back(47680);
-        internal_counters.push_back(47935);
-        internal_counters.push_back(48190);
-        internal_counters.push_back(48445);
-        internal_counters.push_back(48700);
-        internal_counters.push_back(48955);
-        internal_counters.push_back(49210);
-        internal_counters.push_back(49465);
-        internal_counters.push_back(49720);
-        internal_counters.push_back(49975);
-        internal_counters.push_back(50230);
-        internal_counters.push_back(50485);
-        internal_counters.push_back(50740);
-        internal_counters.push_back(50995);
-        internal_counters.push_back(51250);
-        internal_counters.push_back(51505);
-        internal_counters.push_back(51760);
-        internal_counters.push_back(52015);
-        internal_counters.push_back(52270);
-        internal_counters.push_back(52525);
-        internal_counters.push_back(52780);
-        internal_counters.push_back(53035);
-        internal_counters.push_back(53290);
-        internal_counters.push_back(53545);
-        internal_counters.push_back(53800);
-        internal_counters.push_back(54055);
-        internal_counters.push_back(54310);
-        internal_counters.push_back(54565);
-        internal_counters.push_back(54820);
-        internal_counters.push_back(55075);
-        internal_counters.push_back(55330);
-        internal_counters.push_back(55585);
-        internal_counters.push_back(55840);
-        internal_counters.push_back(56095);
-        internal_counters.push_back(56350);
-        internal_counters.push_back(56605);
-        internal_counters.push_back(56860);
-        internal_counters.push_back(57115);
-        internal_counters.push_back(57370);
-        internal_counters.push_back(57625);
-        internal_counters.push_back(57880);
-        internal_counters.push_back(58135);
-        internal_counters.push_back(58390);
-        internal_counters.push_back(58645);
-        internal_counters.push_back(58900);
-        internal_counters.push_back(59155);
-        internal_counters.push_back(59410);
-        internal_counters.push_back(59665);
-        internal_counters.push_back(59920);
-        internal_counters.push_back(60175);
-        internal_counters.push_back(60430);
-        internal_counters.push_back(60685);
-        internal_counters.push_back(60940);
-        internal_counters.push_back(61195);
-
+        static constexpr std::array<GpaUInt32, 64> kHardwareCounters = {
+                45130,
+                45385,
+                45640,
+                45895,
+                46150,
+                46405,
+                46660,
+                46915,
+                47170,
+                47425,
+                47680,
+                47935,
+                48190,
+                48445,
+                48700,
+                48955,
+                49210,
+                49465,
+                49720,
+                49975,
+                50230,
+                50485,
+                50740,
+                50995,
+                51250,
+                51505,
+                51760,
+                52015,
+                52270,
+                52525,
+                52780,
+                53035,
+                53290,
+                53545,
+                53800,
+                54055,
+                54310,
+                54565,
+                54820,
+                55075,
+                55330,
+                55585,
+                55840,
+                56095,
+                56350,
+                56605,
+                56860,
+                57115,
+                57370,
+                57625,
+                57880,
+                58135,
+                58390,
+                58645,
+                58900,
+                59155,
+                59410,
+                59665,
+                59920,
+                60175,
+                60430,
+                60685,
+                60940,
+                61195,
+        };
         c.DefineDerivedCounter("TexVolFilteringCount",
                                "TextureUnit",
                                "Count of pixels that received volume filtering.",
@@ -1810,77 +1812,77 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                kGpaUsageTypeItems,
                                true,
                                false,
-                               internal_counters,
+                               kHardwareCounters,
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,sum64,(4),*",
                                "4bddc587-d589-8128-e18c-762eab2c871f");
     }
     { // Index:47
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(45129);
-        internal_counters.push_back(45384);
-        internal_counters.push_back(45639);
-        internal_counters.push_back(45894);
-        internal_counters.push_back(46149);
-        internal_counters.push_back(46404);
-        internal_counters.push_back(46659);
-        internal_counters.push_back(46914);
-        internal_counters.push_back(47169);
-        internal_counters.push_back(47424);
-        internal_counters.push_back(47679);
-        internal_counters.push_back(47934);
-        internal_counters.push_back(48189);
-        internal_counters.push_back(48444);
-        internal_counters.push_back(48699);
-        internal_counters.push_back(48954);
-        internal_counters.push_back(49209);
-        internal_counters.push_back(49464);
-        internal_counters.push_back(49719);
-        internal_counters.push_back(49974);
-        internal_counters.push_back(50229);
-        internal_counters.push_back(50484);
-        internal_counters.push_back(50739);
-        internal_counters.push_back(50994);
-        internal_counters.push_back(51249);
-        internal_counters.push_back(51504);
-        internal_counters.push_back(51759);
-        internal_counters.push_back(52014);
-        internal_counters.push_back(52269);
-        internal_counters.push_back(52524);
-        internal_counters.push_back(52779);
-        internal_counters.push_back(53034);
-        internal_counters.push_back(53289);
-        internal_counters.push_back(53544);
-        internal_counters.push_back(53799);
-        internal_counters.push_back(54054);
-        internal_counters.push_back(54309);
-        internal_counters.push_back(54564);
-        internal_counters.push_back(54819);
-        internal_counters.push_back(55074);
-        internal_counters.push_back(55329);
-        internal_counters.push_back(55584);
-        internal_counters.push_back(55839);
-        internal_counters.push_back(56094);
-        internal_counters.push_back(56349);
-        internal_counters.push_back(56604);
-        internal_counters.push_back(56859);
-        internal_counters.push_back(57114);
-        internal_counters.push_back(57369);
-        internal_counters.push_back(57624);
-        internal_counters.push_back(57879);
-        internal_counters.push_back(58134);
-        internal_counters.push_back(58389);
-        internal_counters.push_back(58644);
-        internal_counters.push_back(58899);
-        internal_counters.push_back(59154);
-        internal_counters.push_back(59409);
-        internal_counters.push_back(59664);
-        internal_counters.push_back(59919);
-        internal_counters.push_back(60174);
-        internal_counters.push_back(60429);
-        internal_counters.push_back(60684);
-        internal_counters.push_back(60939);
-        internal_counters.push_back(61194);
-
+        static constexpr std::array<GpaUInt32, 64> kHardwareCounters = {
+                45129,
+                45384,
+                45639,
+                45894,
+                46149,
+                46404,
+                46659,
+                46914,
+                47169,
+                47424,
+                47679,
+                47934,
+                48189,
+                48444,
+                48699,
+                48954,
+                49209,
+                49464,
+                49719,
+                49974,
+                50229,
+                50484,
+                50739,
+                50994,
+                51249,
+                51504,
+                51759,
+                52014,
+                52269,
+                52524,
+                52779,
+                53034,
+                53289,
+                53544,
+                53799,
+                54054,
+                54309,
+                54564,
+                54819,
+                55074,
+                55329,
+                55584,
+                55839,
+                56094,
+                56349,
+                56604,
+                56859,
+                57114,
+                57369,
+                57624,
+                57879,
+                58134,
+                58389,
+                58644,
+                58899,
+                59154,
+                59409,
+                59664,
+                59919,
+                60174,
+                60429,
+                60684,
+                60939,
+                61194,
+        };
         c.DefineDerivedCounter("NoTexVolFilteringCount",
                                "TextureUnit",
                                "Count of pixels that did not receive volume filtering.",
@@ -1888,589 +1890,589 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                kGpaUsageTypeItems,
                                true,
                                false,
-                               internal_counters,
+                               kHardwareCounters,
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,sum64,(4),*",
                                "9fe1a854-17c6-9d26-b2b9-80610cd5827d");
     }
     { // Index:48
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(45148);
-        internal_counters.push_back(45403);
-        internal_counters.push_back(45658);
-        internal_counters.push_back(45913);
-        internal_counters.push_back(46168);
-        internal_counters.push_back(46423);
-        internal_counters.push_back(46678);
-        internal_counters.push_back(46933);
-        internal_counters.push_back(47188);
-        internal_counters.push_back(47443);
-        internal_counters.push_back(47698);
-        internal_counters.push_back(47953);
-        internal_counters.push_back(48208);
-        internal_counters.push_back(48463);
-        internal_counters.push_back(48718);
-        internal_counters.push_back(48973);
-        internal_counters.push_back(49228);
-        internal_counters.push_back(49483);
-        internal_counters.push_back(49738);
-        internal_counters.push_back(49993);
-        internal_counters.push_back(50248);
-        internal_counters.push_back(50503);
-        internal_counters.push_back(50758);
-        internal_counters.push_back(51013);
-        internal_counters.push_back(51268);
-        internal_counters.push_back(51523);
-        internal_counters.push_back(51778);
-        internal_counters.push_back(52033);
-        internal_counters.push_back(52288);
-        internal_counters.push_back(52543);
-        internal_counters.push_back(52798);
-        internal_counters.push_back(53053);
-        internal_counters.push_back(53308);
-        internal_counters.push_back(53563);
-        internal_counters.push_back(53818);
-        internal_counters.push_back(54073);
-        internal_counters.push_back(54328);
-        internal_counters.push_back(54583);
-        internal_counters.push_back(54838);
-        internal_counters.push_back(55093);
-        internal_counters.push_back(55348);
-        internal_counters.push_back(55603);
-        internal_counters.push_back(55858);
-        internal_counters.push_back(56113);
-        internal_counters.push_back(56368);
-        internal_counters.push_back(56623);
-        internal_counters.push_back(56878);
-        internal_counters.push_back(57133);
-        internal_counters.push_back(57388);
-        internal_counters.push_back(57643);
-        internal_counters.push_back(57898);
-        internal_counters.push_back(58153);
-        internal_counters.push_back(58408);
-        internal_counters.push_back(58663);
-        internal_counters.push_back(58918);
-        internal_counters.push_back(59173);
-        internal_counters.push_back(59428);
-        internal_counters.push_back(59683);
-        internal_counters.push_back(59938);
-        internal_counters.push_back(60193);
-        internal_counters.push_back(60448);
-        internal_counters.push_back(60703);
-        internal_counters.push_back(60958);
-        internal_counters.push_back(61213);
-        internal_counters.push_back(45149);
-        internal_counters.push_back(45404);
-        internal_counters.push_back(45659);
-        internal_counters.push_back(45914);
-        internal_counters.push_back(46169);
-        internal_counters.push_back(46424);
-        internal_counters.push_back(46679);
-        internal_counters.push_back(46934);
-        internal_counters.push_back(47189);
-        internal_counters.push_back(47444);
-        internal_counters.push_back(47699);
-        internal_counters.push_back(47954);
-        internal_counters.push_back(48209);
-        internal_counters.push_back(48464);
-        internal_counters.push_back(48719);
-        internal_counters.push_back(48974);
-        internal_counters.push_back(49229);
-        internal_counters.push_back(49484);
-        internal_counters.push_back(49739);
-        internal_counters.push_back(49994);
-        internal_counters.push_back(50249);
-        internal_counters.push_back(50504);
-        internal_counters.push_back(50759);
-        internal_counters.push_back(51014);
-        internal_counters.push_back(51269);
-        internal_counters.push_back(51524);
-        internal_counters.push_back(51779);
-        internal_counters.push_back(52034);
-        internal_counters.push_back(52289);
-        internal_counters.push_back(52544);
-        internal_counters.push_back(52799);
-        internal_counters.push_back(53054);
-        internal_counters.push_back(53309);
-        internal_counters.push_back(53564);
-        internal_counters.push_back(53819);
-        internal_counters.push_back(54074);
-        internal_counters.push_back(54329);
-        internal_counters.push_back(54584);
-        internal_counters.push_back(54839);
-        internal_counters.push_back(55094);
-        internal_counters.push_back(55349);
-        internal_counters.push_back(55604);
-        internal_counters.push_back(55859);
-        internal_counters.push_back(56114);
-        internal_counters.push_back(56369);
-        internal_counters.push_back(56624);
-        internal_counters.push_back(56879);
-        internal_counters.push_back(57134);
-        internal_counters.push_back(57389);
-        internal_counters.push_back(57644);
-        internal_counters.push_back(57899);
-        internal_counters.push_back(58154);
-        internal_counters.push_back(58409);
-        internal_counters.push_back(58664);
-        internal_counters.push_back(58919);
-        internal_counters.push_back(59174);
-        internal_counters.push_back(59429);
-        internal_counters.push_back(59684);
-        internal_counters.push_back(59939);
-        internal_counters.push_back(60194);
-        internal_counters.push_back(60449);
-        internal_counters.push_back(60704);
-        internal_counters.push_back(60959);
-        internal_counters.push_back(61214);
-        internal_counters.push_back(45150);
-        internal_counters.push_back(45405);
-        internal_counters.push_back(45660);
-        internal_counters.push_back(45915);
-        internal_counters.push_back(46170);
-        internal_counters.push_back(46425);
-        internal_counters.push_back(46680);
-        internal_counters.push_back(46935);
-        internal_counters.push_back(47190);
-        internal_counters.push_back(47445);
-        internal_counters.push_back(47700);
-        internal_counters.push_back(47955);
-        internal_counters.push_back(48210);
-        internal_counters.push_back(48465);
-        internal_counters.push_back(48720);
-        internal_counters.push_back(48975);
-        internal_counters.push_back(49230);
-        internal_counters.push_back(49485);
-        internal_counters.push_back(49740);
-        internal_counters.push_back(49995);
-        internal_counters.push_back(50250);
-        internal_counters.push_back(50505);
-        internal_counters.push_back(50760);
-        internal_counters.push_back(51015);
-        internal_counters.push_back(51270);
-        internal_counters.push_back(51525);
-        internal_counters.push_back(51780);
-        internal_counters.push_back(52035);
-        internal_counters.push_back(52290);
-        internal_counters.push_back(52545);
-        internal_counters.push_back(52800);
-        internal_counters.push_back(53055);
-        internal_counters.push_back(53310);
-        internal_counters.push_back(53565);
-        internal_counters.push_back(53820);
-        internal_counters.push_back(54075);
-        internal_counters.push_back(54330);
-        internal_counters.push_back(54585);
-        internal_counters.push_back(54840);
-        internal_counters.push_back(55095);
-        internal_counters.push_back(55350);
-        internal_counters.push_back(55605);
-        internal_counters.push_back(55860);
-        internal_counters.push_back(56115);
-        internal_counters.push_back(56370);
-        internal_counters.push_back(56625);
-        internal_counters.push_back(56880);
-        internal_counters.push_back(57135);
-        internal_counters.push_back(57390);
-        internal_counters.push_back(57645);
-        internal_counters.push_back(57900);
-        internal_counters.push_back(58155);
-        internal_counters.push_back(58410);
-        internal_counters.push_back(58665);
-        internal_counters.push_back(58920);
-        internal_counters.push_back(59175);
-        internal_counters.push_back(59430);
-        internal_counters.push_back(59685);
-        internal_counters.push_back(59940);
-        internal_counters.push_back(60195);
-        internal_counters.push_back(60450);
-        internal_counters.push_back(60705);
-        internal_counters.push_back(60960);
-        internal_counters.push_back(61215);
-        internal_counters.push_back(45151);
-        internal_counters.push_back(45406);
-        internal_counters.push_back(45661);
-        internal_counters.push_back(45916);
-        internal_counters.push_back(46171);
-        internal_counters.push_back(46426);
-        internal_counters.push_back(46681);
-        internal_counters.push_back(46936);
-        internal_counters.push_back(47191);
-        internal_counters.push_back(47446);
-        internal_counters.push_back(47701);
-        internal_counters.push_back(47956);
-        internal_counters.push_back(48211);
-        internal_counters.push_back(48466);
-        internal_counters.push_back(48721);
-        internal_counters.push_back(48976);
-        internal_counters.push_back(49231);
-        internal_counters.push_back(49486);
-        internal_counters.push_back(49741);
-        internal_counters.push_back(49996);
-        internal_counters.push_back(50251);
-        internal_counters.push_back(50506);
-        internal_counters.push_back(50761);
-        internal_counters.push_back(51016);
-        internal_counters.push_back(51271);
-        internal_counters.push_back(51526);
-        internal_counters.push_back(51781);
-        internal_counters.push_back(52036);
-        internal_counters.push_back(52291);
-        internal_counters.push_back(52546);
-        internal_counters.push_back(52801);
-        internal_counters.push_back(53056);
-        internal_counters.push_back(53311);
-        internal_counters.push_back(53566);
-        internal_counters.push_back(53821);
-        internal_counters.push_back(54076);
-        internal_counters.push_back(54331);
-        internal_counters.push_back(54586);
-        internal_counters.push_back(54841);
-        internal_counters.push_back(55096);
-        internal_counters.push_back(55351);
-        internal_counters.push_back(55606);
-        internal_counters.push_back(55861);
-        internal_counters.push_back(56116);
-        internal_counters.push_back(56371);
-        internal_counters.push_back(56626);
-        internal_counters.push_back(56881);
-        internal_counters.push_back(57136);
-        internal_counters.push_back(57391);
-        internal_counters.push_back(57646);
-        internal_counters.push_back(57901);
-        internal_counters.push_back(58156);
-        internal_counters.push_back(58411);
-        internal_counters.push_back(58666);
-        internal_counters.push_back(58921);
-        internal_counters.push_back(59176);
-        internal_counters.push_back(59431);
-        internal_counters.push_back(59686);
-        internal_counters.push_back(59941);
-        internal_counters.push_back(60196);
-        internal_counters.push_back(60451);
-        internal_counters.push_back(60706);
-        internal_counters.push_back(60961);
-        internal_counters.push_back(61216);
-        internal_counters.push_back(45152);
-        internal_counters.push_back(45407);
-        internal_counters.push_back(45662);
-        internal_counters.push_back(45917);
-        internal_counters.push_back(46172);
-        internal_counters.push_back(46427);
-        internal_counters.push_back(46682);
-        internal_counters.push_back(46937);
-        internal_counters.push_back(47192);
-        internal_counters.push_back(47447);
-        internal_counters.push_back(47702);
-        internal_counters.push_back(47957);
-        internal_counters.push_back(48212);
-        internal_counters.push_back(48467);
-        internal_counters.push_back(48722);
-        internal_counters.push_back(48977);
-        internal_counters.push_back(49232);
-        internal_counters.push_back(49487);
-        internal_counters.push_back(49742);
-        internal_counters.push_back(49997);
-        internal_counters.push_back(50252);
-        internal_counters.push_back(50507);
-        internal_counters.push_back(50762);
-        internal_counters.push_back(51017);
-        internal_counters.push_back(51272);
-        internal_counters.push_back(51527);
-        internal_counters.push_back(51782);
-        internal_counters.push_back(52037);
-        internal_counters.push_back(52292);
-        internal_counters.push_back(52547);
-        internal_counters.push_back(52802);
-        internal_counters.push_back(53057);
-        internal_counters.push_back(53312);
-        internal_counters.push_back(53567);
-        internal_counters.push_back(53822);
-        internal_counters.push_back(54077);
-        internal_counters.push_back(54332);
-        internal_counters.push_back(54587);
-        internal_counters.push_back(54842);
-        internal_counters.push_back(55097);
-        internal_counters.push_back(55352);
-        internal_counters.push_back(55607);
-        internal_counters.push_back(55862);
-        internal_counters.push_back(56117);
-        internal_counters.push_back(56372);
-        internal_counters.push_back(56627);
-        internal_counters.push_back(56882);
-        internal_counters.push_back(57137);
-        internal_counters.push_back(57392);
-        internal_counters.push_back(57647);
-        internal_counters.push_back(57902);
-        internal_counters.push_back(58157);
-        internal_counters.push_back(58412);
-        internal_counters.push_back(58667);
-        internal_counters.push_back(58922);
-        internal_counters.push_back(59177);
-        internal_counters.push_back(59432);
-        internal_counters.push_back(59687);
-        internal_counters.push_back(59942);
-        internal_counters.push_back(60197);
-        internal_counters.push_back(60452);
-        internal_counters.push_back(60707);
-        internal_counters.push_back(60962);
-        internal_counters.push_back(61217);
-        internal_counters.push_back(45153);
-        internal_counters.push_back(45408);
-        internal_counters.push_back(45663);
-        internal_counters.push_back(45918);
-        internal_counters.push_back(46173);
-        internal_counters.push_back(46428);
-        internal_counters.push_back(46683);
-        internal_counters.push_back(46938);
-        internal_counters.push_back(47193);
-        internal_counters.push_back(47448);
-        internal_counters.push_back(47703);
-        internal_counters.push_back(47958);
-        internal_counters.push_back(48213);
-        internal_counters.push_back(48468);
-        internal_counters.push_back(48723);
-        internal_counters.push_back(48978);
-        internal_counters.push_back(49233);
-        internal_counters.push_back(49488);
-        internal_counters.push_back(49743);
-        internal_counters.push_back(49998);
-        internal_counters.push_back(50253);
-        internal_counters.push_back(50508);
-        internal_counters.push_back(50763);
-        internal_counters.push_back(51018);
-        internal_counters.push_back(51273);
-        internal_counters.push_back(51528);
-        internal_counters.push_back(51783);
-        internal_counters.push_back(52038);
-        internal_counters.push_back(52293);
-        internal_counters.push_back(52548);
-        internal_counters.push_back(52803);
-        internal_counters.push_back(53058);
-        internal_counters.push_back(53313);
-        internal_counters.push_back(53568);
-        internal_counters.push_back(53823);
-        internal_counters.push_back(54078);
-        internal_counters.push_back(54333);
-        internal_counters.push_back(54588);
-        internal_counters.push_back(54843);
-        internal_counters.push_back(55098);
-        internal_counters.push_back(55353);
-        internal_counters.push_back(55608);
-        internal_counters.push_back(55863);
-        internal_counters.push_back(56118);
-        internal_counters.push_back(56373);
-        internal_counters.push_back(56628);
-        internal_counters.push_back(56883);
-        internal_counters.push_back(57138);
-        internal_counters.push_back(57393);
-        internal_counters.push_back(57648);
-        internal_counters.push_back(57903);
-        internal_counters.push_back(58158);
-        internal_counters.push_back(58413);
-        internal_counters.push_back(58668);
-        internal_counters.push_back(58923);
-        internal_counters.push_back(59178);
-        internal_counters.push_back(59433);
-        internal_counters.push_back(59688);
-        internal_counters.push_back(59943);
-        internal_counters.push_back(60198);
-        internal_counters.push_back(60453);
-        internal_counters.push_back(60708);
-        internal_counters.push_back(60963);
-        internal_counters.push_back(61218);
-        internal_counters.push_back(45154);
-        internal_counters.push_back(45409);
-        internal_counters.push_back(45664);
-        internal_counters.push_back(45919);
-        internal_counters.push_back(46174);
-        internal_counters.push_back(46429);
-        internal_counters.push_back(46684);
-        internal_counters.push_back(46939);
-        internal_counters.push_back(47194);
-        internal_counters.push_back(47449);
-        internal_counters.push_back(47704);
-        internal_counters.push_back(47959);
-        internal_counters.push_back(48214);
-        internal_counters.push_back(48469);
-        internal_counters.push_back(48724);
-        internal_counters.push_back(48979);
-        internal_counters.push_back(49234);
-        internal_counters.push_back(49489);
-        internal_counters.push_back(49744);
-        internal_counters.push_back(49999);
-        internal_counters.push_back(50254);
-        internal_counters.push_back(50509);
-        internal_counters.push_back(50764);
-        internal_counters.push_back(51019);
-        internal_counters.push_back(51274);
-        internal_counters.push_back(51529);
-        internal_counters.push_back(51784);
-        internal_counters.push_back(52039);
-        internal_counters.push_back(52294);
-        internal_counters.push_back(52549);
-        internal_counters.push_back(52804);
-        internal_counters.push_back(53059);
-        internal_counters.push_back(53314);
-        internal_counters.push_back(53569);
-        internal_counters.push_back(53824);
-        internal_counters.push_back(54079);
-        internal_counters.push_back(54334);
-        internal_counters.push_back(54589);
-        internal_counters.push_back(54844);
-        internal_counters.push_back(55099);
-        internal_counters.push_back(55354);
-        internal_counters.push_back(55609);
-        internal_counters.push_back(55864);
-        internal_counters.push_back(56119);
-        internal_counters.push_back(56374);
-        internal_counters.push_back(56629);
-        internal_counters.push_back(56884);
-        internal_counters.push_back(57139);
-        internal_counters.push_back(57394);
-        internal_counters.push_back(57649);
-        internal_counters.push_back(57904);
-        internal_counters.push_back(58159);
-        internal_counters.push_back(58414);
-        internal_counters.push_back(58669);
-        internal_counters.push_back(58924);
-        internal_counters.push_back(59179);
-        internal_counters.push_back(59434);
-        internal_counters.push_back(59689);
-        internal_counters.push_back(59944);
-        internal_counters.push_back(60199);
-        internal_counters.push_back(60454);
-        internal_counters.push_back(60709);
-        internal_counters.push_back(60964);
-        internal_counters.push_back(61219);
-        internal_counters.push_back(45155);
-        internal_counters.push_back(45410);
-        internal_counters.push_back(45665);
-        internal_counters.push_back(45920);
-        internal_counters.push_back(46175);
-        internal_counters.push_back(46430);
-        internal_counters.push_back(46685);
-        internal_counters.push_back(46940);
-        internal_counters.push_back(47195);
-        internal_counters.push_back(47450);
-        internal_counters.push_back(47705);
-        internal_counters.push_back(47960);
-        internal_counters.push_back(48215);
-        internal_counters.push_back(48470);
-        internal_counters.push_back(48725);
-        internal_counters.push_back(48980);
-        internal_counters.push_back(49235);
-        internal_counters.push_back(49490);
-        internal_counters.push_back(49745);
-        internal_counters.push_back(50000);
-        internal_counters.push_back(50255);
-        internal_counters.push_back(50510);
-        internal_counters.push_back(50765);
-        internal_counters.push_back(51020);
-        internal_counters.push_back(51275);
-        internal_counters.push_back(51530);
-        internal_counters.push_back(51785);
-        internal_counters.push_back(52040);
-        internal_counters.push_back(52295);
-        internal_counters.push_back(52550);
-        internal_counters.push_back(52805);
-        internal_counters.push_back(53060);
-        internal_counters.push_back(53315);
-        internal_counters.push_back(53570);
-        internal_counters.push_back(53825);
-        internal_counters.push_back(54080);
-        internal_counters.push_back(54335);
-        internal_counters.push_back(54590);
-        internal_counters.push_back(54845);
-        internal_counters.push_back(55100);
-        internal_counters.push_back(55355);
-        internal_counters.push_back(55610);
-        internal_counters.push_back(55865);
-        internal_counters.push_back(56120);
-        internal_counters.push_back(56375);
-        internal_counters.push_back(56630);
-        internal_counters.push_back(56885);
-        internal_counters.push_back(57140);
-        internal_counters.push_back(57395);
-        internal_counters.push_back(57650);
-        internal_counters.push_back(57905);
-        internal_counters.push_back(58160);
-        internal_counters.push_back(58415);
-        internal_counters.push_back(58670);
-        internal_counters.push_back(58925);
-        internal_counters.push_back(59180);
-        internal_counters.push_back(59435);
-        internal_counters.push_back(59690);
-        internal_counters.push_back(59945);
-        internal_counters.push_back(60200);
-        internal_counters.push_back(60455);
-        internal_counters.push_back(60710);
-        internal_counters.push_back(60965);
-        internal_counters.push_back(61220);
-        internal_counters.push_back(45156);
-        internal_counters.push_back(45411);
-        internal_counters.push_back(45666);
-        internal_counters.push_back(45921);
-        internal_counters.push_back(46176);
-        internal_counters.push_back(46431);
-        internal_counters.push_back(46686);
-        internal_counters.push_back(46941);
-        internal_counters.push_back(47196);
-        internal_counters.push_back(47451);
-        internal_counters.push_back(47706);
-        internal_counters.push_back(47961);
-        internal_counters.push_back(48216);
-        internal_counters.push_back(48471);
-        internal_counters.push_back(48726);
-        internal_counters.push_back(48981);
-        internal_counters.push_back(49236);
-        internal_counters.push_back(49491);
-        internal_counters.push_back(49746);
-        internal_counters.push_back(50001);
-        internal_counters.push_back(50256);
-        internal_counters.push_back(50511);
-        internal_counters.push_back(50766);
-        internal_counters.push_back(51021);
-        internal_counters.push_back(51276);
-        internal_counters.push_back(51531);
-        internal_counters.push_back(51786);
-        internal_counters.push_back(52041);
-        internal_counters.push_back(52296);
-        internal_counters.push_back(52551);
-        internal_counters.push_back(52806);
-        internal_counters.push_back(53061);
-        internal_counters.push_back(53316);
-        internal_counters.push_back(53571);
-        internal_counters.push_back(53826);
-        internal_counters.push_back(54081);
-        internal_counters.push_back(54336);
-        internal_counters.push_back(54591);
-        internal_counters.push_back(54846);
-        internal_counters.push_back(55101);
-        internal_counters.push_back(55356);
-        internal_counters.push_back(55611);
-        internal_counters.push_back(55866);
-        internal_counters.push_back(56121);
-        internal_counters.push_back(56376);
-        internal_counters.push_back(56631);
-        internal_counters.push_back(56886);
-        internal_counters.push_back(57141);
-        internal_counters.push_back(57396);
-        internal_counters.push_back(57651);
-        internal_counters.push_back(57906);
-        internal_counters.push_back(58161);
-        internal_counters.push_back(58416);
-        internal_counters.push_back(58671);
-        internal_counters.push_back(58926);
-        internal_counters.push_back(59181);
-        internal_counters.push_back(59436);
-        internal_counters.push_back(59691);
-        internal_counters.push_back(59946);
-        internal_counters.push_back(60201);
-        internal_counters.push_back(60456);
-        internal_counters.push_back(60711);
-        internal_counters.push_back(60966);
-        internal_counters.push_back(61221);
-
+        static constexpr std::array<GpaUInt32, 576> kHardwareCounters = {
+                45148,
+                45403,
+                45658,
+                45913,
+                46168,
+                46423,
+                46678,
+                46933,
+                47188,
+                47443,
+                47698,
+                47953,
+                48208,
+                48463,
+                48718,
+                48973,
+                49228,
+                49483,
+                49738,
+                49993,
+                50248,
+                50503,
+                50758,
+                51013,
+                51268,
+                51523,
+                51778,
+                52033,
+                52288,
+                52543,
+                52798,
+                53053,
+                53308,
+                53563,
+                53818,
+                54073,
+                54328,
+                54583,
+                54838,
+                55093,
+                55348,
+                55603,
+                55858,
+                56113,
+                56368,
+                56623,
+                56878,
+                57133,
+                57388,
+                57643,
+                57898,
+                58153,
+                58408,
+                58663,
+                58918,
+                59173,
+                59428,
+                59683,
+                59938,
+                60193,
+                60448,
+                60703,
+                60958,
+                61213,
+                45149,
+                45404,
+                45659,
+                45914,
+                46169,
+                46424,
+                46679,
+                46934,
+                47189,
+                47444,
+                47699,
+                47954,
+                48209,
+                48464,
+                48719,
+                48974,
+                49229,
+                49484,
+                49739,
+                49994,
+                50249,
+                50504,
+                50759,
+                51014,
+                51269,
+                51524,
+                51779,
+                52034,
+                52289,
+                52544,
+                52799,
+                53054,
+                53309,
+                53564,
+                53819,
+                54074,
+                54329,
+                54584,
+                54839,
+                55094,
+                55349,
+                55604,
+                55859,
+                56114,
+                56369,
+                56624,
+                56879,
+                57134,
+                57389,
+                57644,
+                57899,
+                58154,
+                58409,
+                58664,
+                58919,
+                59174,
+                59429,
+                59684,
+                59939,
+                60194,
+                60449,
+                60704,
+                60959,
+                61214,
+                45150,
+                45405,
+                45660,
+                45915,
+                46170,
+                46425,
+                46680,
+                46935,
+                47190,
+                47445,
+                47700,
+                47955,
+                48210,
+                48465,
+                48720,
+                48975,
+                49230,
+                49485,
+                49740,
+                49995,
+                50250,
+                50505,
+                50760,
+                51015,
+                51270,
+                51525,
+                51780,
+                52035,
+                52290,
+                52545,
+                52800,
+                53055,
+                53310,
+                53565,
+                53820,
+                54075,
+                54330,
+                54585,
+                54840,
+                55095,
+                55350,
+                55605,
+                55860,
+                56115,
+                56370,
+                56625,
+                56880,
+                57135,
+                57390,
+                57645,
+                57900,
+                58155,
+                58410,
+                58665,
+                58920,
+                59175,
+                59430,
+                59685,
+                59940,
+                60195,
+                60450,
+                60705,
+                60960,
+                61215,
+                45151,
+                45406,
+                45661,
+                45916,
+                46171,
+                46426,
+                46681,
+                46936,
+                47191,
+                47446,
+                47701,
+                47956,
+                48211,
+                48466,
+                48721,
+                48976,
+                49231,
+                49486,
+                49741,
+                49996,
+                50251,
+                50506,
+                50761,
+                51016,
+                51271,
+                51526,
+                51781,
+                52036,
+                52291,
+                52546,
+                52801,
+                53056,
+                53311,
+                53566,
+                53821,
+                54076,
+                54331,
+                54586,
+                54841,
+                55096,
+                55351,
+                55606,
+                55861,
+                56116,
+                56371,
+                56626,
+                56881,
+                57136,
+                57391,
+                57646,
+                57901,
+                58156,
+                58411,
+                58666,
+                58921,
+                59176,
+                59431,
+                59686,
+                59941,
+                60196,
+                60451,
+                60706,
+                60961,
+                61216,
+                45152,
+                45407,
+                45662,
+                45917,
+                46172,
+                46427,
+                46682,
+                46937,
+                47192,
+                47447,
+                47702,
+                47957,
+                48212,
+                48467,
+                48722,
+                48977,
+                49232,
+                49487,
+                49742,
+                49997,
+                50252,
+                50507,
+                50762,
+                51017,
+                51272,
+                51527,
+                51782,
+                52037,
+                52292,
+                52547,
+                52802,
+                53057,
+                53312,
+                53567,
+                53822,
+                54077,
+                54332,
+                54587,
+                54842,
+                55097,
+                55352,
+                55607,
+                55862,
+                56117,
+                56372,
+                56627,
+                56882,
+                57137,
+                57392,
+                57647,
+                57902,
+                58157,
+                58412,
+                58667,
+                58922,
+                59177,
+                59432,
+                59687,
+                59942,
+                60197,
+                60452,
+                60707,
+                60962,
+                61217,
+                45153,
+                45408,
+                45663,
+                45918,
+                46173,
+                46428,
+                46683,
+                46938,
+                47193,
+                47448,
+                47703,
+                47958,
+                48213,
+                48468,
+                48723,
+                48978,
+                49233,
+                49488,
+                49743,
+                49998,
+                50253,
+                50508,
+                50763,
+                51018,
+                51273,
+                51528,
+                51783,
+                52038,
+                52293,
+                52548,
+                52803,
+                53058,
+                53313,
+                53568,
+                53823,
+                54078,
+                54333,
+                54588,
+                54843,
+                55098,
+                55353,
+                55608,
+                55863,
+                56118,
+                56373,
+                56628,
+                56883,
+                57138,
+                57393,
+                57648,
+                57903,
+                58158,
+                58413,
+                58668,
+                58923,
+                59178,
+                59433,
+                59688,
+                59943,
+                60198,
+                60453,
+                60708,
+                60963,
+                61218,
+                45154,
+                45409,
+                45664,
+                45919,
+                46174,
+                46429,
+                46684,
+                46939,
+                47194,
+                47449,
+                47704,
+                47959,
+                48214,
+                48469,
+                48724,
+                48979,
+                49234,
+                49489,
+                49744,
+                49999,
+                50254,
+                50509,
+                50764,
+                51019,
+                51274,
+                51529,
+                51784,
+                52039,
+                52294,
+                52549,
+                52804,
+                53059,
+                53314,
+                53569,
+                53824,
+                54079,
+                54334,
+                54589,
+                54844,
+                55099,
+                55354,
+                55609,
+                55864,
+                56119,
+                56374,
+                56629,
+                56884,
+                57139,
+                57394,
+                57649,
+                57904,
+                58159,
+                58414,
+                58669,
+                58924,
+                59179,
+                59434,
+                59689,
+                59944,
+                60199,
+                60454,
+                60709,
+                60964,
+                61219,
+                45155,
+                45410,
+                45665,
+                45920,
+                46175,
+                46430,
+                46685,
+                46940,
+                47195,
+                47450,
+                47705,
+                47960,
+                48215,
+                48470,
+                48725,
+                48980,
+                49235,
+                49490,
+                49745,
+                50000,
+                50255,
+                50510,
+                50765,
+                51020,
+                51275,
+                51530,
+                51785,
+                52040,
+                52295,
+                52550,
+                52805,
+                53060,
+                53315,
+                53570,
+                53825,
+                54080,
+                54335,
+                54590,
+                54845,
+                55100,
+                55355,
+                55610,
+                55865,
+                56120,
+                56375,
+                56630,
+                56885,
+                57140,
+                57395,
+                57650,
+                57905,
+                58160,
+                58415,
+                58670,
+                58925,
+                59180,
+                59435,
+                59690,
+                59945,
+                60200,
+                60455,
+                60710,
+                60965,
+                61220,
+                45156,
+                45411,
+                45666,
+                45921,
+                46176,
+                46431,
+                46686,
+                46941,
+                47196,
+                47451,
+                47706,
+                47961,
+                48216,
+                48471,
+                48726,
+                48981,
+                49236,
+                49491,
+                49746,
+                50001,
+                50256,
+                50511,
+                50766,
+                51021,
+                51276,
+                51531,
+                51786,
+                52041,
+                52296,
+                52551,
+                52806,
+                53061,
+                53316,
+                53571,
+                53826,
+                54081,
+                54336,
+                54591,
+                54846,
+                55101,
+                55356,
+                55611,
+                55866,
+                56121,
+                56376,
+                56631,
+                56886,
+                57141,
+                57396,
+                57651,
+                57906,
+                58161,
+                58416,
+                58671,
+                58926,
+                59181,
+                59436,
+                59691,
+                59946,
+                60201,
+                60456,
+                60711,
+                60966,
+                61221,
+        };
         c.DefineDerivedCounter("TexAveAnisotropy",
                                "TextureUnit",
                                "The average degree of anisotropy applied. A number between 1 and 16. The anisotropic filtering algorithm only applies samples where they are required (e.g. there will be no extra anisotropic samples if the view vector is perpendicular to the surface) so this can be much lower than the requested anisotropy.",
@@ -2478,30 +2480,30 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                kGpaUsageTypeItems,
                                true,
                                false,
-                               internal_counters,
+                               kHardwareCounters,
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,sum64,(2),64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,sum64,*,+,(4),128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,160,161,162,163,164,165,166,167,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,184,185,186,187,188,189,190,191,sum64,*,+,(6),192,193,194,195,196,197,198,199,200,201,202,203,204,205,206,207,208,209,210,211,212,213,214,215,216,217,218,219,220,221,222,223,224,225,226,227,228,229,230,231,232,233,234,235,236,237,238,239,240,241,242,243,244,245,246,247,248,249,250,251,252,253,254,255,sum64,*,+,(8),256,257,258,259,260,261,262,263,264,265,266,267,268,269,270,271,272,273,274,275,276,277,278,279,280,281,282,283,284,285,286,287,288,289,290,291,292,293,294,295,296,297,298,299,300,301,302,303,304,305,306,307,308,309,310,311,312,313,314,315,316,317,318,319,sum64,*,+,(10),320,321,322,323,324,325,326,327,328,329,330,331,332,333,334,335,336,337,338,339,340,341,342,343,344,345,346,347,348,349,350,351,352,353,354,355,356,357,358,359,360,361,362,363,364,365,366,367,368,369,370,371,372,373,374,375,376,377,378,379,380,381,382,383,sum64,*,+,(12),384,385,386,387,388,389,390,391,392,393,394,395,396,397,398,399,400,401,402,403,404,405,406,407,408,409,410,411,412,413,414,415,416,417,418,419,420,421,422,423,424,425,426,427,428,429,430,431,432,433,434,435,436,437,438,439,440,441,442,443,444,445,446,447,sum64,*,+,(14),448,449,450,451,452,453,454,455,456,457,458,459,460,461,462,463,464,465,466,467,468,469,470,471,472,473,474,475,476,477,478,479,480,481,482,483,484,485,486,487,488,489,490,491,492,493,494,495,496,497,498,499,500,501,502,503,504,505,506,507,508,509,510,511,sum64,*,+,(16),512,513,514,515,516,517,518,519,520,521,522,523,524,525,526,527,528,529,530,531,532,533,534,535,536,537,538,539,540,541,542,543,544,545,546,547,548,549,550,551,552,553,554,555,556,557,558,559,560,561,562,563,564,565,566,567,568,569,570,571,572,573,574,575,sum64,*,+,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,sum64,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,sum64,+,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,160,161,162,163,164,165,166,167,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,184,185,186,187,188,189,190,191,sum64,+,192,193,194,195,196,197,198,199,200,201,202,203,204,205,206,207,208,209,210,211,212,213,214,215,216,217,218,219,220,221,222,223,224,225,226,227,228,229,230,231,232,233,234,235,236,237,238,239,240,241,242,243,244,245,246,247,248,249,250,251,252,253,254,255,sum64,+,256,257,258,259,260,261,262,263,264,265,266,267,268,269,270,271,272,273,274,275,276,277,278,279,280,281,282,283,284,285,286,287,288,289,290,291,292,293,294,295,296,297,298,299,300,301,302,303,304,305,306,307,308,309,310,311,312,313,314,315,316,317,318,319,sum64,+,320,321,322,323,324,325,326,327,328,329,330,331,332,333,334,335,336,337,338,339,340,341,342,343,344,345,346,347,348,349,350,351,352,353,354,355,356,357,358,359,360,361,362,363,364,365,366,367,368,369,370,371,372,373,374,375,376,377,378,379,380,381,382,383,sum64,+,384,385,386,387,388,389,390,391,392,393,394,395,396,397,398,399,400,401,402,403,404,405,406,407,408,409,410,411,412,413,414,415,416,417,418,419,420,421,422,423,424,425,426,427,428,429,430,431,432,433,434,435,436,437,438,439,440,441,442,443,444,445,446,447,sum64,+,448,449,450,451,452,453,454,455,456,457,458,459,460,461,462,463,464,465,466,467,468,469,470,471,472,473,474,475,476,477,478,479,480,481,482,483,484,485,486,487,488,489,490,491,492,493,494,495,496,497,498,499,500,501,502,503,504,505,506,507,508,509,510,511,sum64,+,512,513,514,515,516,517,518,519,520,521,522,523,524,525,526,527,528,529,530,531,532,533,534,535,536,537,538,539,540,541,542,543,544,545,546,547,548,549,550,551,552,553,554,555,556,557,558,559,560,561,562,563,564,565,566,567,568,569,570,571,572,573,574,575,sum64,+,/",
                                "7ca2a2b9-a4eb-ce23-d163-59147e672396");
     }
     { // Index:49
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(5496);
-        internal_counters.push_back(5938);
-        internal_counters.push_back(6380);
-        internal_counters.push_back(6822);
-        internal_counters.push_back(7264);
-        internal_counters.push_back(7706);
-        internal_counters.push_back(8148);
-        internal_counters.push_back(8590);
-        internal_counters.push_back(9032);
-        internal_counters.push_back(9474);
-        internal_counters.push_back(9916);
-        internal_counters.push_back(10358);
-        internal_counters.push_back(10800);
-        internal_counters.push_back(11242);
-        internal_counters.push_back(11684);
-        internal_counters.push_back(12126);
-        internal_counters.push_back(276);
-
+        static constexpr std::array<GpaUInt32, 17> kHardwareCounters = {
+                5496,
+                5938,
+                6380,
+                6822,
+                7264,
+                7706,
+                8148,
+                8590,
+                9032,
+                9474,
+                9916,
+                10358,
+                10800,
+                11242,
+                11684,
+                12126,
+                276,
+        };
         c.DefineDerivedCounter("DepthStencilTestBusy",
                                "Timing",
                                "Percentage of time GPU spent performing depth and stencil tests relative to GPUBusy.",
@@ -2509,29 +2511,29 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                kGpaUsageTypePercentage,
                                true,
                                false,
-                               internal_counters,
+                               kHardwareCounters,
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,max16,16,/,(100),*",
                                "6834fb52-42e8-bb50-fd48-ec2f2904e7e0");
     }
     { // Index:50
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(5496);
-        internal_counters.push_back(5938);
-        internal_counters.push_back(6380);
-        internal_counters.push_back(6822);
-        internal_counters.push_back(7264);
-        internal_counters.push_back(7706);
-        internal_counters.push_back(8148);
-        internal_counters.push_back(8590);
-        internal_counters.push_back(9032);
-        internal_counters.push_back(9474);
-        internal_counters.push_back(9916);
-        internal_counters.push_back(10358);
-        internal_counters.push_back(10800);
-        internal_counters.push_back(11242);
-        internal_counters.push_back(11684);
-        internal_counters.push_back(12126);
-
+        static constexpr std::array<GpaUInt32, 16> kHardwareCounters = {
+                5496,
+                5938,
+                6380,
+                6822,
+                7264,
+                7706,
+                8148,
+                8590,
+                9032,
+                9474,
+                9916,
+                10358,
+                10800,
+                11242,
+                11684,
+                12126,
+        };
         c.DefineDerivedCounter("DepthStencilTestBusyCycles",
                                "Timing",
                                "Number of GPU cycles spent performing depth and stencil tests.",
@@ -2539,173 +2541,173 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                kGpaUsageTypeCycles,
                                true,
                                false,
-                               internal_counters,
+                               kHardwareCounters,
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,max16",
                                "07ad48f0-49d8-87e7-1ef5-1e24ff2cef49");
     }
     { // Index:51
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(16062);
-        internal_counters.push_back(16884);
-        internal_counters.push_back(17706);
-        internal_counters.push_back(18528);
-        internal_counters.push_back(19350);
-        internal_counters.push_back(20172);
-        internal_counters.push_back(20994);
-        internal_counters.push_back(21816);
-        internal_counters.push_back(22638);
-        internal_counters.push_back(23460);
-        internal_counters.push_back(24282);
-        internal_counters.push_back(25104);
-        internal_counters.push_back(25926);
-        internal_counters.push_back(26748);
-        internal_counters.push_back(27570);
-        internal_counters.push_back(28392);
-        internal_counters.push_back(29214);
-        internal_counters.push_back(30036);
-        internal_counters.push_back(30858);
-        internal_counters.push_back(31680);
-        internal_counters.push_back(32502);
-        internal_counters.push_back(33324);
-        internal_counters.push_back(34146);
-        internal_counters.push_back(34968);
-        internal_counters.push_back(35790);
-        internal_counters.push_back(36612);
-        internal_counters.push_back(37434);
-        internal_counters.push_back(38256);
-        internal_counters.push_back(39078);
-        internal_counters.push_back(39900);
-        internal_counters.push_back(40722);
-        internal_counters.push_back(41544);
-        internal_counters.push_back(16063);
-        internal_counters.push_back(16885);
-        internal_counters.push_back(17707);
-        internal_counters.push_back(18529);
-        internal_counters.push_back(19351);
-        internal_counters.push_back(20173);
-        internal_counters.push_back(20995);
-        internal_counters.push_back(21817);
-        internal_counters.push_back(22639);
-        internal_counters.push_back(23461);
-        internal_counters.push_back(24283);
-        internal_counters.push_back(25105);
-        internal_counters.push_back(25927);
-        internal_counters.push_back(26749);
-        internal_counters.push_back(27571);
-        internal_counters.push_back(28393);
-        internal_counters.push_back(29215);
-        internal_counters.push_back(30037);
-        internal_counters.push_back(30859);
-        internal_counters.push_back(31681);
-        internal_counters.push_back(32503);
-        internal_counters.push_back(33325);
-        internal_counters.push_back(34147);
-        internal_counters.push_back(34969);
-        internal_counters.push_back(35791);
-        internal_counters.push_back(36613);
-        internal_counters.push_back(37435);
-        internal_counters.push_back(38257);
-        internal_counters.push_back(39079);
-        internal_counters.push_back(39901);
-        internal_counters.push_back(40723);
-        internal_counters.push_back(41545);
-        internal_counters.push_back(16064);
-        internal_counters.push_back(16886);
-        internal_counters.push_back(17708);
-        internal_counters.push_back(18530);
-        internal_counters.push_back(19352);
-        internal_counters.push_back(20174);
-        internal_counters.push_back(20996);
-        internal_counters.push_back(21818);
-        internal_counters.push_back(22640);
-        internal_counters.push_back(23462);
-        internal_counters.push_back(24284);
-        internal_counters.push_back(25106);
-        internal_counters.push_back(25928);
-        internal_counters.push_back(26750);
-        internal_counters.push_back(27572);
-        internal_counters.push_back(28394);
-        internal_counters.push_back(29216);
-        internal_counters.push_back(30038);
-        internal_counters.push_back(30860);
-        internal_counters.push_back(31682);
-        internal_counters.push_back(32504);
-        internal_counters.push_back(33326);
-        internal_counters.push_back(34148);
-        internal_counters.push_back(34970);
-        internal_counters.push_back(35792);
-        internal_counters.push_back(36614);
-        internal_counters.push_back(37436);
-        internal_counters.push_back(38258);
-        internal_counters.push_back(39080);
-        internal_counters.push_back(39902);
-        internal_counters.push_back(40724);
-        internal_counters.push_back(41546);
-        internal_counters.push_back(16065);
-        internal_counters.push_back(16887);
-        internal_counters.push_back(17709);
-        internal_counters.push_back(18531);
-        internal_counters.push_back(19353);
-        internal_counters.push_back(20175);
-        internal_counters.push_back(20997);
-        internal_counters.push_back(21819);
-        internal_counters.push_back(22641);
-        internal_counters.push_back(23463);
-        internal_counters.push_back(24285);
-        internal_counters.push_back(25107);
-        internal_counters.push_back(25929);
-        internal_counters.push_back(26751);
-        internal_counters.push_back(27573);
-        internal_counters.push_back(28395);
-        internal_counters.push_back(29217);
-        internal_counters.push_back(30039);
-        internal_counters.push_back(30861);
-        internal_counters.push_back(31683);
-        internal_counters.push_back(32505);
-        internal_counters.push_back(33327);
-        internal_counters.push_back(34149);
-        internal_counters.push_back(34971);
-        internal_counters.push_back(35793);
-        internal_counters.push_back(36615);
-        internal_counters.push_back(37437);
-        internal_counters.push_back(38259);
-        internal_counters.push_back(39081);
-        internal_counters.push_back(39903);
-        internal_counters.push_back(40725);
-        internal_counters.push_back(41547);
-        internal_counters.push_back(16138);
-        internal_counters.push_back(16960);
-        internal_counters.push_back(17782);
-        internal_counters.push_back(18604);
-        internal_counters.push_back(19426);
-        internal_counters.push_back(20248);
-        internal_counters.push_back(21070);
-        internal_counters.push_back(21892);
-        internal_counters.push_back(22714);
-        internal_counters.push_back(23536);
-        internal_counters.push_back(24358);
-        internal_counters.push_back(25180);
-        internal_counters.push_back(26002);
-        internal_counters.push_back(26824);
-        internal_counters.push_back(27646);
-        internal_counters.push_back(28468);
-        internal_counters.push_back(29290);
-        internal_counters.push_back(30112);
-        internal_counters.push_back(30934);
-        internal_counters.push_back(31756);
-        internal_counters.push_back(32578);
-        internal_counters.push_back(33400);
-        internal_counters.push_back(34222);
-        internal_counters.push_back(35044);
-        internal_counters.push_back(35866);
-        internal_counters.push_back(36688);
-        internal_counters.push_back(37510);
-        internal_counters.push_back(38332);
-        internal_counters.push_back(39154);
-        internal_counters.push_back(39976);
-        internal_counters.push_back(40798);
-        internal_counters.push_back(41620);
-
+        static constexpr std::array<GpaUInt32, 160> kHardwareCounters = {
+                16062,
+                16884,
+                17706,
+                18528,
+                19350,
+                20172,
+                20994,
+                21816,
+                22638,
+                23460,
+                24282,
+                25104,
+                25926,
+                26748,
+                27570,
+                28392,
+                29214,
+                30036,
+                30858,
+                31680,
+                32502,
+                33324,
+                34146,
+                34968,
+                35790,
+                36612,
+                37434,
+                38256,
+                39078,
+                39900,
+                40722,
+                41544,
+                16063,
+                16885,
+                17707,
+                18529,
+                19351,
+                20173,
+                20995,
+                21817,
+                22639,
+                23461,
+                24283,
+                25105,
+                25927,
+                26749,
+                27571,
+                28393,
+                29215,
+                30037,
+                30859,
+                31681,
+                32503,
+                33325,
+                34147,
+                34969,
+                35791,
+                36613,
+                37435,
+                38257,
+                39079,
+                39901,
+                40723,
+                41545,
+                16064,
+                16886,
+                17708,
+                18530,
+                19352,
+                20174,
+                20996,
+                21818,
+                22640,
+                23462,
+                24284,
+                25106,
+                25928,
+                26750,
+                27572,
+                28394,
+                29216,
+                30038,
+                30860,
+                31682,
+                32504,
+                33326,
+                34148,
+                34970,
+                35792,
+                36614,
+                37436,
+                38258,
+                39080,
+                39902,
+                40724,
+                41546,
+                16065,
+                16887,
+                17709,
+                18531,
+                19353,
+                20175,
+                20997,
+                21819,
+                22641,
+                23463,
+                24285,
+                25107,
+                25929,
+                26751,
+                27573,
+                28395,
+                29217,
+                30039,
+                30861,
+                31683,
+                32505,
+                33327,
+                34149,
+                34971,
+                35793,
+                36615,
+                37437,
+                38259,
+                39081,
+                39903,
+                40725,
+                41547,
+                16138,
+                16960,
+                17782,
+                18604,
+                19426,
+                20248,
+                21070,
+                21892,
+                22714,
+                23536,
+                24358,
+                25180,
+                26002,
+                26824,
+                27646,
+                28468,
+                29290,
+                30112,
+                30934,
+                31756,
+                32578,
+                33400,
+                34222,
+                35044,
+                35866,
+                36688,
+                37510,
+                38332,
+                39154,
+                39976,
+                40798,
+                41620,
+        };
         c.DefineDerivedCounter("HiZQuadsCulled",
                                "DepthAndStencil",
                                "Percentage of quads that did not have to continue on in the pipeline after HiZ. They may be written directly to the depth buffer, or culled completely. Consistently low values here may suggest that the Z-range is not being fully utilized.",
@@ -2713,173 +2715,173 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                kGpaUsageTypePercentage,
                                true,
                                false,
-                               internal_counters,
+                               kHardwareCounters,
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,sum128,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,sum32,-,(0),max,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,sum128,/,(100),*",
                                "fa0e319b-5573-6d34-5bab-904769925036");
     }
     { // Index:52
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(16062);
-        internal_counters.push_back(16884);
-        internal_counters.push_back(17706);
-        internal_counters.push_back(18528);
-        internal_counters.push_back(19350);
-        internal_counters.push_back(20172);
-        internal_counters.push_back(20994);
-        internal_counters.push_back(21816);
-        internal_counters.push_back(22638);
-        internal_counters.push_back(23460);
-        internal_counters.push_back(24282);
-        internal_counters.push_back(25104);
-        internal_counters.push_back(25926);
-        internal_counters.push_back(26748);
-        internal_counters.push_back(27570);
-        internal_counters.push_back(28392);
-        internal_counters.push_back(29214);
-        internal_counters.push_back(30036);
-        internal_counters.push_back(30858);
-        internal_counters.push_back(31680);
-        internal_counters.push_back(32502);
-        internal_counters.push_back(33324);
-        internal_counters.push_back(34146);
-        internal_counters.push_back(34968);
-        internal_counters.push_back(35790);
-        internal_counters.push_back(36612);
-        internal_counters.push_back(37434);
-        internal_counters.push_back(38256);
-        internal_counters.push_back(39078);
-        internal_counters.push_back(39900);
-        internal_counters.push_back(40722);
-        internal_counters.push_back(41544);
-        internal_counters.push_back(16063);
-        internal_counters.push_back(16885);
-        internal_counters.push_back(17707);
-        internal_counters.push_back(18529);
-        internal_counters.push_back(19351);
-        internal_counters.push_back(20173);
-        internal_counters.push_back(20995);
-        internal_counters.push_back(21817);
-        internal_counters.push_back(22639);
-        internal_counters.push_back(23461);
-        internal_counters.push_back(24283);
-        internal_counters.push_back(25105);
-        internal_counters.push_back(25927);
-        internal_counters.push_back(26749);
-        internal_counters.push_back(27571);
-        internal_counters.push_back(28393);
-        internal_counters.push_back(29215);
-        internal_counters.push_back(30037);
-        internal_counters.push_back(30859);
-        internal_counters.push_back(31681);
-        internal_counters.push_back(32503);
-        internal_counters.push_back(33325);
-        internal_counters.push_back(34147);
-        internal_counters.push_back(34969);
-        internal_counters.push_back(35791);
-        internal_counters.push_back(36613);
-        internal_counters.push_back(37435);
-        internal_counters.push_back(38257);
-        internal_counters.push_back(39079);
-        internal_counters.push_back(39901);
-        internal_counters.push_back(40723);
-        internal_counters.push_back(41545);
-        internal_counters.push_back(16064);
-        internal_counters.push_back(16886);
-        internal_counters.push_back(17708);
-        internal_counters.push_back(18530);
-        internal_counters.push_back(19352);
-        internal_counters.push_back(20174);
-        internal_counters.push_back(20996);
-        internal_counters.push_back(21818);
-        internal_counters.push_back(22640);
-        internal_counters.push_back(23462);
-        internal_counters.push_back(24284);
-        internal_counters.push_back(25106);
-        internal_counters.push_back(25928);
-        internal_counters.push_back(26750);
-        internal_counters.push_back(27572);
-        internal_counters.push_back(28394);
-        internal_counters.push_back(29216);
-        internal_counters.push_back(30038);
-        internal_counters.push_back(30860);
-        internal_counters.push_back(31682);
-        internal_counters.push_back(32504);
-        internal_counters.push_back(33326);
-        internal_counters.push_back(34148);
-        internal_counters.push_back(34970);
-        internal_counters.push_back(35792);
-        internal_counters.push_back(36614);
-        internal_counters.push_back(37436);
-        internal_counters.push_back(38258);
-        internal_counters.push_back(39080);
-        internal_counters.push_back(39902);
-        internal_counters.push_back(40724);
-        internal_counters.push_back(41546);
-        internal_counters.push_back(16065);
-        internal_counters.push_back(16887);
-        internal_counters.push_back(17709);
-        internal_counters.push_back(18531);
-        internal_counters.push_back(19353);
-        internal_counters.push_back(20175);
-        internal_counters.push_back(20997);
-        internal_counters.push_back(21819);
-        internal_counters.push_back(22641);
-        internal_counters.push_back(23463);
-        internal_counters.push_back(24285);
-        internal_counters.push_back(25107);
-        internal_counters.push_back(25929);
-        internal_counters.push_back(26751);
-        internal_counters.push_back(27573);
-        internal_counters.push_back(28395);
-        internal_counters.push_back(29217);
-        internal_counters.push_back(30039);
-        internal_counters.push_back(30861);
-        internal_counters.push_back(31683);
-        internal_counters.push_back(32505);
-        internal_counters.push_back(33327);
-        internal_counters.push_back(34149);
-        internal_counters.push_back(34971);
-        internal_counters.push_back(35793);
-        internal_counters.push_back(36615);
-        internal_counters.push_back(37437);
-        internal_counters.push_back(38259);
-        internal_counters.push_back(39081);
-        internal_counters.push_back(39903);
-        internal_counters.push_back(40725);
-        internal_counters.push_back(41547);
-        internal_counters.push_back(16138);
-        internal_counters.push_back(16960);
-        internal_counters.push_back(17782);
-        internal_counters.push_back(18604);
-        internal_counters.push_back(19426);
-        internal_counters.push_back(20248);
-        internal_counters.push_back(21070);
-        internal_counters.push_back(21892);
-        internal_counters.push_back(22714);
-        internal_counters.push_back(23536);
-        internal_counters.push_back(24358);
-        internal_counters.push_back(25180);
-        internal_counters.push_back(26002);
-        internal_counters.push_back(26824);
-        internal_counters.push_back(27646);
-        internal_counters.push_back(28468);
-        internal_counters.push_back(29290);
-        internal_counters.push_back(30112);
-        internal_counters.push_back(30934);
-        internal_counters.push_back(31756);
-        internal_counters.push_back(32578);
-        internal_counters.push_back(33400);
-        internal_counters.push_back(34222);
-        internal_counters.push_back(35044);
-        internal_counters.push_back(35866);
-        internal_counters.push_back(36688);
-        internal_counters.push_back(37510);
-        internal_counters.push_back(38332);
-        internal_counters.push_back(39154);
-        internal_counters.push_back(39976);
-        internal_counters.push_back(40798);
-        internal_counters.push_back(41620);
-
+        static constexpr std::array<GpaUInt32, 160> kHardwareCounters = {
+                16062,
+                16884,
+                17706,
+                18528,
+                19350,
+                20172,
+                20994,
+                21816,
+                22638,
+                23460,
+                24282,
+                25104,
+                25926,
+                26748,
+                27570,
+                28392,
+                29214,
+                30036,
+                30858,
+                31680,
+                32502,
+                33324,
+                34146,
+                34968,
+                35790,
+                36612,
+                37434,
+                38256,
+                39078,
+                39900,
+                40722,
+                41544,
+                16063,
+                16885,
+                17707,
+                18529,
+                19351,
+                20173,
+                20995,
+                21817,
+                22639,
+                23461,
+                24283,
+                25105,
+                25927,
+                26749,
+                27571,
+                28393,
+                29215,
+                30037,
+                30859,
+                31681,
+                32503,
+                33325,
+                34147,
+                34969,
+                35791,
+                36613,
+                37435,
+                38257,
+                39079,
+                39901,
+                40723,
+                41545,
+                16064,
+                16886,
+                17708,
+                18530,
+                19352,
+                20174,
+                20996,
+                21818,
+                22640,
+                23462,
+                24284,
+                25106,
+                25928,
+                26750,
+                27572,
+                28394,
+                29216,
+                30038,
+                30860,
+                31682,
+                32504,
+                33326,
+                34148,
+                34970,
+                35792,
+                36614,
+                37436,
+                38258,
+                39080,
+                39902,
+                40724,
+                41546,
+                16065,
+                16887,
+                17709,
+                18531,
+                19353,
+                20175,
+                20997,
+                21819,
+                22641,
+                23463,
+                24285,
+                25107,
+                25929,
+                26751,
+                27573,
+                28395,
+                29217,
+                30039,
+                30861,
+                31683,
+                32505,
+                33327,
+                34149,
+                34971,
+                35793,
+                36615,
+                37437,
+                38259,
+                39081,
+                39903,
+                40725,
+                41547,
+                16138,
+                16960,
+                17782,
+                18604,
+                19426,
+                20248,
+                21070,
+                21892,
+                22714,
+                23536,
+                24358,
+                25180,
+                26002,
+                26824,
+                27646,
+                28468,
+                29290,
+                30112,
+                30934,
+                31756,
+                32578,
+                33400,
+                34222,
+                35044,
+                35866,
+                36688,
+                37510,
+                38332,
+                39154,
+                39976,
+                40798,
+                41620,
+        };
         c.DefineDerivedCounter("HiZQuadsCulledCount",
                                "DepthAndStencil",
                                "Count of quads that did not have to continue on in the pipeline after HiZ. They may be written directly to the depth buffer, or culled completely. Consistently low values here may suggest that the Z-range is not being fully utilized.",
@@ -2887,45 +2889,45 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                kGpaUsageTypeItems,
                                true,
                                false,
-                               internal_counters,
+                               kHardwareCounters,
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,sum128,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,sum32,-,(0),max",
                                "73b0b39d-6df2-3e24-0b5c-7cb0ac8b6f39");
     }
     { // Index:53
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(16138);
-        internal_counters.push_back(16960);
-        internal_counters.push_back(17782);
-        internal_counters.push_back(18604);
-        internal_counters.push_back(19426);
-        internal_counters.push_back(20248);
-        internal_counters.push_back(21070);
-        internal_counters.push_back(21892);
-        internal_counters.push_back(22714);
-        internal_counters.push_back(23536);
-        internal_counters.push_back(24358);
-        internal_counters.push_back(25180);
-        internal_counters.push_back(26002);
-        internal_counters.push_back(26824);
-        internal_counters.push_back(27646);
-        internal_counters.push_back(28468);
-        internal_counters.push_back(29290);
-        internal_counters.push_back(30112);
-        internal_counters.push_back(30934);
-        internal_counters.push_back(31756);
-        internal_counters.push_back(32578);
-        internal_counters.push_back(33400);
-        internal_counters.push_back(34222);
-        internal_counters.push_back(35044);
-        internal_counters.push_back(35866);
-        internal_counters.push_back(36688);
-        internal_counters.push_back(37510);
-        internal_counters.push_back(38332);
-        internal_counters.push_back(39154);
-        internal_counters.push_back(39976);
-        internal_counters.push_back(40798);
-        internal_counters.push_back(41620);
-
+        static constexpr std::array<GpaUInt32, 32> kHardwareCounters = {
+                16138,
+                16960,
+                17782,
+                18604,
+                19426,
+                20248,
+                21070,
+                21892,
+                22714,
+                23536,
+                24358,
+                25180,
+                26002,
+                26824,
+                27646,
+                28468,
+                29290,
+                30112,
+                30934,
+                31756,
+                32578,
+                33400,
+                34222,
+                35044,
+                35866,
+                36688,
+                37510,
+                38332,
+                39154,
+                39976,
+                40798,
+                41620,
+        };
         c.DefineDerivedCounter("HiZQuadsAcceptedCount",
                                "DepthAndStencil",
                                "Count of quads that did continue on in the pipeline after HiZ.",
@@ -2933,205 +2935,205 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                kGpaUsageTypeItems,
                                true,
                                false,
-                               internal_counters,
+                               kHardwareCounters,
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,sum32",
                                "59049ad9-42b5-c7cb-3616-6a8f6a8e4894");
     }
     { // Index:54
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(16138);
-        internal_counters.push_back(16960);
-        internal_counters.push_back(17782);
-        internal_counters.push_back(18604);
-        internal_counters.push_back(19426);
-        internal_counters.push_back(20248);
-        internal_counters.push_back(21070);
-        internal_counters.push_back(21892);
-        internal_counters.push_back(22714);
-        internal_counters.push_back(23536);
-        internal_counters.push_back(24358);
-        internal_counters.push_back(25180);
-        internal_counters.push_back(26002);
-        internal_counters.push_back(26824);
-        internal_counters.push_back(27646);
-        internal_counters.push_back(28468);
-        internal_counters.push_back(29290);
-        internal_counters.push_back(30112);
-        internal_counters.push_back(30934);
-        internal_counters.push_back(31756);
-        internal_counters.push_back(32578);
-        internal_counters.push_back(33400);
-        internal_counters.push_back(34222);
-        internal_counters.push_back(35044);
-        internal_counters.push_back(35866);
-        internal_counters.push_back(36688);
-        internal_counters.push_back(37510);
-        internal_counters.push_back(38332);
-        internal_counters.push_back(39154);
-        internal_counters.push_back(39976);
-        internal_counters.push_back(40798);
-        internal_counters.push_back(41620);
-        internal_counters.push_back(16162);
-        internal_counters.push_back(16984);
-        internal_counters.push_back(17806);
-        internal_counters.push_back(18628);
-        internal_counters.push_back(19450);
-        internal_counters.push_back(20272);
-        internal_counters.push_back(21094);
-        internal_counters.push_back(21916);
-        internal_counters.push_back(22738);
-        internal_counters.push_back(23560);
-        internal_counters.push_back(24382);
-        internal_counters.push_back(25204);
-        internal_counters.push_back(26026);
-        internal_counters.push_back(26848);
-        internal_counters.push_back(27670);
-        internal_counters.push_back(28492);
-        internal_counters.push_back(29314);
-        internal_counters.push_back(30136);
-        internal_counters.push_back(30958);
-        internal_counters.push_back(31780);
-        internal_counters.push_back(32602);
-        internal_counters.push_back(33424);
-        internal_counters.push_back(34246);
-        internal_counters.push_back(35068);
-        internal_counters.push_back(35890);
-        internal_counters.push_back(36712);
-        internal_counters.push_back(37534);
-        internal_counters.push_back(38356);
-        internal_counters.push_back(39178);
-        internal_counters.push_back(40000);
-        internal_counters.push_back(40822);
-        internal_counters.push_back(41644);
-        internal_counters.push_back(16062);
-        internal_counters.push_back(16884);
-        internal_counters.push_back(17706);
-        internal_counters.push_back(18528);
-        internal_counters.push_back(19350);
-        internal_counters.push_back(20172);
-        internal_counters.push_back(20994);
-        internal_counters.push_back(21816);
-        internal_counters.push_back(22638);
-        internal_counters.push_back(23460);
-        internal_counters.push_back(24282);
-        internal_counters.push_back(25104);
-        internal_counters.push_back(25926);
-        internal_counters.push_back(26748);
-        internal_counters.push_back(27570);
-        internal_counters.push_back(28392);
-        internal_counters.push_back(29214);
-        internal_counters.push_back(30036);
-        internal_counters.push_back(30858);
-        internal_counters.push_back(31680);
-        internal_counters.push_back(32502);
-        internal_counters.push_back(33324);
-        internal_counters.push_back(34146);
-        internal_counters.push_back(34968);
-        internal_counters.push_back(35790);
-        internal_counters.push_back(36612);
-        internal_counters.push_back(37434);
-        internal_counters.push_back(38256);
-        internal_counters.push_back(39078);
-        internal_counters.push_back(39900);
-        internal_counters.push_back(40722);
-        internal_counters.push_back(41544);
-        internal_counters.push_back(16063);
-        internal_counters.push_back(16885);
-        internal_counters.push_back(17707);
-        internal_counters.push_back(18529);
-        internal_counters.push_back(19351);
-        internal_counters.push_back(20173);
-        internal_counters.push_back(20995);
-        internal_counters.push_back(21817);
-        internal_counters.push_back(22639);
-        internal_counters.push_back(23461);
-        internal_counters.push_back(24283);
-        internal_counters.push_back(25105);
-        internal_counters.push_back(25927);
-        internal_counters.push_back(26749);
-        internal_counters.push_back(27571);
-        internal_counters.push_back(28393);
-        internal_counters.push_back(29215);
-        internal_counters.push_back(30037);
-        internal_counters.push_back(30859);
-        internal_counters.push_back(31681);
-        internal_counters.push_back(32503);
-        internal_counters.push_back(33325);
-        internal_counters.push_back(34147);
-        internal_counters.push_back(34969);
-        internal_counters.push_back(35791);
-        internal_counters.push_back(36613);
-        internal_counters.push_back(37435);
-        internal_counters.push_back(38257);
-        internal_counters.push_back(39079);
-        internal_counters.push_back(39901);
-        internal_counters.push_back(40723);
-        internal_counters.push_back(41545);
-        internal_counters.push_back(16064);
-        internal_counters.push_back(16886);
-        internal_counters.push_back(17708);
-        internal_counters.push_back(18530);
-        internal_counters.push_back(19352);
-        internal_counters.push_back(20174);
-        internal_counters.push_back(20996);
-        internal_counters.push_back(21818);
-        internal_counters.push_back(22640);
-        internal_counters.push_back(23462);
-        internal_counters.push_back(24284);
-        internal_counters.push_back(25106);
-        internal_counters.push_back(25928);
-        internal_counters.push_back(26750);
-        internal_counters.push_back(27572);
-        internal_counters.push_back(28394);
-        internal_counters.push_back(29216);
-        internal_counters.push_back(30038);
-        internal_counters.push_back(30860);
-        internal_counters.push_back(31682);
-        internal_counters.push_back(32504);
-        internal_counters.push_back(33326);
-        internal_counters.push_back(34148);
-        internal_counters.push_back(34970);
-        internal_counters.push_back(35792);
-        internal_counters.push_back(36614);
-        internal_counters.push_back(37436);
-        internal_counters.push_back(38258);
-        internal_counters.push_back(39080);
-        internal_counters.push_back(39902);
-        internal_counters.push_back(40724);
-        internal_counters.push_back(41546);
-        internal_counters.push_back(16065);
-        internal_counters.push_back(16887);
-        internal_counters.push_back(17709);
-        internal_counters.push_back(18531);
-        internal_counters.push_back(19353);
-        internal_counters.push_back(20175);
-        internal_counters.push_back(20997);
-        internal_counters.push_back(21819);
-        internal_counters.push_back(22641);
-        internal_counters.push_back(23463);
-        internal_counters.push_back(24285);
-        internal_counters.push_back(25107);
-        internal_counters.push_back(25929);
-        internal_counters.push_back(26751);
-        internal_counters.push_back(27573);
-        internal_counters.push_back(28395);
-        internal_counters.push_back(29217);
-        internal_counters.push_back(30039);
-        internal_counters.push_back(30861);
-        internal_counters.push_back(31683);
-        internal_counters.push_back(32505);
-        internal_counters.push_back(33327);
-        internal_counters.push_back(34149);
-        internal_counters.push_back(34971);
-        internal_counters.push_back(35793);
-        internal_counters.push_back(36615);
-        internal_counters.push_back(37437);
-        internal_counters.push_back(38259);
-        internal_counters.push_back(39081);
-        internal_counters.push_back(39903);
-        internal_counters.push_back(40725);
-        internal_counters.push_back(41547);
-
+        static constexpr std::array<GpaUInt32, 192> kHardwareCounters = {
+                16138,
+                16960,
+                17782,
+                18604,
+                19426,
+                20248,
+                21070,
+                21892,
+                22714,
+                23536,
+                24358,
+                25180,
+                26002,
+                26824,
+                27646,
+                28468,
+                29290,
+                30112,
+                30934,
+                31756,
+                32578,
+                33400,
+                34222,
+                35044,
+                35866,
+                36688,
+                37510,
+                38332,
+                39154,
+                39976,
+                40798,
+                41620,
+                16162,
+                16984,
+                17806,
+                18628,
+                19450,
+                20272,
+                21094,
+                21916,
+                22738,
+                23560,
+                24382,
+                25204,
+                26026,
+                26848,
+                27670,
+                28492,
+                29314,
+                30136,
+                30958,
+                31780,
+                32602,
+                33424,
+                34246,
+                35068,
+                35890,
+                36712,
+                37534,
+                38356,
+                39178,
+                40000,
+                40822,
+                41644,
+                16062,
+                16884,
+                17706,
+                18528,
+                19350,
+                20172,
+                20994,
+                21816,
+                22638,
+                23460,
+                24282,
+                25104,
+                25926,
+                26748,
+                27570,
+                28392,
+                29214,
+                30036,
+                30858,
+                31680,
+                32502,
+                33324,
+                34146,
+                34968,
+                35790,
+                36612,
+                37434,
+                38256,
+                39078,
+                39900,
+                40722,
+                41544,
+                16063,
+                16885,
+                17707,
+                18529,
+                19351,
+                20173,
+                20995,
+                21817,
+                22639,
+                23461,
+                24283,
+                25105,
+                25927,
+                26749,
+                27571,
+                28393,
+                29215,
+                30037,
+                30859,
+                31681,
+                32503,
+                33325,
+                34147,
+                34969,
+                35791,
+                36613,
+                37435,
+                38257,
+                39079,
+                39901,
+                40723,
+                41545,
+                16064,
+                16886,
+                17708,
+                18530,
+                19352,
+                20174,
+                20996,
+                21818,
+                22640,
+                23462,
+                24284,
+                25106,
+                25928,
+                26750,
+                27572,
+                28394,
+                29216,
+                30038,
+                30860,
+                31682,
+                32504,
+                33326,
+                34148,
+                34970,
+                35792,
+                36614,
+                37436,
+                38258,
+                39080,
+                39902,
+                40724,
+                41546,
+                16065,
+                16887,
+                17709,
+                18531,
+                19353,
+                20175,
+                20997,
+                21819,
+                22641,
+                23463,
+                24285,
+                25107,
+                25929,
+                26751,
+                27573,
+                28395,
+                29217,
+                30039,
+                30861,
+                31683,
+                32505,
+                33327,
+                34149,
+                34971,
+                35793,
+                36615,
+                37437,
+                38259,
+                39081,
+                39903,
+                40725,
+                41547,
+        };
         c.DefineDerivedCounter("PreZQuadsCulled",
                                "DepthAndStencil",
                                "Percentage of quads rejected based on the detailZ and earlyZ tests.",
@@ -3139,77 +3141,77 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                kGpaUsageTypePercentage,
                                true,
                                false,
-                               internal_counters,
+                               kHardwareCounters,
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,sum32,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,sum32,-,(0),max,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,160,161,162,163,164,165,166,167,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,184,185,186,187,188,189,190,191,sum128,/,(100),*",
                                "4e77547b-ec55-5663-f034-af59be66d77d");
     }
     { // Index:55
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(16138);
-        internal_counters.push_back(16960);
-        internal_counters.push_back(17782);
-        internal_counters.push_back(18604);
-        internal_counters.push_back(19426);
-        internal_counters.push_back(20248);
-        internal_counters.push_back(21070);
-        internal_counters.push_back(21892);
-        internal_counters.push_back(22714);
-        internal_counters.push_back(23536);
-        internal_counters.push_back(24358);
-        internal_counters.push_back(25180);
-        internal_counters.push_back(26002);
-        internal_counters.push_back(26824);
-        internal_counters.push_back(27646);
-        internal_counters.push_back(28468);
-        internal_counters.push_back(29290);
-        internal_counters.push_back(30112);
-        internal_counters.push_back(30934);
-        internal_counters.push_back(31756);
-        internal_counters.push_back(32578);
-        internal_counters.push_back(33400);
-        internal_counters.push_back(34222);
-        internal_counters.push_back(35044);
-        internal_counters.push_back(35866);
-        internal_counters.push_back(36688);
-        internal_counters.push_back(37510);
-        internal_counters.push_back(38332);
-        internal_counters.push_back(39154);
-        internal_counters.push_back(39976);
-        internal_counters.push_back(40798);
-        internal_counters.push_back(41620);
-        internal_counters.push_back(16162);
-        internal_counters.push_back(16984);
-        internal_counters.push_back(17806);
-        internal_counters.push_back(18628);
-        internal_counters.push_back(19450);
-        internal_counters.push_back(20272);
-        internal_counters.push_back(21094);
-        internal_counters.push_back(21916);
-        internal_counters.push_back(22738);
-        internal_counters.push_back(23560);
-        internal_counters.push_back(24382);
-        internal_counters.push_back(25204);
-        internal_counters.push_back(26026);
-        internal_counters.push_back(26848);
-        internal_counters.push_back(27670);
-        internal_counters.push_back(28492);
-        internal_counters.push_back(29314);
-        internal_counters.push_back(30136);
-        internal_counters.push_back(30958);
-        internal_counters.push_back(31780);
-        internal_counters.push_back(32602);
-        internal_counters.push_back(33424);
-        internal_counters.push_back(34246);
-        internal_counters.push_back(35068);
-        internal_counters.push_back(35890);
-        internal_counters.push_back(36712);
-        internal_counters.push_back(37534);
-        internal_counters.push_back(38356);
-        internal_counters.push_back(39178);
-        internal_counters.push_back(40000);
-        internal_counters.push_back(40822);
-        internal_counters.push_back(41644);
-
+        static constexpr std::array<GpaUInt32, 64> kHardwareCounters = {
+                16138,
+                16960,
+                17782,
+                18604,
+                19426,
+                20248,
+                21070,
+                21892,
+                22714,
+                23536,
+                24358,
+                25180,
+                26002,
+                26824,
+                27646,
+                28468,
+                29290,
+                30112,
+                30934,
+                31756,
+                32578,
+                33400,
+                34222,
+                35044,
+                35866,
+                36688,
+                37510,
+                38332,
+                39154,
+                39976,
+                40798,
+                41620,
+                16162,
+                16984,
+                17806,
+                18628,
+                19450,
+                20272,
+                21094,
+                21916,
+                22738,
+                23560,
+                24382,
+                25204,
+                26026,
+                26848,
+                27670,
+                28492,
+                29314,
+                30136,
+                30958,
+                31780,
+                32602,
+                33424,
+                34246,
+                35068,
+                35890,
+                36712,
+                37534,
+                38356,
+                39178,
+                40000,
+                40822,
+                41644,
+        };
         c.DefineDerivedCounter("PreZQuadsCulledCount",
                                "DepthAndStencil",
                                "Count of quads rejected based on the detailZ and earlyZ tests.",
@@ -3217,45 +3219,45 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                kGpaUsageTypeItems,
                                true,
                                false,
-                               internal_counters,
+                               kHardwareCounters,
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,sum32,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,sum32,-,(0),max",
                                "1bf169e6-9304-834e-df5f-0c44d7890a08");
     }
     { // Index:56
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(16162);
-        internal_counters.push_back(16984);
-        internal_counters.push_back(17806);
-        internal_counters.push_back(18628);
-        internal_counters.push_back(19450);
-        internal_counters.push_back(20272);
-        internal_counters.push_back(21094);
-        internal_counters.push_back(21916);
-        internal_counters.push_back(22738);
-        internal_counters.push_back(23560);
-        internal_counters.push_back(24382);
-        internal_counters.push_back(25204);
-        internal_counters.push_back(26026);
-        internal_counters.push_back(26848);
-        internal_counters.push_back(27670);
-        internal_counters.push_back(28492);
-        internal_counters.push_back(29314);
-        internal_counters.push_back(30136);
-        internal_counters.push_back(30958);
-        internal_counters.push_back(31780);
-        internal_counters.push_back(32602);
-        internal_counters.push_back(33424);
-        internal_counters.push_back(34246);
-        internal_counters.push_back(35068);
-        internal_counters.push_back(35890);
-        internal_counters.push_back(36712);
-        internal_counters.push_back(37534);
-        internal_counters.push_back(38356);
-        internal_counters.push_back(39178);
-        internal_counters.push_back(40000);
-        internal_counters.push_back(40822);
-        internal_counters.push_back(41644);
-
+        static constexpr std::array<GpaUInt32, 32> kHardwareCounters = {
+                16162,
+                16984,
+                17806,
+                18628,
+                19450,
+                20272,
+                21094,
+                21916,
+                22738,
+                23560,
+                24382,
+                25204,
+                26026,
+                26848,
+                27670,
+                28492,
+                29314,
+                30136,
+                30958,
+                31780,
+                32602,
+                33424,
+                34246,
+                35068,
+                35890,
+                36712,
+                37534,
+                38356,
+                39178,
+                40000,
+                40822,
+                41644,
+        };
         c.DefineDerivedCounter("PreZQuadsSurvivingCount",
                                "DepthAndStencil",
                                "Count of quads surviving detailZ and earlyZ tests.",
@@ -3263,173 +3265,173 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                kGpaUsageTypeItems,
                                true,
                                false,
-                               internal_counters,
+                               kHardwareCounters,
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,sum32",
                                "50e25e51-3713-89cb-7f92-559cde5e5532");
     }
     { // Index:57
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(16162);
-        internal_counters.push_back(16984);
-        internal_counters.push_back(17806);
-        internal_counters.push_back(18628);
-        internal_counters.push_back(19450);
-        internal_counters.push_back(20272);
-        internal_counters.push_back(21094);
-        internal_counters.push_back(21916);
-        internal_counters.push_back(22738);
-        internal_counters.push_back(23560);
-        internal_counters.push_back(24382);
-        internal_counters.push_back(25204);
-        internal_counters.push_back(26026);
-        internal_counters.push_back(26848);
-        internal_counters.push_back(27670);
-        internal_counters.push_back(28492);
-        internal_counters.push_back(29314);
-        internal_counters.push_back(30136);
-        internal_counters.push_back(30958);
-        internal_counters.push_back(31780);
-        internal_counters.push_back(32602);
-        internal_counters.push_back(33424);
-        internal_counters.push_back(34246);
-        internal_counters.push_back(35068);
-        internal_counters.push_back(35890);
-        internal_counters.push_back(36712);
-        internal_counters.push_back(37534);
-        internal_counters.push_back(38356);
-        internal_counters.push_back(39178);
-        internal_counters.push_back(40000);
-        internal_counters.push_back(40822);
-        internal_counters.push_back(41644);
-        internal_counters.push_back(16062);
-        internal_counters.push_back(16884);
-        internal_counters.push_back(17706);
-        internal_counters.push_back(18528);
-        internal_counters.push_back(19350);
-        internal_counters.push_back(20172);
-        internal_counters.push_back(20994);
-        internal_counters.push_back(21816);
-        internal_counters.push_back(22638);
-        internal_counters.push_back(23460);
-        internal_counters.push_back(24282);
-        internal_counters.push_back(25104);
-        internal_counters.push_back(25926);
-        internal_counters.push_back(26748);
-        internal_counters.push_back(27570);
-        internal_counters.push_back(28392);
-        internal_counters.push_back(29214);
-        internal_counters.push_back(30036);
-        internal_counters.push_back(30858);
-        internal_counters.push_back(31680);
-        internal_counters.push_back(32502);
-        internal_counters.push_back(33324);
-        internal_counters.push_back(34146);
-        internal_counters.push_back(34968);
-        internal_counters.push_back(35790);
-        internal_counters.push_back(36612);
-        internal_counters.push_back(37434);
-        internal_counters.push_back(38256);
-        internal_counters.push_back(39078);
-        internal_counters.push_back(39900);
-        internal_counters.push_back(40722);
-        internal_counters.push_back(41544);
-        internal_counters.push_back(16063);
-        internal_counters.push_back(16885);
-        internal_counters.push_back(17707);
-        internal_counters.push_back(18529);
-        internal_counters.push_back(19351);
-        internal_counters.push_back(20173);
-        internal_counters.push_back(20995);
-        internal_counters.push_back(21817);
-        internal_counters.push_back(22639);
-        internal_counters.push_back(23461);
-        internal_counters.push_back(24283);
-        internal_counters.push_back(25105);
-        internal_counters.push_back(25927);
-        internal_counters.push_back(26749);
-        internal_counters.push_back(27571);
-        internal_counters.push_back(28393);
-        internal_counters.push_back(29215);
-        internal_counters.push_back(30037);
-        internal_counters.push_back(30859);
-        internal_counters.push_back(31681);
-        internal_counters.push_back(32503);
-        internal_counters.push_back(33325);
-        internal_counters.push_back(34147);
-        internal_counters.push_back(34969);
-        internal_counters.push_back(35791);
-        internal_counters.push_back(36613);
-        internal_counters.push_back(37435);
-        internal_counters.push_back(38257);
-        internal_counters.push_back(39079);
-        internal_counters.push_back(39901);
-        internal_counters.push_back(40723);
-        internal_counters.push_back(41545);
-        internal_counters.push_back(16064);
-        internal_counters.push_back(16886);
-        internal_counters.push_back(17708);
-        internal_counters.push_back(18530);
-        internal_counters.push_back(19352);
-        internal_counters.push_back(20174);
-        internal_counters.push_back(20996);
-        internal_counters.push_back(21818);
-        internal_counters.push_back(22640);
-        internal_counters.push_back(23462);
-        internal_counters.push_back(24284);
-        internal_counters.push_back(25106);
-        internal_counters.push_back(25928);
-        internal_counters.push_back(26750);
-        internal_counters.push_back(27572);
-        internal_counters.push_back(28394);
-        internal_counters.push_back(29216);
-        internal_counters.push_back(30038);
-        internal_counters.push_back(30860);
-        internal_counters.push_back(31682);
-        internal_counters.push_back(32504);
-        internal_counters.push_back(33326);
-        internal_counters.push_back(34148);
-        internal_counters.push_back(34970);
-        internal_counters.push_back(35792);
-        internal_counters.push_back(36614);
-        internal_counters.push_back(37436);
-        internal_counters.push_back(38258);
-        internal_counters.push_back(39080);
-        internal_counters.push_back(39902);
-        internal_counters.push_back(40724);
-        internal_counters.push_back(41546);
-        internal_counters.push_back(16065);
-        internal_counters.push_back(16887);
-        internal_counters.push_back(17709);
-        internal_counters.push_back(18531);
-        internal_counters.push_back(19353);
-        internal_counters.push_back(20175);
-        internal_counters.push_back(20997);
-        internal_counters.push_back(21819);
-        internal_counters.push_back(22641);
-        internal_counters.push_back(23463);
-        internal_counters.push_back(24285);
-        internal_counters.push_back(25107);
-        internal_counters.push_back(25929);
-        internal_counters.push_back(26751);
-        internal_counters.push_back(27573);
-        internal_counters.push_back(28395);
-        internal_counters.push_back(29217);
-        internal_counters.push_back(30039);
-        internal_counters.push_back(30861);
-        internal_counters.push_back(31683);
-        internal_counters.push_back(32505);
-        internal_counters.push_back(33327);
-        internal_counters.push_back(34149);
-        internal_counters.push_back(34971);
-        internal_counters.push_back(35793);
-        internal_counters.push_back(36615);
-        internal_counters.push_back(37437);
-        internal_counters.push_back(38259);
-        internal_counters.push_back(39081);
-        internal_counters.push_back(39903);
-        internal_counters.push_back(40725);
-        internal_counters.push_back(41547);
-
+        static constexpr std::array<GpaUInt32, 160> kHardwareCounters = {
+                16162,
+                16984,
+                17806,
+                18628,
+                19450,
+                20272,
+                21094,
+                21916,
+                22738,
+                23560,
+                24382,
+                25204,
+                26026,
+                26848,
+                27670,
+                28492,
+                29314,
+                30136,
+                30958,
+                31780,
+                32602,
+                33424,
+                34246,
+                35068,
+                35890,
+                36712,
+                37534,
+                38356,
+                39178,
+                40000,
+                40822,
+                41644,
+                16062,
+                16884,
+                17706,
+                18528,
+                19350,
+                20172,
+                20994,
+                21816,
+                22638,
+                23460,
+                24282,
+                25104,
+                25926,
+                26748,
+                27570,
+                28392,
+                29214,
+                30036,
+                30858,
+                31680,
+                32502,
+                33324,
+                34146,
+                34968,
+                35790,
+                36612,
+                37434,
+                38256,
+                39078,
+                39900,
+                40722,
+                41544,
+                16063,
+                16885,
+                17707,
+                18529,
+                19351,
+                20173,
+                20995,
+                21817,
+                22639,
+                23461,
+                24283,
+                25105,
+                25927,
+                26749,
+                27571,
+                28393,
+                29215,
+                30037,
+                30859,
+                31681,
+                32503,
+                33325,
+                34147,
+                34969,
+                35791,
+                36613,
+                37435,
+                38257,
+                39079,
+                39901,
+                40723,
+                41545,
+                16064,
+                16886,
+                17708,
+                18530,
+                19352,
+                20174,
+                20996,
+                21818,
+                22640,
+                23462,
+                24284,
+                25106,
+                25928,
+                26750,
+                27572,
+                28394,
+                29216,
+                30038,
+                30860,
+                31682,
+                32504,
+                33326,
+                34148,
+                34970,
+                35792,
+                36614,
+                37436,
+                38258,
+                39080,
+                39902,
+                40724,
+                41546,
+                16065,
+                16887,
+                17709,
+                18531,
+                19353,
+                20175,
+                20997,
+                21819,
+                22641,
+                23463,
+                24285,
+                25107,
+                25929,
+                26751,
+                27573,
+                28395,
+                29217,
+                30039,
+                30861,
+                31683,
+                32505,
+                33327,
+                34149,
+                34971,
+                35793,
+                36615,
+                37437,
+                38259,
+                39081,
+                39903,
+                40725,
+                41547,
+        };
         c.DefineDerivedCounter("PostZQuads",
                                "DepthAndStencil",
                                "Percentage of quads for which the pixel shader will run and may be postZ tested.",
@@ -3437,45 +3439,45 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                kGpaUsageTypePercentage,
                                true,
                                false,
-                               internal_counters,
+                               kHardwareCounters,
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,sum32,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,sum128,/,(100),*",
                                "58f0d34b-eeb8-e8db-abce-cb72584144be");
     }
     { // Index:58
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(16162);
-        internal_counters.push_back(16984);
-        internal_counters.push_back(17806);
-        internal_counters.push_back(18628);
-        internal_counters.push_back(19450);
-        internal_counters.push_back(20272);
-        internal_counters.push_back(21094);
-        internal_counters.push_back(21916);
-        internal_counters.push_back(22738);
-        internal_counters.push_back(23560);
-        internal_counters.push_back(24382);
-        internal_counters.push_back(25204);
-        internal_counters.push_back(26026);
-        internal_counters.push_back(26848);
-        internal_counters.push_back(27670);
-        internal_counters.push_back(28492);
-        internal_counters.push_back(29314);
-        internal_counters.push_back(30136);
-        internal_counters.push_back(30958);
-        internal_counters.push_back(31780);
-        internal_counters.push_back(32602);
-        internal_counters.push_back(33424);
-        internal_counters.push_back(34246);
-        internal_counters.push_back(35068);
-        internal_counters.push_back(35890);
-        internal_counters.push_back(36712);
-        internal_counters.push_back(37534);
-        internal_counters.push_back(38356);
-        internal_counters.push_back(39178);
-        internal_counters.push_back(40000);
-        internal_counters.push_back(40822);
-        internal_counters.push_back(41644);
-
+        static constexpr std::array<GpaUInt32, 32> kHardwareCounters = {
+                16162,
+                16984,
+                17806,
+                18628,
+                19450,
+                20272,
+                21094,
+                21916,
+                22738,
+                23560,
+                24382,
+                25204,
+                26026,
+                26848,
+                27670,
+                28492,
+                29314,
+                30136,
+                30958,
+                31780,
+                32602,
+                33424,
+                34246,
+                35068,
+                35890,
+                36712,
+                37534,
+                38356,
+                39178,
+                40000,
+                40822,
+                41644,
+        };
         c.DefineDerivedCounter("PostZQuadCount",
                                "DepthAndStencil",
                                "Count of quads for which the pixel shader will run and may be postZ tested.",
@@ -3483,29 +3485,29 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                kGpaUsageTypeItems,
                                true,
                                false,
-                               internal_counters,
+                               kHardwareCounters,
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,sum32",
                                "08404526-ce35-939b-34c8-a7a35a0ff4d6");
     }
     { // Index:59
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(5529);
-        internal_counters.push_back(5971);
-        internal_counters.push_back(6413);
-        internal_counters.push_back(6855);
-        internal_counters.push_back(7297);
-        internal_counters.push_back(7739);
-        internal_counters.push_back(8181);
-        internal_counters.push_back(8623);
-        internal_counters.push_back(9065);
-        internal_counters.push_back(9507);
-        internal_counters.push_back(9949);
-        internal_counters.push_back(10391);
-        internal_counters.push_back(10833);
-        internal_counters.push_back(11275);
-        internal_counters.push_back(11717);
-        internal_counters.push_back(12159);
-
+        static constexpr std::array<GpaUInt32, 16> kHardwareCounters = {
+                5529,
+                5971,
+                6413,
+                6855,
+                7297,
+                7739,
+                8181,
+                8623,
+                9065,
+                9507,
+                9949,
+                10391,
+                10833,
+                11275,
+                11717,
+                12159,
+        };
         c.DefineDerivedCounter("PreZSamplesPassing",
                                "DepthAndStencil",
                                "Number of samples tested for Z before shading and passed.",
@@ -3513,29 +3515,29 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                kGpaUsageTypeItems,
                                true,
                                false,
-                               internal_counters,
+                               kHardwareCounters,
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16",
                                "3bfe6c4d-7422-ca03-7ea5-e67ff1a00136");
     }
     { // Index:60
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(5531);
-        internal_counters.push_back(5973);
-        internal_counters.push_back(6415);
-        internal_counters.push_back(6857);
-        internal_counters.push_back(7299);
-        internal_counters.push_back(7741);
-        internal_counters.push_back(8183);
-        internal_counters.push_back(8625);
-        internal_counters.push_back(9067);
-        internal_counters.push_back(9509);
-        internal_counters.push_back(9951);
-        internal_counters.push_back(10393);
-        internal_counters.push_back(10835);
-        internal_counters.push_back(11277);
-        internal_counters.push_back(11719);
-        internal_counters.push_back(12161);
-
+        static constexpr std::array<GpaUInt32, 16> kHardwareCounters = {
+                5531,
+                5973,
+                6415,
+                6857,
+                7299,
+                7741,
+                8183,
+                8625,
+                9067,
+                9509,
+                9951,
+                10393,
+                10835,
+                11277,
+                11719,
+                12161,
+        };
         c.DefineDerivedCounter("PreZSamplesFailingS",
                                "DepthAndStencil",
                                "Number of samples tested for Z before shading and failed stencil test.",
@@ -3543,29 +3545,29 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                kGpaUsageTypeItems,
                                true,
                                false,
-                               internal_counters,
+                               kHardwareCounters,
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16",
                                "df7f705e-5162-d3b5-da8b-63466cf9c4e5");
     }
     { // Index:61
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(5530);
-        internal_counters.push_back(5972);
-        internal_counters.push_back(6414);
-        internal_counters.push_back(6856);
-        internal_counters.push_back(7298);
-        internal_counters.push_back(7740);
-        internal_counters.push_back(8182);
-        internal_counters.push_back(8624);
-        internal_counters.push_back(9066);
-        internal_counters.push_back(9508);
-        internal_counters.push_back(9950);
-        internal_counters.push_back(10392);
-        internal_counters.push_back(10834);
-        internal_counters.push_back(11276);
-        internal_counters.push_back(11718);
-        internal_counters.push_back(12160);
-
+        static constexpr std::array<GpaUInt32, 16> kHardwareCounters = {
+                5530,
+                5972,
+                6414,
+                6856,
+                7298,
+                7740,
+                8182,
+                8624,
+                9066,
+                9508,
+                9950,
+                10392,
+                10834,
+                11276,
+                11718,
+                12160,
+        };
         c.DefineDerivedCounter("PreZSamplesFailingZ",
                                "DepthAndStencil",
                                "Number of samples tested for Z before shading and failed Z test.",
@@ -3573,29 +3575,29 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                kGpaUsageTypeItems,
                                true,
                                false,
-                               internal_counters,
+                               kHardwareCounters,
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16",
                                "4484e950-f7a4-3800-bc74-78dd297f017e");
     }
     { // Index:62
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(5526);
-        internal_counters.push_back(5968);
-        internal_counters.push_back(6410);
-        internal_counters.push_back(6852);
-        internal_counters.push_back(7294);
-        internal_counters.push_back(7736);
-        internal_counters.push_back(8178);
-        internal_counters.push_back(8620);
-        internal_counters.push_back(9062);
-        internal_counters.push_back(9504);
-        internal_counters.push_back(9946);
-        internal_counters.push_back(10388);
-        internal_counters.push_back(10830);
-        internal_counters.push_back(11272);
-        internal_counters.push_back(11714);
-        internal_counters.push_back(12156);
-
+        static constexpr std::array<GpaUInt32, 16> kHardwareCounters = {
+                5526,
+                5968,
+                6410,
+                6852,
+                7294,
+                7736,
+                8178,
+                8620,
+                9062,
+                9504,
+                9946,
+                10388,
+                10830,
+                11272,
+                11714,
+                12156,
+        };
         c.DefineDerivedCounter("PostZSamplesPassing",
                                "DepthAndStencil",
                                "Number of samples tested for Z after shading and passed.",
@@ -3603,29 +3605,29 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                kGpaUsageTypeItems,
                                true,
                                false,
-                               internal_counters,
+                               kHardwareCounters,
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16",
                                "4995d5d6-2330-b986-508b-fae24856f44c");
     }
     { // Index:63
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(5528);
-        internal_counters.push_back(5970);
-        internal_counters.push_back(6412);
-        internal_counters.push_back(6854);
-        internal_counters.push_back(7296);
-        internal_counters.push_back(7738);
-        internal_counters.push_back(8180);
-        internal_counters.push_back(8622);
-        internal_counters.push_back(9064);
-        internal_counters.push_back(9506);
-        internal_counters.push_back(9948);
-        internal_counters.push_back(10390);
-        internal_counters.push_back(10832);
-        internal_counters.push_back(11274);
-        internal_counters.push_back(11716);
-        internal_counters.push_back(12158);
-
+        static constexpr std::array<GpaUInt32, 16> kHardwareCounters = {
+                5528,
+                5970,
+                6412,
+                6854,
+                7296,
+                7738,
+                8180,
+                8622,
+                9064,
+                9506,
+                9948,
+                10390,
+                10832,
+                11274,
+                11716,
+                12158,
+        };
         c.DefineDerivedCounter("PostZSamplesFailingS",
                                "DepthAndStencil",
                                "Number of samples tested for Z after shading and failed stencil test.",
@@ -3633,29 +3635,29 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                kGpaUsageTypeItems,
                                true,
                                false,
-                               internal_counters,
+                               kHardwareCounters,
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16",
                                "ae558af4-f4be-3dd4-7316-b2c4dcf0def8");
     }
     { // Index:64
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(5527);
-        internal_counters.push_back(5969);
-        internal_counters.push_back(6411);
-        internal_counters.push_back(6853);
-        internal_counters.push_back(7295);
-        internal_counters.push_back(7737);
-        internal_counters.push_back(8179);
-        internal_counters.push_back(8621);
-        internal_counters.push_back(9063);
-        internal_counters.push_back(9505);
-        internal_counters.push_back(9947);
-        internal_counters.push_back(10389);
-        internal_counters.push_back(10831);
-        internal_counters.push_back(11273);
-        internal_counters.push_back(11715);
-        internal_counters.push_back(12157);
-
+        static constexpr std::array<GpaUInt32, 16> kHardwareCounters = {
+                5527,
+                5969,
+                6411,
+                6853,
+                7295,
+                7737,
+                8179,
+                8621,
+                9063,
+                9505,
+                9947,
+                10389,
+                10831,
+                11273,
+                11715,
+                12157,
+        };
         c.DefineDerivedCounter("PostZSamplesFailingZ",
                                "DepthAndStencil",
                                "Number of samples tested for Z after shading and failed Z test.",
@@ -3663,30 +3665,30 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                kGpaUsageTypeItems,
                                true,
                                false,
-                               internal_counters,
+                               kHardwareCounters,
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16",
                                "b3684c94-814a-c695-c85d-a5b6ab798b35");
     }
     { // Index:65
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(5398);
-        internal_counters.push_back(5840);
-        internal_counters.push_back(6282);
-        internal_counters.push_back(6724);
-        internal_counters.push_back(7166);
-        internal_counters.push_back(7608);
-        internal_counters.push_back(8050);
-        internal_counters.push_back(8492);
-        internal_counters.push_back(8934);
-        internal_counters.push_back(9376);
-        internal_counters.push_back(9818);
-        internal_counters.push_back(10260);
-        internal_counters.push_back(10702);
-        internal_counters.push_back(11144);
-        internal_counters.push_back(11586);
-        internal_counters.push_back(12028);
-        internal_counters.push_back(276);
-
+        static constexpr std::array<GpaUInt32, 17> kHardwareCounters = {
+                5398,
+                5840,
+                6282,
+                6724,
+                7166,
+                7608,
+                8050,
+                8492,
+                8934,
+                9376,
+                9818,
+                10260,
+                10702,
+                11144,
+                11586,
+                12028,
+                276,
+        };
         c.DefineDerivedCounter("ZUnitStalled",
                                "DepthAndStencil",
                                "The percentage of GPUTime the depth buffer spends waiting for the color buffer to be ready to accept data. High figures here indicate a bottleneck in color buffer operations.",
@@ -3694,29 +3696,29 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                kGpaUsageTypePercentage,
                                true,
                                false,
-                               internal_counters,
+                               kHardwareCounters,
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,max16,16,/,(100),*",
                                "5e86c3ad-1726-3157-1d01-7ed188bf854d");
     }
     { // Index:66
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(5398);
-        internal_counters.push_back(5840);
-        internal_counters.push_back(6282);
-        internal_counters.push_back(6724);
-        internal_counters.push_back(7166);
-        internal_counters.push_back(7608);
-        internal_counters.push_back(8050);
-        internal_counters.push_back(8492);
-        internal_counters.push_back(8934);
-        internal_counters.push_back(9376);
-        internal_counters.push_back(9818);
-        internal_counters.push_back(10260);
-        internal_counters.push_back(10702);
-        internal_counters.push_back(11144);
-        internal_counters.push_back(11586);
-        internal_counters.push_back(12028);
-
+        static constexpr std::array<GpaUInt32, 16> kHardwareCounters = {
+                5398,
+                5840,
+                6282,
+                6724,
+                7166,
+                7608,
+                8050,
+                8492,
+                8934,
+                9376,
+                9818,
+                10260,
+                10702,
+                11144,
+                11586,
+                12028,
+        };
         c.DefineDerivedCounter("ZUnitStalledCycles",
                                "DepthAndStencil",
                                "Number of GPU cycles the depth buffer spends waiting for the color buffer to be ready to accept data. Larger numbers indicate a bottleneck in color buffer operations.",
@@ -3724,29 +3726,29 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                kGpaUsageTypeCycles,
                                true,
                                false,
-                               internal_counters,
+                               kHardwareCounters,
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,max16",
                                "4351fa7f-6737-2c3e-3ffb-b3addbdceedd");
     }
     { // Index:67
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(336);
-        internal_counters.push_back(652);
-        internal_counters.push_back(968);
-        internal_counters.push_back(1284);
-        internal_counters.push_back(1600);
-        internal_counters.push_back(1916);
-        internal_counters.push_back(2232);
-        internal_counters.push_back(2548);
-        internal_counters.push_back(2864);
-        internal_counters.push_back(3180);
-        internal_counters.push_back(3496);
-        internal_counters.push_back(3812);
-        internal_counters.push_back(4128);
-        internal_counters.push_back(4444);
-        internal_counters.push_back(4760);
-        internal_counters.push_back(5076);
-
+        static constexpr std::array<GpaUInt32, 16> kHardwareCounters = {
+                336,
+                652,
+                968,
+                1284,
+                1600,
+                1916,
+                2232,
+                2548,
+                2864,
+                3180,
+                3496,
+                3812,
+                4128,
+                4444,
+                4760,
+                5076,
+        };
         c.DefineDerivedCounter("CBMemRead",
                                "ColorBuffer",
                                "Number of bytes read from the color buffer.",
@@ -3754,29 +3756,29 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                kGpaUsageTypeBytes,
                                true,
                                false,
-                               internal_counters,
+                               kHardwareCounters,
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16,(32),*",
                                "84b531d8-a1f8-7f49-7c27-7bc97801f1e6");
     }
     { // Index:68
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(338);
-        internal_counters.push_back(654);
-        internal_counters.push_back(970);
-        internal_counters.push_back(1286);
-        internal_counters.push_back(1602);
-        internal_counters.push_back(1918);
-        internal_counters.push_back(2234);
-        internal_counters.push_back(2550);
-        internal_counters.push_back(2866);
-        internal_counters.push_back(3182);
-        internal_counters.push_back(3498);
-        internal_counters.push_back(3814);
-        internal_counters.push_back(4130);
-        internal_counters.push_back(4446);
-        internal_counters.push_back(4762);
-        internal_counters.push_back(5078);
-
+        static constexpr std::array<GpaUInt32, 16> kHardwareCounters = {
+                338,
+                654,
+                970,
+                1286,
+                1602,
+                1918,
+                2234,
+                2550,
+                2866,
+                3182,
+                3498,
+                3814,
+                4130,
+                4446,
+                4762,
+                5078,
+        };
         c.DefineDerivedCounter("CBMemWritten",
                                "ColorBuffer",
                                "Number of bytes written to the color buffer.",
@@ -3784,141 +3786,141 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                kGpaUsageTypeBytes,
                                true,
                                false,
-                               internal_counters,
+                               kHardwareCounters,
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16,(32),*",
                                "550f8ff8-60b6-a6bf-87d0-25ac9e87de70");
     }
     { // Index:69
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(78796);
-        internal_counters.push_back(78896);
-        internal_counters.push_back(78996);
-        internal_counters.push_back(79096);
-        internal_counters.push_back(79196);
-        internal_counters.push_back(79296);
-        internal_counters.push_back(79396);
-        internal_counters.push_back(79496);
-        internal_counters.push_back(79596);
-        internal_counters.push_back(79696);
-        internal_counters.push_back(79796);
-        internal_counters.push_back(79896);
-        internal_counters.push_back(79996);
-        internal_counters.push_back(80096);
-        internal_counters.push_back(80196);
-        internal_counters.push_back(80296);
-        internal_counters.push_back(80396);
-        internal_counters.push_back(80496);
-        internal_counters.push_back(80596);
-        internal_counters.push_back(80696);
-        internal_counters.push_back(80796);
-        internal_counters.push_back(80896);
-        internal_counters.push_back(80996);
-        internal_counters.push_back(81096);
-        internal_counters.push_back(81196);
-        internal_counters.push_back(81296);
-        internal_counters.push_back(81396);
-        internal_counters.push_back(81496);
-        internal_counters.push_back(81596);
-        internal_counters.push_back(81696);
-        internal_counters.push_back(81796);
-        internal_counters.push_back(81896);
-        internal_counters.push_back(81996);
-        internal_counters.push_back(82096);
-        internal_counters.push_back(82196);
-        internal_counters.push_back(82296);
-        internal_counters.push_back(82396);
-        internal_counters.push_back(82496);
-        internal_counters.push_back(82596);
-        internal_counters.push_back(82696);
-        internal_counters.push_back(82796);
-        internal_counters.push_back(82896);
-        internal_counters.push_back(82996);
-        internal_counters.push_back(83096);
-        internal_counters.push_back(83196);
-        internal_counters.push_back(83296);
-        internal_counters.push_back(83396);
-        internal_counters.push_back(83496);
-        internal_counters.push_back(83596);
-        internal_counters.push_back(83696);
-        internal_counters.push_back(83796);
-        internal_counters.push_back(83896);
-        internal_counters.push_back(83996);
-        internal_counters.push_back(84096);
-        internal_counters.push_back(84196);
-        internal_counters.push_back(84296);
-        internal_counters.push_back(84396);
-        internal_counters.push_back(84496);
-        internal_counters.push_back(84596);
-        internal_counters.push_back(84696);
-        internal_counters.push_back(84796);
-        internal_counters.push_back(84896);
-        internal_counters.push_back(84996);
-        internal_counters.push_back(85096);
-        internal_counters.push_back(78804);
-        internal_counters.push_back(78904);
-        internal_counters.push_back(79004);
-        internal_counters.push_back(79104);
-        internal_counters.push_back(79204);
-        internal_counters.push_back(79304);
-        internal_counters.push_back(79404);
-        internal_counters.push_back(79504);
-        internal_counters.push_back(79604);
-        internal_counters.push_back(79704);
-        internal_counters.push_back(79804);
-        internal_counters.push_back(79904);
-        internal_counters.push_back(80004);
-        internal_counters.push_back(80104);
-        internal_counters.push_back(80204);
-        internal_counters.push_back(80304);
-        internal_counters.push_back(80404);
-        internal_counters.push_back(80504);
-        internal_counters.push_back(80604);
-        internal_counters.push_back(80704);
-        internal_counters.push_back(80804);
-        internal_counters.push_back(80904);
-        internal_counters.push_back(81004);
-        internal_counters.push_back(81104);
-        internal_counters.push_back(81204);
-        internal_counters.push_back(81304);
-        internal_counters.push_back(81404);
-        internal_counters.push_back(81504);
-        internal_counters.push_back(81604);
-        internal_counters.push_back(81704);
-        internal_counters.push_back(81804);
-        internal_counters.push_back(81904);
-        internal_counters.push_back(82004);
-        internal_counters.push_back(82104);
-        internal_counters.push_back(82204);
-        internal_counters.push_back(82304);
-        internal_counters.push_back(82404);
-        internal_counters.push_back(82504);
-        internal_counters.push_back(82604);
-        internal_counters.push_back(82704);
-        internal_counters.push_back(82804);
-        internal_counters.push_back(82904);
-        internal_counters.push_back(83004);
-        internal_counters.push_back(83104);
-        internal_counters.push_back(83204);
-        internal_counters.push_back(83304);
-        internal_counters.push_back(83404);
-        internal_counters.push_back(83504);
-        internal_counters.push_back(83604);
-        internal_counters.push_back(83704);
-        internal_counters.push_back(83804);
-        internal_counters.push_back(83904);
-        internal_counters.push_back(84004);
-        internal_counters.push_back(84104);
-        internal_counters.push_back(84204);
-        internal_counters.push_back(84304);
-        internal_counters.push_back(84404);
-        internal_counters.push_back(84504);
-        internal_counters.push_back(84604);
-        internal_counters.push_back(84704);
-        internal_counters.push_back(84804);
-        internal_counters.push_back(84904);
-        internal_counters.push_back(85004);
-        internal_counters.push_back(85104);
-
+        static constexpr std::array<GpaUInt32, 128> kHardwareCounters = {
+                78796,
+                78896,
+                78996,
+                79096,
+                79196,
+                79296,
+                79396,
+                79496,
+                79596,
+                79696,
+                79796,
+                79896,
+                79996,
+                80096,
+                80196,
+                80296,
+                80396,
+                80496,
+                80596,
+                80696,
+                80796,
+                80896,
+                80996,
+                81096,
+                81196,
+                81296,
+                81396,
+                81496,
+                81596,
+                81696,
+                81796,
+                81896,
+                81996,
+                82096,
+                82196,
+                82296,
+                82396,
+                82496,
+                82596,
+                82696,
+                82796,
+                82896,
+                82996,
+                83096,
+                83196,
+                83296,
+                83396,
+                83496,
+                83596,
+                83696,
+                83796,
+                83896,
+                83996,
+                84096,
+                84196,
+                84296,
+                84396,
+                84496,
+                84596,
+                84696,
+                84796,
+                84896,
+                84996,
+                85096,
+                78804,
+                78904,
+                79004,
+                79104,
+                79204,
+                79304,
+                79404,
+                79504,
+                79604,
+                79704,
+                79804,
+                79904,
+                80004,
+                80104,
+                80204,
+                80304,
+                80404,
+                80504,
+                80604,
+                80704,
+                80804,
+                80904,
+                81004,
+                81104,
+                81204,
+                81304,
+                81404,
+                81504,
+                81604,
+                81704,
+                81804,
+                81904,
+                82004,
+                82104,
+                82204,
+                82304,
+                82404,
+                82504,
+                82604,
+                82704,
+                82804,
+                82904,
+                83004,
+                83104,
+                83204,
+                83304,
+                83404,
+                83504,
+                83604,
+                83704,
+                83804,
+                83904,
+                84004,
+                84104,
+                84204,
+                84304,
+                84404,
+                84504,
+                84604,
+                84704,
+                84804,
+                84904,
+                85004,
+                85104,
+        };
         c.DefineDerivedCounter("L0CacheHit",
                                "MemoryCache",
                                "The percentage of read requests that hit the data in the L0 cache. The L0 cache contains vector data, which is data that may vary in each thread across the wavefront. Each request is 128 bytes in size. Value range: 0% (no hit) to 100% (optimal).",
@@ -3926,77 +3928,77 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                kGpaUsageTypePercentage,
                                true,
                                false,
-                               internal_counters,
+                               kHardwareCounters,
                                "(0),(1),64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,sum64,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,sum64,/,-,(100),*,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,sum64,ifnotzero",
                                "286c786e-9a42-3371-9dea-dd54e6e612e9");
     }
     { // Index:70
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(78796);
-        internal_counters.push_back(78896);
-        internal_counters.push_back(78996);
-        internal_counters.push_back(79096);
-        internal_counters.push_back(79196);
-        internal_counters.push_back(79296);
-        internal_counters.push_back(79396);
-        internal_counters.push_back(79496);
-        internal_counters.push_back(79596);
-        internal_counters.push_back(79696);
-        internal_counters.push_back(79796);
-        internal_counters.push_back(79896);
-        internal_counters.push_back(79996);
-        internal_counters.push_back(80096);
-        internal_counters.push_back(80196);
-        internal_counters.push_back(80296);
-        internal_counters.push_back(80396);
-        internal_counters.push_back(80496);
-        internal_counters.push_back(80596);
-        internal_counters.push_back(80696);
-        internal_counters.push_back(80796);
-        internal_counters.push_back(80896);
-        internal_counters.push_back(80996);
-        internal_counters.push_back(81096);
-        internal_counters.push_back(81196);
-        internal_counters.push_back(81296);
-        internal_counters.push_back(81396);
-        internal_counters.push_back(81496);
-        internal_counters.push_back(81596);
-        internal_counters.push_back(81696);
-        internal_counters.push_back(81796);
-        internal_counters.push_back(81896);
-        internal_counters.push_back(81996);
-        internal_counters.push_back(82096);
-        internal_counters.push_back(82196);
-        internal_counters.push_back(82296);
-        internal_counters.push_back(82396);
-        internal_counters.push_back(82496);
-        internal_counters.push_back(82596);
-        internal_counters.push_back(82696);
-        internal_counters.push_back(82796);
-        internal_counters.push_back(82896);
-        internal_counters.push_back(82996);
-        internal_counters.push_back(83096);
-        internal_counters.push_back(83196);
-        internal_counters.push_back(83296);
-        internal_counters.push_back(83396);
-        internal_counters.push_back(83496);
-        internal_counters.push_back(83596);
-        internal_counters.push_back(83696);
-        internal_counters.push_back(83796);
-        internal_counters.push_back(83896);
-        internal_counters.push_back(83996);
-        internal_counters.push_back(84096);
-        internal_counters.push_back(84196);
-        internal_counters.push_back(84296);
-        internal_counters.push_back(84396);
-        internal_counters.push_back(84496);
-        internal_counters.push_back(84596);
-        internal_counters.push_back(84696);
-        internal_counters.push_back(84796);
-        internal_counters.push_back(84896);
-        internal_counters.push_back(84996);
-        internal_counters.push_back(85096);
-
+        static constexpr std::array<GpaUInt32, 64> kHardwareCounters = {
+                78796,
+                78896,
+                78996,
+                79096,
+                79196,
+                79296,
+                79396,
+                79496,
+                79596,
+                79696,
+                79796,
+                79896,
+                79996,
+                80096,
+                80196,
+                80296,
+                80396,
+                80496,
+                80596,
+                80696,
+                80796,
+                80896,
+                80996,
+                81096,
+                81196,
+                81296,
+                81396,
+                81496,
+                81596,
+                81696,
+                81796,
+                81896,
+                81996,
+                82096,
+                82196,
+                82296,
+                82396,
+                82496,
+                82596,
+                82696,
+                82796,
+                82896,
+                82996,
+                83096,
+                83196,
+                83296,
+                83396,
+                83496,
+                83596,
+                83696,
+                83796,
+                83896,
+                83996,
+                84096,
+                84196,
+                84296,
+                84396,
+                84496,
+                84596,
+                84696,
+                84796,
+                84896,
+                84996,
+                85096,
+        };
         c.DefineDerivedCounter("L0CacheRequestCount",
                                "MemoryCache",
                                "The number of read requests made to the L0 cache. The L0 cache contains vector data, which is data that may vary in each thread across the wavefront. Each request is 128 bytes in size.",
@@ -4004,141 +4006,141 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                kGpaUsageTypeItems,
                                true,
                                false,
-                               internal_counters,
+                               kHardwareCounters,
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,sum64",
                                "74983cae-ee57-2e1b-d990-5128fef84e1f");
     }
     { // Index:71
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(78796);
-        internal_counters.push_back(78896);
-        internal_counters.push_back(78996);
-        internal_counters.push_back(79096);
-        internal_counters.push_back(79196);
-        internal_counters.push_back(79296);
-        internal_counters.push_back(79396);
-        internal_counters.push_back(79496);
-        internal_counters.push_back(79596);
-        internal_counters.push_back(79696);
-        internal_counters.push_back(79796);
-        internal_counters.push_back(79896);
-        internal_counters.push_back(79996);
-        internal_counters.push_back(80096);
-        internal_counters.push_back(80196);
-        internal_counters.push_back(80296);
-        internal_counters.push_back(80396);
-        internal_counters.push_back(80496);
-        internal_counters.push_back(80596);
-        internal_counters.push_back(80696);
-        internal_counters.push_back(80796);
-        internal_counters.push_back(80896);
-        internal_counters.push_back(80996);
-        internal_counters.push_back(81096);
-        internal_counters.push_back(81196);
-        internal_counters.push_back(81296);
-        internal_counters.push_back(81396);
-        internal_counters.push_back(81496);
-        internal_counters.push_back(81596);
-        internal_counters.push_back(81696);
-        internal_counters.push_back(81796);
-        internal_counters.push_back(81896);
-        internal_counters.push_back(81996);
-        internal_counters.push_back(82096);
-        internal_counters.push_back(82196);
-        internal_counters.push_back(82296);
-        internal_counters.push_back(82396);
-        internal_counters.push_back(82496);
-        internal_counters.push_back(82596);
-        internal_counters.push_back(82696);
-        internal_counters.push_back(82796);
-        internal_counters.push_back(82896);
-        internal_counters.push_back(82996);
-        internal_counters.push_back(83096);
-        internal_counters.push_back(83196);
-        internal_counters.push_back(83296);
-        internal_counters.push_back(83396);
-        internal_counters.push_back(83496);
-        internal_counters.push_back(83596);
-        internal_counters.push_back(83696);
-        internal_counters.push_back(83796);
-        internal_counters.push_back(83896);
-        internal_counters.push_back(83996);
-        internal_counters.push_back(84096);
-        internal_counters.push_back(84196);
-        internal_counters.push_back(84296);
-        internal_counters.push_back(84396);
-        internal_counters.push_back(84496);
-        internal_counters.push_back(84596);
-        internal_counters.push_back(84696);
-        internal_counters.push_back(84796);
-        internal_counters.push_back(84896);
-        internal_counters.push_back(84996);
-        internal_counters.push_back(85096);
-        internal_counters.push_back(78804);
-        internal_counters.push_back(78904);
-        internal_counters.push_back(79004);
-        internal_counters.push_back(79104);
-        internal_counters.push_back(79204);
-        internal_counters.push_back(79304);
-        internal_counters.push_back(79404);
-        internal_counters.push_back(79504);
-        internal_counters.push_back(79604);
-        internal_counters.push_back(79704);
-        internal_counters.push_back(79804);
-        internal_counters.push_back(79904);
-        internal_counters.push_back(80004);
-        internal_counters.push_back(80104);
-        internal_counters.push_back(80204);
-        internal_counters.push_back(80304);
-        internal_counters.push_back(80404);
-        internal_counters.push_back(80504);
-        internal_counters.push_back(80604);
-        internal_counters.push_back(80704);
-        internal_counters.push_back(80804);
-        internal_counters.push_back(80904);
-        internal_counters.push_back(81004);
-        internal_counters.push_back(81104);
-        internal_counters.push_back(81204);
-        internal_counters.push_back(81304);
-        internal_counters.push_back(81404);
-        internal_counters.push_back(81504);
-        internal_counters.push_back(81604);
-        internal_counters.push_back(81704);
-        internal_counters.push_back(81804);
-        internal_counters.push_back(81904);
-        internal_counters.push_back(82004);
-        internal_counters.push_back(82104);
-        internal_counters.push_back(82204);
-        internal_counters.push_back(82304);
-        internal_counters.push_back(82404);
-        internal_counters.push_back(82504);
-        internal_counters.push_back(82604);
-        internal_counters.push_back(82704);
-        internal_counters.push_back(82804);
-        internal_counters.push_back(82904);
-        internal_counters.push_back(83004);
-        internal_counters.push_back(83104);
-        internal_counters.push_back(83204);
-        internal_counters.push_back(83304);
-        internal_counters.push_back(83404);
-        internal_counters.push_back(83504);
-        internal_counters.push_back(83604);
-        internal_counters.push_back(83704);
-        internal_counters.push_back(83804);
-        internal_counters.push_back(83904);
-        internal_counters.push_back(84004);
-        internal_counters.push_back(84104);
-        internal_counters.push_back(84204);
-        internal_counters.push_back(84304);
-        internal_counters.push_back(84404);
-        internal_counters.push_back(84504);
-        internal_counters.push_back(84604);
-        internal_counters.push_back(84704);
-        internal_counters.push_back(84804);
-        internal_counters.push_back(84904);
-        internal_counters.push_back(85004);
-        internal_counters.push_back(85104);
-
+        static constexpr std::array<GpaUInt32, 128> kHardwareCounters = {
+                78796,
+                78896,
+                78996,
+                79096,
+                79196,
+                79296,
+                79396,
+                79496,
+                79596,
+                79696,
+                79796,
+                79896,
+                79996,
+                80096,
+                80196,
+                80296,
+                80396,
+                80496,
+                80596,
+                80696,
+                80796,
+                80896,
+                80996,
+                81096,
+                81196,
+                81296,
+                81396,
+                81496,
+                81596,
+                81696,
+                81796,
+                81896,
+                81996,
+                82096,
+                82196,
+                82296,
+                82396,
+                82496,
+                82596,
+                82696,
+                82796,
+                82896,
+                82996,
+                83096,
+                83196,
+                83296,
+                83396,
+                83496,
+                83596,
+                83696,
+                83796,
+                83896,
+                83996,
+                84096,
+                84196,
+                84296,
+                84396,
+                84496,
+                84596,
+                84696,
+                84796,
+                84896,
+                84996,
+                85096,
+                78804,
+                78904,
+                79004,
+                79104,
+                79204,
+                79304,
+                79404,
+                79504,
+                79604,
+                79704,
+                79804,
+                79904,
+                80004,
+                80104,
+                80204,
+                80304,
+                80404,
+                80504,
+                80604,
+                80704,
+                80804,
+                80904,
+                81004,
+                81104,
+                81204,
+                81304,
+                81404,
+                81504,
+                81604,
+                81704,
+                81804,
+                81904,
+                82004,
+                82104,
+                82204,
+                82304,
+                82404,
+                82504,
+                82604,
+                82704,
+                82804,
+                82904,
+                83004,
+                83104,
+                83204,
+                83304,
+                83404,
+                83504,
+                83604,
+                83704,
+                83804,
+                83904,
+                84004,
+                84104,
+                84204,
+                84304,
+                84404,
+                84504,
+                84604,
+                84704,
+                84804,
+                84904,
+                85004,
+                85104,
+        };
         c.DefineDerivedCounter("L0CacheHitCount",
                                "MemoryCache",
                                "The number of read requests which result in a cache hit from the L0 cache. The L0 cache contains vector data, which is data that may vary in each thread across the wavefront. Each request is 128 bytes in size.",
@@ -4146,77 +4148,77 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                kGpaUsageTypeItems,
                                true,
                                false,
-                               internal_counters,
+                               kHardwareCounters,
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,sum64,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,sum64,-",
                                "c0de7338-069b-c5ba-ead3-c65e030cd2ac");
     }
     { // Index:72
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(78804);
-        internal_counters.push_back(78904);
-        internal_counters.push_back(79004);
-        internal_counters.push_back(79104);
-        internal_counters.push_back(79204);
-        internal_counters.push_back(79304);
-        internal_counters.push_back(79404);
-        internal_counters.push_back(79504);
-        internal_counters.push_back(79604);
-        internal_counters.push_back(79704);
-        internal_counters.push_back(79804);
-        internal_counters.push_back(79904);
-        internal_counters.push_back(80004);
-        internal_counters.push_back(80104);
-        internal_counters.push_back(80204);
-        internal_counters.push_back(80304);
-        internal_counters.push_back(80404);
-        internal_counters.push_back(80504);
-        internal_counters.push_back(80604);
-        internal_counters.push_back(80704);
-        internal_counters.push_back(80804);
-        internal_counters.push_back(80904);
-        internal_counters.push_back(81004);
-        internal_counters.push_back(81104);
-        internal_counters.push_back(81204);
-        internal_counters.push_back(81304);
-        internal_counters.push_back(81404);
-        internal_counters.push_back(81504);
-        internal_counters.push_back(81604);
-        internal_counters.push_back(81704);
-        internal_counters.push_back(81804);
-        internal_counters.push_back(81904);
-        internal_counters.push_back(82004);
-        internal_counters.push_back(82104);
-        internal_counters.push_back(82204);
-        internal_counters.push_back(82304);
-        internal_counters.push_back(82404);
-        internal_counters.push_back(82504);
-        internal_counters.push_back(82604);
-        internal_counters.push_back(82704);
-        internal_counters.push_back(82804);
-        internal_counters.push_back(82904);
-        internal_counters.push_back(83004);
-        internal_counters.push_back(83104);
-        internal_counters.push_back(83204);
-        internal_counters.push_back(83304);
-        internal_counters.push_back(83404);
-        internal_counters.push_back(83504);
-        internal_counters.push_back(83604);
-        internal_counters.push_back(83704);
-        internal_counters.push_back(83804);
-        internal_counters.push_back(83904);
-        internal_counters.push_back(84004);
-        internal_counters.push_back(84104);
-        internal_counters.push_back(84204);
-        internal_counters.push_back(84304);
-        internal_counters.push_back(84404);
-        internal_counters.push_back(84504);
-        internal_counters.push_back(84604);
-        internal_counters.push_back(84704);
-        internal_counters.push_back(84804);
-        internal_counters.push_back(84904);
-        internal_counters.push_back(85004);
-        internal_counters.push_back(85104);
-
+        static constexpr std::array<GpaUInt32, 64> kHardwareCounters = {
+                78804,
+                78904,
+                79004,
+                79104,
+                79204,
+                79304,
+                79404,
+                79504,
+                79604,
+                79704,
+                79804,
+                79904,
+                80004,
+                80104,
+                80204,
+                80304,
+                80404,
+                80504,
+                80604,
+                80704,
+                80804,
+                80904,
+                81004,
+                81104,
+                81204,
+                81304,
+                81404,
+                81504,
+                81604,
+                81704,
+                81804,
+                81904,
+                82004,
+                82104,
+                82204,
+                82304,
+                82404,
+                82504,
+                82604,
+                82704,
+                82804,
+                82904,
+                83004,
+                83104,
+                83204,
+                83304,
+                83404,
+                83504,
+                83604,
+                83704,
+                83804,
+                83904,
+                84004,
+                84104,
+                84204,
+                84304,
+                84404,
+                84504,
+                84604,
+                84704,
+                84804,
+                84904,
+                85004,
+                85104,
+        };
         c.DefineDerivedCounter("L0CacheMissCount",
                                "MemoryCache",
                                "The number of read requests which result in a cache miss from the L0 cache. The L0 cache contains vector data, which is data that may vary in each thread across the wavefront. Each request is 128 bytes in size.",
@@ -4224,49 +4226,49 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                kGpaUsageTypeItems,
                                true,
                                false,
-                               internal_counters,
+                               kHardwareCounters,
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,sum64",
                                "a2f08766-ea1b-6eae-6eaf-faa04125d3e6");
     }
     { // Index:73
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(90650);
-        internal_counters.push_back(90900);
-        internal_counters.push_back(91150);
-        internal_counters.push_back(91400);
-        internal_counters.push_back(91650);
-        internal_counters.push_back(91900);
-        internal_counters.push_back(92150);
-        internal_counters.push_back(92400);
-        internal_counters.push_back(92650);
-        internal_counters.push_back(92900);
-        internal_counters.push_back(93150);
-        internal_counters.push_back(93400);
-        internal_counters.push_back(93650);
-        internal_counters.push_back(93900);
-        internal_counters.push_back(94150);
-        internal_counters.push_back(94400);
-        internal_counters.push_back(94650);
-        internal_counters.push_back(94900);
-        internal_counters.push_back(90689);
-        internal_counters.push_back(90939);
-        internal_counters.push_back(91189);
-        internal_counters.push_back(91439);
-        internal_counters.push_back(91689);
-        internal_counters.push_back(91939);
-        internal_counters.push_back(92189);
-        internal_counters.push_back(92439);
-        internal_counters.push_back(92689);
-        internal_counters.push_back(92939);
-        internal_counters.push_back(93189);
-        internal_counters.push_back(93439);
-        internal_counters.push_back(93689);
-        internal_counters.push_back(93939);
-        internal_counters.push_back(94189);
-        internal_counters.push_back(94439);
-        internal_counters.push_back(94689);
-        internal_counters.push_back(94939);
-
+        static constexpr std::array<GpaUInt32, 36> kHardwareCounters = {
+                90650,
+                90900,
+                91150,
+                91400,
+                91650,
+                91900,
+                92150,
+                92400,
+                92650,
+                92900,
+                93150,
+                93400,
+                93650,
+                93900,
+                94150,
+                94400,
+                94650,
+                94900,
+                90689,
+                90939,
+                91189,
+                91439,
+                91689,
+                91939,
+                92189,
+                92439,
+                92689,
+                92939,
+                93189,
+                93439,
+                93689,
+                93939,
+                94189,
+                94439,
+                94689,
+                94939,
+        };
         c.DefineDerivedCounter("L2CacheHit",
                                "MemoryCache",
                                "The percentage of read or write requests that hit the data in the L2 cache. The L2 cache is shared by many blocks across the GPU, including the Command Processor, Geometry Engine, all WGPs, all Render Backends, and others. Each request is 128 bytes in size. Value range: 0% (no hit) to 100% (optimal).",
@@ -4274,49 +4276,49 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                kGpaUsageTypePercentage,
                                true,
                                false,
-                               internal_counters,
+                               kHardwareCounters,
                                "(0),(1),18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,sum18,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,sum18,/,-,(100),*,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,sum18,ifnotzero",
                                "47694e4d-6ce6-f387-080d-b1f3d00b73ac");
     }
     { // Index:74
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(90689);
-        internal_counters.push_back(90939);
-        internal_counters.push_back(91189);
-        internal_counters.push_back(91439);
-        internal_counters.push_back(91689);
-        internal_counters.push_back(91939);
-        internal_counters.push_back(92189);
-        internal_counters.push_back(92439);
-        internal_counters.push_back(92689);
-        internal_counters.push_back(92939);
-        internal_counters.push_back(93189);
-        internal_counters.push_back(93439);
-        internal_counters.push_back(93689);
-        internal_counters.push_back(93939);
-        internal_counters.push_back(94189);
-        internal_counters.push_back(94439);
-        internal_counters.push_back(94689);
-        internal_counters.push_back(94939);
-        internal_counters.push_back(90650);
-        internal_counters.push_back(90900);
-        internal_counters.push_back(91150);
-        internal_counters.push_back(91400);
-        internal_counters.push_back(91650);
-        internal_counters.push_back(91900);
-        internal_counters.push_back(92150);
-        internal_counters.push_back(92400);
-        internal_counters.push_back(92650);
-        internal_counters.push_back(92900);
-        internal_counters.push_back(93150);
-        internal_counters.push_back(93400);
-        internal_counters.push_back(93650);
-        internal_counters.push_back(93900);
-        internal_counters.push_back(94150);
-        internal_counters.push_back(94400);
-        internal_counters.push_back(94650);
-        internal_counters.push_back(94900);
-
+        static constexpr std::array<GpaUInt32, 36> kHardwareCounters = {
+                90689,
+                90939,
+                91189,
+                91439,
+                91689,
+                91939,
+                92189,
+                92439,
+                92689,
+                92939,
+                93189,
+                93439,
+                93689,
+                93939,
+                94189,
+                94439,
+                94689,
+                94939,
+                90650,
+                90900,
+                91150,
+                91400,
+                91650,
+                91900,
+                92150,
+                92400,
+                92650,
+                92900,
+                93150,
+                93400,
+                93650,
+                93900,
+                94150,
+                94400,
+                94650,
+                94900,
+        };
         c.DefineDerivedCounter("L2CacheMiss",
                                "MemoryCache",
                                "The percentage of read or write requests that miss the data in the L2 cache. The L2 cache is shared by many blocks across the GPU, including the Command Processor, Geometry Engine, all WGPs, all Render Backends, and others. Each request is 128 bytes in size. Value range: 0% (optimal) to 100% (all miss).",
@@ -4324,31 +4326,31 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                kGpaUsageTypePercentage,
                                true,
                                false,
-                               internal_counters,
+                               kHardwareCounters,
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,sum18,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,sum18,/,(100),*",
                                "8aee5458-a58e-11b6-5131-7f19ed070117");
     }
     { // Index:75
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(90650);
-        internal_counters.push_back(90900);
-        internal_counters.push_back(91150);
-        internal_counters.push_back(91400);
-        internal_counters.push_back(91650);
-        internal_counters.push_back(91900);
-        internal_counters.push_back(92150);
-        internal_counters.push_back(92400);
-        internal_counters.push_back(92650);
-        internal_counters.push_back(92900);
-        internal_counters.push_back(93150);
-        internal_counters.push_back(93400);
-        internal_counters.push_back(93650);
-        internal_counters.push_back(93900);
-        internal_counters.push_back(94150);
-        internal_counters.push_back(94400);
-        internal_counters.push_back(94650);
-        internal_counters.push_back(94900);
-
+        static constexpr std::array<GpaUInt32, 18> kHardwareCounters = {
+                90650,
+                90900,
+                91150,
+                91400,
+                91650,
+                91900,
+                92150,
+                92400,
+                92650,
+                92900,
+                93150,
+                93400,
+                93650,
+                93900,
+                94150,
+                94400,
+                94650,
+                94900,
+        };
         c.DefineDerivedCounter("L2CacheRequestCount",
                                "MemoryCache",
                                "The number of read or write requests made to the L2 cache. The L2 cache is shared by many blocks across the GPU, including the Command Processor, Geometry Engine, all WGPs, all Render Backends, and others. Each request is 128 bytes in size.",
@@ -4356,49 +4358,49 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                kGpaUsageTypeItems,
                                true,
                                false,
-                               internal_counters,
+                               kHardwareCounters,
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,sum18",
                                "21e9219c-e725-0d96-06b1-b21698b736b2");
     }
     { // Index:76
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(90650);
-        internal_counters.push_back(90900);
-        internal_counters.push_back(91150);
-        internal_counters.push_back(91400);
-        internal_counters.push_back(91650);
-        internal_counters.push_back(91900);
-        internal_counters.push_back(92150);
-        internal_counters.push_back(92400);
-        internal_counters.push_back(92650);
-        internal_counters.push_back(92900);
-        internal_counters.push_back(93150);
-        internal_counters.push_back(93400);
-        internal_counters.push_back(93650);
-        internal_counters.push_back(93900);
-        internal_counters.push_back(94150);
-        internal_counters.push_back(94400);
-        internal_counters.push_back(94650);
-        internal_counters.push_back(94900);
-        internal_counters.push_back(90689);
-        internal_counters.push_back(90939);
-        internal_counters.push_back(91189);
-        internal_counters.push_back(91439);
-        internal_counters.push_back(91689);
-        internal_counters.push_back(91939);
-        internal_counters.push_back(92189);
-        internal_counters.push_back(92439);
-        internal_counters.push_back(92689);
-        internal_counters.push_back(92939);
-        internal_counters.push_back(93189);
-        internal_counters.push_back(93439);
-        internal_counters.push_back(93689);
-        internal_counters.push_back(93939);
-        internal_counters.push_back(94189);
-        internal_counters.push_back(94439);
-        internal_counters.push_back(94689);
-        internal_counters.push_back(94939);
-
+        static constexpr std::array<GpaUInt32, 36> kHardwareCounters = {
+                90650,
+                90900,
+                91150,
+                91400,
+                91650,
+                91900,
+                92150,
+                92400,
+                92650,
+                92900,
+                93150,
+                93400,
+                93650,
+                93900,
+                94150,
+                94400,
+                94650,
+                94900,
+                90689,
+                90939,
+                91189,
+                91439,
+                91689,
+                91939,
+                92189,
+                92439,
+                92689,
+                92939,
+                93189,
+                93439,
+                93689,
+                93939,
+                94189,
+                94439,
+                94689,
+                94939,
+        };
         c.DefineDerivedCounter("L2CacheHitCount",
                                "MemoryCache",
                                "The number of read or write requests which result in a cache hit from the L2 cache. The L2 cache is shared by many blocks across the GPU, including the Command Processor, Geometry Engine, all WGPs, all Render Backends, and others. Each request is 128 bytes in size.",
@@ -4406,31 +4408,31 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                kGpaUsageTypeItems,
                                true,
                                false,
-                               internal_counters,
+                               kHardwareCounters,
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,sum18,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,sum18,-",
                                "29ddcb92-d3dd-951b-1b23-efe52e4eeee4");
     }
     { // Index:77
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(90689);
-        internal_counters.push_back(90939);
-        internal_counters.push_back(91189);
-        internal_counters.push_back(91439);
-        internal_counters.push_back(91689);
-        internal_counters.push_back(91939);
-        internal_counters.push_back(92189);
-        internal_counters.push_back(92439);
-        internal_counters.push_back(92689);
-        internal_counters.push_back(92939);
-        internal_counters.push_back(93189);
-        internal_counters.push_back(93439);
-        internal_counters.push_back(93689);
-        internal_counters.push_back(93939);
-        internal_counters.push_back(94189);
-        internal_counters.push_back(94439);
-        internal_counters.push_back(94689);
-        internal_counters.push_back(94939);
-
+        static constexpr std::array<GpaUInt32, 18> kHardwareCounters = {
+                90689,
+                90939,
+                91189,
+                91439,
+                91689,
+                91939,
+                92189,
+                92439,
+                92689,
+                92939,
+                93189,
+                93439,
+                93689,
+                93939,
+                94189,
+                94439,
+                94689,
+                94939,
+        };
         c.DefineDerivedCounter("L2CacheMissCount",
                                "MemoryCache",
                                "The number of read or write requests which result in a cache miss from the L2 cache. The L2 cache is shared by many blocks across the GPU, including the Command Processor, Geometry Engine, all WGPs, all Render Backends, and others. Each request is 128 bytes in size.",
@@ -4438,77 +4440,77 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                kGpaUsageTypeItems,
                                true,
                                false,
-                               internal_counters,
+                               kHardwareCounters,
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,sum18",
                                "376eec7b-ab25-9012-06b5-63291a17fd47");
     }
     { // Index:78
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(78833);
-        internal_counters.push_back(78933);
-        internal_counters.push_back(79033);
-        internal_counters.push_back(79133);
-        internal_counters.push_back(79233);
-        internal_counters.push_back(79333);
-        internal_counters.push_back(79433);
-        internal_counters.push_back(79533);
-        internal_counters.push_back(79633);
-        internal_counters.push_back(79733);
-        internal_counters.push_back(79833);
-        internal_counters.push_back(79933);
-        internal_counters.push_back(80033);
-        internal_counters.push_back(80133);
-        internal_counters.push_back(80233);
-        internal_counters.push_back(80333);
-        internal_counters.push_back(80433);
-        internal_counters.push_back(80533);
-        internal_counters.push_back(80633);
-        internal_counters.push_back(80733);
-        internal_counters.push_back(80833);
-        internal_counters.push_back(80933);
-        internal_counters.push_back(81033);
-        internal_counters.push_back(81133);
-        internal_counters.push_back(81233);
-        internal_counters.push_back(81333);
-        internal_counters.push_back(81433);
-        internal_counters.push_back(81533);
-        internal_counters.push_back(81633);
-        internal_counters.push_back(81733);
-        internal_counters.push_back(81833);
-        internal_counters.push_back(81933);
-        internal_counters.push_back(82033);
-        internal_counters.push_back(82133);
-        internal_counters.push_back(82233);
-        internal_counters.push_back(82333);
-        internal_counters.push_back(82433);
-        internal_counters.push_back(82533);
-        internal_counters.push_back(82633);
-        internal_counters.push_back(82733);
-        internal_counters.push_back(82833);
-        internal_counters.push_back(82933);
-        internal_counters.push_back(83033);
-        internal_counters.push_back(83133);
-        internal_counters.push_back(83233);
-        internal_counters.push_back(83333);
-        internal_counters.push_back(83433);
-        internal_counters.push_back(83533);
-        internal_counters.push_back(83633);
-        internal_counters.push_back(83733);
-        internal_counters.push_back(83833);
-        internal_counters.push_back(83933);
-        internal_counters.push_back(84033);
-        internal_counters.push_back(84133);
-        internal_counters.push_back(84233);
-        internal_counters.push_back(84333);
-        internal_counters.push_back(84433);
-        internal_counters.push_back(84533);
-        internal_counters.push_back(84633);
-        internal_counters.push_back(84733);
-        internal_counters.push_back(84833);
-        internal_counters.push_back(84933);
-        internal_counters.push_back(85033);
-        internal_counters.push_back(85133);
-
+        static constexpr std::array<GpaUInt32, 64> kHardwareCounters = {
+                78833,
+                78933,
+                79033,
+                79133,
+                79233,
+                79333,
+                79433,
+                79533,
+                79633,
+                79733,
+                79833,
+                79933,
+                80033,
+                80133,
+                80233,
+                80333,
+                80433,
+                80533,
+                80633,
+                80733,
+                80833,
+                80933,
+                81033,
+                81133,
+                81233,
+                81333,
+                81433,
+                81533,
+                81633,
+                81733,
+                81833,
+                81933,
+                82033,
+                82133,
+                82233,
+                82333,
+                82433,
+                82533,
+                82633,
+                82733,
+                82833,
+                82933,
+                83033,
+                83133,
+                83233,
+                83333,
+                83433,
+                83533,
+                83633,
+                83733,
+                83833,
+                83933,
+                84033,
+                84133,
+                84233,
+                84333,
+                84433,
+                84533,
+                84633,
+                84733,
+                84833,
+                84933,
+                85033,
+                85133,
+        };
         c.DefineDerivedCounter("L0TagConflictReadStalledCycles",
                                "MemoryCache",
                                "The number of cycles read operations from the L0 cache are stalled due to tag conflicts.",
@@ -4516,77 +4518,77 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                kGpaUsageTypeItems,
                                true,
                                false,
-                               internal_counters,
+                               kHardwareCounters,
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,max64",
                                "e2412737-e2bf-c791-5f2f-64abd4ba47cf");
     }
     { // Index:79
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(78834);
-        internal_counters.push_back(78934);
-        internal_counters.push_back(79034);
-        internal_counters.push_back(79134);
-        internal_counters.push_back(79234);
-        internal_counters.push_back(79334);
-        internal_counters.push_back(79434);
-        internal_counters.push_back(79534);
-        internal_counters.push_back(79634);
-        internal_counters.push_back(79734);
-        internal_counters.push_back(79834);
-        internal_counters.push_back(79934);
-        internal_counters.push_back(80034);
-        internal_counters.push_back(80134);
-        internal_counters.push_back(80234);
-        internal_counters.push_back(80334);
-        internal_counters.push_back(80434);
-        internal_counters.push_back(80534);
-        internal_counters.push_back(80634);
-        internal_counters.push_back(80734);
-        internal_counters.push_back(80834);
-        internal_counters.push_back(80934);
-        internal_counters.push_back(81034);
-        internal_counters.push_back(81134);
-        internal_counters.push_back(81234);
-        internal_counters.push_back(81334);
-        internal_counters.push_back(81434);
-        internal_counters.push_back(81534);
-        internal_counters.push_back(81634);
-        internal_counters.push_back(81734);
-        internal_counters.push_back(81834);
-        internal_counters.push_back(81934);
-        internal_counters.push_back(82034);
-        internal_counters.push_back(82134);
-        internal_counters.push_back(82234);
-        internal_counters.push_back(82334);
-        internal_counters.push_back(82434);
-        internal_counters.push_back(82534);
-        internal_counters.push_back(82634);
-        internal_counters.push_back(82734);
-        internal_counters.push_back(82834);
-        internal_counters.push_back(82934);
-        internal_counters.push_back(83034);
-        internal_counters.push_back(83134);
-        internal_counters.push_back(83234);
-        internal_counters.push_back(83334);
-        internal_counters.push_back(83434);
-        internal_counters.push_back(83534);
-        internal_counters.push_back(83634);
-        internal_counters.push_back(83734);
-        internal_counters.push_back(83834);
-        internal_counters.push_back(83934);
-        internal_counters.push_back(84034);
-        internal_counters.push_back(84134);
-        internal_counters.push_back(84234);
-        internal_counters.push_back(84334);
-        internal_counters.push_back(84434);
-        internal_counters.push_back(84534);
-        internal_counters.push_back(84634);
-        internal_counters.push_back(84734);
-        internal_counters.push_back(84834);
-        internal_counters.push_back(84934);
-        internal_counters.push_back(85034);
-        internal_counters.push_back(85134);
-
+        static constexpr std::array<GpaUInt32, 64> kHardwareCounters = {
+                78834,
+                78934,
+                79034,
+                79134,
+                79234,
+                79334,
+                79434,
+                79534,
+                79634,
+                79734,
+                79834,
+                79934,
+                80034,
+                80134,
+                80234,
+                80334,
+                80434,
+                80534,
+                80634,
+                80734,
+                80834,
+                80934,
+                81034,
+                81134,
+                81234,
+                81334,
+                81434,
+                81534,
+                81634,
+                81734,
+                81834,
+                81934,
+                82034,
+                82134,
+                82234,
+                82334,
+                82434,
+                82534,
+                82634,
+                82734,
+                82834,
+                82934,
+                83034,
+                83134,
+                83234,
+                83334,
+                83434,
+                83534,
+                83634,
+                83734,
+                83834,
+                83934,
+                84034,
+                84134,
+                84234,
+                84334,
+                84434,
+                84534,
+                84634,
+                84734,
+                84834,
+                84934,
+                85034,
+                85134,
+        };
         c.DefineDerivedCounter("L0TagConflictWriteStalledCycles",
                                "MemoryCache",
                                "The number of cycles write operations to the L0 cache are stalled due to tag conflicts.",
@@ -4594,77 +4596,77 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                kGpaUsageTypeItems,
                                true,
                                false,
-                               internal_counters,
+                               kHardwareCounters,
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,max64",
                                "0c2571f3-f084-f351-99ba-0d9e23b47e8e");
     }
     { // Index:80
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(78835);
-        internal_counters.push_back(78935);
-        internal_counters.push_back(79035);
-        internal_counters.push_back(79135);
-        internal_counters.push_back(79235);
-        internal_counters.push_back(79335);
-        internal_counters.push_back(79435);
-        internal_counters.push_back(79535);
-        internal_counters.push_back(79635);
-        internal_counters.push_back(79735);
-        internal_counters.push_back(79835);
-        internal_counters.push_back(79935);
-        internal_counters.push_back(80035);
-        internal_counters.push_back(80135);
-        internal_counters.push_back(80235);
-        internal_counters.push_back(80335);
-        internal_counters.push_back(80435);
-        internal_counters.push_back(80535);
-        internal_counters.push_back(80635);
-        internal_counters.push_back(80735);
-        internal_counters.push_back(80835);
-        internal_counters.push_back(80935);
-        internal_counters.push_back(81035);
-        internal_counters.push_back(81135);
-        internal_counters.push_back(81235);
-        internal_counters.push_back(81335);
-        internal_counters.push_back(81435);
-        internal_counters.push_back(81535);
-        internal_counters.push_back(81635);
-        internal_counters.push_back(81735);
-        internal_counters.push_back(81835);
-        internal_counters.push_back(81935);
-        internal_counters.push_back(82035);
-        internal_counters.push_back(82135);
-        internal_counters.push_back(82235);
-        internal_counters.push_back(82335);
-        internal_counters.push_back(82435);
-        internal_counters.push_back(82535);
-        internal_counters.push_back(82635);
-        internal_counters.push_back(82735);
-        internal_counters.push_back(82835);
-        internal_counters.push_back(82935);
-        internal_counters.push_back(83035);
-        internal_counters.push_back(83135);
-        internal_counters.push_back(83235);
-        internal_counters.push_back(83335);
-        internal_counters.push_back(83435);
-        internal_counters.push_back(83535);
-        internal_counters.push_back(83635);
-        internal_counters.push_back(83735);
-        internal_counters.push_back(83835);
-        internal_counters.push_back(83935);
-        internal_counters.push_back(84035);
-        internal_counters.push_back(84135);
-        internal_counters.push_back(84235);
-        internal_counters.push_back(84335);
-        internal_counters.push_back(84435);
-        internal_counters.push_back(84535);
-        internal_counters.push_back(84635);
-        internal_counters.push_back(84735);
-        internal_counters.push_back(84835);
-        internal_counters.push_back(84935);
-        internal_counters.push_back(85035);
-        internal_counters.push_back(85135);
-
+        static constexpr std::array<GpaUInt32, 64> kHardwareCounters = {
+                78835,
+                78935,
+                79035,
+                79135,
+                79235,
+                79335,
+                79435,
+                79535,
+                79635,
+                79735,
+                79835,
+                79935,
+                80035,
+                80135,
+                80235,
+                80335,
+                80435,
+                80535,
+                80635,
+                80735,
+                80835,
+                80935,
+                81035,
+                81135,
+                81235,
+                81335,
+                81435,
+                81535,
+                81635,
+                81735,
+                81835,
+                81935,
+                82035,
+                82135,
+                82235,
+                82335,
+                82435,
+                82535,
+                82635,
+                82735,
+                82835,
+                82935,
+                83035,
+                83135,
+                83235,
+                83335,
+                83435,
+                83535,
+                83635,
+                83735,
+                83835,
+                83935,
+                84035,
+                84135,
+                84235,
+                84335,
+                84435,
+                84535,
+                84635,
+                84735,
+                84835,
+                84935,
+                85035,
+                85135,
+        };
         c.DefineDerivedCounter("L0TagConflictAtomicStalledCycles",
                                "MemoryCache",
                                "The number of cycles atomic operations on the L0 cache are stalled due to tag conflicts.",
@@ -4672,85 +4674,85 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                kGpaUsageTypeItems,
                                true,
                                false,
-                               internal_counters,
+                               kHardwareCounters,
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,max64",
                                "f13f8563-4151-1533-f42f-0f9c08a20210");
     }
     { // Index:81
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(90793);
-        internal_counters.push_back(91043);
-        internal_counters.push_back(91293);
-        internal_counters.push_back(91543);
-        internal_counters.push_back(91793);
-        internal_counters.push_back(92043);
-        internal_counters.push_back(92293);
-        internal_counters.push_back(92543);
-        internal_counters.push_back(92793);
-        internal_counters.push_back(93043);
-        internal_counters.push_back(93293);
-        internal_counters.push_back(93543);
-        internal_counters.push_back(93793);
-        internal_counters.push_back(94043);
-        internal_counters.push_back(94293);
-        internal_counters.push_back(94543);
-        internal_counters.push_back(94793);
-        internal_counters.push_back(95043);
-        internal_counters.push_back(90794);
-        internal_counters.push_back(91044);
-        internal_counters.push_back(91294);
-        internal_counters.push_back(91544);
-        internal_counters.push_back(91794);
-        internal_counters.push_back(92044);
-        internal_counters.push_back(92294);
-        internal_counters.push_back(92544);
-        internal_counters.push_back(92794);
-        internal_counters.push_back(93044);
-        internal_counters.push_back(93294);
-        internal_counters.push_back(93544);
-        internal_counters.push_back(93794);
-        internal_counters.push_back(94044);
-        internal_counters.push_back(94294);
-        internal_counters.push_back(94544);
-        internal_counters.push_back(94794);
-        internal_counters.push_back(95044);
-        internal_counters.push_back(90795);
-        internal_counters.push_back(91045);
-        internal_counters.push_back(91295);
-        internal_counters.push_back(91545);
-        internal_counters.push_back(91795);
-        internal_counters.push_back(92045);
-        internal_counters.push_back(92295);
-        internal_counters.push_back(92545);
-        internal_counters.push_back(92795);
-        internal_counters.push_back(93045);
-        internal_counters.push_back(93295);
-        internal_counters.push_back(93545);
-        internal_counters.push_back(93795);
-        internal_counters.push_back(94045);
-        internal_counters.push_back(94295);
-        internal_counters.push_back(94545);
-        internal_counters.push_back(94795);
-        internal_counters.push_back(95045);
-        internal_counters.push_back(90796);
-        internal_counters.push_back(91046);
-        internal_counters.push_back(91296);
-        internal_counters.push_back(91546);
-        internal_counters.push_back(91796);
-        internal_counters.push_back(92046);
-        internal_counters.push_back(92296);
-        internal_counters.push_back(92546);
-        internal_counters.push_back(92796);
-        internal_counters.push_back(93046);
-        internal_counters.push_back(93296);
-        internal_counters.push_back(93546);
-        internal_counters.push_back(93796);
-        internal_counters.push_back(94046);
-        internal_counters.push_back(94296);
-        internal_counters.push_back(94546);
-        internal_counters.push_back(94796);
-        internal_counters.push_back(95046);
-
+        static constexpr std::array<GpaUInt32, 72> kHardwareCounters = {
+                90793,
+                91043,
+                91293,
+                91543,
+                91793,
+                92043,
+                92293,
+                92543,
+                92793,
+                93043,
+                93293,
+                93543,
+                93793,
+                94043,
+                94293,
+                94543,
+                94793,
+                95043,
+                90794,
+                91044,
+                91294,
+                91544,
+                91794,
+                92044,
+                92294,
+                92544,
+                92794,
+                93044,
+                93294,
+                93544,
+                93794,
+                94044,
+                94294,
+                94544,
+                94794,
+                95044,
+                90795,
+                91045,
+                91295,
+                91545,
+                91795,
+                92045,
+                92295,
+                92545,
+                92795,
+                93045,
+                93295,
+                93545,
+                93795,
+                94045,
+                94295,
+                94545,
+                94795,
+                95045,
+                90796,
+                91046,
+                91296,
+                91546,
+                91796,
+                92046,
+                92296,
+                92546,
+                92796,
+                93046,
+                93296,
+                93546,
+                93796,
+                94046,
+                94296,
+                94546,
+                94796,
+                95046,
+        };
         c.DefineDerivedCounter("FetchSize",
                                "GlobalMemory",
                                "The total bytes fetched from the video memory. This is measured with all extra fetches and any cache or memory effects taken into account.",
@@ -4758,49 +4760,49 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                kGpaUsageTypeBytes,
                                true,
                                false,
-                               internal_counters,
+                               kHardwareCounters,
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,sum18,(32),*,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,sum18,(64),*,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,sum18,(128),*,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,sum18,(256),*,sum4",
                                "664bb3ef-6eca-86b1-1e2d-30cb897b5fa9");
     }
     { // Index:82
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(90755);
-        internal_counters.push_back(91005);
-        internal_counters.push_back(91255);
-        internal_counters.push_back(91505);
-        internal_counters.push_back(91755);
-        internal_counters.push_back(92005);
-        internal_counters.push_back(92255);
-        internal_counters.push_back(92505);
-        internal_counters.push_back(92755);
-        internal_counters.push_back(93005);
-        internal_counters.push_back(93255);
-        internal_counters.push_back(93505);
-        internal_counters.push_back(93755);
-        internal_counters.push_back(94005);
-        internal_counters.push_back(94255);
-        internal_counters.push_back(94505);
-        internal_counters.push_back(94755);
-        internal_counters.push_back(95005);
-        internal_counters.push_back(90761);
-        internal_counters.push_back(91011);
-        internal_counters.push_back(91261);
-        internal_counters.push_back(91511);
-        internal_counters.push_back(91761);
-        internal_counters.push_back(92011);
-        internal_counters.push_back(92261);
-        internal_counters.push_back(92511);
-        internal_counters.push_back(92761);
-        internal_counters.push_back(93011);
-        internal_counters.push_back(93261);
-        internal_counters.push_back(93511);
-        internal_counters.push_back(93761);
-        internal_counters.push_back(94011);
-        internal_counters.push_back(94261);
-        internal_counters.push_back(94511);
-        internal_counters.push_back(94761);
-        internal_counters.push_back(95011);
-
+        static constexpr std::array<GpaUInt32, 36> kHardwareCounters = {
+                90755,
+                91005,
+                91255,
+                91505,
+                91755,
+                92005,
+                92255,
+                92505,
+                92755,
+                93005,
+                93255,
+                93505,
+                93755,
+                94005,
+                94255,
+                94505,
+                94755,
+                95005,
+                90761,
+                91011,
+                91261,
+                91511,
+                91761,
+                92011,
+                92261,
+                92511,
+                92761,
+                93011,
+                93261,
+                93511,
+                93761,
+                94011,
+                94261,
+                94511,
+                94761,
+                95011,
+        };
         c.DefineDerivedCounter("WriteSize",
                                "GlobalMemory",
                                "The total bytes written to the video memory. This is measured with all extra fetches and any cache or memory effects taken into account.",
@@ -4808,78 +4810,78 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                kGpaUsageTypeBytes,
                                true,
                                false,
-                               internal_counters,
+                               kHardwareCounters,
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,sum18,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,sum18,-,(32),*,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,sum18,(64),*,+",
                                "f96f2c16-b1b4-4ec4-229c-fc82e6f80a82");
     }
     { // Index:83
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(45074);
-        internal_counters.push_back(45329);
-        internal_counters.push_back(45584);
-        internal_counters.push_back(45839);
-        internal_counters.push_back(46094);
-        internal_counters.push_back(46349);
-        internal_counters.push_back(46604);
-        internal_counters.push_back(46859);
-        internal_counters.push_back(47114);
-        internal_counters.push_back(47369);
-        internal_counters.push_back(47624);
-        internal_counters.push_back(47879);
-        internal_counters.push_back(48134);
-        internal_counters.push_back(48389);
-        internal_counters.push_back(48644);
-        internal_counters.push_back(48899);
-        internal_counters.push_back(49154);
-        internal_counters.push_back(49409);
-        internal_counters.push_back(49664);
-        internal_counters.push_back(49919);
-        internal_counters.push_back(50174);
-        internal_counters.push_back(50429);
-        internal_counters.push_back(50684);
-        internal_counters.push_back(50939);
-        internal_counters.push_back(51194);
-        internal_counters.push_back(51449);
-        internal_counters.push_back(51704);
-        internal_counters.push_back(51959);
-        internal_counters.push_back(52214);
-        internal_counters.push_back(52469);
-        internal_counters.push_back(52724);
-        internal_counters.push_back(52979);
-        internal_counters.push_back(53234);
-        internal_counters.push_back(53489);
-        internal_counters.push_back(53744);
-        internal_counters.push_back(53999);
-        internal_counters.push_back(54254);
-        internal_counters.push_back(54509);
-        internal_counters.push_back(54764);
-        internal_counters.push_back(55019);
-        internal_counters.push_back(55274);
-        internal_counters.push_back(55529);
-        internal_counters.push_back(55784);
-        internal_counters.push_back(56039);
-        internal_counters.push_back(56294);
-        internal_counters.push_back(56549);
-        internal_counters.push_back(56804);
-        internal_counters.push_back(57059);
-        internal_counters.push_back(57314);
-        internal_counters.push_back(57569);
-        internal_counters.push_back(57824);
-        internal_counters.push_back(58079);
-        internal_counters.push_back(58334);
-        internal_counters.push_back(58589);
-        internal_counters.push_back(58844);
-        internal_counters.push_back(59099);
-        internal_counters.push_back(59354);
-        internal_counters.push_back(59609);
-        internal_counters.push_back(59864);
-        internal_counters.push_back(60119);
-        internal_counters.push_back(60374);
-        internal_counters.push_back(60629);
-        internal_counters.push_back(60884);
-        internal_counters.push_back(61139);
-        internal_counters.push_back(276);
-
+        static constexpr std::array<GpaUInt32, 65> kHardwareCounters = {
+                45074,
+                45329,
+                45584,
+                45839,
+                46094,
+                46349,
+                46604,
+                46859,
+                47114,
+                47369,
+                47624,
+                47879,
+                48134,
+                48389,
+                48644,
+                48899,
+                49154,
+                49409,
+                49664,
+                49919,
+                50174,
+                50429,
+                50684,
+                50939,
+                51194,
+                51449,
+                51704,
+                51959,
+                52214,
+                52469,
+                52724,
+                52979,
+                53234,
+                53489,
+                53744,
+                53999,
+                54254,
+                54509,
+                54764,
+                55019,
+                55274,
+                55529,
+                55784,
+                56039,
+                56294,
+                56549,
+                56804,
+                57059,
+                57314,
+                57569,
+                57824,
+                58079,
+                58334,
+                58589,
+                58844,
+                59099,
+                59354,
+                59609,
+                59864,
+                60119,
+                60374,
+                60629,
+                60884,
+                61139,
+                276,
+        };
         c.DefineDerivedCounter("MemUnitBusy",
                                "GlobalMemory",
                                "The percentage of GPUTime the memory unit is active. The result includes the stall time (MemUnitStalled). This is measured with all extra fetches and writes and any cache or memory effects taken into account. Value range: 0% to 100% (fetch-bound).",
@@ -4887,77 +4889,77 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                kGpaUsageTypePercentage,
                                true,
                                false,
-                               internal_counters,
+                               kHardwareCounters,
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,max64,64,/,(100),*",
                                "a1efa380-4a72-e066-e06a-2ab71a488521");
     }
     { // Index:84
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(45074);
-        internal_counters.push_back(45329);
-        internal_counters.push_back(45584);
-        internal_counters.push_back(45839);
-        internal_counters.push_back(46094);
-        internal_counters.push_back(46349);
-        internal_counters.push_back(46604);
-        internal_counters.push_back(46859);
-        internal_counters.push_back(47114);
-        internal_counters.push_back(47369);
-        internal_counters.push_back(47624);
-        internal_counters.push_back(47879);
-        internal_counters.push_back(48134);
-        internal_counters.push_back(48389);
-        internal_counters.push_back(48644);
-        internal_counters.push_back(48899);
-        internal_counters.push_back(49154);
-        internal_counters.push_back(49409);
-        internal_counters.push_back(49664);
-        internal_counters.push_back(49919);
-        internal_counters.push_back(50174);
-        internal_counters.push_back(50429);
-        internal_counters.push_back(50684);
-        internal_counters.push_back(50939);
-        internal_counters.push_back(51194);
-        internal_counters.push_back(51449);
-        internal_counters.push_back(51704);
-        internal_counters.push_back(51959);
-        internal_counters.push_back(52214);
-        internal_counters.push_back(52469);
-        internal_counters.push_back(52724);
-        internal_counters.push_back(52979);
-        internal_counters.push_back(53234);
-        internal_counters.push_back(53489);
-        internal_counters.push_back(53744);
-        internal_counters.push_back(53999);
-        internal_counters.push_back(54254);
-        internal_counters.push_back(54509);
-        internal_counters.push_back(54764);
-        internal_counters.push_back(55019);
-        internal_counters.push_back(55274);
-        internal_counters.push_back(55529);
-        internal_counters.push_back(55784);
-        internal_counters.push_back(56039);
-        internal_counters.push_back(56294);
-        internal_counters.push_back(56549);
-        internal_counters.push_back(56804);
-        internal_counters.push_back(57059);
-        internal_counters.push_back(57314);
-        internal_counters.push_back(57569);
-        internal_counters.push_back(57824);
-        internal_counters.push_back(58079);
-        internal_counters.push_back(58334);
-        internal_counters.push_back(58589);
-        internal_counters.push_back(58844);
-        internal_counters.push_back(59099);
-        internal_counters.push_back(59354);
-        internal_counters.push_back(59609);
-        internal_counters.push_back(59864);
-        internal_counters.push_back(60119);
-        internal_counters.push_back(60374);
-        internal_counters.push_back(60629);
-        internal_counters.push_back(60884);
-        internal_counters.push_back(61139);
-
+        static constexpr std::array<GpaUInt32, 64> kHardwareCounters = {
+                45074,
+                45329,
+                45584,
+                45839,
+                46094,
+                46349,
+                46604,
+                46859,
+                47114,
+                47369,
+                47624,
+                47879,
+                48134,
+                48389,
+                48644,
+                48899,
+                49154,
+                49409,
+                49664,
+                49919,
+                50174,
+                50429,
+                50684,
+                50939,
+                51194,
+                51449,
+                51704,
+                51959,
+                52214,
+                52469,
+                52724,
+                52979,
+                53234,
+                53489,
+                53744,
+                53999,
+                54254,
+                54509,
+                54764,
+                55019,
+                55274,
+                55529,
+                55784,
+                56039,
+                56294,
+                56549,
+                56804,
+                57059,
+                57314,
+                57569,
+                57824,
+                58079,
+                58334,
+                58589,
+                58844,
+                59099,
+                59354,
+                59609,
+                59864,
+                60119,
+                60374,
+                60629,
+                60884,
+                61139,
+        };
         c.DefineDerivedCounter("MemUnitBusyCycles",
                                "GlobalMemory",
                                "Number of GPU cycles the memory unit is active. The result includes the stall time (MemUnitStalledCycles). This is measured with all extra fetches and writes and any cache or memory effects taken into account.",
@@ -4965,78 +4967,78 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                kGpaUsageTypeCycles,
                                true,
                                false,
-                               internal_counters,
+                               kHardwareCounters,
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,max64",
                                "168f077c-4797-b2f5-717f-105c725266c8");
     }
     { // Index:85
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(78826);
-        internal_counters.push_back(78926);
-        internal_counters.push_back(79026);
-        internal_counters.push_back(79126);
-        internal_counters.push_back(79226);
-        internal_counters.push_back(79326);
-        internal_counters.push_back(79426);
-        internal_counters.push_back(79526);
-        internal_counters.push_back(79626);
-        internal_counters.push_back(79726);
-        internal_counters.push_back(79826);
-        internal_counters.push_back(79926);
-        internal_counters.push_back(80026);
-        internal_counters.push_back(80126);
-        internal_counters.push_back(80226);
-        internal_counters.push_back(80326);
-        internal_counters.push_back(80426);
-        internal_counters.push_back(80526);
-        internal_counters.push_back(80626);
-        internal_counters.push_back(80726);
-        internal_counters.push_back(80826);
-        internal_counters.push_back(80926);
-        internal_counters.push_back(81026);
-        internal_counters.push_back(81126);
-        internal_counters.push_back(81226);
-        internal_counters.push_back(81326);
-        internal_counters.push_back(81426);
-        internal_counters.push_back(81526);
-        internal_counters.push_back(81626);
-        internal_counters.push_back(81726);
-        internal_counters.push_back(81826);
-        internal_counters.push_back(81926);
-        internal_counters.push_back(82026);
-        internal_counters.push_back(82126);
-        internal_counters.push_back(82226);
-        internal_counters.push_back(82326);
-        internal_counters.push_back(82426);
-        internal_counters.push_back(82526);
-        internal_counters.push_back(82626);
-        internal_counters.push_back(82726);
-        internal_counters.push_back(82826);
-        internal_counters.push_back(82926);
-        internal_counters.push_back(83026);
-        internal_counters.push_back(83126);
-        internal_counters.push_back(83226);
-        internal_counters.push_back(83326);
-        internal_counters.push_back(83426);
-        internal_counters.push_back(83526);
-        internal_counters.push_back(83626);
-        internal_counters.push_back(83726);
-        internal_counters.push_back(83826);
-        internal_counters.push_back(83926);
-        internal_counters.push_back(84026);
-        internal_counters.push_back(84126);
-        internal_counters.push_back(84226);
-        internal_counters.push_back(84326);
-        internal_counters.push_back(84426);
-        internal_counters.push_back(84526);
-        internal_counters.push_back(84626);
-        internal_counters.push_back(84726);
-        internal_counters.push_back(84826);
-        internal_counters.push_back(84926);
-        internal_counters.push_back(85026);
-        internal_counters.push_back(85126);
-        internal_counters.push_back(276);
-
+        static constexpr std::array<GpaUInt32, 65> kHardwareCounters = {
+                78826,
+                78926,
+                79026,
+                79126,
+                79226,
+                79326,
+                79426,
+                79526,
+                79626,
+                79726,
+                79826,
+                79926,
+                80026,
+                80126,
+                80226,
+                80326,
+                80426,
+                80526,
+                80626,
+                80726,
+                80826,
+                80926,
+                81026,
+                81126,
+                81226,
+                81326,
+                81426,
+                81526,
+                81626,
+                81726,
+                81826,
+                81926,
+                82026,
+                82126,
+                82226,
+                82326,
+                82426,
+                82526,
+                82626,
+                82726,
+                82826,
+                82926,
+                83026,
+                83126,
+                83226,
+                83326,
+                83426,
+                83526,
+                83626,
+                83726,
+                83826,
+                83926,
+                84026,
+                84126,
+                84226,
+                84326,
+                84426,
+                84526,
+                84626,
+                84726,
+                84826,
+                84926,
+                85026,
+                85126,
+                276,
+        };
         c.DefineDerivedCounter("MemUnitStalled",
                                "GlobalMemory",
                                "The percentage of GPUTime the memory unit is stalled. Try reducing the number or size of fetches and writes if possible. Value range: 0% (optimal) to 100% (bad).",
@@ -5044,77 +5046,77 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                kGpaUsageTypePercentage,
                                true,
                                false,
-                               internal_counters,
+                               kHardwareCounters,
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,max64,64,/,(100),*",
                                "465ba54f-d250-1453-790a-731b10d230b1");
     }
     { // Index:86
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(78826);
-        internal_counters.push_back(78926);
-        internal_counters.push_back(79026);
-        internal_counters.push_back(79126);
-        internal_counters.push_back(79226);
-        internal_counters.push_back(79326);
-        internal_counters.push_back(79426);
-        internal_counters.push_back(79526);
-        internal_counters.push_back(79626);
-        internal_counters.push_back(79726);
-        internal_counters.push_back(79826);
-        internal_counters.push_back(79926);
-        internal_counters.push_back(80026);
-        internal_counters.push_back(80126);
-        internal_counters.push_back(80226);
-        internal_counters.push_back(80326);
-        internal_counters.push_back(80426);
-        internal_counters.push_back(80526);
-        internal_counters.push_back(80626);
-        internal_counters.push_back(80726);
-        internal_counters.push_back(80826);
-        internal_counters.push_back(80926);
-        internal_counters.push_back(81026);
-        internal_counters.push_back(81126);
-        internal_counters.push_back(81226);
-        internal_counters.push_back(81326);
-        internal_counters.push_back(81426);
-        internal_counters.push_back(81526);
-        internal_counters.push_back(81626);
-        internal_counters.push_back(81726);
-        internal_counters.push_back(81826);
-        internal_counters.push_back(81926);
-        internal_counters.push_back(82026);
-        internal_counters.push_back(82126);
-        internal_counters.push_back(82226);
-        internal_counters.push_back(82326);
-        internal_counters.push_back(82426);
-        internal_counters.push_back(82526);
-        internal_counters.push_back(82626);
-        internal_counters.push_back(82726);
-        internal_counters.push_back(82826);
-        internal_counters.push_back(82926);
-        internal_counters.push_back(83026);
-        internal_counters.push_back(83126);
-        internal_counters.push_back(83226);
-        internal_counters.push_back(83326);
-        internal_counters.push_back(83426);
-        internal_counters.push_back(83526);
-        internal_counters.push_back(83626);
-        internal_counters.push_back(83726);
-        internal_counters.push_back(83826);
-        internal_counters.push_back(83926);
-        internal_counters.push_back(84026);
-        internal_counters.push_back(84126);
-        internal_counters.push_back(84226);
-        internal_counters.push_back(84326);
-        internal_counters.push_back(84426);
-        internal_counters.push_back(84526);
-        internal_counters.push_back(84626);
-        internal_counters.push_back(84726);
-        internal_counters.push_back(84826);
-        internal_counters.push_back(84926);
-        internal_counters.push_back(85026);
-        internal_counters.push_back(85126);
-
+        static constexpr std::array<GpaUInt32, 64> kHardwareCounters = {
+                78826,
+                78926,
+                79026,
+                79126,
+                79226,
+                79326,
+                79426,
+                79526,
+                79626,
+                79726,
+                79826,
+                79926,
+                80026,
+                80126,
+                80226,
+                80326,
+                80426,
+                80526,
+                80626,
+                80726,
+                80826,
+                80926,
+                81026,
+                81126,
+                81226,
+                81326,
+                81426,
+                81526,
+                81626,
+                81726,
+                81826,
+                81926,
+                82026,
+                82126,
+                82226,
+                82326,
+                82426,
+                82526,
+                82626,
+                82726,
+                82826,
+                82926,
+                83026,
+                83126,
+                83226,
+                83326,
+                83426,
+                83526,
+                83626,
+                83726,
+                83826,
+                83926,
+                84026,
+                84126,
+                84226,
+                84326,
+                84426,
+                84526,
+                84626,
+                84726,
+                84826,
+                84926,
+                85026,
+                85126,
+        };
         c.DefineDerivedCounter("MemUnitStalledCycles",
                                "GlobalMemory",
                                "Number of GPU cycles the memory unit is stalled.",
@@ -5122,32 +5124,32 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                kGpaUsageTypeCycles,
                                true,
                                false,
-                               internal_counters,
+                               kHardwareCounters,
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,max64",
                                "2745659a-0e40-bace-3b9b-86a54f8e4623");
     }
     { // Index:87
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(90769);
-        internal_counters.push_back(91019);
-        internal_counters.push_back(91269);
-        internal_counters.push_back(91519);
-        internal_counters.push_back(91769);
-        internal_counters.push_back(92019);
-        internal_counters.push_back(92269);
-        internal_counters.push_back(92519);
-        internal_counters.push_back(92769);
-        internal_counters.push_back(93019);
-        internal_counters.push_back(93269);
-        internal_counters.push_back(93519);
-        internal_counters.push_back(93769);
-        internal_counters.push_back(94019);
-        internal_counters.push_back(94269);
-        internal_counters.push_back(94519);
-        internal_counters.push_back(94769);
-        internal_counters.push_back(95019);
-        internal_counters.push_back(276);
-
+        static constexpr std::array<GpaUInt32, 19> kHardwareCounters = {
+                90769,
+                91019,
+                91269,
+                91519,
+                91769,
+                92019,
+                92269,
+                92519,
+                92769,
+                93019,
+                93269,
+                93519,
+                93769,
+                94019,
+                94269,
+                94519,
+                94769,
+                95019,
+                276,
+        };
         c.DefineDerivedCounter("WriteUnitStalled",
                                "GlobalMemory",
                                "The percentage of GPUTime the Write unit is stalled. Value range: 0% to 100% (bad).",
@@ -5155,31 +5157,31 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                kGpaUsageTypePercentage,
                                true,
                                false,
-                               internal_counters,
+                               kHardwareCounters,
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,max18,18,/,(100),*",
                                "594ad3ce-d1ec-10fc-7d59-25738e397d72");
     }
     { // Index:88
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(90769);
-        internal_counters.push_back(91019);
-        internal_counters.push_back(91269);
-        internal_counters.push_back(91519);
-        internal_counters.push_back(91769);
-        internal_counters.push_back(92019);
-        internal_counters.push_back(92269);
-        internal_counters.push_back(92519);
-        internal_counters.push_back(92769);
-        internal_counters.push_back(93019);
-        internal_counters.push_back(93269);
-        internal_counters.push_back(93519);
-        internal_counters.push_back(93769);
-        internal_counters.push_back(94019);
-        internal_counters.push_back(94269);
-        internal_counters.push_back(94519);
-        internal_counters.push_back(94769);
-        internal_counters.push_back(95019);
-
+        static constexpr std::array<GpaUInt32, 18> kHardwareCounters = {
+                90769,
+                91019,
+                91269,
+                91519,
+                91769,
+                92019,
+                92269,
+                92519,
+                92769,
+                93019,
+                93269,
+                93519,
+                93769,
+                94019,
+                94269,
+                94519,
+                94769,
+                95019,
+        };
         c.DefineDerivedCounter("WriteUnitStalledCycles",
                                "GlobalMemory",
                                "Number of GPU cycles the Write unit is stalled.",
@@ -5187,7 +5189,7 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                kGpaUsageTypeCycles,
                                true,
                                false,
-                               internal_counters,
+                               kHardwareCounters,
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,max18",
                                "ede3305e-abd4-d6bf-6b00-ffc57a29fce3");
     }

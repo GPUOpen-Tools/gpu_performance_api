@@ -27,7 +27,10 @@
 #include "gpu_perf_api_common/gpa_version.h"
 #include "gpu_perf_api_common/logging.h"
 
-IGpaImplementor* gpa_imp = nullptr;  ///< GPA implementor instance.
+namespace
+{
+    IGpaImplementor* gpa_imp = nullptr;  ///< GPA implementor instance.
+}  // namespace
 
 extern IGpaImplementor* CreateImplementor();                   ///< Function to create the GPA implementor instance.
 extern void             DestroyImplementor(IGpaImplementor*);  ///< Function to destroy the GPA implementor instance.
@@ -61,25 +64,6 @@ extern void             DestroyImplementor(IGpaImplementor*);  ///< Function to 
         GPA_LOG_ERROR("Context has not been not opened."); \
         return kGpaStatusErrorContextNotOpen;              \
     }
-
-/// Macro to check if a context exists and is open.
-#define CHECK_GPA_CONTEXT_ID_EXISTS_AND_IS_OPEN(gpa_context_id) \
-    if (nullptr == gpa_imp)                                     \
-    {                                                           \
-        GPA_LOG_ERROR("GPA has not been initialized.");         \
-        return kGpaStatusErrorGpaNotInitialized;                \
-    }                                                           \
-    if (!gpa_context_id)                                        \
-    {                                                           \
-        GPA_LOG_ERROR("Context object is null.");               \
-        return kGpaStatusErrorNullPointer;                      \
-    }                                                           \
-    if (!gpa_imp->DoesContextExist(gpa_context_id))             \
-    {                                                           \
-        GPA_LOG_ERROR("Unknown context object.");               \
-        return kGpaStatusErrorContextNotFound;                  \
-    }                                                           \
-    CHECK_CONTEXT_IS_OPEN(gpa_context_id->Object())
 
 /// Macro to check if a session exists.
 #define CHECK_SESSION_ID_EXISTS(session_id)             \
@@ -135,6 +119,28 @@ extern void             DestroyImplementor(IGpaImplementor*);  ///< Function to 
 
 #define MAKE_PARAM_STRING(X) #X << " : " << X << " "
 
+/// Macro to check if a context exists and is open.
+[[nodiscard]] GpaStatus CheckGPAContentIdExistsAndIsOpen(GpaContextId gpa_context_id)
+{
+    if (!gpa_imp)
+    {
+        GPA_LOG_ERROR("GPA has not been initialized.");
+        return kGpaStatusErrorGpaNotInitialized;
+    }
+    if (!gpa_context_id)
+    {
+        GPA_LOG_ERROR("Context object is null.");
+        return kGpaStatusErrorNullPointer;
+    }
+    if (!gpa_imp->DoesContextExist(gpa_context_id))
+    {
+        GPA_LOG_ERROR("Unknown context object.");
+        return kGpaStatusErrorContextNotFound;
+    }
+    CHECK_CONTEXT_IS_OPEN(gpa_context_id->Object())
+    return kGpaStatusOk;
+}
+
 /// Validate that sample id exists in a pass.
 ///
 /// @param [in] pass The pass.
@@ -185,6 +191,15 @@ GpaStatus CheckSampleIdExistsInSession(GpaSessionId session_id, GpaUInt32 sample
     {                                                                              \
         GPA_LOG_ERROR("Session does not support the correct sample type.");        \
         return kGpaStatusErrorIncompatibleSampleTypes;                             \
+    }
+
+/// Macro to check the session sample type when 2 sample types are valid.
+#define CHECK_SESSION_SAMPLE_TYPE_MULTIPLE(sample_type, additional_sample_type)              \
+    GpaSessionSampleType session_sample_type = (*gpa_session_id)->GetSampleType();           \
+    if (sample_type != session_sample_type && additional_sample_type != session_sample_type) \
+    {                                                                                        \
+        GPA_LOG_ERROR("Session does not support the correct sample type.");                  \
+        return kGpaStatusErrorIncompatibleSampleTypes;                                       \
     }
 
 GPA_LIB_DECL GpaStatus GpaGetVersion(GpaUInt32* major_version, GpaUInt32* minor_version, GpaUInt32* build, GpaUInt32* update_version)
@@ -399,7 +414,10 @@ GPA_LIB_DECL GpaStatus GpaCloseContext(GpaContextId gpa_context_id)
         PROFILE_FUNCTION(GpaCloseContext);
         TRACE_FUNCTION(GpaCloseContext);
 
-        CHECK_GPA_CONTEXT_ID_EXISTS_AND_IS_OPEN(gpa_context_id);
+        if (const GpaStatus status = CheckGPAContentIdExistsAndIsOpen(gpa_context_id); status != kGpaStatusOk)
+        {
+            return status;
+        }
 
         if ((*gpa_context_id)->GetApiType() != gpa_imp->GetApiType())
         {
@@ -425,7 +443,10 @@ GPA_LIB_DECL GpaStatus GpaGetSupportedSampleTypes(GpaContextId gpa_context_id, G
         PROFILE_FUNCTION(GpaGetSupportedSampleTypes);
         TRACE_FUNCTION(GpaGetSupportedSampleTypes);
 
-        CHECK_GPA_CONTEXT_ID_EXISTS_AND_IS_OPEN(gpa_context_id);
+        if (const GpaStatus status = CheckGPAContentIdExistsAndIsOpen(gpa_context_id); status != kGpaStatusOk)
+        {
+            return status;
+        }
         CHECK_NULL_PARAM(sample_types);
 
         return (*gpa_context_id)->GetSupportedSampleTypes(sample_types);
@@ -443,7 +464,10 @@ GPA_LIB_DECL GpaStatus GpaGetDeviceAndRevisionId(GpaContextId gpa_context_id, Gp
         PROFILE_FUNCTION(GpaGetDeviceAndRevisionId);
         TRACE_FUNCTION(GpaGetDeviceAndRevisionId);
 
-        CHECK_GPA_CONTEXT_ID_EXISTS_AND_IS_OPEN(gpa_context_id);
+        if (const GpaStatus status = CheckGPAContentIdExistsAndIsOpen(gpa_context_id); status != kGpaStatusOk)
+        {
+            return status;
+        }
         CHECK_NULL_PARAM(device_id);
         CHECK_NULL_PARAM(revision_id);
 
@@ -475,7 +499,10 @@ GPA_LIB_DECL GpaStatus GpaGetDeviceName(GpaContextId gpa_context_id, const char*
         PROFILE_FUNCTION(GpaGetDeviceName);
         TRACE_FUNCTION(GpaGetDeviceName);
 
-        CHECK_GPA_CONTEXT_ID_EXISTS_AND_IS_OPEN(gpa_context_id);
+        if (const GpaStatus status = CheckGPAContentIdExistsAndIsOpen(gpa_context_id); status != kGpaStatusOk)
+        {
+            return status;
+        }
         CHECK_NULL_PARAM(device_name);
 
         const GpaHwInfo* hw_info    = (*gpa_context_id)->GetHwInfo();
@@ -496,7 +523,7 @@ GPA_LIB_DECL GpaStatus GpaGetDeviceName(GpaContextId gpa_context_id, const char*
     }
 }
 
-GPA_LIB_DECL GpaStatus GpaUpdateDeviceInformation(GpaContextId context_id,
+GPA_LIB_DECL GpaStatus GpaUpdateDeviceInformation(GpaContextId gpa_context_id,
                                                   GpaUInt32    num_shader_engines,
                                                   GpaUInt32    num_compute_units,
                                                   GpaUInt32    num_simds,
@@ -512,14 +539,17 @@ GPA_LIB_DECL GpaStatus GpaUpdateDeviceInformation(GpaContextId context_id,
             return kGpaStatusErrorInvalidParameter;
         }
 
-        CHECK_GPA_CONTEXT_ID_EXISTS_AND_IS_OPEN(context_id);
+        if (const GpaStatus status = CheckGPAContentIdExistsAndIsOpen(gpa_context_id); status != kGpaStatusOk)
+        {
+            return status;
+        }
 
         GpaStatus ret_status = kGpaStatusOk;
 
-        (*context_id)->UpdateHwInfo(num_shader_engines, num_compute_units, num_simds, num_waves_per_simd);
+        (*gpa_context_id)->UpdateHwInfo(num_shader_engines, num_compute_units, num_simds, num_waves_per_simd);
 
         GPA_INTERNAL_LOG(GpaUpdateDeviceInformation,
-                         MAKE_PARAM_STRING(context_id)
+                         MAKE_PARAM_STRING(gpa_context_id)
                              << MAKE_PARAM_STRING(num_shader_engines) << MAKE_PARAM_STRING(num_compute_units) << MAKE_PARAM_STRING(num_simds)
                              << MAKE_PARAM_STRING(num_waves_per_simd) << MAKE_PARAM_STRING(ret_status));
 
@@ -538,7 +568,10 @@ GPA_LIB_DECL GpaStatus GpaGetDeviceGeneration(GpaContextId gpa_context_id, GpaHw
         PROFILE_FUNCTION(GpaGetDeviceGeneration);
         TRACE_FUNCTION(GpaGetDeviceGeneration);
 
-        CHECK_GPA_CONTEXT_ID_EXISTS_AND_IS_OPEN(gpa_context_id);
+        if (const GpaStatus status = CheckGPAContentIdExistsAndIsOpen(gpa_context_id); status != kGpaStatusOk)
+        {
+            return status;
+        }
         CHECK_NULL_PARAM(hardware_generation);
 
         const GpaHwInfo* hw_info    = (*gpa_context_id)->GetHwInfo();
@@ -596,6 +629,42 @@ GPA_LIB_DECL GpaStatus GpaGetDeviceGeneration(GpaContextId gpa_context_id, GpaHw
         }
 
         GPA_INTERNAL_LOG(GpaGetDeviceGeneration, MAKE_PARAM_STRING(gpa_context_id) << MAKE_PARAM_STRING(ret_status));
+
+        return ret_status;
+    }
+    catch (...)
+    {
+        return kGpaStatusErrorException;
+    }
+}
+
+GPA_LIB_DECL GpaStatus GpaGetDeviceMaxWaveSlots(GpaContextId gpa_context_id, GpaUInt32* max_wave_slots)
+{
+    try
+    {
+        PROFILE_FUNCTION(GpaGetDeviceMaxWaveSlots);
+        TRACE_FUNCTION(GpaGetDeviceMaxWaveSlots);
+
+        if (const GpaStatus status = CheckGPAContentIdExistsAndIsOpen(gpa_context_id); status != kGpaStatusOk)
+        {
+            return status;
+        }
+        CHECK_NULL_PARAM(max_wave_slots);
+
+        GpaStatus ret_status = kGpaStatusErrorFailed;
+
+        if (const GpaHwInfo* hw_info = (*gpa_context_id)->GetHwInfo(); nullptr != hw_info)
+        {
+            ret_status = kGpaStatusOk;
+
+            const auto num_simds           = static_cast<GpaUInt32>(hw_info->GetNumberSimds());
+            const auto wave_slots_per_simd = static_cast<GpaUInt32>(hw_info->GetWavesPerSimd());
+            const auto max                 = num_simds * wave_slots_per_simd;
+
+            *max_wave_slots = max;
+        }
+
+        GPA_INTERNAL_LOG(GpaGetDeviceMaxWaveSlots, MAKE_PARAM_STRING(gpa_context_id) << MAKE_PARAM_STRING(ret_status) << MAKE_PARAM_STRING(*max_wave_slots));
 
         return ret_status;
     }
@@ -865,7 +934,10 @@ GPA_LIB_DECL GpaStatus GpaCreateSession(GpaContextId gpa_context_id, GpaSessionS
         PROFILE_FUNCTION(GpaCreateSession);
         TRACE_FUNCTION(GpaCreateSession);
 
-        CHECK_GPA_CONTEXT_ID_EXISTS_AND_IS_OPEN(gpa_context_id);
+        if (const GpaStatus status = CheckGPAContentIdExistsAndIsOpen(gpa_context_id); status != kGpaStatusOk)
+        {
+            return status;
+        }
 
         if (gpa_session_sample_type >= kGpaSessionSampleTypeLast)
         {
@@ -886,17 +958,25 @@ GPA_LIB_DECL GpaStatus GpaCreateSession(GpaContextId gpa_context_id, GpaSessionS
         }
 
         // Next check that the set of sample types specified is compatible with context's set of supported sample types.
-        if ((kGpaSessionSampleTypeDiscreteCounter == gpa_session_sample_type &&
-             (kGpaContextSampleTypeDiscreteCounter != (kGpaContextSampleTypeDiscreteCounter & context_sample_types))) ||
-            (kGpaSessionSampleTypeStreamingCounter == gpa_session_sample_type &&
-             (kGpaContextSampleTypeStreamingCounter != (kGpaContextSampleTypeStreamingCounter & context_sample_types))) ||
-            (kGpaSessionSampleTypeSqtt == gpa_session_sample_type && (kGpaContextSampleTypeSqtt != (kGpaContextSampleTypeSqtt & context_sample_types))) ||
-            (kGpaSessionSampleTypeStreamingCounter == gpa_session_sample_type &&
-             ((kGpaContextSampleTypeStreamingCounter | kGpaContextSampleTypeSqtt) !=
-              ((kGpaContextSampleTypeStreamingCounter | kGpaContextSampleTypeSqtt) & context_sample_types))))
         {
-            GPA_LOG_ERROR("Unable to create session: sample_type is incompatible with context's sample_types.");
-            return kGpaStatusErrorIncompatibleSampleTypes;
+            static_assert(GpaSessionSampleType::kGpaSessionSampleTypeLast == 4);
+
+            // Returns false if the sample_type is incompatible with context's sample_types.
+            auto invalid_sample_type = [&gpa_session_sample_type, &context_sample_types](GpaSessionSampleType      sample_type,
+                                                                                         GpaContextSampleTypeFlags sample_type_flags) -> bool {
+                return (sample_type == gpa_session_sample_type) && (sample_type_flags != (sample_type_flags & context_sample_types));
+            };
+            const bool invalid_discrete = invalid_sample_type(kGpaSessionSampleTypeDiscreteCounter, kGpaContextSampleTypeDiscreteCounter);
+            const bool invalid_spm      = invalid_sample_type(kGpaSessionSampleTypeStreamingCounter, kGpaContextSampleTypeStreamingCounter);
+            const bool invalid_sqtt     = invalid_sample_type(kGpaSessionSampleTypeSqtt, kGpaContextSampleTypeSqtt);
+            const auto invalid_spm_and_sqtt =
+                invalid_sample_type(kGpaSessionSampleTypeStreamingCounterAndSqtt, kGpaContextSampleTypeStreamingCounter | kGpaContextSampleTypeSqtt);
+
+            if (invalid_discrete || invalid_spm || invalid_sqtt || invalid_spm_and_sqtt)
+            {
+                GPA_LOG_ERROR("Unable to create session: sample_type is incompatible with context's sample_types.");
+                return kGpaStatusErrorIncompatibleSampleTypes;
+            }
         }
 
         *gpa_session_id      = (*gpa_context_id)->CreateSession(gpa_session_sample_type);
@@ -1039,7 +1119,7 @@ GPA_LIB_DECL GpaStatus GpaSqttGetInstructionMask(GpaSessionId gpa_session_id, Gp
         CHECK_SESSION_ID_EXISTS(gpa_session_id);
         CHECK_NULL_PARAM(gpa_sqtt_instruction_mask);
         CHECK_CONTEXT_IS_OPEN((*gpa_session_id)->GetParentContext());
-        CHECK_SESSION_SAMPLE_TYPE(kGpaSessionSampleTypeSqtt);
+        CHECK_SESSION_SAMPLE_TYPE_MULTIPLE(kGpaSessionSampleTypeSqtt, kGpaSessionSampleTypeStreamingCounterAndSqtt);
 
         GpaStatus ret_status = kGpaStatusOk;
 
@@ -1064,7 +1144,7 @@ GPA_LIB_DECL GpaStatus GpaSqttSetInstructionMask(GpaSessionId gpa_session_id, Gp
 
         CHECK_SESSION_ID_EXISTS(gpa_session_id);
         CHECK_CONTEXT_IS_OPEN((*gpa_session_id)->GetParentContext());
-        CHECK_SESSION_SAMPLE_TYPE(kGpaSessionSampleTypeSqtt);
+        CHECK_SESSION_SAMPLE_TYPE_MULTIPLE(kGpaSessionSampleTypeSqtt, kGpaSessionSampleTypeStreamingCounterAndSqtt);
 
         GpaStatus ret_status = kGpaStatusOk;
 
@@ -1090,7 +1170,7 @@ GPA_LIB_DECL GpaStatus GpaSqttGetComputeUnitId(GpaSessionId gpa_session_id, GpaU
         CHECK_SESSION_ID_EXISTS(gpa_session_id);
         CHECK_NULL_PARAM(sqt_compute_unit_id);
         CHECK_CONTEXT_IS_OPEN((*gpa_session_id)->GetParentContext());
-        CHECK_SESSION_SAMPLE_TYPE(kGpaSessionSampleTypeSqtt);
+        CHECK_SESSION_SAMPLE_TYPE_MULTIPLE(kGpaSessionSampleTypeSqtt, kGpaSessionSampleTypeStreamingCounterAndSqtt);
 
         *sqt_compute_unit_id = (*gpa_session_id)->GetSqttComputeUnitId();
 
@@ -1115,7 +1195,7 @@ GPA_LIB_DECL GpaStatus GpaSqttSetComputeUnitId(GpaSessionId gpa_session_id, GpaU
 
         CHECK_SESSION_ID_EXISTS(gpa_session_id);
         CHECK_CONTEXT_IS_OPEN((*gpa_session_id)->GetParentContext());
-        CHECK_SESSION_SAMPLE_TYPE(kGpaSessionSampleTypeSqtt);
+        CHECK_SESSION_SAMPLE_TYPE_MULTIPLE(kGpaSessionSampleTypeSqtt, kGpaSessionSampleTypeStreamingCounterAndSqtt);
 
         (*gpa_session_id)->SetSqttComputeUnitId(sqtt_compute_unit_id);
 
@@ -1187,7 +1267,7 @@ GPA_LIB_DECL GpaStatus GpaSqttGetSampleResultSize(GpaSessionId gpa_session_id, s
 
         CHECK_SESSION_ID_EXISTS(gpa_session_id);
         CHECK_CONTEXT_IS_OPEN((*gpa_session_id)->GetParentContext());
-        CHECK_SESSION_SAMPLE_TYPE(kGpaSessionSampleTypeSqtt);
+        CHECK_SESSION_SAMPLE_TYPE_MULTIPLE(kGpaSessionSampleTypeSqtt, kGpaSessionSampleTypeStreamingCounterAndSqtt);
 
         auto ret_status = (*gpa_session_id)->SqttGetSampleResultSize(sample_result_size_in_bytes);
 
@@ -1210,11 +1290,58 @@ GPA_LIB_DECL GpaStatus GpaSqttGetSampleResult(GpaSessionId gpa_session_id, size_
 
         CHECK_SESSION_ID_EXISTS(gpa_session_id);
         CHECK_CONTEXT_IS_OPEN((*gpa_session_id)->GetParentContext());
-        CHECK_SESSION_SAMPLE_TYPE(kGpaSessionSampleTypeSqtt);
+        CHECK_SESSION_SAMPLE_TYPE_MULTIPLE(kGpaSessionSampleTypeSqtt, kGpaSessionSampleTypeStreamingCounterAndSqtt);
 
         auto ret_status = (*gpa_session_id)->SqttGetSampleResult(sample_result_size_in_bytes, sqtt_results);
 
         GPA_INTERNAL_LOG(GpaSqttGetSampleResult, MAKE_PARAM_STRING(gpa_session_id) << MAKE_PARAM_STRING(ret_status));
+
+        return ret_status;
+    }
+    catch (...)
+    {
+        return kGpaStatusErrorException;
+    }
+}
+
+GPA_LIB_DECL GpaStatus GpaSqttSpmBegin(GpaSessionId gpa_session_id, void* command_list)
+{
+    try
+    {
+        PROFILE_FUNCTION(GpaSqttSpmBegin);
+        TRACE_FUNCTION(GpaSqttSpmBegin);
+
+        CHECK_SESSION_ID_EXISTS(gpa_session_id);
+        CHECK_NULL_PARAM(command_list);
+        CHECK_CONTEXT_IS_OPEN((*gpa_session_id)->GetParentContext());
+        CHECK_SESSION_SAMPLE_TYPE(kGpaSessionSampleTypeStreamingCounterAndSqtt);
+
+        const GpaStatus ret_status = (*gpa_session_id)->SqttSpmBegin(command_list);
+
+        GPA_INTERNAL_LOG(GpaSqttSpmBegin, MAKE_PARAM_STRING(gpa_session_id) << MAKE_PARAM_STRING(ret_status));
+
+        return ret_status;
+    }
+    catch (...)
+    {
+        return kGpaStatusErrorException;
+    }
+}
+
+GPA_LIB_DECL GpaStatus GpaSqttSpmEnd(GpaSessionId gpa_session_id, void* command_list)
+{
+    try
+    {
+        PROFILE_FUNCTION(GpaSqttSpmEnd);
+        TRACE_FUNCTION(GpaSqttSpmEnd);
+
+        CHECK_SESSION_ID_EXISTS(gpa_session_id);
+        CHECK_CONTEXT_IS_OPEN((*gpa_session_id)->GetParentContext());
+        CHECK_SESSION_SAMPLE_TYPE(kGpaSessionSampleTypeStreamingCounterAndSqtt);
+
+        const GpaStatus ret_status = (*gpa_session_id)->SqttSpmEnd(command_list);
+
+        GPA_INTERNAL_LOG(GpaSqttSpmEnd, MAKE_PARAM_STRING(gpa_session_id) << MAKE_PARAM_STRING(ret_status));
 
         return ret_status;
     }
@@ -1233,7 +1360,7 @@ GPA_LIB_DECL GpaStatus GpaSpmSetSampleInterval(GpaSessionId gpa_session_id, GpaU
 
         CHECK_SESSION_ID_EXISTS(gpa_session_id);
         CHECK_CONTEXT_IS_OPEN((*gpa_session_id)->GetParentContext());
-        CHECK_SESSION_SAMPLE_TYPE(kGpaSessionSampleTypeStreamingCounter);
+        CHECK_SESSION_SAMPLE_TYPE_MULTIPLE(kGpaSessionSampleTypeStreamingCounter, kGpaSessionSampleTypeStreamingCounterAndSqtt);
 
         auto ret_status = (*gpa_session_id)->SpmSetSampleInterval(interval);
 
@@ -1256,7 +1383,7 @@ GPA_LIB_DECL GpaStatus GpaSpmSetDuration(GpaSessionId gpa_session_id, GpaUInt32 
 
         CHECK_SESSION_ID_EXISTS(gpa_session_id);
         CHECK_CONTEXT_IS_OPEN((*gpa_session_id)->GetParentContext());
-        CHECK_SESSION_SAMPLE_TYPE(kGpaSessionSampleTypeStreamingCounter);
+        CHECK_SESSION_SAMPLE_TYPE_MULTIPLE(kGpaSessionSampleTypeStreamingCounter, kGpaSessionSampleTypeStreamingCounterAndSqtt);
 
         auto ret_status = (*gpa_session_id)->SpmSetDuration(ns_duration);
 
@@ -1326,7 +1453,7 @@ GPA_LIB_DECL GpaStatus GpaSpmGetSampleResultSize(GpaSessionId gpa_session_id, si
 
         CHECK_SESSION_ID_EXISTS(gpa_session_id);
         CHECK_CONTEXT_IS_OPEN((*gpa_session_id)->GetParentContext());
-        CHECK_SESSION_SAMPLE_TYPE(kGpaSessionSampleTypeStreamingCounter);
+        CHECK_SESSION_SAMPLE_TYPE_MULTIPLE(kGpaSessionSampleTypeStreamingCounter, kGpaSessionSampleTypeStreamingCounterAndSqtt);
 
         auto ret_status = (*gpa_session_id)->SpmGetSampleResultSize(sample_result_size_in_bytes);
 
@@ -1349,7 +1476,7 @@ GPA_LIB_DECL GpaStatus GpaSpmGetSampleResult(GpaSessionId gpa_session_id, size_t
 
         CHECK_SESSION_ID_EXISTS(gpa_session_id);
         CHECK_CONTEXT_IS_OPEN((*gpa_session_id)->GetParentContext());
-        CHECK_SESSION_SAMPLE_TYPE(kGpaSessionSampleTypeStreamingCounter);
+        CHECK_SESSION_SAMPLE_TYPE_MULTIPLE(kGpaSessionSampleTypeStreamingCounter, kGpaSessionSampleTypeStreamingCounterAndSqtt);
 
         auto ret_status = (*gpa_session_id)->SpmGetSampleResult(sample_result_size_in_bytes, spm_results);
 
@@ -1375,7 +1502,7 @@ GPA_LIB_DECL GpaStatus GpaSpmCalculateDerivedCounters(GpaSessionId gpa_session_i
 
         CHECK_SESSION_ID_EXISTS(gpa_session_id);
         CHECK_CONTEXT_IS_OPEN((*gpa_session_id)->GetParentContext());
-        CHECK_SESSION_SAMPLE_TYPE(kGpaSessionSampleTypeStreamingCounter);
+        CHECK_SESSION_SAMPLE_TYPE_MULTIPLE(kGpaSessionSampleTypeStreamingCounter, kGpaSessionSampleTypeStreamingCounterAndSqtt);
 
         GpaStatus ret_status = (*gpa_session_id)->SpmCalculateDerivedCounters(spm_data, derived_counter_count, derived_counter_results);
 

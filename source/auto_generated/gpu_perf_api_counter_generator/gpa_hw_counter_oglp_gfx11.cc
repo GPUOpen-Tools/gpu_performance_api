@@ -3256,6 +3256,7 @@ namespace counter_oglp_gfx11
         366, // Tcp
     };
 
+    // OGLP: Only supports GPU time duration counters. Unavailable counters indices are assigned -1.
     const unsigned int kHwOglpGpuTimeBottomToBottomDurationIndexGfx11 = 237523; ///< Index of delta between the previous command reaching bottom of pipe and the current command reaching bottom of pipe, will not include latency of first data to travel through pipeline, best for large data sets. for Oglp for Gfx11 family
     const unsigned int kHwOglpGpuTimeBottomToBottomStartIndexGfx11 = static_cast<unsigned int>(-1); ///< Index of time of the previous command reaching bottom of pipe for Oglp for Gfx11 family
     const unsigned int kHwOglpGpuTimeBottomToBottomEndIndexGfx11 = static_cast<unsigned int>(-1); ///< Index of time of the current command reaching bottom of pipe for Oglp for Gfx11 family

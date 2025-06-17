@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2010-2024 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2010-2025 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  This file defines function types to make it easier to dynamically load
@@ -51,6 +51,9 @@ typedef GpaStatus (*GpaUpdateDeviceInformationPtrType)(GpaContextId, GpaUInt32, 
 
 /// Typedef for a function pointer for GpaGetDeviceGeneration.
 typedef GpaStatus (*GpaGetDeviceGenerationPtrType)(GpaContextId, GpaHwGeneration*);
+
+/// Typedef for a function pointer for GpaGetDeviceMaxWaveSlots.
+typedef GpaStatus (*GpaGetDeviceMaxWaveSlotsPtrType)(GpaContextId, GpaUInt32*);
 
 /// Typedef for a function pointer for GpaGetNumCounters.
 typedef GpaStatus (*GpaGetNumCountersPtrType)(GpaSessionId, GpaUInt32*);
@@ -144,6 +147,12 @@ typedef GpaStatus (*GpaSpmGetSampleResultPtrType)(GpaSessionId, size_t, void*);
 
 /// Typedef for a function pointer for GpaSpmCalculateDerivedCounters
 typedef GpaStatus (*GpaSpmCalculateDerivedCountersPtrType)(GpaSessionId, GpaSpmData*, GpaUInt32, GpaUInt64*);
+
+/// Typedef for a function pointer for GpaSqttSpmBeginPtrType
+typedef GpaStatus (*GpaSqttSpmBeginPtrType)(GpaSessionId, void*);
+
+/// Typedef for a function pointer for GpaSqttSpmEndPtrType
+typedef GpaStatus (*GpaSqttSpmEndPtrType)(GpaSessionId, void*);
 
 /// Typedef for a function pointer for GpaEndSession.
 typedef GpaStatus (*GpaEndSessionPtrType)(GpaSessionId);

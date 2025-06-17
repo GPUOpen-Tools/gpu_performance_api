@@ -18,12 +18,6 @@
 
 class IGpaContext;
 
-/// @brief Enum for GPA Session limit.
-enum GpaSessionLimit : uint8_t
-{
-    kGpaSessionNoLimit = 0  ///< GPA session no limit enum value.
-};
-
 /// @brief Enum to track the state of a GpaSession.
 enum GpaSessionState : uint8_t
 {
@@ -397,6 +391,20 @@ public:
     ///
     /// @return The GPA result status of the operation. kGpaStatusOk is returned if the operation is successful.
     virtual GpaStatus SpmCalculateDerivedCounters(const GpaSpmData* spm_data, GpaUInt32 derived_counter_count, GpaUInt64* derived_counter_results) = 0;
+
+    /// Begin collecting SQTT and SPM data.
+    ///
+    /// @param [in] command_list The command list to begin collecting data.
+    ///
+    /// @return The GPA result status of the operation. kGpaStatusOk is returned if the operation is successful.
+    virtual GpaStatus SqttSpmBegin(void* command_list) = 0;
+
+    /// End collecting SQTT and SPM data.
+    ///
+    /// @param [in] command_list The command list to end collecting data.
+    ///
+    /// @return The GPA result status of the operation. kGpaStatusOk is returned if the operation is successful.
+    virtual GpaStatus SqttSpmEnd(void* command_list) = 0;
 
     /// @brief Returns the size of sample result in bytes.
     ///

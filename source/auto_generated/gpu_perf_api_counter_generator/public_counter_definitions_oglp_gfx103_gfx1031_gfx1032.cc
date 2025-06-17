@@ -5,6 +5,8 @@
 /// @brief Public Counter Definitions for OGLP GFX103_GFX1031_GFX1032.
 //==============================================================================
 
+#include <array>
+#include "gpu_perf_api_common/gpa_array_view.hpp"
 // clang-format off
 #include "gpu_perf_api_counter_generator/gpa_counter.h"
 #include "auto_generated/gpu_perf_api_counter_generator/public_counter_definitions_oglp_gfx103_gfx1031_gfx1032.h"

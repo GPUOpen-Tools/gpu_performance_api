@@ -101,11 +101,6 @@ bool Dx12GpaContext::DeleteSession(GpaSessionId session_id)
     return success;
 }
 
-GpaUInt32 Dx12GpaContext::GetMaxGpaSessions() const
-{
-    return kGpaSessionNoLimit;
-}
-
 GpaApiType Dx12GpaContext::GetApiType() const
 {
     return kGpaApiDirectx12;

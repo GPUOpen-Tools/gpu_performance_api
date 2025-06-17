@@ -280,7 +280,7 @@ public:
     /// @param [in] other_hw_info Hardware info.
     ///
     /// @return True if both hardware info are same otherwise false.
-    bool operator==(GpaHwInfo other_hw_info) const;
+    bool operator==(const GpaHwInfo& other_hw_info) const;
 
 private:
     GpaUInt32              device_id_;               ///< The device ID.

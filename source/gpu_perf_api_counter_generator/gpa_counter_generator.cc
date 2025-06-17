@@ -151,6 +151,11 @@ GpaStatus GenerateCounters(GpaApiType             desired_api,
     {
         return kGpaStatusOk;
     }
+    else if (kGpaSessionSampleTypeStreamingCounterAndSqtt == sample_type)
+    {
+        // To help find the right counter generator
+        sample_type = kGpaSessionSampleTypeStreamingCounter;
+    }
 
     // Get hardware generation from device Id.
     GDT_HW_GENERATION desired_generation = GDT_HW_GENERATION_NONE;

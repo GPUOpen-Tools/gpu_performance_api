@@ -1,6 +1,4 @@
 ## Copyright (c) 2018-2025 Advanced Micro Devices, Inc. All rights reserved.
-cmake_minimum_required(VERSION 3.10)
-
 include(${GPA_CMAKE_MODULES_DIR}/utils.cmake)
 
 # Include global cmake common file
@@ -57,11 +55,6 @@ endif()
 add_definitions(-DUSE_POINTER_SINGLETON)
 
 if(NOT WIN32)
-    if(${USE_DEFAULT_COMPILER})
-        set(CMAKE_C_COMPILER gcc)
-        set(CMAKE_CXX_COMPILER g++)
-    endif()
-
     set(GPA_COMMON_LINK_ARCHIVE_FLAG -Wl,--whole-archive)
     set(GPA_COMMON_LINK_NO_ARCHIVE_FLAG -Wl,--no-whole-archive)
     add_compile_options(-Wno-unknown-pragmas -Wno-strict-aliasing -Wno-non-virtual-dtor -Wno-unused-value -msse -fvisibility=hidden)

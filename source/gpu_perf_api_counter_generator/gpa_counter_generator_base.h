@@ -9,7 +9,9 @@
 #define GPU_PERF_API_COUNTER_GENERATOR_COMMON_GPA_COUNTER_GENERATOR_BASE_H_
 
 #include <unordered_map>
+#include <variant>
 
+#include "gpu_perf_api_common/gpa_array_view.hpp"
 #include "gpu_perf_api_counter_generator/gpa_counter_accessor_interface.h"
 #include "gpu_perf_api_counter_generator/gpa_hardware_counters.h"
 
@@ -62,7 +64,7 @@ public:
     GpaUInt32 GetNumPublicCounters() const override;
 
     /// @copydoc IGpaCounterAccessor::GetInternalCountersRequired()
-    std::vector<GpaUInt32> GetInternalCountersRequired(GpaUInt32 index) const override;
+    std::variant<gpa_array_view<GpaUInt32>, GpaUInt32> GetInternalCountersRequired(GpaUInt32 index) const override;
 
     /// @copydoc IGpaCounterAccessor::ComputePublicCounterValue()
     GpaStatus ComputePublicCounterValue(GpaUInt32                            counter_index,

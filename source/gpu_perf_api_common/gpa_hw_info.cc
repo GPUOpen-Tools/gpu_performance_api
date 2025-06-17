@@ -398,7 +398,7 @@ bool GpaHwInfo::UpdateDeviceInfoBasedOnAsicTypeAndName(GDT_HW_ASIC_TYPE asic_typ
     return UpdateRevisionIdBasedOnDeviceIdAndName();
 }
 
-bool GpaHwInfo::operator==(GpaHwInfo other_hw_info) const
+bool GpaHwInfo::operator==(const GpaHwInfo& other_hw_info) const
 {
     bool is_same = false;
 

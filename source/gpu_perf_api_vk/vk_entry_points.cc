@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2025 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  Declares Vk Entrypoints
@@ -55,43 +55,60 @@ PFN_vkCmdCopyGpaSessionResultsAMD _vkCmdCopyGpaSessionResultsAMD = nullptr;
 
 bool vk_utils::are_entry_points_initialized = false;
 
-bool vk_utils::InitializeVkEntryPoints(VkInstance instance, VkDevice device)
+bool vk_utils::InitializeVkEntryPoints(VkInstance                instance,
+                                       VkDevice                  device,
+                                       PFN_vkGetInstanceProcAddr get_instance_proc_addr,
+                                       PFN_vkGetDeviceProcAddr   get_device_proc_addr)
 {
     if (!are_entry_points_initialized)
     {
+        PFN_vkGetInstanceProcAddr _vkGetInstanceProcAddr = NULL;
+        PFN_vkGetDeviceProcAddr   _vkGetDeviceProcAddr   = NULL;
+
+        if (get_instance_proc_addr == nullptr || get_device_proc_addr == nullptr)
+        {
 #ifdef _WIN32
-        HMODULE vulkan_module = ::GetModuleHandleW(L"Vulkan-1.dll");
+            HMODULE vulkan_module = ::GetModuleHandleW(L"Vulkan-1.dll");
 #else
-        void* vulkan_module = dlopen("libvulkan.so", RTLD_NOLOAD);
+            void* vulkan_module = dlopen("libvulkan.so", RTLD_NOLOAD);
 
-        if (nullptr == vulkan_module)
-        {
-            vulkan_module = dlopen("libvulkan.so", RTLD_NOW);
-        }
+            if (nullptr == vulkan_module)
+            {
+                vulkan_module = dlopen("libvulkan.so", RTLD_NOW);
+            }
 
-        if (nullptr == vulkan_module)
-        {
-            vulkan_module = dlopen("libvulkan.so.1", RTLD_NOLOAD);
-        }
+            if (nullptr == vulkan_module)
+            {
+                vulkan_module = dlopen("libvulkan.so.1", RTLD_NOLOAD);
+            }
 
-        if (nullptr == vulkan_module)
-        {
-            vulkan_module = dlopen("libvulkan.so.1", RTLD_NOW);
-        }
+            if (nullptr == vulkan_module)
+            {
+                vulkan_module = dlopen("libvulkan.so.1", RTLD_NOW);
+            }
 
 #endif
 
-        if (nullptr == vulkan_module)
-        {
-            GPA_LOG_ERROR("Failed to get handle to Vulkan Loader.");
-            return false;
-        }
+            if (nullptr == vulkan_module)
+            {
+                GPA_LOG_ERROR("Failed to get handle to Vulkan Loader.");
+                return false;
+            }
 
 #ifdef _WIN32
-        PFN_vkGetInstanceProcAddr _vkGetInstanceProcAddr = reinterpret_cast<PFN_vkGetInstanceProcAddr>(GetProcAddress(vulkan_module, "vkGetInstanceProcAddr"));
+            _vkGetInstanceProcAddr =
+                reinterpret_cast<PFN_vkGetInstanceProcAddr>(GetProcAddress(vulkan_module, "vkGetInstanceProcAddr"));
+            _vkGetDeviceProcAddr = reinterpret_cast<PFN_vkGetDeviceProcAddr>(GetProcAddress(vulkan_module, "vkGetDeviceProcAddr"));
 #else
-        PFN_vkGetInstanceProcAddr _vkGetInstanceProcAddr = reinterpret_cast<PFN_vkGetInstanceProcAddr>(dlsym(vulkan_module, "vkGetInstanceProcAddr"));
+            _vkGetInstanceProcAddr = reinterpret_cast<PFN_vkGetInstanceProcAddr>(dlsym(vulkan_module, "vkGetInstanceProcAddr"));
+            _vkGetDeviceProcAddr = reinterpret_cast<PFN_vkGetDeviceProcAddr>(dlsym(vulkan_module, "vkGetDeviceProcAddr"));
 #endif
+        }
+        else
+        {
+            _vkGetInstanceProcAddr = get_instance_proc_addr;
+            _vkGetDeviceProcAddr   = get_device_proc_addr;
+        }
 
         bool result = (nullptr != _vkGetInstanceProcAddr);
 
@@ -117,12 +134,6 @@ bool vk_utils::InitializeVkEntryPoints(VkInstance instance, VkDevice device)
                 return false;
             }
         }
-
-#ifdef _WIN32
-        PFN_vkGetDeviceProcAddr _vkGetDeviceProcAddr = reinterpret_cast<PFN_vkGetDeviceProcAddr>(GetProcAddress(vulkan_module, "vkGetDeviceProcAddr"));
-#else
-        PFN_vkGetDeviceProcAddr   _vkGetDeviceProcAddr   = reinterpret_cast<PFN_vkGetDeviceProcAddr>(dlsym(vulkan_module, "vkGetDeviceProcAddr"));
-#endif
 
         result &= (nullptr != _vkGetDeviceProcAddr);
 
@@ -177,3 +188,4 @@ bool vk_utils::InitializeVkEntryPoints(VkInstance instance, VkDevice device)
 
     return are_entry_points_initialized;
 }
+

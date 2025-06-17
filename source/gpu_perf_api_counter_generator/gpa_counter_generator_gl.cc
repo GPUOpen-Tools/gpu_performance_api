@@ -117,10 +117,10 @@ bool GpaCounterGeneratorGl::GenerateDriverSuppliedInternalCounters(GpaHardwareCo
             // Get the group name.
             ogl_utils::ogl_get_perf_monitor_group_string_amd(driver_perf_group_id, 64, nullptr, group_name);
 
-            size_t group_name_length        = strlen(group_name) + 1;
-            driver_supplied_groups_[i].name = new (std::nothrow) char[group_name_length];
+            size_t group_name_length           = strlen(group_name) + 1;
+            auto   driver_supplied_groups_name = new (std::nothrow) char[group_name_length];
 
-            if (nullptr == driver_supplied_groups_[i].name)
+            if (nullptr == driver_supplied_groups_name)
             {
                 GPA_LOG_ERROR("Unable to allocate memory to store the counter group name.");
                 delete[] perf_groups;
@@ -128,9 +128,11 @@ bool GpaCounterGeneratorGl::GenerateDriverSuppliedInternalCounters(GpaHardwareCo
                 return false;
             }
 
-            strcpy_s(driver_supplied_groups_[i].name, group_name_length, group_name);
+            strcpy_s(driver_supplied_groups_name, group_name_length, group_name);
 
-            counter_buffers_.push_back(driver_supplied_groups_[i].name);
+            counter_buffers_.push_back(driver_supplied_groups_name);
+
+            driver_supplied_groups_[i].name = driver_supplied_groups_name;
 
             // Get the number of counters and max active counters.
             ogl_utils::ogl_get_perf_monitor_counters_amd(driver_perf_group_id, &num_counters, &num_max_active, 0, nullptr);
@@ -180,9 +182,9 @@ bool GpaCounterGeneratorGl::GenerateDriverSuppliedInternalCounters(GpaHardwareCo
                 counter.hardware_counters->name = GPA_HIDE_NAME(counter_name);
 
                 size_t description_length              = 1 + strlen(kDriverSuppliedCounter);  // 1 for the terminating null.
-                counter.hardware_counters->description = new (std::nothrow) char[description_length];
+                auto hw_group_desc = new (std::nothrow) char[description_length];
 
-                if (nullptr == counter.hardware_counters->description)
+                if (nullptr == hw_group_desc)
                 {
                     GPA_LOG_ERROR("Unable to allocate memory to store the counter description.");
                     delete[] perf_groups;
@@ -190,15 +192,17 @@ bool GpaCounterGeneratorGl::GenerateDriverSuppliedInternalCounters(GpaHardwareCo
                     return false;
                 }
 
-                counter_buffers_.push_back(counter.hardware_counters->description);
+                counter_buffers_.push_back(hw_group_desc);
 
-                memset(counter.hardware_counters->description, 0, description_length);
-                strcpy_s(counter.hardware_counters->description, description_length, GPA_HIDE_NAME(kDriverSuppliedCounter));
+                memset(hw_group_desc, 0, description_length);
+                strcpy_s(hw_group_desc, description_length, GPA_HIDE_NAME(kDriverSuppliedCounter));
+
+                counter.hardware_counters->description = hw_group_desc;
 
                 size_t hw_group_name_length      = 1 + strlen(group_name);  // 1 for the terminating null.
-                counter.hardware_counters->group = new (std::nothrow) char[hw_group_name_length];
+                auto hw_group_name = new (std::nothrow) char[hw_group_name_length];
 
-                if (nullptr == counter.hardware_counters->group)
+                if (nullptr == hw_group_name)
                 {
                     GPA_LOG_ERROR("Unable to allocate memory to store the counter group.");
                     delete[] perf_groups;
@@ -206,14 +210,15 @@ bool GpaCounterGeneratorGl::GenerateDriverSuppliedInternalCounters(GpaHardwareCo
                     return false;
                 }
 
-                counter_buffers_.push_back(counter.hardware_counters->group);
+                counter_buffers_.push_back(hw_group_name);
 
-                memset(counter.hardware_counters->group, 0, hw_group_name_length);
-                strcpy_s(counter.hardware_counters->group, hw_group_name_length, GPA_HIDE_NAME(group_name));
+                memset(hw_group_name, 0, hw_group_name_length);
+                strcpy_s(hw_group_name, hw_group_name_length, GPA_HIDE_NAME(group_name));
 
-                counter.hardware_counters->type = kGpaDataTypeUint64;
-                counter.group_id_driver         = driver_perf_group_id;
-                counter.counter_id_driver       = 0;
+                counter.hardware_counters->group = hw_group_name;
+                counter.hardware_counters->type  = kGpaDataTypeUint64;
+                counter.group_id_driver          = driver_perf_group_id;
+                counter.counter_id_driver        = 0;
 
                 driver_supplied_counters_.insert(std::pair<GpaUInt32, GpaHardwareCounterDescExt>(global_counter_index, counter));
                 global_counter_index++;

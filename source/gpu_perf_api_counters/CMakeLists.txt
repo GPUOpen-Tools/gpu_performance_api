@@ -1,19 +1,9 @@
-## Copyright (c) 2018-2024 Advanced Micro Devices, Inc. All rights reserved.
-cmake_minimum_required(VERSION 3.10)
-
-set(DEPTH "../../")
-
+## Copyright (c) 2018-2025 Advanced Micro Devices, Inc. All rights reserved.
 set(GPA_PROJECT_NAME GPUPerfAPICounters)
 set(ProjectName ${GPA_PROJECT_NAME})
 
 include(${GPA_CMAKE_MODULES_DIR}/common.cmake)
-include(${CMAKE_COMMON_LIB_GLOBAL_AMD_ADL})
-include(${CMAKE_COMMON_SRC_GLOBAL_ADL_UTIL})
-include(${CMAKE_COMMON_SRC_GLOBAL_TSINGLETON})
 include(${CMAKE_COMMON_SRC_GLOBAL_DEVICE_INFO})
-if(WIN32)
-    include(${CMAKE_COMMON_LIB_GLOBAL_EXT_WINDOWS_SDK})
-endif()
 
 INCLUDE_ADDITIONAL_MODULE()
 
@@ -24,17 +14,15 @@ include_directories(${ADDITIONAL_INCLUDE_DIRECTORIES}
                     ${GPA_PUBLIC_HEADER}
                     ${GPA_SRC_COUNTER_GENERATOR})
 
-set(HEADER_FILES ${GPA_PUBLIC_HEADER}/gpu_performance_api/gpu_perf_api_counters.h
-                 ${CMAKE_CURRENT_SOURCE_DIR}/gpa_counter_context_handler.h)
+add_library(GPUPerfAPICounters MODULE)
+add_lint_passes(GPUPerfAPICounters)
+target_sources(GPUPerfAPICounters PRIVATE
+    ${GPA_PUBLIC_HEADER}/gpu_performance_api/gpu_perf_api_counters.h
+    gpa_counter_context_handler.h
+    gpu_perf_api_counters.cc
+    gpa_counter_context_handler.cc
+)
 
-set(SOURCE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/gpu_perf_api_counters.cc
-                 ${CMAKE_CURRENT_SOURCE_DIR}/gpa_counter_context_handler.cc)
-
-set(SOURCES
-    ${SOURCE_FILES}
-    ${HEADER_FILES})
-
-ADD_SHARED_LIBRARY_NO_EXPORT(${GPA_PROJECT_NAME} ${SOURCES})
 INCLUDE_WIN_RESOURCE(gpu_perf_api_counters)
 
 if(NOT ${skipvulkan})
@@ -59,11 +47,15 @@ if(WIN32)
     endif()
 endif()
 
-target_link_libraries(${GPA_PROJECT_NAME}
-                      GPUPerfAPI-Common
-                      ${GPA_COMMON_LINK_ARCHIVE_FLAG}
-                      ${LIB_NAMES}
-                      ${GPA_COMMON_LINK_NO_ARCHIVE_FLAG}
-                      $<$<PLATFORM_ID:Linux>:X11>)
+target_link_libraries(GPUPerfAPICounters PRIVATE
+    GPUPerfAPI-Common
+    ${GPA_COMMON_LINK_ARCHIVE_FLAG}
+    ${LIB_NAMES}
+    ${GPA_COMMON_LINK_NO_ARCHIVE_FLAG}
+    $<$<PLATFORM_ID:Linux>:X11>
+    AMD::adl_util
+)
 
 ADD_LINKER_FLAGS()
+
+install(TARGETS GPUPerfAPICounters DESTINATION ${GPA_INSTALL_BINDIR} COMPONENT GPUPerfAPI)

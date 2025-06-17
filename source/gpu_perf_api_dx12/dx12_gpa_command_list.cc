@@ -87,9 +87,6 @@ bool Dx12GpaCommandList::BeginCommandListRequest()
                 GPA_LOG_ERROR("Failed to create the AMD Extension session.");
                 return false;
             }
-
-            // Holding a reference is not required here, but we are doing so in order to work around an issue in older drivers.
-            amd_ext_session_->AddRef();
         }
 
         HRESULT extension_op_result = amd_ext_session_->Begin(cmd_list_);
@@ -218,10 +215,8 @@ bool Dx12GpaCommandList::CopyBundleSamples(std::vector<ClientSampleId>  client_s
         copy_amd_ext_gpa_session->CopyResults(cmd_list_);
         BundleSamplesOnPrimaryCmd bundle_samples_on_primary_cmd(client_sample_ids.begin(), client_sample_ids.end());
 
-        // Holding a reference is not required here, but we are doing so in order to work around an issue in older drivers.
         secondary_sample_amd_ext_session_map_.insert(
             BundleResultAmdExtSessionBundleSamplesOnPrimaryCmdPair(copy_amd_ext_gpa_session, bundle_samples_on_primary_cmd));
-        copy_amd_ext_gpa_session->AddRef();
 
         auto insert_original_client_sample_id = [&](ClientSampleIdGpaSamplePair client_sample_id_gpa_sample_pair) -> bool {
             original_client_sample_ids.push_back(client_sample_id_gpa_sample_pair.first);

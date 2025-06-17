@@ -77,6 +77,12 @@ public:
     /// @copydoc IGpaSession::SpmEnd(void*)
     virtual GpaStatus SpmEnd(void* command_list) override;
 
+    /// @copydoc IGPASession::SqttSpmBegin(void*)
+    virtual GpaStatus SqttSpmBegin(void* command_list) override;
+
+    /// @copydoc IGPASession::SqttSpmEnd(void*)
+    virtual GpaStatus SqttSpmEnd(void* command_list) override;
+
     /// @copydoc IGpaSession::SpmGetSampleResultSize(size_t*)
     virtual GpaStatus SpmGetSampleResultSize(size_t* sample_result_size_in_bytes) override;
 
@@ -108,6 +114,8 @@ private:
 
     /// @copydoc GpaSession::CreateApiPass()
     GpaPass* CreateApiPass(PassIndex pass_index) override;
+
+    IAmdExtGpaSession* GetSpmSession();
 
     IAmdExtGpaInterface* amd_ext_gpa_interface_;  ///< AMD Extension Interface.
 

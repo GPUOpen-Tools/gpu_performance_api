@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2025 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  Declares Vk Entrypoints
@@ -78,11 +78,16 @@ namespace vk_utils
 
     /// @brief Initialize the Vulkan entry points.
     ///
-    /// @param [in] instance The Vulkan instance.
-    /// @param [in] device The Vulkan device.
+    /// @param [in] instance               The Vulkan instance.
+    /// @param [in] device                 The Vulkan device.
+    /// @param [in] get_instance_proc_addr Address of the vkGetInstanceProcAddr function.
+    /// @param [in] get_device_proc_addr   Address of the vkGetDeviceProcAddr function.
     ///
     /// @return True if all entrypoints cuold be initialized.
-    bool InitializeVkEntryPoints(VkInstance instance, VkDevice device);
+    bool InitializeVkEntryPoints(VkInstance                instance,
+                                 VkDevice                  device,
+                                 PFN_vkGetInstanceProcAddr get_instance_proc_addr,
+                                 PFN_vkGetDeviceProcAddr   get_device_proc_addr);
 }  // namespace vk_utils
 
 #endif  // GPU_PERF_API_VK_VK_ENTRYPOINTS_H_

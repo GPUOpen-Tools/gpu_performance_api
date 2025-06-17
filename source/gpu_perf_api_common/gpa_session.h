@@ -190,6 +190,12 @@ public:
     /// @copydoc IGpaSession::SpmEnd()
     virtual GpaStatus SpmEnd(void* command_list) override;
 
+    /// @copydoc IGpaSession::SqttSpmBegin()
+    virtual GpaStatus SqttSpmBegin(void* command_list) override;
+
+    /// @copydoc IGpaSession::SqttSpmEnd()
+    virtual GpaStatus SqttSpmEnd(void* command_list) override;
+
     /// @copydoc IGpaSession::SpmGetSampleResultSize()
     virtual GpaStatus SpmGetSampleResultSize(size_t* sample_result_size_in_bytes) override;
 

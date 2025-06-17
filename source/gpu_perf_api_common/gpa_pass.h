@@ -236,17 +236,17 @@ public:
     /// @brief Iterate over all the counter in the pass.
     ///
     /// @param [in] function Function to be executed for each object in the list - function may return false to terminate iteration.
-    void IteratePassCounterList(std::function<bool(const CounterIndex& counter_index)> function) const;
+    void IteratePassCounterList(const std::function<bool(const CounterIndex& counter_index)>& function) const;
 
     /// @brief Iterate over all the counter in the pass.
     ///
     /// @param [in] function Function to be executed for each object in the list - function may return false to terminate iteration.
-    void IterateEnabledCounterList(std::function<bool(const CounterIndex& counter_index)> function) const;
+    void IterateEnabledCounterList(const std::function<bool(const CounterIndex& counter_index)>& function) const;
 
     /// @brief Iterate over all the counter in the pass.
     ///
     /// @param [in] function Function to be executed for each object in the list - function may return false to terminate iteration.
-    void IterateSkippedCounterList(std::function<bool(const CounterIndex& counter_index)> function) const;
+    void IterateSkippedCounterList(const std::function<bool(const CounterIndex& counter_index)>& function) const;
 
     /// @brief Get the counter index in the list of the counters passed to the driver for sample creation.
     ///

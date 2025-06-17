@@ -116,11 +116,6 @@ bool GpaContext::DoesSessionExist(GpaSessionId gpa_session_id) const
     return GetIndex(gpa_session_id->Object());
 }
 
-GpaUInt32 GpaContext::GetSessionCount() const
-{
-    return static_cast<GpaUInt32>(gpa_session_list_.size());
-}
-
 GpaStatus GpaContext::BeginSession(IGpaSession* gpa_session)
 {
     GpaStatus ret_status = kGpaStatusOk;
@@ -241,7 +236,7 @@ void GpaContext::RemoveGpaSession(IGpaSession* gpa_session)
     gpa_session_list_.remove(gpa_session);
 }
 
-void GpaContext::IterateGpaSessionList(std::function<bool(IGpaSession* gpa_session)> function) const
+void GpaContext::IterateGpaSessionList(const std::function<bool(IGpaSession* gpa_session)>& function) const
 {
     std::lock_guard<std::mutex> lock_session_list(gpa_session_list_mutex_);
     bool                        next = true;

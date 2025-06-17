@@ -1,20 +1,9 @@
-## Copyright (c) 2019-2023 Advanced Micro Devices, Inc. All rights reserved.
-cmake_minimum_required(VERSION 3.10)
-
-set(DEPTH "../../")
-
+## Copyright (c) 2019-2025 Advanced Micro Devices, Inc. All rights reserved.
 set(GPA_PROJECT_NAME GPUPerfAPICounterGenerator-Common)
 set(ProjectName ${GPA_PROJECT_NAME})
 
 include(${GPA_CMAKE_MODULES_DIR}/common.cmake)
-include(${CMAKE_COMMON_LIB_GLOBAL_AMD_ADL})
-include(${CMAKE_COMMON_SRC_GLOBAL_ADL_UTIL})
-include(${CMAKE_COMMON_SRC_GLOBAL_TSINGLETON})
 include(${CMAKE_COMMON_SRC_GLOBAL_DEVICE_INFO})
-
-if(WIN32)
-    include(${CMAKE_COMMON_LIB_GLOBAL_EXT_WINDOWS_SDK})
-endif()
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 include_directories(${GPA_SRC}
@@ -124,8 +113,5 @@ if(WIN32)
  endif()
 
 add_library(${GPA_PROJECT_NAME} ${SOURCES})
+target_link_libraries(${GPA_PROJECT_NAME} PUBLIC AMD::adl_util)
 target_include_directories(${GPA_PROJECT_NAME} PUBLIC ${ADDITIONAL_INCLUDE_DIRECTORIES})
-
-
-
-

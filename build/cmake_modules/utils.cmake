@@ -1,6 +1,4 @@
-## Copyright (c) 2023 Advanced Micro Devices, Inc. All rights reserved.
-cmake_minimum_required(VERSION 3.10)
-
+## Copyright (c) 2023-2025 Advanced Micro Devices, Inc. All rights reserved.
 include(${GPA_CMAKE_MODULES_DIR}/clang_utils.cmake)
 
 macro(INCLUDE_ADDITIONAL_MODULE)
@@ -59,7 +57,7 @@ macro(ADD_GPA_COMPILE_DEFINITIONS TARGET_NAME)
     set_property(TARGET ${ARGV0} PROPERTY COMPILE_DEFINITIONS $<$<CONFIG:DEBUG>:USE_DEBUG_GPA> ${ADDITIONAL_INTERNAL_DEFINITION})
 endmacro()
 
-if(CMAKE_GENERATOR MATCHES "Visual Studio")
+if(MSVC_IDE)
     set(EXCLUDE_FROM_BUILD EXCLUDE_FROM_DEFAULT_BUILD)
 else()
     set(EXCLUDE_FROM_BUILD EXCLUDE_FROM_ALL)

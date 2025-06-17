@@ -115,6 +115,13 @@ GPA_FUNCTION_PREFIX(GpaGetVersion)
 // Context interrogation; added in 3.10
 GPA_FUNCTION_PREFIX(GpaGetDeviceGeneration)
 
+// Get Max Wave Slots for the Device; added in 4.1
+GPA_FUNCTION_PREFIX(GpaGetDeviceMaxWaveSlots)
+
+// SQTT + SPM functions; added in 4.1
+GPA_FUNCTION_PREFIX(GpaSqttSpmBegin)
+GPA_FUNCTION_PREFIX(GpaSqttSpmEnd)
+
 #ifdef NEED_TO_UNDEFINE_GPA_FUNCTION_PREFIX
 #undef GPA_FUNCTION_PREFIX
 #undef NEED_TO_UNDEFINE_GPA_FUNCTION_PREFIX

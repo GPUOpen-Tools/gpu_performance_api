@@ -37,9 +37,9 @@ struct GpaPaddedCounterDesc
 struct GpaHardwareCounterDesc
 {
     GpaUInt64   counter_index_in_group;  ///< 0-based index of counter within the group.
-    char*       name;                    ///< Name of the counter.
-    char*       group;                   ///< Group containing the counter.
-    char*       description;             ///< Description of the counter.
+    const char* name;                    ///< Name of the counter.
+    const char* group;                   ///< Group containing the counter.
+    const char* description;             ///< Description of the counter.
     GpaDataType type;                    ///< Data type.
     GpaUInt64   min;                     ///< Min possible value.
     GpaUInt64   max;                     ///< Max possible value.
@@ -48,12 +48,12 @@ struct GpaHardwareCounterDesc
 /// @brief Contains all information pertaining to an internal counter group (aka a hardware block instance).
 struct GpaCounterGroupDesc
 {
-    GpaUInt32 group_index;                   ///< 0-based index of the group.
-    char*     name;                          ///< Name of the group.
-    GpaUInt32 block_instance;                ///< 0-based index of this block instance.
-    GpaUInt32 num_counters;                  ///< Number of counters in the group.
-    GpaUInt32 max_active_discrete_counters;  ///< Max number of discrete counters that can be active in this group in a single pass.
-    GpaUInt32 max_active_spm_counters;       ///< Max number of SPM counters that can be active in this group in a single pass.
+    GpaUInt32   group_index;                   ///< 0-based index of the group.
+    const char* name;                          ///< Name of the group.
+    GpaUInt32   block_instance;                ///< 0-based index of this block instance.
+    GpaUInt32   num_counters;                  ///< Number of counters in the group.
+    GpaUInt32   max_active_discrete_counters;  ///< Max number of discrete counters that can be active in this group in a single pass.
+    GpaUInt32   max_active_spm_counters;       ///< Max number of SPM counters that can be active in this group in a single pass.
 };
 
 const int kMaxSoftwareCounterNameLength        = 20;  ///< Maximum length for a software counter name.

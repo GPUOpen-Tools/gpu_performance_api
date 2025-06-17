@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2012-2024 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2012-2025 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Interface to access to the available counters in GPUPerfAPI.
@@ -129,7 +129,8 @@ typedef enum
     kGpaHardwareAttributeTimestampFrequency,      ///< Timestamp frequency.
     kGpaHardwareAttributePeakVerticesPerClock,    ///< Peak vertices per clock.
     kGpaHardwareAttributePeakPrimitivesPerClock,  ///< Peak primitives per clock.
-    kGpaHardwareAttributePeakPixelsPerClock       ///< Peak pixels per clocks.
+    kGpaHardwareAttributePeakPixelsPerClock,      ///< Peak pixels per clocks.
+    kGpaHardwareAttributeNumWavesPerSimd          ///< Number of waves per SIMD
 } GpaHardwareAttributeType;
 
 /// GPA Hardware attribute.
@@ -421,7 +422,7 @@ typedef GpaStatus (*GpaCounterLibGetCounterInfoPtrType)(const GpaCounterContext,
 
 /// @brief Computes the derived counter result.
 ///
-/// This can be used only if GpaOpenContextHidePublicCountersBit flag is not used while opening the virtual context.
+/// This can be used only if the GpaOpenContextHidePublicCountersBit flag is not used while opening the virtual context.
 /// @param [in] gpa_virtual_context Unique identifier of the opened virtual context.
 /// @param [in] gpa_derived_counter_index index of the derived counter.
 /// @param [in] gpa_hw_counter_result hardware counter data

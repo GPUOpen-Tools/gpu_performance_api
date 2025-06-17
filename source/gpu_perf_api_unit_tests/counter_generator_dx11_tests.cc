@@ -199,6 +199,7 @@ TEST(CounterDllTests, Dx11CounterNamesByDeviceId)
     VerifyCounterNames(kGpaApiDirectx11, kDevIdGfx11_5_0, derived_counter_names, empty_list_to_skip_tests);
 
     GetExpectedCountersForGeneration(kGpaHwGenerationGfx12, derived_counter_names, hardware_counter_names);
+    VerifyCounterNames(kGpaApiDirectx11, kDevIdGfx12_0_0, derived_counter_names, hardware_counter_names);
     VerifyCounterNames(kGpaApiDirectx11, kDevIdGfx12_0_1, derived_counter_names, hardware_counter_names);
 }
 

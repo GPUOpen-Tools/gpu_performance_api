@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2018-2024 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2018-2025 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief GPA GL Context declarations.
@@ -44,9 +44,6 @@ public:
 
     /// @copydoc IGpaContext::DeleteSession()
     bool DeleteSession(GpaSessionId session_id) override;
-
-    /// @copydoc IGpaContext::GetMaxGpaSessions()
-    GpaUInt32 GetMaxGpaSessions() const override;
 
     /// @copydoc IGpaInterfaceTrait::GetApiType()
     GpaApiType GetApiType() const override;

@@ -461,7 +461,7 @@ usage=cycles
 [DX11Gfx12]
 [DX12Gfx12]
 [VKGfx12]
-PA_SU*_PERF_PAPC_SU_STALLED_SC[0..3]
+PA_SU*_PERF_PAB_PAPC_SU_STALLED_SC[0..3]
 eqn=0..3,max4
 
 name=PSPixelsOut
@@ -717,75 +717,6 @@ usage=cycles
 DB*_PERF_SEL_OP_PIPE_BUSY[0..15]
 eqn=0..15,max16
 
-;name=HiZTilesAccepted
-;desc=#DepthAndStencil#Percentage of tiles accepted by HiZ and will be rendered to the depth or color buffers.
-;type=gpa_float64
-;usage=percentage
-;[OGLPGfx12]
-;[DX11Gfx12]
-;[DX12Gfx12]
-;[VKGfx12]
-;DB*_PERF_SEL_DB_SC_TILE_CULLED[0..15]
-;DB*_PERF_SEL_SC_DB_TILE_TILES[0..15]
-;eqn=16..31,sum16,0..15,sum16,-,(0),max,16..31,sum16,/,(100),*
-
-;name=HiZTilesAcceptedCount
-;desc=#DepthAndStencil#Count of tiles accepted by HiZ and will be rendered to the depth or color buffers.
-;type=gpa_float64
-;usage=items
-;[OGLPGfx12]
-;[DX11Gfx12]
-;[DX12Gfx12]
-;[VKGfx12]
-;DB*_PERF_SEL_SC_DB_TILE_TILES[0..15]
-;DB*_PERF_SEL_DB_SC_TILE_CULLED[0..15]
-;eqn=0..15,sum16,16..31,sum16,-,(0),max
-
-;name=HiZTilesRejectedCount
-;desc=#DepthAndStencil#Count of tiles not accepted by HiZ.
-;type=gpa_float64
-;usage=items
-;[OGLPGfx12]
-;[DX11Gfx12]
-;[DX12Gfx12]
-;[VKGfx12]
-;DB*_PERF_SEL_DB_SC_TILE_CULLED[0..15]
-;eqn=0..15,sum16
-
-;name=PreZTilesDetailCulled
-;desc=#DepthAndStencil#Percentage of tiles rejected because the associated prim had no contributing area.
-;type=gpa_float64
-;usage=percentage
-;[OGLPGfx12]
-;[DX11Gfx12]
-;[DX12Gfx12]
-;[VKGfx12]
-;DB*_PERF_SEL_SC_DB_TILE_TILES[0..15]
-;DB*_PERF_SEL_SC_DB_QUAD_KILLED_TILES[0..15]
-;eqn=16..31,sum16,0..15,sum16,/,(100),*
-
-;name=PreZTilesDetailCulledCount
-;desc=#DepthAndStencil#Count of tiles rejected because the associated primitive had no contributing area.
-;type=gpa_float64
-;usage=items
-;[OGLPGfx12]
-;[DX12Gfx12]
-;[VKGfx12]
-;[DX11Gfx12]
-;DB*_PERF_SEL_SC_DB_QUAD_KILLED_TILES[0..15]
-;eqn=0..15,sum16
-
-;name=PreZTilesDetailSurvivingCount
-;desc=#DepthAndStencil#Count of tiles surviving because the associated primitive had contributing area.
-;type=gpa_float64
-;usage=items
-;[OGLPGfx12]
-;[DX12Gfx12]
-;[VKGfx12]
-;[DX11Gfx12]
-;DB*_PERF_SEL_SC_DB_TILE_TILES[0..15]
-;eqn=0..15,sum16
-
 name=HiZQuadsCulled
 desc=#DepthAndStencil#Percentage of quads that did not have to continue on in the pipeline after HiZ. They may be written directly to the depth buffer, or culled completely. Consistently low values here may suggest that the Z-range is not being fully utilized.
 type=gpa_float64
@@ -986,30 +917,6 @@ usage=cycles
 DB*_PERF_SEL_DB_CB_EXPORT_STALLS[0..15]
 eqn=0..15,max16
 
-;name=DBMemRead
-;desc=#DepthAndStencil#Number of bytes read from the depth buffer.
-;type=gpa_float64
-;usage=bytes
-;[OGLPGfx12]
-;[DX11Gfx12]
-;[DX12Gfx12]
-;[VKGfx12]
-;DB*_PERF_SEL_TILE_RD_SENDS[0..15]
-;DB*_PERF_SEL_QUAD_RD_32BYTE_REQS[0..15]
-;eqn=0..15,sum16,(256),*,16..31,sum16,(32),*,+
-
-;name=DBMemWritten
-;desc=#DepthAndStencil#Number of bytes written to the depth buffer.
-;type=gpa_float64
-;usage=bytes
-;[OGLPGfx12]
-;[DX11Gfx12]
-;[DX12Gfx12]
-;[VKGfx12]
-;DB*_PERF_SEL_TILE_WR_SENDS[0..15]
-;DB*_PERF_SEL_QUAD_WR_SENDS[0..15]
-;eqn=0..15,sum16,(32),*,16..31,sum16,(32),*,+
-
 name=CBMemRead
 desc=#ColorBuffer#Number of bytes read from the color buffer.
 type=gpa_float64
@@ -1021,18 +928,6 @@ usage=bytes
 CB*_PERF_SEL_CC_CRW_GLX_REQ_READ_REQUEST[0..15]
 eqn=0..15,sum16,(32),*
 
-;name=CBColorAndMaskRead
-;desc=#ColorBuffer#Total number of bytes read from the color and mask buffers.
-;type=gpa_float64
-;usage=bytes
-;[OGLPGfx12]
-;[DX11Gfx12]
-;[DX12Gfx12]
-;[VKGfx12]
-;CB*_PERF_SEL_DC_MA_READ_REQUEST[0..15]
-;CB*_PERF_SEL_CC_MA_READ_REQUEST[0..15]
-;eqn=0..15,sum16,16..31,sum16,+,(32),*
-
 name=CBMemWritten
 desc=#ColorBuffer#Number of bytes written to the color buffer.
 type=gpa_float64
@@ -1043,18 +938,6 @@ usage=bytes
 [VKGfx12]
 CB*_PERF_SEL_CC_CRW_GLX_REQ_WRITE_REQUEST[0..15]
 eqn=0..15,sum16,(32),*
-
-;name=CBColorAndMaskWritten
-;desc=#ColorBuffer#Total number of bytes written to the color and mask buffers.
-;type=gpa_float64
-;usage=bytes
-;[OGLPGfx12]
-;[DX11Gfx12]
-;[DX12Gfx12]
-;[VKGfx12]
-;CB*_PERF_SEL_DC_MA_WRITE_REQUEST[0..15]
-;CB*_PERF_SEL_CC_MA_WRITE_REQUEST[0..15]
-;eqn=0..15,sum16,16..31,sum16,+,(32),*
 
 ; Cache counters
 ;
@@ -1645,4 +1528,3 @@ discrete=0
 SPI*_PERF_RA_TGLIM_CU_FULL_CSG[0..3]
 SPI*_PERF_CSGN_BUSY[0..3]
 eqn=0..3,sum4,4..7,max4,/,NUM_CUS,/,(100),*
-

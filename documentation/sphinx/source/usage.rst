@@ -29,7 +29,7 @@ Example of GPA 3.x Usage
     GpaOpenContext(api_context, kGpaOpenContextDefaultBit, &context);
     GpaUInt32 num_counters = 0;
     GpaGetNumCounters(context, &num_counters);
-    for (GpaUInt32 i = 0; i < num; ++i)
+    for (GpaUInt32 i = 0; i < num_counters; ++i)
     {
         const char* name = nullptr;
         GpaUInt32 index = 0;
@@ -84,7 +84,7 @@ Comments are added in the code below to explain the new code changes.
         // of discrete counters that are available.
         GpaUInt32 num_counters = 0;
         GpaGetNumCounters(session, &num_counters);
-        for (GpaUInt32 i = 0; i < num; ++i)
+        for (GpaUInt32 i = 0; i < num_counters; ++i)
         {
             const char* name = nullptr;
             GpaUInt32 index = 0;
@@ -283,6 +283,7 @@ The following methods can be used to query information about the context:
     "GpaGetDeviceAndRevisionId", "Gets the GPU device and revision id associated with the specified context."
     "GpaGetDeviceName", "Gets the device name of the GPU associated with the specified context."
     "GpaGetDeviceGeneration", "Gets the device generation of the GPU associated with the specified context."
+    "GpaGetDeviceMaxWaveSlots", "Gets the max wave slots of the GPU associated with the specified context."
 
 Creating and Using a Session
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@

@@ -1,8 +1,8 @@
 ﻿# GPU Performance API
 ---
-The GPU Performance API (GPUPerfAPI, or GPA) is a powerful library which provides access to GPU Performance Counters.
-It can help analyze the performance and execution characteristics of applications using a Radeon™ GPU. This library
-is used by [Radeon GPU Profiler](https://github.com/GPUOpen-Tools/radeon_gpu_profiler) as well as several third-party tools.
+The AMD GPU Performance API (GPUPerfAPI, or GPA) is a powerful library which provides access to GPU Performance Counters.
+It can help analyze the performance and execution characteristics of applications using an AMD Radeon™ GPU. This library
+is used by [AMD Radeon GPU Profiler](https://github.com/GPUOpen-Tools/radeon_gpu_profiler) as well as several third-party tools.
 
 ## Table of Contents
 * [Downloads](#downloads)
@@ -25,23 +25,26 @@ Prebuilt binaries can be downloaded from the Releases page: https://github.com/G
 ## Major Features
 * Provides a standard API for accessing GPU Performance counters for both graphics and compute workloads across multiple GPU APIs.
 * Supports Vulkan™, DirectX™ 12, DirectX 11, and OpenGL™.
-* Supports all current Radeon graphics cards and APUs based on Graphics IP version 10 and newer.
+* Supports all current AMD Radeon graphics cards and APUs based on Graphics IP version 10 and newer.
 * Supports both Windows and Linux.
 * Provides derived "public" counters based on raw hardware counters.
 * Provides access to some raw hardware counters. See [Raw Hardware Counters](#raw-hardware-counters) for more information.
 
 ## What's New
-### Version 4.0
-* Added support for Radeon RX 9070 Series GPUs.
-* Added support for additional RDNA 3 based APUs.
-* Counter interrogation entrypoints now accept a GpaSessionId instead of a GpaContextId.
-* GPUPerfAPI now includes additional entrypoints and enums to support querying streaming counters and SQTT data. These are only intended to support the AmdRadeonPlugin in Microsoft PIX on Windows. No support will be offered on how to use these entrypoints.
-* GPUPerfAPI is now only being distributed as 64-bit binaries. 32-bit builds are no longer supported.
-* Removed support for OpenCL.
-* Removed support for GCN-based hardware (ie: GFX8 and GFX9).
-* Example applications have been removed from the repository.
-* The directory structure in the released zip/tgz packages have been changed slightly.
-* Fixed GitHub Issue #84 - Public Counter Compiler fails awkwardly if public counter definition file contains an uppercase character.
+### Version 4.1
+* Added support for AMD Radeon RX 9060 XT.
+* Added support for AMD Radeon AI PRO R9700.
+* AMD Radeon RX 9070 Series GPUs are now supported with AMD Radeon Software for Linux 25.10 or newer.
+* New entrypoints added: GpaGetDeviceMaxWaveSlots, GpaSqttSpmBegin, GpaSqttSpmEnd. Binary backwards compatibility is maintained.
+  * See known issues in the README.md regarding GpaGetDeviceMaxWaveSlots
+* GPA Vulkan interface now allows client to provide vkGetInstanceProcAddr/vkGetDeviceProcAddr function pointer to support usage in a Vulkan layer.
+* Fixed PAStalledOnRasterizerCycles counter for AMD RDNA4 GPUs.
+* Fixed GitHub Issue #80 - CMake build will use FetchContent to grab dependencies.
+* Fixed CMake deprecation warnings.
+* Fixed MSVC linker warnings.
+* Use CPack instead of custom python scripts to package binaries.
+* Updated GoogleTest to v1.16
+* Updated C# projects to .NET 8
 
 ### Transitioning from GPA 3.x to 4.0
 #### Summary
@@ -93,7 +96,7 @@ Comments are added in the code below to explain the new code changes.
 
     // These next two lines and the following conditional ensure that discrete
     // counters are supportedby the GpaContext for the current hardware and
-    // driver. In general the GpaOpenContext call above will report an error 
+    // driver. In general the GpaOpenContext call above will report an error
     // if the hardware and driver are not supported at all, but in some rare cases
     // the discrete counters may not be supported while other sample types are.
     GpaContextSampleTypeFlags supported_sample_types = kGpaSessionSampleTypeLast;
@@ -111,7 +114,7 @@ Comments are added in the code below to explain the new code changes.
         // number of discrete counters that are available.
         GpaUInt32 num_counters = 0;
         GpaGetNumCounters(session, &num_counters);
-        for (GpaUInt32 i = 0; i < num; ++i)
+        for (GpaUInt32 i = 0; i < num_counters; ++i)
         {
             const char* name = nullptr;
             GpaUInt32 index = 0;
@@ -121,7 +124,7 @@ Comments are added in the code below to explain the new code changes.
             GpaUsageType usage_type = kGpaUsageTypeLast;
             GpaUuid uuid = {};
             GpaCounterSampleType sample_type = kGpaCounterSampleTypeDiscrete;
-    
+
             // These next set of counter querying entrypoints now take in
             // a GpaSessionId rather than the GpaContextId.
             GpaGetCounterName(session, i, &name);
@@ -197,8 +200,19 @@ It was discovered that the improvements introduced in Vega, RDNA, and RDNA2 arch
 | CS             |         |         |          |          |       |   CS    |
 
 ## Known Issues
-### GPUPerfAPI reports Hardware Not Supported on Radeon RX 9070 Series GPUs on Linux
-The initial Linux drivers that were released to support Radeon RX 9070 Series GPUs had a stability issue with regards to GPUPerfAPI. GPUPerfAPI has temporarily disabled support for Vulkan on Linux as we resolve the issue.
+### GpaGetDeviceMaxWaveSlots may report an incorrect number with DX12 and DX11 APIs.
+
+In the past a reliable way to get the total number of compute units was to use a formula like `numSE * numSA * numCuPerSh`.
+However, this approach will not always work for all devices (RDNA and newer) since the number of CU's per SA within an engine may differ.
+The CU count being wrong will affect other calculations like the number of SIMDs, and as a result will impact the max wave slot calculation.
+It may also affect the discrete and streaming counter results if their equations reference the number of CUs or SIMDs.
+
+DX11 may report incorrect values on Adrenalin 25.5.1 and older drivers.
+
+DX12 is known to report incorrect values on certain low and mid-range devices, such as the AMD Radeon RX 7700 XT.
+
+### GPA doesn't support MESA on Linux
+GPA is only compatible with AMD's Pro and Open Source drivers.
 
 ### Counter Validity on Specific Hardware
 There are some counters that are returning unexpected results on specific hardware with certain APIs.
