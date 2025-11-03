@@ -99,4 +99,4 @@ protected:
     std::map<ApiGenerationSampleType, IGpaCounterScheduler*> counter_scheduler_items_;
 };
 
-#endif  // GPU_PERF_API_COUNTER_GENERATOR_COMMON_GPA_COUNTER_GENERATOR_SCHEDULER_MANAGER_H_
+#endif

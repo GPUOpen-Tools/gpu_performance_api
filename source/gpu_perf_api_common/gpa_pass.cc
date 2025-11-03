@@ -7,6 +7,8 @@
 
 #include "gpu_perf_api_common/gpa_pass.h"
 
+#include <algorithm>
+
 #include "gpu_perf_api_counter_generator/gpa_hardware_counters.h"
 
 #include "gpu_perf_api_common/gpa_command_list.h"
@@ -30,9 +32,9 @@ GpaPass::GpaPass(IGpaSession* gpa_session, PassIndex pass_index, GpaCounterSourc
 
     if (nullptr != counter_list_ && !counter_list_->empty())
     {
-        const GpaHardwareCounters* hardware_counters = GpaContextCounterMediator::Instance()->GetCounterAccessor(GetGpaSession())->GetHardwareCounters();
-
-        if (hardware_counters->IsTimeCounterIndex(counter_list_->at(0)))
+        const GpaHardwareCounters& hardware_counters = GpaContextCounterMediator::Instance()->GetCounterAccessor(GetGpaSession())->GetHardwareCounters();
+        const CounterIndex         front             = counter_list_->front();
+        if (hardware_counters.IsTimeCounterIndex(front))
         {
             is_timing_pass_ = true;
         }
@@ -592,34 +594,24 @@ void GpaPass::IterateSkippedCounterList(const std::function<bool(const CounterIn
     }
 }
 
-GpaUInt32 GpaPass::GetBottomToBottomTimingDurationCounterIndex() const
+bool GpaPass::FindBottomToBottomTimingDurationCounter() const
 {
-    const GpaHardwareCounters* hardware_counters = GpaContextCounterMediator::Instance()->GetCounterAccessor(GetGpaSession())->GetHardwareCounters();
+    const GpaHardwareCounters& hardware_counters = GpaContextCounterMediator::Instance()->GetCounterAccessor(GetGpaSession())->GetHardwareCounters();
 
-    for (GpaUInt32 i = 0; i < static_cast<GpaUInt32>(counter_list_->size()); i++)
-    {
-        if ((*counter_list_)[i] == hardware_counters->gpu_time_bottom_to_bottom_duration_counter_index_)
-        {
-            return i;
-        }
-    }
+    const auto it = std::find(counter_list_->begin(), counter_list_->end(), hardware_counters.gpu_time_bottom_to_bottom_duration_counter_index_);
+    const bool found = (it != counter_list_->end());
 
-    return static_cast<GpaUInt32>(-1);
+    return found;
 }
 
-GpaUInt32 GpaPass::GetTopToBottomTimingDurationCounterIndex() const
+bool GpaPass::FindTopToBottomTimingDurationCounter() const
 {
-    const GpaHardwareCounters* hardware_counters = GpaContextCounterMediator::Instance()->GetCounterAccessor(GetGpaSession())->GetHardwareCounters();
+    const GpaHardwareCounters& hardware_counters = GpaContextCounterMediator::Instance()->GetCounterAccessor(GetGpaSession())->GetHardwareCounters();
 
-    for (GpaUInt32 i = 0; i < static_cast<GpaUInt32>(counter_list_->size()); i++)
-    {
-        if ((*counter_list_)[i] == hardware_counters->gpu_time_top_to_bottom_duration_counter_index_)
-        {
-            return i;
-        }
-    }
+    const auto it = std::find(counter_list_->begin(), counter_list_->end(), hardware_counters.gpu_time_top_to_bottom_duration_counter_index_);
+    const bool found = (it != counter_list_->end());
 
-    return static_cast<GpaUInt32>(-1);
+    return found;
 }
 
 IGpaSession* GpaPass::GetGpaSession() const

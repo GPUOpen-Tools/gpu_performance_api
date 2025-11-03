@@ -1,4 +1,3 @@
-.. Copyright (c) 2018-2025 Advanced Micro Devices, Inc. All rights reserved.
 .. GPU Performance API Reference
 
 .. _gpa_api_reference:

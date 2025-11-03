@@ -46,28 +46,31 @@ GpaStatus GpaContextCounterMediator::GenerateCounters(const IGpaSession* gpa_ses
     GpaStatus             ret_status        = kGpaStatusOk;
     IGpaCounterAccessor*  counter_accessor  = nullptr;
     IGpaCounterScheduler* counter_scheduler = nullptr;
-    const GpaHwInfo*      hw_info           = gpa_context->GetHwInfo();
-
-    if (nullptr == hw_info)
-    {
-        return kGpaStatusErrorFailed;
-    }
+    const GpaHwInfo&      hw_info           = gpa_context->GetHwInfo();
 
     GpaUInt32 vendor_id;
     GpaUInt32 device_id;
     GpaUInt32 revision_id;
 
-    if (hw_info->GetVendorId(vendor_id) && hw_info->GetDeviceId(device_id) && hw_info->GetRevisionId(revision_id))
+    if (hw_info.GetVendorId(vendor_id) && hw_info.GetDeviceId(device_id) && hw_info.GetRevisionId(revision_id))
     {
-        GpaSessionSampleType sample_type = gpa_session->GetSampleType();
+        const GpaSessionSampleType sample_type = gpa_session->GetSampleType();
+
+        // Sqtt has no counters to generate.
+        if (sample_type == kGpaSessionSampleTypeSqtt)
+        {
+            return ret_status;
+        }
 
         ret_status =
             ::GenerateCounters(gpa_context->GetApiType(), sample_type, vendor_id, device_id, revision_id, flags, &counter_accessor, &counter_scheduler);
 
-        // If this is SQTT, there's no counter scheduler or accessor.
-        if (kGpaStatusOk == ret_status && nullptr != counter_scheduler && nullptr != counter_accessor)
+        if (kGpaStatusOk == ret_status)
         {
-            GpaContextStatus contextStatus = {counter_scheduler, counter_accessor};
+            assert(counter_accessor != nullptr);
+            assert(counter_scheduler != nullptr);
+
+            const GpaContextStatus contextStatus = {counter_scheduler, counter_accessor};
 
             if (kGpaStatusOk == counter_scheduler->SetCounterAccessor(counter_accessor, vendor_id, device_id, revision_id))
             {

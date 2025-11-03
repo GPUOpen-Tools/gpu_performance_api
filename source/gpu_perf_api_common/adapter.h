@@ -46,4 +46,4 @@ private:
     static void DxgiAdapterDescToAsicInfo(const DXGI_ADAPTER_DESC& dxgi_adapter_desc, ADLUtil_ASICInfo& asic_info);
 };
 
-#endif  // GPU_PERF_API_COMMON_ADAPTER_H_
+#endif

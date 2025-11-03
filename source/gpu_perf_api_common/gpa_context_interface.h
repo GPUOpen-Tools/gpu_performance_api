@@ -58,10 +58,8 @@ public:
 
     /// @brief Gets a mask of the sample types supported by this context.
     ///
-    /// @param [out] sample_types The value that will be set to the the mask of the sample types supported by this context. This will be a combination of GPA_Context_Sample_Type_Bits.
-    ///
-    /// @return kGpaStatusOk on successful execution.
-    virtual GpaStatus GetSupportedSampleTypes(GpaContextSampleTypeFlags* sample_types) const = 0;
+    /// @return The mask of the sample types supported by this context.
+    virtual GpaContextSampleTypeFlags GetSupportedSampleTypes() const = 0;
 
     /// @brief Check to see if public counters should be exposed.
     ///
@@ -73,20 +71,10 @@ public:
     /// @return True if hardware counters should be exposed; false otherwise.
     virtual bool AreHardwareCountersExposed() const = 0;
 
-    /// @brief Sets a flag to invalidate and flush the L2 cache around the next counter sample.
-    ///
-    /// @param [in] should_invalidate_and_flush_l2_cache Flag indicating to enable invalidation and flushing of the L2 cache.
-    virtual void SetInvalidateAndFlushL2Cache(bool should_invalidate_and_flush_l2_cache) = 0;
-
-    /// @brief Returns the status of the flag indicating the invalidation and flushing of L2 cache.
-    ///
-    /// @return Flag indicating the invalidation and flushing of L2 cache.
-    virtual bool IsInvalidateAndFlushL2CacheEnabled() const = 0;
-
     /// @brief Returns the hardware info.
     ///
     /// @return Pointer to the context hardware info.
-    virtual const GpaHwInfo* GetHwInfo() const = 0;
+    virtual const GpaHwInfo& GetHwInfo() const = 0;
 
     /// @brief Update the hardware information.
     ///
@@ -141,7 +129,7 @@ public:
     /// @param [in] use_profiling_clocks True to use GPU clocks for profiling, false to use default clock mode.
     ///
     /// @return kGpaStatusOk on success.
-    virtual GpaStatus SetStableClocks(bool use_profiling_clocks) = 0;
+    [[nodiscard]] virtual GpaStatus SetStableClocks(bool use_profiling_clocks) = 0;
 };
 
-#endif  // GPU_PERF_API_COMMON_GPA_CONTEXT_INTERFACE_H_
+#endif

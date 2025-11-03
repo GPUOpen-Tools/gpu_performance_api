@@ -163,14 +163,7 @@ bool Dx12GpaSampleConfig::Initialize(IGpaSession*       session,
             return false;
         }
 
-        const GpaHardwareCounters* hardware_counters = counter_accessor->GetHardwareCounters();
-        assert(hardware_counters != nullptr);
-        if (hardware_counters == nullptr)
-        {
-            GPA_LOG_ERROR("Invalid hardware counters.");
-            return false;
-        }
-
+        const GpaHardwareCounters& hardware_counters = counter_accessor->GetHardwareCounters();
         if (counter_list != nullptr && !counter_list->empty())
         {
             if (is_timing_pass)
@@ -182,7 +175,7 @@ bool Dx12GpaSampleConfig::Initialize(IGpaSession*       session,
                 amd_ext_sample_config_.type             = AmdExtGpaSampleType::Timing;
                 amd_ext_sample_config_.timing.preSample = AmdExtHwPipePoint::HwPipeBottom;
 
-                if (hardware_counters->IsTopToBottomTimeCounterIndex(counter_list->at(0)))
+                if (hardware_counters.IsTopToBottomTimeCounterIndex(counter_list->front()))
                 {
                     // Since this is a Top-to-Bottom counter, set the preSample to Top.
                     amd_ext_sample_config_.timing.preSample = AmdExtHwPipePoint::HwPipeTop;
@@ -208,34 +201,34 @@ bool Dx12GpaSampleConfig::Initialize(IGpaSession*       session,
                 // Add all desired counters.
                 for (size_t i = 0; i < counter_list->size(); i++)
                 {
-                    const GpaUInt32 global_counter_index  = (GpaUInt32)counter_list->at(i);
-                    const auto      hardware_counter_iter = hardware_counters->hardware_counters_.find(global_counter_index);
-                    if (hardware_counter_iter == hardware_counters->hardware_counters_.cend())
+                    const CounterIndex global_counter_index  = counter_list->at(i);
+                    const auto         hardware_counter_iter = hardware_counters.hardware_counters_.find(global_counter_index);
+                    if (hardware_counter_iter == hardware_counters.hardware_counters_.cend())
                     {
                         GPA_LOG_ERROR("Failed to locate hardware counter using global index %d.", global_counter_index);
                         return false;
                     }
 
                     const GpaHardwareCounterDescExt* hw_counter_desc = &(hardware_counter_iter->second);
-                    AmdExtGpuBlock                   block           = static_cast<AmdExtGpuBlock>(hw_counter_desc->group_id_driver);
-                    UINT32 instance = static_cast<UINT32>(hardware_counters->internal_counter_groups_[hw_counter_desc->group_index].block_instance);
-                    UINT32 event_id = static_cast<UINT32>(hw_counter_desc->hardware_counters->counter_index_in_group);
+                    const AmdExtGpuBlock             block           = static_cast<AmdExtGpuBlock>(hw_counter_desc->group_id_driver);
+                    const UINT32 instance = static_cast<UINT32>(hardware_counters.internal_counter_groups_[hw_counter_desc->group_index].block_instance);
+                    const UINT32 event_id = static_cast<UINT32>(hw_counter_desc->hardware_counters->counter_index_in_group);
 
                     if (reinterpret_cast<Dx12GpaContext*>(session->GetParentContext())->GetNumInstances(block) <= instance)
                     {
                         assert(nullptr != gpa_pass);
-                        gpa_pass->DisableCounterForPass(counter_list->at(i));
+                        gpa_pass->DisableCounterForPass(global_counter_index);
                         GPA_LOG_DEBUG_MESSAGE("Disabling counter at index %s as number of block instances is less than the current instance.", i);
-                        counter_result_entries_.push_back(CounterResultEntry{counter_list->at(i), 0, 0});
+                        counter_result_entries_.push_back(CounterResultEntry{global_counter_index, 0, 0});
                         continue;
                     }
 
                     if (reinterpret_cast<Dx12GpaContext*>(session->GetParentContext())->GetMaxEventId(block) <= event_id)
                     {
                         assert(nullptr != gpa_pass);
-                        gpa_pass->DisableCounterForPass(counter_list->at(i));
+                        gpa_pass->DisableCounterForPass(global_counter_index);
                         GPA_LOG_DEBUG_MESSAGE("Disabling counter at index %s as max event ID in context is less than the current event ID.", i);
-                        counter_result_entries_.push_back(CounterResultEntry{counter_list->at(i), 0, 0});
+                        counter_result_entries_.push_back(CounterResultEntry{global_counter_index, 0, 0});
                         continue;
                     }
 
@@ -244,32 +237,32 @@ bool Dx12GpaSampleConfig::Initialize(IGpaSession*       session,
 
                     uint32_t counters = 0;
 
-                    if (group_index < hardware_counters->internal_counter_groups_.size())
+                    if (group_index < hardware_counters.internal_counter_groups_.size())
                     {
-                        counters = hardware_counters->internal_counter_groups_[group_index].num_counters;
+                        counters = hardware_counters.internal_counter_groups_[group_index].num_counters;
                     }
                     else
                     {
-                        counters = hardware_counters->additional_groups_[group_index - hardware_counters->internal_counter_groups_.size()].num_counters;
+                        counters = hardware_counters.additional_groups_[group_index - hardware_counters.internal_counter_groups_.size()].num_counters;
                     }
 
                     if (hw_counter_desc->hardware_counters->counter_index_in_group > counters)
                     {
                         assert(hw_counter_desc->hardware_counters->counter_index_in_group <= counters);
                         assert(nullptr != gpa_pass);
-                        gpa_pass->DisableCounterForPass(counter_list->at(i));
+                        gpa_pass->DisableCounterForPass(global_counter_index);
                         GPA_LOG_ERROR("Disabling counter at index %s as the counter index in the group does not correspond to a known counter.", i);
-                        counter_result_entries_.push_back(CounterResultEntry{counter_list->at(i), 0, 0});
+                        counter_result_entries_.push_back(CounterResultEntry{global_counter_index, 0, 0});
                         continue;
                     }
 
-                    if (group_index > (hardware_counters->internal_counter_groups_.size() + hardware_counters->additional_group_count_))
+                    if (group_index > (hardware_counters.internal_counter_groups_.size() + hardware_counters.additional_group_count_))
                     {
-                        assert(group_index <= (hardware_counters->internal_counter_groups_.size() + hardware_counters->additional_group_count_));
+                        assert(group_index <= (hardware_counters.internal_counter_groups_.size() + hardware_counters.additional_group_count_));
                         assert(nullptr != gpa_pass);
-                        gpa_pass->DisableCounterForPass(counter_list->at(i));
+                        gpa_pass->DisableCounterForPass(global_counter_index);
                         GPA_LOG_ERROR("Disabling counter at index %s as the counter's group index does not correspond to a known group.", i);
-                        counter_result_entries_.push_back(CounterResultEntry{counter_list->at(i), 0, 0});
+                        counter_result_entries_.push_back(CounterResultEntry{global_counter_index, 0, 0});
                         continue;
                     }
 
@@ -282,11 +275,11 @@ bool Dx12GpaSampleConfig::Initialize(IGpaSession*       session,
                     {
                         GpaSqShaderStage stage = kSqAll;
 
-                        for (unsigned int j = 0; j < hardware_counters->sq_group_count_ - 1; j++)
+                        for (unsigned int j = 0; j < hardware_counters.sq_group_count_ - 1; j++)
                         {
-                            if (hardware_counters->sq_counter_groups_[j].group_index == hw_counter_desc->group_index)
+                            if (hardware_counters.sq_counter_groups_[j].group_index == hw_counter_desc->group_index)
                             {
-                                stage = hardware_counters->sq_counter_groups_[j].sq_shader_stage;
+                                stage = hardware_counters.sq_counter_groups_[j].sq_shader_stage;
                                 break;
                             }
                         }
@@ -322,9 +315,9 @@ bool Dx12GpaSampleConfig::Initialize(IGpaSession*       session,
                     }
 
                     assert(nullptr != gpa_pass);
-                    gpa_pass->EnableCounterForPass(counter_list->at(i));
+                    gpa_pass->EnableCounterForPass(global_counter_index);
 
-                    counter_result_entries_.push_back(CounterResultEntry{counter_list->at(i), sample_offset, 1});
+                    counter_result_entries_.push_back(CounterResultEntry{global_counter_index, sample_offset, 1});
 
                     ++sample_offset;
                 }
@@ -347,7 +340,7 @@ bool Dx12GpaSampleConfig::Initialize(IGpaSession*       session,
             }
 
             // Insert L2 cache invalidate and flush around counter sample
-            if (session->GetParentContext()->IsInvalidateAndFlushL2CacheEnabled())
+            if (kGpaSessionSampleTypeDiscreteCounter == sample_type_)
             {
                 amd_ext_sample_config_.flags.cacheFlushOnCounterCollection = 1;
             }

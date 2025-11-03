@@ -1,10 +1,4 @@
-/*
-***************************************************************************************************
-*
-*  Copyright (c) 2011-2024 Advanced Micro Devices, Inc. All rights reserved.
-*
-***************************************************************************************************
-*/
+/* Copyright (C) 2011-2025 Advanced Micro Devices, Inc. All rights reserved. */
 /**
 ***************************************************************************************************
 * @file  amddxextperfprofile.h
@@ -359,4 +353,4 @@ union DfCounterEventId
     unsigned int u32All;
 };
 
-#endif // _AMDDXPERF_H_
+#endif

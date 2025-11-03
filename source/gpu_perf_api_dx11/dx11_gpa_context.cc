@@ -13,7 +13,7 @@
 #include "gpu_perf_api_dx11/dx11_gpa_session.h"
 #include "gpu_perf_api_dx11/dxx_ext_utils.h"
 
-Dx11GpaContext::Dx11GpaContext(ID3D11Device* d3d11_device, GpaHwInfo& hw_info, GpaOpenContextFlags context_flags)
+Dx11GpaContext::Dx11GpaContext(ID3D11Device* d3d11_device, const GpaHwInfo& hw_info, GpaOpenContextFlags context_flags)
     : GpaContext(hw_info, context_flags)
     , d3d11_device_(d3d11_device)
     , dx_ext_(nullptr)
@@ -23,7 +23,6 @@ Dx11GpaContext::Dx11GpaContext(ID3D11Device* d3d11_device, GpaHwInfo& hw_info, G
     , gpu_caps_()
     , clock_mode_()
 {
-    supported_sample_types_ = kGpaContextSampleTypeDiscreteCounter;
 #ifdef _DEBUG
     D3D_SET_OBJECT_NAME_A(d3d11_device_, "GPA_DX11DeviceRef");
 #endif
@@ -299,61 +298,59 @@ bool Dx11GpaContext::InitializeProfileAMDExtension()
 
 GpaStatus Dx11GpaContext::SetStableClocks(bool use_profiling_clocks)
 {
-    GpaStatus result = kGpaStatusOk;
-
     // Only use Stable PState feature if driver supports at least extension version 3.
-    if (3 > gpu_caps_.version)
+    if (gpu_caps_.version < 3)
     {
-        GPA_LOG_MESSAGE("DX11 stable clock extension is not available.");
+        GPA_LOG_ERROR("DX11 stable clock extension is not available.");
+        return kGpaStatusErrorDriverNotSupported;
     }
-    else
+
+    GpaStatus     result     = kGpaStatusOk;
+    PE_CLOCK_MODE clock_mode = PE_CLOCK_MODE_DEFAULT;
+
+    if (use_profiling_clocks)
     {
-        PE_CLOCK_MODE clock_mode = PE_CLOCK_MODE_DEFAULT;
+        const DeviceClockMode device_clock_mode = GetDeviceClockMode();
 
-        if (use_profiling_clocks)
+        switch (device_clock_mode)
         {
-            DeviceClockMode device_clock_mode = GetDeviceClockMode();
+        case DeviceClockMode::kDefault:
+            clock_mode = PE_CLOCK_MODE_DEFAULT;
+            break;
 
-            switch (device_clock_mode)
-            {
-            case DeviceClockMode::kDefault:
-                clock_mode = PE_CLOCK_MODE_DEFAULT;
-                break;
+        case DeviceClockMode::kProfiling:
+            clock_mode = PE_CLOCK_MODE_PROFILING;
+            break;
 
-            case DeviceClockMode::kProfiling:
-                clock_mode = PE_CLOCK_MODE_PROFILING;
-                break;
+        case DeviceClockMode::kMinimumMemory:
+            clock_mode = PE_CLOCK_MODE_MIN_MEMORY;
+            break;
 
-            case DeviceClockMode::kMinimumMemory:
-                clock_mode = PE_CLOCK_MODE_MIN_MEMORY;
-                break;
+        case DeviceClockMode::kMinimumEngine:
+            clock_mode = PE_CLOCK_MODE_MIN_ENGINE;
+            break;
 
-            case DeviceClockMode::kMinimumEngine:
-                clock_mode = PE_CLOCK_MODE_MIN_ENGINE;
-                break;
+        case DeviceClockMode::kPeak:
+            clock_mode = PE_CLOCK_MODE_PEAK;
+            break;
 
-            case DeviceClockMode::kPeak:
-                clock_mode = PE_CLOCK_MODE_PEAK;
-                break;
-
-            default:
-                assert(0);
-                clock_mode = PE_CLOCK_MODE_PROFILING;
-                break;
-            }
+        default:
+            assert(0);
+            clock_mode = PE_CLOCK_MODE_PROFILING;
+            break;
         }
+    }
 
-        if (clock_mode != clock_mode_)
+    if (clock_mode != clock_mode_)
+    {
+        clock_mode_ = clock_mode;
+
+        const PE_RESULT status = dx_ext_pe_->SetClockMode(clock_mode, nullptr);
+        if (status != PE_OK)
         {
-            clock_mode_ = clock_mode;
+            GPA_LOG_ERROR("Failed to set ClockMode for profiling.");
 
-            PE_RESULT status = dx_ext_pe_->SetClockMode(clock_mode, nullptr);
-            result           = (PE_OK == status) ? kGpaStatusOk : kGpaStatusErrorDriverNotSupported;
-
-            if (PE_OK != status)
-            {
-                GPA_LOG_ERROR("Failed to set ClockMode for profiling.");
-            }
+            result = kGpaStatusErrorFailed;
         }
     }
 

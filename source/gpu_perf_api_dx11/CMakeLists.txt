@@ -1,10 +1,10 @@
-## Copyright (c) 2018-2025 Advanced Micro Devices, Inc. All rights reserved.
+## Copyright (C) 2018-2025 Advanced Micro Devices, Inc. All rights reserved. ##
+
 set(GPA_PROJECT_NAME GPUPerfAPIDX11)
 set(ProjectName ${GPA_PROJECT_NAME})
 
 include (${GPA_CMAKE_MODULES_DIR}/common.cmake)
 
-include(${CMAKE_COMMON_SRC_GLOBAL_DEVICE_INFO})
 include(${CMAKE_COMMON_SRC_GLOBAL_AMD_DX_EXT})
 
 INCLUDE_ADDITIONAL_MODULE()
@@ -46,24 +46,18 @@ target_sources(GPUPerfAPIDX11 PRIVATE
     dx11_gpa_session.cc
     dx11_utils.cc
     dxx_ext_utils.cc
+    gpu_perf_api_dx11.rc
 )
-INCLUDE_WIN_RESOURCE(gpu_perf_api_dx11)
 target_link_libraries(GPUPerfAPIDX11 PRIVATE
     d3d11.lib
     dxguid.lib
     GPUPerfAPI-Common
     GPUPerfAPIDX
     GPUPerfAPICounterGenerator-DX11
-    AMD::adl_util
+    $<$<PLATFORM_ID:Windows>:AMD::adl_util>
+    AMD::device_info
+    AMD::tsingleton
 )
-
-if(${GPA_ALL_OPEN_SOURCE})
-    set(GPA_DX11_GET_DEVICE_INFO_DLL ${COMMON_DIR}/GPADX11GetDeviceInfo/Bin/x64/GPUPerfAPIDXGetAMDDeviceInfo-x64.dll)
-    add_custom_command(TARGET ${GPA_PROJECT_NAME} POST_BUILD
-                       COMMAND ${CMAKE_COMMAND} -E copy ${GPA_DX11_GET_DEVICE_INFO_DLL} ${GPA_OUTPUT_DIR}/$<CONFIG>${OUTPUT_SUFFIX}/ VERBATIM
-                       COMMENT "Copying GPUPerfAPIDXGetDeviceInfo-x64.dll to output folder...")
-    install(FILES ${GPA_DX11_GET_DEVICE_INFO_DLL} DESTINATION ${GPA_INSTALL_BINDIR} COMPONENT GPUPerfAPI)
-endif()
 
 ADD_LINKER_FLAGS()
 

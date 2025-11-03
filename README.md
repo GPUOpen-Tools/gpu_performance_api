@@ -7,7 +7,6 @@ is used by [AMD Radeon GPU Profiler](https://github.com/GPUOpen-Tools/radeon_gpu
 ## Table of Contents
 * [Downloads](#downloads)
 * [Major Features](#major-features)
-* [What's New](#whats-new)
 * [System Requirements](#system-requirements)
 * [Cloning the Repository](#cloning-the-repository)
 * [Source Code Directory Layout](#source-code-directory-layout)
@@ -16,7 +15,7 @@ is used by [AMD Radeon GPU Profiler](https://github.com/GPUOpen-Tools/radeon_gpu
 * [Known Issues](#known-issues)
 * [Building the Source Code](build.md)
 * [License](LICENSE.txt)
-* [Historical Release Notes](RELEASE_NOTES.txt)
+* [Release Notes](RELEASE_NOTES.txt)
 * [Style and Format Change](#Style-and-Format-Change)
 
 ## Downloads
@@ -30,22 +29,6 @@ Prebuilt binaries can be downloaded from the Releases page: https://github.com/G
 * Provides derived "public" counters based on raw hardware counters.
 * Provides access to some raw hardware counters. See [Raw Hardware Counters](#raw-hardware-counters) for more information.
 
-## What's New
-### Version 4.1
-* Added support for AMD Radeon RX 9060 XT.
-* Added support for AMD Radeon AI PRO R9700.
-* AMD Radeon RX 9070 Series GPUs are now supported with AMD Radeon Software for Linux 25.10 or newer.
-* New entrypoints added: GpaGetDeviceMaxWaveSlots, GpaSqttSpmBegin, GpaSqttSpmEnd. Binary backwards compatibility is maintained.
-  * See known issues in the README.md regarding GpaGetDeviceMaxWaveSlots
-* GPA Vulkan interface now allows client to provide vkGetInstanceProcAddr/vkGetDeviceProcAddr function pointer to support usage in a Vulkan layer.
-* Fixed PAStalledOnRasterizerCycles counter for AMD RDNA4 GPUs.
-* Fixed GitHub Issue #80 - CMake build will use FetchContent to grab dependencies.
-* Fixed CMake deprecation warnings.
-* Fixed MSVC linker warnings.
-* Use CPack instead of custom python scripts to package binaries.
-* Updated GoogleTest to v1.16
-* Updated C# projects to .NET 8
-
 ### Transitioning from GPA 3.x to 4.0
 #### Summary
 The main change in GPA 4.0 is that the counters are no longer exposed via the GpaContext and are now exposed by the GpaSession. There are now two different sets of counters, depending on the GpaSessionSampleType that is passed in when creating the session.
@@ -56,92 +39,90 @@ of the `GpaGetCounter*(..)` entrypoints to query information about the available
 Below you will find an example of a likely subset of GPA 3.x series of API calls, and then a similar series of calls using the modified GPA 4.0 entrypoints. Note that no error checking is being done here for sake of clarity.
 
 #### Example of GPA 3.x Usage
-    GpaContextId context = nullptr;
-    GpaOpenContext(api_context, kGpaOpenContextDefaultBit, &context);
+```c++
+GpaContextId context = nullptr;
+GpaOpenContext(api_context, kGpaOpenContextDefaultBit, &context);
+GpaUInt32 num_counters = 0;
+GpaGetNumCounters(context, &num_counters);
+for (GpaUInt32 i = 0; i < num_counters; ++i)
+{
+    const char* name = nullptr;
+    GpaUInt32 index = 0;
+    const char* description = nullptr;
+    GpaDataType data_type = kGpaDataTypeLast;
+    GpaUsageType usage_type = kGpaUsageTypeLast;
+    GpaUuid uuid = {};
+    GpaCounterSampleType sample_type = kGpaCounterSampleTypeDiscrete;
+
+    GpaGetCounterName(context, i, &name);
+    GpaGetCounterIndex(context, name, &index);
+    assert(i == index);
+    GpaGetCounterDescription(context, i, &description);
+    GpaGetCounterDataType(context, i, &data_type);
+    GpaGetCounterUsageType(context, i, &usage_type);
+    GpaGetCounterUuid(context, i, &uuid);
+    GpaGetCounterSampleType(context, i, &sample_type);
+    assert(sample_type == kGpaCounterSampleTypeDiscrete);
+}
+GpaSessionId session = nullptr;
+GpaCreateSession(context, kGpaContextSampleTypeDiscreteCounter, &session);
+GpaUInt32 desired_counter_index = 0;
+GpaEnableCounter(session, desired_counter_index);
+GpaBeginSession(session);
+```
+
+#### Example of equivalent GPA 4.X Usage
+```c++
+GpaContextId context = nullptr;
+GpaOpenContext(api_context, kGpaOpenContextDefaultBit, &context);
+
+// These next two lines and the following conditional ensure that discrete
+// counters are supported by the GpaContext for the current hardware and
+// driver. In general the GpaOpenContext call above will report an error
+// if the hardware and driver are not supported at all, but in some rare cases
+// the discrete counters may not be supported while other sample types are.
+GpaContextSampleTypeFlags supported_sample_types = kGpaSessionSampleTypeLast;
+GpaGetSupportedSampleTypes(context, &supported_sample_types);
+
+if (supported_sample_types & kGpaSessionSampleTypeDiscreteCounter != 0)
+{
+    // The set of available counters are now dependent on the SampleType being
+    // collected within the session, so the session must now be created prior
+    // to querying for the available counters.
+    GpaSessionId session = nullptr;
+    GpaCreateSession(context, kGpaContextSampleTypeDiscreteCounter, &session);
+
+    // The GpaSessionId is now supplied into GpaGetNumCounters() to get the
+    // number of discrete counters that are available.
     GpaUInt32 num_counters = 0;
-    GpaGetNumCounters(context, &num_counters);
-    for (GpaUInt32 i = 0; i < num; ++i)
+    GpaGetNumCounters(session, &num_counters);
+    for (GpaUInt32 i = 0; i < num_counters; ++i)
     {
         const char* name = nullptr;
         GpaUInt32 index = 0;
         const char* description = nullptr;
-        const char* group = nullptr;
         GpaDataType data_type = kGpaDataTypeLast;
         GpaUsageType usage_type = kGpaUsageTypeLast;
         GpaUuid uuid = {};
         GpaCounterSampleType sample_type = kGpaCounterSampleTypeDiscrete;
 
-        GpaGetCounterName(context, i, &name);
-        GpaGetCounterIndex(context, name, &index);
+        // These next set of counter querying entrypoints now take in
+        // a GpaSessionId rather than the GpaContextId.
+        GpaGetCounterName(session, i, &name);
+        GpaGetCounterIndex(session, name, &index);
         assert(i == index);
-        GpaGetCounterDescription(context, i, &description);
-        GpaGetCounterDataType(context, i, &data_type);
-        GpaGetCounterUsageType(context, i, &usage_type);
-        GpaGetCounterUuid(context, i, &uuid);
-        GpaGetCounterSampleType(context, i, &sample_type);
+        GpaGetCounterDescription(session, i, &description);
+        GpaGetCounterDataType(session, i, &data_type);
+        GpaGetCounterUsageType(session, i, &usage_type);
+        GpaGetCounterUuid(session, i, &uuid);
+        GpaGetCounterSampleType(session, i, &sample_type);
         assert(sample_type == kGpaCounterSampleTypeDiscrete);
     }
-    GpaSessionId session = nullptr;
-    GpaCreateSession(context, kGpaContextSampleTypeDiscreteCounter, &session);
     GpaUInt32 desired_counter_index = 0;
     GpaEnableCounter(session, desired_counter_index);
     GpaBeginSession(session);
-    ...
-
-#### Example of Similar GPA 4.0 Usage
-Comments are added in the code below to explain the new code changes.
-
-    GpaContextId context = nullptr;
-    GpaOpenContext(api_context, kGpaOpenContextDefaultBit, &context);
-
-    // These next two lines and the following conditional ensure that discrete
-    // counters are supportedby the GpaContext for the current hardware and
-    // driver. In general the GpaOpenContext call above will report an error
-    // if the hardware and driver are not supported at all, but in some rare cases
-    // the discrete counters may not be supported while other sample types are.
-    GpaContextSampleTypeFlags supported_sample_types = kGpaSessionSampleTypeLast;
-    GpaGetSupportedSampleTypes(context, &supported_sample_types);
-
-    if (supported_sample_types & kGpaSessionSampleTypeDiscreteCounter != 0)
-    {
-        // The set of available counters are now dependent on the SampleType being
-        // collected within the session, so the session must now be created prior
-        // to querying for the available counters.
-        GpaSessionId session = nullptr;
-        GpaCreateSession(context, kGpaContextSampleTypeDiscreteCounter, &session);
-
-        // The GpaSessionId is now supplied into GpaGetNumCounters() to get the
-        // number of discrete counters that are available.
-        GpaUInt32 num_counters = 0;
-        GpaGetNumCounters(session, &num_counters);
-        for (GpaUInt32 i = 0; i < num_counters; ++i)
-        {
-            const char* name = nullptr;
-            GpaUInt32 index = 0;
-            const char* description = nullptr;
-            const char* group = nullptr;
-            GpaDataType data_type = kGpaDataTypeLast;
-            GpaUsageType usage_type = kGpaUsageTypeLast;
-            GpaUuid uuid = {};
-            GpaCounterSampleType sample_type = kGpaCounterSampleTypeDiscrete;
-
-            // These next set of counter querying entrypoints now take in
-            // a GpaSessionId rather than the GpaContextId.
-            GpaGetCounterName(session, i, &name);
-            GpaGetCounterIndex(session, name, &index);
-            assert(i == index);
-            GpaGetCounterDescription(session, i, &description);
-            GpaGetCounterDataType(session, i, &data_type);
-            GpaGetCounterUsageType(session, i, &usage_type);
-            GpaGetCounterUuid(session, i, &uuid);
-            GpaGetCounterSampleType(session, i, &sample_type);
-            assert(sample_type == kGpaCounterSampleTypeDiscrete);
-        }
-        GpaUInt32 desired_counter_index = 0;
-        GpaEnableCounter(session, desired_counter_index);
-        GpaBeginSession(session);
-        ...
-    }
+}
+```
 
 ## System Requirements
 * An AMD Radeon GPU or APU based on Graphics IP version 10 and newer.
@@ -151,13 +132,6 @@ Comments are added in the code below to explain the new code changes.
 * Radeon GPUs or APUs based on Graphics IP version 6 and 7 are no longer supported by GPUPerfAPI. Please use an older version ([3.3](https://github.com/GPUOpen-Tools/gpu_performance_api/releases/tag/v3.3)) with older hardware.
 * Windows 10 or 11.
 * Ubuntu (22.04 and later) and CentOS/RHEL (7 and later) distributions.
-
-## Cloning the Repository
-To clone the GPA repository, execute the following git command
-  * git clone https://github.com/GPUOpen-Tools/gpu_performance_api
-
-After cloning the repository, please run the following python script to retrieve the required dependencies and generate the build files (see [BUILD.md](BUILD.md) for more information):
-  * python build/pre_build.py
 
 ## Source Code Directory Layout
 * [build](build) -- contains build scripts and cmake build modules
@@ -182,14 +156,14 @@ After cloning the repository, please run the following python script to retrieve
 The documentation for GPUPerfAPI can be found in each [GitHub release](https://github.com/GPUOpen-Tools/gpu_performance_api/releases). In the release .zip file or .tgz file, there
 will be a "docs" directory. Simply open the index.html file in a web browser to view the documentation.
 
-The documentation is hosted publicly at: https://gpuopen.com/manuals/gpu_performance_api_manual/gpu_performance_api_manual-main_api/
+The documentation is hosted publicly at: https://gpuopen.com/manuals/gpu_performance_api_manual/
 
 ## Raw Hardware Counters
 This release exposes "Discrete", "Streaming" (SPM), and "Hardware" counters. Discrete and streaming counters are computed (ie: derived) using a set of low level hardware counters. Not all discrete counters are available as streaming counters, and not all streaming counters are available as discrete counters.
 This version allows you to access the hardware counters by simply specifying a flag when calling GpaOpenContext.
 
 ## Pipeline-Based Counter Nomenclature
-It was discovered that the improvements introduced in Vega, RDNA, and RDNA2 architectures were not being properly accounted for in GPUPerfAPI v3.9, and caused a lot of known issues to be called out in that release. In certain cases, the driver and hardware are able to make optimizations by combining two shader stages together, which prevented GPUPerfAPI from identifying which instructions where executed for which shader type. As a result of these changes, GPUPerfAPI is no longer able to expose instruction counters for each API-level shader, specifically Vertex Shaders, Hull Shaders, Domain Shaders, and Geometry Shaders. Pixel Shaders and Compute Shaders remain unchanged. We are now exposing these instruction counters based on the type of shader pipeline being used. In pipelines that do not use tessellation, the instruction counts for both the Vertex and Geometry Shaders (if used) will be combined in the VertexGeometry group (ie: counters with the "VsGs" prefix). In pipelines that use tessellation, the instruction counts for both the Vertex and Hull Shaders will be combined in the PreTessellation group (ie: counters with the "PreTessellation" or "PreTess" prefix), and instruction counts for the Domain and Geometry Shaders (if used) will be combined in the PostTessellation group (ie: counters with the "PostTessellation" or "PostTess" prefix). The table below may help to better understand the new mapping between the API-level shaders (across the top), and which prefixes to look for in the GPUPerfAPI counters.
+It was discovered that the improvements introduced in Vega, RDNA, and RDNA2 architectures were not being properly accounted for in GPUPerfAPI v3.9, and caused a lot of known issues to be called out in that release. In certain cases, the driver and hardware are able to make optimizations by combining two shader stages together, which prevented GPUPerfAPI from identifying which instructions were executed for which shader type. As a result of these changes, GPUPerfAPI is no longer able to expose instruction counters for each API-level shader, specifically Vertex Shaders, Hull Shaders, Domain Shaders, and Geometry Shaders. Pixel Shaders and Compute Shaders remain unchanged. We are now exposing these instruction counters based on the type of shader pipeline being used. In pipelines that do not use tessellation, the instruction counts for both the Vertex and Geometry Shaders (if used) will be combined in the VertexGeometry group (ie: counters with the "VsGs" prefix). In pipelines that use tessellation, the instruction counts for both the Vertex and Hull Shaders will be combined in the PreTessellation group (ie: counters with the "PreTessellation" or "PreTess" prefix), and instruction counts for the Domain and Geometry Shaders (if used) will be combined in the PostTessellation group (ie: counters with the "PostTessellation" or "PostTess" prefix). The table below may help to better understand the new mapping between the API-level shaders (across the top), and which prefixes to look for in the GPUPerfAPI counters.
 
 | Pipeline       | Vertex  |  Hull   |  Domain  | Geometry | Pixel | Compute |
 |----------------|:-------:|:-------:|:--------:|:--------:|:-----:|:-------:|
@@ -200,16 +174,8 @@ It was discovered that the improvements introduced in Vega, RDNA, and RDNA2 arch
 | CS             |         |         |          |          |       |   CS    |
 
 ## Known Issues
-### GpaGetDeviceMaxWaveSlots may report an incorrect number with DX12 and DX11 APIs.
-
-In the past a reliable way to get the total number of compute units was to use a formula like `numSE * numSA * numCuPerSh`.
-However, this approach will not always work for all devices (RDNA and newer) since the number of CU's per SA within an engine may differ.
-The CU count being wrong will affect other calculations like the number of SIMDs, and as a result will impact the max wave slot calculation.
-It may also affect the discrete and streaming counter results if their equations reference the number of CUs or SIMDs.
-
-DX11 may report incorrect values on Adrenalin 25.5.1 and older drivers.
-
-DX12 is known to report incorrect values on certain low and mid-range devices, such as the AMD Radeon RX 7700 XT.
+### GpaGetDeviceMaxWaveSlots may report an incorrect number with DX11 APIs.
+DX11 may report incorrect values on drivers older than Adrenalin `25.8.1`.
 
 ### GPA doesn't support MESA on Linux
 GPA is only compatible with AMD's Pro and Open Source drivers.
@@ -223,9 +189,9 @@ There are some counters that are returning unexpected results on specific hardwa
 FetchSize counter will show an error when enabled on Radeon RX 6000 Series GPUs using OpenGL.
 
 ### Adjusting Linux Clock Mode
-Adjusting the GPU clock mode on Linux is accomplished by writing to: ```/sys/class/drm/card\<N\>/device/power_dpm_force_performance_level```, where \<N\> is the index of the card in question.
+Adjusting the GPU clock mode on Linux is accomplished by writing to: `/sys/class/drm/card\<N\>/device/power_dpm_force_performance_level`, where \<N\> is the index of the card in question.
 
-By default this file is only modifiable by root, so the application being profiled would have to be run as root in order for it to modify the clock mode. It is possible to modify the permissions for the file instead so that it can be written by unprivileged users. The following command will achieve this: ```sudo chmod ugo+w /sys/class/drm/card0/device/power_dpm_force_performance_level```
+By default this file is only modifiable by root, so the application being profiled would have to be run as root in order for it to modify the clock mode. It is possible to modify the permissions for the file instead so that it can be written by unprivileged users. The following command will achieve this: `sudo chmod ugo+w /sys/class/drm/card0/device/power_dpm_force_performance_level`
 * Note that changing the permissions on a system file like this could circumvent security.
 * On multi-GPU systems you may have to replace "card0" with the appropriate card number.
 * You may have to reboot the system for the change to take effect.

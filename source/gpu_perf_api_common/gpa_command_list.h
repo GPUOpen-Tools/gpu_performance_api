@@ -137,4 +137,4 @@ private:
     CommandListId                       command_list_id_;                         ///< The command list id.
 };
 
-#endif  // GPU_PERF_API_COMMON_GPA_COMMAND_LIST_H_
+#endif

@@ -49,4 +49,4 @@ private:
     bool CopyResult(size_t sample_data_size, void* result_buffer) const;
 };
 
-#endif  // GPU_PERF_API_DX12_DX12_GPA_SAMPLE_H_
+#endif

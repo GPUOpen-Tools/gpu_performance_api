@@ -54,30 +54,30 @@ GpaCounterGeneratorDx11::GpaCounterGeneratorDx11(GpaSessionSampleType sample_typ
 /// @param [in] group The group for which the block id needs to be calculated.
 ///
 /// @return The block id according to the driver.
-static GpaUInt32 CalculateBlockIdDx11(GDT_HW_GENERATION generation, GpaCounterGroupDesc* group)
+static GpaUInt32 CalculateBlockIdDx11(GDT_HW_GENERATION generation, const GpaCounterGroupDesc& group)
 {
-    GpaUInt32 group_index = group->group_index;
+    const GpaUInt32 group_index = group.group_index;
 
     if (GpaCounterGeneratorDx11Base::IsAmdGpu(generation))
     {
         if (generation == GDT_HW_GENERATION_GFX10)
         {
-            return counter_dx11_gfx10::kHwDx11DriverEnumGfx10[group_index];
+            return counter_dx11_gfx10::kHwDx11DriverBlockIdGfx10[group_index];
         }
 
         if (generation == GDT_HW_GENERATION_GFX103)
         {
-            return counter_dx11_gfx103::kHwDx11DriverEnumGfx103[group_index];
+            return counter_dx11_gfx103::kHwDx11DriverBlockIdGfx103[group_index];
         }
 
         if (generation == GDT_HW_GENERATION_GFX11)
         {
-            return counter_dx11_gfx11::kHwDx11DriverEnumGfx11[group_index];
+            return counter_dx11_gfx11::kHwDx11DriverBlockIdGfx11[group_index];
         }
 
         if (generation == GDT_HW_GENERATION_GFX12)
         {
-            return counter_dx11_gfx12::kHwDx11DriverEnumGfx12[group_index];
+            return counter_dx11_gfx12::kHwDx11DriverBlockIdGfx12[group_index];
         }
 
         // Don't recognize the specified hardware generation.
@@ -102,13 +102,13 @@ bool GpaCounterGeneratorDx11::GenerateInternalCounters(GpaHardwareCounters* hard
     // Iterate over counter array, which will either be populated with only exposed counters or all counters in internal builds.
     for (unsigned int g = 0; g < counter_array_size; g++)
     {
-        std::vector<GpaHardwareCounterDesc>* group_counters = hardware_counters->counter_groups_array_.at(g);
-        GpaCounterGroupDesc                  group          = hardware_counters->internal_counter_groups_.at(g + offset);
+        const gpa_array_view<GpaHardwareCounterDesc>& group_counters = hardware_counters->counter_groups_array_[g];
+        const GpaCounterGroupDesc&                    group          = hardware_counters->internal_counter_groups_[g + offset];
 
-        const unsigned int num_exposed_counters_in_group = static_cast<unsigned int>(group_counters->size());
+        const unsigned int num_exposed_counters_in_group = static_cast<unsigned int>(group_counters.size());
         const unsigned int total_counters_in_group       = static_cast<unsigned int>(group.num_counters);
 
-        if (strcmp(group_counters->at(0).group, group.name) != 0)
+        if (strcmp(group_counters[0].group, group.name) != 0)
         {
             global_counter_group_base += total_counters_in_group;
             offset++;
@@ -117,15 +117,15 @@ bool GpaCounterGeneratorDx11::GenerateInternalCounters(GpaHardwareCounters* hard
         }
 
         // Calculate per-block values outside the for loop.
-        GpaUInt32 block_id = CalculateBlockIdDx11(generation, &group);
+        const GpaUInt32 block_id = CalculateBlockIdDx11(generation, group);
 
         for (unsigned int c = 0; c < num_exposed_counters_in_group; c++)
         {
             counter.group_index       = g + offset;
-            counter.hardware_counters = &(group_counters->at(c));
+            counter.hardware_counters = &(group_counters[c]);
             counter.group_id_driver   = block_id;
 
-            global_counter_index = static_cast<GpaUInt32>(global_counter_group_base + group_counters->at(c).counter_index_in_group);
+            global_counter_index = static_cast<GpaUInt32>(global_counter_group_base + group_counters[c].counter_index_in_group);
 
             if (hardware_counters->IsTimestampBlockId(counter.group_index))
             {

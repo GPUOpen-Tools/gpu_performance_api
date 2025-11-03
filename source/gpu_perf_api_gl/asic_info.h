@@ -40,4 +40,4 @@ namespace ogl_utils
 
 }  // namespace ogl_utils
 
-#endif  // GPU_PERF_API_GL_ASIC_INFO_H_
+#endif

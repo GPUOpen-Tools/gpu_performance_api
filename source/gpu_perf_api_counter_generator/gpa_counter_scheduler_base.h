@@ -160,4 +160,4 @@ private:
     GpaCounterSchedulerBase() = delete;
 };
 
-#endif  // GPU_PERF_API_COUNTER_GENERATOR_COMMON_GPA_COUNTER_SCHEDULER_BASE_H_
+#endif

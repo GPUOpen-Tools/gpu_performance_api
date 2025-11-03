@@ -43,4 +43,4 @@ private:
     GpaCounterGroupDesc d3d_counter_group_ = {0, "D3D11", 0, 0, 0};  ///< Description for D3D11 counter group.
 };
 
-#endif  // GPU_PERF_API_COUNTER_GENERATOR_DX11_GPA_COUNTER_GENERATOR_DX11_BASE_H_
+#endif

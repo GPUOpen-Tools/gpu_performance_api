@@ -195,7 +195,7 @@ void GpaLogger::SetLoggingCallback(GpaLoggingType logging_type, GpaLoggingCallba
         _dupenv_s(&overridden_env_var, &overriden_env_var_length, "GPA_OVERRIDE_LOG_LEVEL");
 #else
         const char* overridden_env_var = std::getenv("GPA_OVERRIDE_LOG_LEVEL");
-#endif // !WIN32
+#endif
         if (overridden_env_var != nullptr)
         {
             unsigned int log_level;
@@ -204,7 +204,7 @@ void GpaLogger::SetLoggingCallback(GpaLoggingType logging_type, GpaLoggingCallba
             free(overridden_env_var);
 #else
             int num_read = sscanf(overridden_env_var , "%u", &log_level);
-#endif // !WIN32
+#endif
             if (num_read == 1 && log_level <= kGpaLoggingDebugAll)
             {
                 logging_type_ = (GpaLoggingType)log_level;

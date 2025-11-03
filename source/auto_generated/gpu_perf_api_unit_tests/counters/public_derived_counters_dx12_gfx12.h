@@ -223,11 +223,11 @@
 #define STREAMING_CSLIMITEDBYBARRIERS_PUBLIC_DX12_GFX12 100
 #define STREAMING_CSLIMITEDBYTHREADGROUPLIMIT_PUBLIC_DX12_GFX12 101
 
-/// Number of public counters for DX12 GFX12 
+/// Number of public counters for DX12 GFX12
 const size_t kDx12Gfx12PublicCounterCount = 122;
 
-/// Array of public counters for DX12 GFX12 
+/// Array of public counters for DX12 GFX12
 extern const GpaCounterDesc kDx12Gfx12PublicCounters[kDx12Gfx12PublicCounterCount];
 
 // clang-format on
-#endif  // GPA_AUTO_GEN_UNIT_TESTS_COUNTERS_PUBLIC_DX12_GFX12
+#endif

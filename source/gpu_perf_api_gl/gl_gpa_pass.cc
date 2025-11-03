@@ -15,6 +15,8 @@
 #include "gpu_perf_api_gl/gl_gpa_context.h"
 #include "gpu_perf_api_gl/gl_gpa_sample.h"
 
+#include <array>
+
 GlGpaPass::GlGpaPass(IGpaSession* gpa_session, PassIndex pass_index, GpaCounterSource counter_source, CounterList* pass_counters)
     : GpaPass(gpa_session, pass_index, counter_source, pass_counters)
 {
@@ -45,73 +47,59 @@ GlGpaPass::GlGpaPass(IGpaSession* gpa_session, PassIndex pass_index, GpaCounterS
                     return;
                 }
 
-                const GpaHardwareCounters* hardware_counters = counter_accessor->GetHardwareCounters();
-                assert(hardware_counters != nullptr);
-                if (hardware_counters == nullptr)
+                const GpaHardwareCounters& hardware_counters = counter_accessor->GetHardwareCounters();
+                for (size_t i = 0; i < pass_counters->size(); ++i)
                 {
-                    GPA_LOG_ERROR("Invalid hardware counters. Disabling all counters in pass.");
-                    for (size_t i = 0; i < pass_counters->size(); ++i)
-                    {
-                        CounterIndex counter_index = pass_counters->at(i);
-                        DisableCounterForPass(counter_index);
-                    }
-                }
-                else
-                {
-                    for (size_t i = 0; i < pass_counters->size(); ++i)
-                    {
-                        CounterIndex counter_index = pass_counters->at(i);
+                    CounterIndex counter_index = pass_counters->at(i);
 
-                        const GpaHardwareCounterDescExt* counter = counter_accessor->GetHardwareCounterExt(counter_index);
-                        assert(counter != nullptr);
-                        if (counter == nullptr)
+                    const GpaHardwareCounterDescExt* counter = counter_accessor->GetHardwareCounterExt(counter_index);
+                    assert(counter != nullptr);
+                    if (counter == nullptr)
+                    {
+                        GPA_LOG_ERROR("Invalid counter index (%u) in pass. It will be disabled.", counter_index);
+                        DisableCounterForPass(counter_index);
+                        continue;
+                    }
+                    else
+                    {
+                        unsigned int group_index = counter->group_index;
+
+                        GLint  last_counter_in_group = 0;
+                        GLuint group_instance        = 0;
+
+                        if (group_index < static_cast<unsigned int>(hardware_counters.internal_counter_groups_.size()))
                         {
-                            GPA_LOG_ERROR("Invalid counter index (%u) in pass. It will be disabled.", counter_index);
-                            DisableCounterForPass(counter_index);
-                            continue;
+                            last_counter_in_group = static_cast<GLint>(hardware_counters.internal_counter_groups_[group_index].num_counters);
+                            group_instance        = static_cast<GLuint>(hardware_counters.internal_counter_groups_[group_index].block_instance);
                         }
                         else
                         {
-                            unsigned int group_index = counter->group_index;
-
-                            GLint  last_counter_in_group = 0;
-                            GLuint group_instance        = 0;
-
-                            if (group_index < static_cast<unsigned int>(hardware_counters->internal_counter_groups_.size()))
-                            {
-                                last_counter_in_group = static_cast<GLint>(hardware_counters->internal_counter_groups_.at(group_index).num_counters);
-                                group_instance        = static_cast<GLuint>(hardware_counters->internal_counter_groups_.at(group_index).block_instance);
-                            }
-                            else
-                            {
-                                last_counter_in_group = static_cast<GLint>(
-                                    hardware_counters->additional_groups_[group_index - hardware_counters->counter_groups_array_.size()].num_counters);
-                                group_instance = static_cast<GLuint>(
-                                    hardware_counters->additional_groups_[group_index - hardware_counters->counter_groups_array_.size()].block_instance);
-                            }
-
-                            assert(counter->hardware_counters->counter_index_in_group <= static_cast<unsigned int>(last_counter_in_group));
-                            UNREFERENCED_PARAMETER(last_counter_in_group);
-
-                            // If the block instance to enable does not exist on this hardware, then disable the counter in this pass.
-                            // This will basically just fake the result as returning 0.
-                            if (reinterpret_cast<GlGpaContext*>(GetGpaSession()->GetParentContext())->GetNumInstances(counter->group_id_driver) <=
-                                group_instance)
-                            {
-                                DisableCounterForPass(counter_index);
-                                continue;
-                            }
-
-                            // Handle the padded counters that may not exist on certain hardware (based on version-specific register spec files).
-                            if (reinterpret_cast<GlGpaContext*>(GetGpaSession()->GetParentContext())->GetMaxEventId(counter->group_id_driver) <=
-                                counter->hardware_counters->counter_index_in_group)
-                            {
-                                DisableCounterForPass(counter_index);
-                                continue;
-                            }
-
-                            EnableCounterForPass(counter_index);
+                            last_counter_in_group = static_cast<GLint>(
+                                hardware_counters.additional_groups_[group_index - hardware_counters.counter_groups_array_.size()].num_counters);
+                            group_instance = static_cast<GLuint>(
+                                hardware_counters.additional_groups_[group_index - hardware_counters.counter_groups_array_.size()].block_instance);
                         }
+
+                        assert(counter->hardware_counters->counter_index_in_group <= static_cast<unsigned int>(last_counter_in_group));
+                        UNREFERENCED_PARAMETER(last_counter_in_group);
+
+                        // If the block instance to enable does not exist on this hardware, then disable the counter in this pass.
+                        // This will basically just fake the result as returning 0.
+                        if (reinterpret_cast<GlGpaContext*>(GetGpaSession()->GetParentContext())->GetNumInstances(counter->group_id_driver) <= group_instance)
+                        {
+                            DisableCounterForPass(counter_index);
+                            continue;
+                        }
+
+                        // Handle the padded counters that may not exist on certain hardware (based on version-specific register spec files).
+                        if (reinterpret_cast<GlGpaContext*>(GetGpaSession()->GetParentContext())->GetMaxEventId(counter->group_id_driver) <=
+                            counter->hardware_counters->counter_index_in_group)
+                        {
+                            DisableCounterForPass(counter_index);
+                            continue;
+                        }
+
+                        EnableCounterForPass(counter_index);
                     }
                 }
             }
@@ -266,41 +254,43 @@ bool GlGpaPass::InitializeCounters(const GlPerfMonitorId& gl_perf_monitor_id)
 
         // Need to Enable counters.
         IGpaCounterAccessor*             counter_accessor  = GpaContextCounterMediator::Instance()->GetCounterAccessor(GetGpaSession());
-        const GpaHardwareCounters*       hardware_counters = counter_accessor->GetHardwareCounters();
+        const GpaHardwareCounters&       hardware_counters = counter_accessor->GetHardwareCounters();
         const GpaHardwareCounterDescExt* counter           = counter_accessor->GetHardwareCounterExt(counter_index);
 
         unsigned int group_index = counter->group_index;
 
         GLint        num_counters_in_group      = 0;
         GLuint       group_instance             = 0;
-        unsigned int counter_groups_array_count = static_cast<unsigned int>(hardware_counters->counter_groups_array_.size());
+        unsigned int counter_groups_array_count = static_cast<unsigned int>(hardware_counters.counter_groups_array_.size());
 
-        if (group_index < static_cast<unsigned int>(hardware_counters->internal_counter_groups_.size()))
+        if (group_index < static_cast<unsigned int>(hardware_counters.internal_counter_groups_.size()))
         {
-            num_counters_in_group = static_cast<GLint>(hardware_counters->internal_counter_groups_[group_index].num_counters);
-            group_instance        = static_cast<GLuint>(hardware_counters->internal_counter_groups_[group_index].block_instance);
+            num_counters_in_group = static_cast<GLint>(hardware_counters.internal_counter_groups_[group_index].num_counters);
+            group_instance        = static_cast<GLuint>(hardware_counters.internal_counter_groups_[group_index].block_instance);
         }
         else
         {
-            num_counters_in_group = static_cast<GLint>(hardware_counters->additional_groups_[group_index - counter_groups_array_count].num_counters);
-            group_instance        = static_cast<GLuint>(hardware_counters->additional_groups_[group_index - counter_groups_array_count].block_instance);
+            num_counters_in_group = static_cast<GLint>(hardware_counters.additional_groups_[group_index - counter_groups_array_count].num_counters);
+            group_instance        = static_cast<GLuint>(hardware_counters.additional_groups_[group_index - counter_groups_array_count].block_instance);
         }
 
-        assert(counter->hardware_counters->counter_index_in_group <= static_cast<unsigned int>(num_counters_in_group));
+        assert(counter->hardware_counters->counter_index_in_group <= UINT32_MAX);
+
+        GLuint counter_index_in_group = static_cast<GLuint>(counter->hardware_counters->counter_index_in_group);
+
+        assert(counter_index_in_group <= static_cast<unsigned int>(num_counters_in_group));
 
         // Validate Counter result type.
         GLuint result_type = 0;
-        ogl_utils::ogl_get_perf_monitor_counter_info_amd(
-            counter->group_id_driver, static_cast<GLuint>(counter->hardware_counters->counter_index_in_group), GL_COUNTER_TYPE_AMD, &result_type);
+        ogl_utils::ogl_get_perf_monitor_counter_info_amd(counter->group_id_driver, counter_index_in_group, GL_COUNTER_TYPE_AMD, &result_type);
 
         if (!ogl_utils::CheckForGlError("glGetPerfMonitorCounterInfoAMD failed to get the counter type."))
         {
-            ogl_utils::ogl_select_perf_monitor_counters_2_amd(gl_perf_monitor_id,
-                                                              GL_TRUE,
-                                                              counter->group_id_driver,
-                                                              group_instance,
-                                                              1,
-                                                              reinterpret_cast<GLuint*>(&counter->hardware_counters->counter_index_in_group));
+            // NOTE: This function realistically should take a const* as the final parameter since it doesn't modify the counterList
+            // Likely a minor design oversight. We can just workaround it by creating a temp variable counter_index_in_group
+            // to avoid the const_cast and reinterpret_cast issue.
+            ogl_utils::ogl_select_perf_monitor_counters_2_amd(
+                gl_perf_monitor_id, GL_TRUE, counter->group_id_driver, group_instance, 1, &counter_index_in_group);
 
             if (!ogl_utils::CheckForGlError("Unable to enable counter in GL driver."))
             {
@@ -321,20 +311,17 @@ bool GlGpaPass::InitializeCounters(const GlPerfMonitorId& gl_perf_monitor_id)
             gl_counter.counter_id             = counter_index;
             gl_counter.counter_group          = counter->group_id_driver;
             gl_counter.counter_group_instance = group_instance;
-            gl_counter.counter_index          = static_cast<GLuint>(counter->hardware_counters->counter_index_in_group);
+            gl_counter.counter_index          = counter_index_in_group;
             gl_counter_list_.push_back(gl_counter);
         }
         else
         {
-            char group_name[256];
-            char counter_name[256];
-            memset(group_name, 0, 256);
-            memset(counter_name, 0, 256);
+            std::array<char, 256> group_name = {};
             GLsizei length = 0;
 
-            if (group_index <= (counter_groups_array_count + hardware_counters->additional_group_count_))
+            if (group_index <= (counter_groups_array_count + hardware_counters.additional_group_count_))
             {
-                ogl_utils::ogl_get_perf_monitor_group_string_amd(counter->group_id_driver, 256, &length, group_name);
+                ogl_utils::ogl_get_perf_monitor_group_string_amd(counter->group_id_driver, static_cast<GLsizei>(group_name.size()), &length, group_name.data());
 
                 if (ogl_utils::CheckForGlError("glGetPerfMonitorGroupStringAMD failed to get the group name."))
                 {
@@ -342,15 +329,16 @@ bool GlGpaPass::InitializeCounters(const GlPerfMonitorId& gl_perf_monitor_id)
                 }
             }
 
-            if (counter->hardware_counters->counter_index_in_group <= static_cast<unsigned int>(num_counters_in_group))
+            std::array<char, 256> counter_name = {};
+            if (counter_index_in_group <= static_cast<unsigned int>(num_counters_in_group))
             {
                 ogl_utils::ogl_get_perf_monitor_counter_string_amd(
-                    counter->group_id_driver, static_cast<GLuint>(counter->hardware_counters->counter_index_in_group), 256, &length, counter_name);
+                    counter->group_id_driver, counter_index_in_group, static_cast<GLsizei>(counter_name.size()), &length, counter_name.data());
 
                 ogl_utils::CheckForGlError("glGetPerfMonitorCounterStringAMD failed to get the counter name.");
             }
 
-            GPA_LOG_ERROR("Failed to enable counter '%s' from group '%s' instance %d.", counter_name, group_name, counter->group_id_driver);
+            GPA_LOG_ERROR("Failed to enable counter '%s' from group '%s' instance %d.", counter_name.data(), group_name.data(), counter->group_id_driver);
         }
 
         return is_counter_enabled;

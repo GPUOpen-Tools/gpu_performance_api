@@ -223,15 +223,15 @@ public:
     /// @return Number of counters.
     CounterCount GetNumEnabledCountersForPass() const;
 
-    /// @brief Returns the index of the Bottom-Of-Pipe (BOP) to BOP timing counter.
+    /// @brief Checks if the Bottom-Of-Pipe (BOP) to BOP timing counter is found.
     ///
-    /// @return Index of the BOP to BOP timing counter.
-    GpaUInt32 GetBottomToBottomTimingDurationCounterIndex() const;
+    /// @return True if the BOP to BOP timing counter is found.
+    bool FindBottomToBottomTimingDurationCounter() const;
 
-    /// @brief Returns the index of the Top-Of-Pipe (TOP) to Bottom-Of-Pipe (BOP) timing counter.
+    /// @brief Checks if the Top-Of-Pipe (TOP) to Bottom-Of-Pipe (BOP) timing counter is found.
     ///
-    /// @return Index of the TOP to BOP timing counter.
-    GpaUInt32 GetTopToBottomTimingDurationCounterIndex() const;
+    /// @return True if the TOP to BOP timing counter is found.
+    bool FindTopToBottomTimingDurationCounter() const;
 
     /// @brief Iterate over all the counter in the pass.
     ///
@@ -362,4 +362,4 @@ private:
     bool is_spm_pass_;   ///< flag indicating pass is for SPM data
 };
 
-#endif  // GPU_PERF_API_COMMON_GPA_PASS_H_
+#endif

@@ -293,4 +293,4 @@ private:
     std::vector<CounterResultEntry> counter_result_entries_;
 };
 
-#endif  // GPU_PERF_API_DX12_DX12_GPA_SAMPLE_CONFIG_H_
+#endif

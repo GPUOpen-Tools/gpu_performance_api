@@ -63,4 +63,4 @@ private:
     std::map<CounterIndex, SqEngineParamValue> counter_shader_mask_value_map_;  ///< Map of the shader mask value for counter in SQ block the pass.
 };
 
-#endif  // GPU_PERF_API_DX11_DX11_GPA_PASS_H_
+#endif

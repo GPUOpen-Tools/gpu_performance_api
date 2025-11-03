@@ -41,10 +41,10 @@ private:
     void operator=(const GlGpaImplementor&) = delete;
 
     /// @copydoc GpaImplementor::OpenApiContext()
-    IGpaContext* OpenApiContext(GpaContextInfoPtr context_info, GpaHwInfo& hw_info, GpaOpenContextFlags flags) override final;
+    IGpaContext* OpenApiContext(GpaContextInfoPtr context_info, const GpaHwInfo& hw_info, GpaOpenContextFlags flags) override final;
 
     /// @copydoc GpaImplementor::CloseApiContext()
-    bool CloseApiContext(GpaDeviceIdentifier device_identifier, IGpaContext* context) override final;
+    [[nodiscard]] bool CloseApiContext(IGpaContext* context) override final;
 
     /// @copydoc GpaImplementor::GetDeviceIdentifierFromContextInfo()
     GpaDeviceIdentifier GetDeviceIdentifierFromContextInfo(GpaContextInfoPtr context_info) const override final;
@@ -57,7 +57,6 @@ private:
     bool IsDriverSupported(GpaContextInfoPtr context_info) const override;
 
     mutable bool is_gl_entry_points_initialized_;  ///< Flag indicating the GL entry point has been initialized or not.
-    mutable int  gl_driver_version_;               ///< GL driver version returned in the ASIC info.
 };
 
-#endif  // GPU_PERF_API_GL_GPA_IMPLEMENTOR_H_
+#endif

@@ -143,21 +143,21 @@ bool GpaCounterGeneratorBase::MapHardwareExposedCounter(GpaHardwareCounters* har
     for (size_t g = 0; g < num_hardware_exposed_counter_groups; ++g)
     {
         const GpaUInt32 block_counter_start_index     = hardware_counters->hardware_exposed_counter_groups_[g].hardware_block_start_index;
-        const GpaUInt32 num_exposed_counters_in_group = static_cast<GpaUInt32>(hardware_counters->hardware_exposed_counters_[g]->size());
+        const GpaUInt32 num_exposed_counters_in_group = static_cast<GpaUInt32>(hardware_counters->hardware_exposed_counters_[g].size());
 
         for (unsigned int count_iter = 0; count_iter < num_exposed_counters_in_group; ++count_iter)
         {
             // Get the counter to expose.
-            GpaHardwareCounterDesc* exposed_counter = &hardware_counters->hardware_exposed_counters_.at(g)->at(count_iter);
+            const GpaHardwareCounterDesc& exposed_counter = hardware_counters->hardware_exposed_counters_[g][count_iter];
 
             // Add the counter to a long list of all the exposed counters from all the groups.
-            hardware_counters->hardware_exposed_counters_list_.push_back(*exposed_counter);
+            hardware_counters->hardware_exposed_counters_list_.push_back(exposed_counter);
 
             // Calculate the global counter index, add it to a long list of all the global counter indices,
             // and add it to a map directly to the corresponding exposed counter.
-            GpaUInt32 global_counter_index = block_counter_start_index + static_cast<GpaUInt32>(exposed_counter->counter_index_in_group);
+            GpaUInt32 global_counter_index = block_counter_start_index + static_cast<GpaUInt32>(exposed_counter.counter_index_in_group);
             hardware_counters->hardware_exposed_counter_internal_indices_list_.push_back(global_counter_index);
-            hardware_counters->hardware_counters_[global_counter_index].hardware_counters = exposed_counter;
+            hardware_counters->hardware_counters_[global_counter_index].hardware_counters = &exposed_counter;
         }
     }
 
@@ -592,12 +592,11 @@ std::variant<gpa_array_view<GpaUInt32>, GpaUInt32> GpaCounterGeneratorBase::GetI
 }
 
 GpaStatus GpaCounterGeneratorBase::ComputePublicCounterValue(GpaUInt32                       counter_index,
-                                                             const vector<const GpaUInt64*>& results,
-                                                             vector<GpaDataType>&            internal_counter_types,
+                                                             const gpa_array_view<GpaUInt64> results,
                                                              void*                           result,
-                                                             const GpaHwInfo*                hardware_info) const
+                                                             const GpaHwInfo&                hardware_info) const
 {
-    return public_counters_.ComputeCounterValue(counter_index, results, internal_counter_types, result, hardware_info);
+    return public_counters_.ComputeCounterValue(counter_index, results, result, hardware_info);
 }
 
 void GpaCounterGeneratorBase::ComputeSwCounterValue(GpaUInt32 software_counter_index, GpaUInt64 value, void* result, const GpaHwInfo* hardware_info) const
@@ -612,9 +611,9 @@ void GpaCounterGeneratorBase::ComputeSwCounterValue(GpaUInt32 software_counter_i
     }
 }
 
-const GpaHardwareCounters* GpaCounterGeneratorBase::GetHardwareCounters() const
+const GpaHardwareCounters& GpaCounterGeneratorBase::GetHardwareCounters() const
 {
-    return &hardware_counters_;
+    return hardware_counters_;
 }
 
 GpaCounterInfo* GpaCounterGeneratorBase::GetCounterInfo(const GpaUInt32& counter_index) const

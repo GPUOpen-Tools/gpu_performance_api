@@ -83,4 +83,4 @@ private:
     SampleDataBuffer sample_data_buffer_;  ///< Buffer for getting data from driver.
 };
 
-#endif  // GPU_PERF_API_GL_GL_GPA_SAMPLE_H_
+#endif

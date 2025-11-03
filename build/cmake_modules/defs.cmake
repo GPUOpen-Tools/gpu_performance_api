@@ -1,4 +1,5 @@
-## Copyright (c) 2018-2025 Advanced Micro Devices, Inc. All rights reserved.
+## Copyright (C) 2018-2025 Advanced Micro Devices, Inc. All rights reserved. ##
+
 if(NOT DEFINED GPA_OUTPUT_DIR)
     set(GPA_OUTPUT_DIR ${PROJECT_SOURCE_DIR}/build/output)
 endif()

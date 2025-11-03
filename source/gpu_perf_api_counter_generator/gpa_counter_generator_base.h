@@ -20,7 +20,7 @@ class GpaCounterGeneratorBase : public IGpaCounterAccessor
 {
 public:
     /// @brief Constructor.
-    /// 
+    ///
     /// @param [in] sample_type The type of samples for which to generate counters.
     GpaCounterGeneratorBase(GpaSessionSampleType sample_type);
 
@@ -67,11 +67,10 @@ public:
     std::variant<gpa_array_view<GpaUInt32>, GpaUInt32> GetInternalCountersRequired(GpaUInt32 index) const override;
 
     /// @copydoc IGpaCounterAccessor::ComputePublicCounterValue()
-    GpaStatus ComputePublicCounterValue(GpaUInt32                            counter_index,
-                                        const std::vector<const GpaUInt64*>& results,
-                                        std::vector<GpaDataType>&            internal_counter_types,
-                                        void*                                result,
-                                        const GpaHwInfo*                     hardware_info) const override;
+    GpaStatus ComputePublicCounterValue(GpaUInt32                       counter_index,
+                                        const gpa_array_view<GpaUInt64> results,
+                                        void*                           result,
+                                        const GpaHwInfo&                hardware_info) const override;
 
     /// @copydoc IGpaCounterAccessor::GetCounterSourceInfo()
     GpaCounterSourceInfo GetCounterSourceInfo(GpaUInt32 global_index) const override;
@@ -90,7 +89,7 @@ public:
     bool GetPublicInterfaceCounterIndex(const GpaUInt32& hardware_counter_index, GpaUInt32* public_interface_counter_index) const override;
 
     /// @copydoc IGpaCounterAccessor::GetHardwareCounters()
-    const GpaHardwareCounters* GetHardwareCounters() const override;
+    const GpaHardwareCounters& GetHardwareCounters() const override;
 
     /// @copydoc IGpaCounterAccessor::GetCounterInfo()
     GpaCounterInfo* GetCounterInfo(const GpaUInt32& derived_counter_index) const override;
@@ -180,4 +179,4 @@ private:
     GpaSessionSampleType sample_type_;
 };
 
-#endif  // GPU_PERF_API_COUNTER_GENERATOR_GPA_COUNTER_GENERATOR_BASE_H_
+#endif

@@ -30,10 +30,10 @@ public:
     GpaContext() = delete;
 
     /// @brief Virtual Destructor.
-    virtual ~GpaContext();
+    virtual ~GpaContext() = default;
 
     /// @copydoc IGpaContext::GetSupportedSampleTypes()
-    GpaStatus GetSupportedSampleTypes(GpaContextSampleTypeFlags* sample_types) const override;
+    GpaContextSampleTypeFlags GetSupportedSampleTypes() const override;
 
     /// @copydoc IGpaContext::ArePublicCountersExposed()
     bool ArePublicCountersExposed() const override;
@@ -41,14 +41,8 @@ public:
     /// @copydoc IGpaContext::AreHardwareCountersExposed()
     bool AreHardwareCountersExposed() const override;
 
-    /// @copydoc IGpaContext::SetInvalidateAndFlushL2Cache()
-    void SetInvalidateAndFlushL2Cache(bool should_invalidate_and_flush_l2_cache) override;
-
-    /// @copydoc IGpaContext::IsInvalidateAndFlushL2CacheEnabled()
-    bool IsInvalidateAndFlushL2CacheEnabled() const override;
-
     /// @copydoc IGpaContext::GetHwInfo()
-    const GpaHwInfo* GetHwInfo() const override;
+    const GpaHwInfo& GetHwInfo() const override;
 
     /// @copydoc IGpaContext::UpdateHwInfo()
     void UpdateHwInfo(GpaUInt32 num_shader_engines, GpaUInt32 num_compute_units, GpaUInt32 num_simds, GpaUInt32 num_waves_per_simd) override;
@@ -88,7 +82,7 @@ protected:
     ///
     /// @param [in] hw_info The hardware info for the context.
     /// @param [in] flags Creation flags for context.
-    GpaContext(GpaHwInfo& hw_info, GpaOpenContextFlags flags);
+    GpaContext(const GpaHwInfo& hw_info, GpaOpenContextFlags flags);
 
     /// @brief Marks the context to be opened.
     ///
@@ -126,18 +120,19 @@ protected:
     /// @return True if the index was found, false otherwise.
     bool GetIndex(IGpaSession* gpa_session, unsigned int* index = nullptr) const;
 
-    GpaContextSampleTypeFlags supported_sample_types_;  ///< The supported sample types. Expected to be set by the derived class.
-
 private:
     GpaOpenContextFlags context_flags_;                          ///< Context flags.
     GpaHwInfo           hw_info_;                                ///< Hw info.
-    bool                invalidate_and_flush_l2_cache_enabled_;  ///< Flag indicating flush and invalidation of L2 cache is enabled or not.
     bool                is_open_;                                ///< Flag indicating context is open or not.
     GpaSessionList      gpa_session_list_;                       ///< List of GPA sessions in the context.
     bool                is_amd_device_;                          ///< Flag indicating whether the device is AMD or not.
     mutable std::mutex  gpa_session_list_mutex_;                 ///< Mutex for GPA session list.
     IGpaSession*        active_session_;                         ///< Gpa session to keep track of active session.
     mutable std::mutex  active_session_mutex_;                   ///< Mutex for the active session.
+
+#ifdef _WIN32
+    inline static HANDLE gpa_mutex_handle = NULL;  // IPC Mutex to prevent TDRs from multiple apps trying to profile GPU
+#endif
 };
 
-#endif  // GPU_PERF_API_COMMON_GPA_CONTEXT_H_
+#endif

@@ -143,17 +143,15 @@ public:
     /// @brief Computes a public counter value based on supplied results and hardware info.
     ///
     /// @param [in] counter_index The public counter index to calculate.
-    /// @param [in] results A vector of hardware counter results.
-    /// @param [in] internal_counter_types A vector of counter types.
+    /// @param [in] results List of the hardware counter results.
     /// @param [in,out] result The computed counter result.
     /// @param [in] hardware_info Information about the hardware on which the result was generated.
     ///
     /// @return kGpaStatusOk on success, otherwise an error code.
-    virtual GpaStatus ComputePublicCounterValue(GpaUInt32                            counter_index,
-                                                const std::vector<const GpaUInt64*>& results,
-                                                std::vector<GpaDataType>&            internal_counter_types,
-                                                void*                                result,
-                                                const GpaHwInfo*                     hardware_info) const = 0;
+    virtual GpaStatus ComputePublicCounterValue(GpaUInt32                       counter_index,
+                                                const gpa_array_view<GpaUInt64> results,
+                                                void*                           result,
+                                                const GpaHwInfo&                hardware_info) const = 0;
 
     /// @brief Compute a software counter value.
     ///
@@ -204,7 +202,7 @@ public:
     /// @brief Get the hardware counters.
     ///
     /// @return The hardware counters.
-    virtual const GpaHardwareCounters* GetHardwareCounters() const = 0;
+    virtual const GpaHardwareCounters& GetHardwareCounters() const = 0;
 
     /// @brief Get the counter info.
     ///
@@ -217,4 +215,4 @@ public:
     virtual ~IGpaCounterAccessor() = default;
 };
 
-#endif  // GPU_PERF_API_COUNTER_GENERATOR_GPA_COUNTER_ACCESSOR_INTERFACE_H_
+#endif

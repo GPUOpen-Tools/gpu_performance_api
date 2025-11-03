@@ -145,11 +145,11 @@
 #define DISCRETE_WRITEUNITSTALLED_PUBLIC_DX11_GFX10 128
 #define DISCRETE_WRITEUNITSTALLEDCYCLES_PUBLIC_DX11_GFX10 129
 
-/// Number of public counters for DX11 GFX10 
+/// Number of public counters for DX11 GFX10
 const size_t kDx11Gfx10PublicCounterCount = 130;
 
-/// Array of public counters for DX11 GFX10 
+/// Array of public counters for DX11 GFX10
 extern const GpaCounterDesc kDx11Gfx10PublicCounters[kDx11Gfx10PublicCounterCount];
 
 // clang-format on
-#endif  // GPA_AUTO_GEN_UNIT_TESTS_COUNTERS_PUBLIC_DX11_GFX10
+#endif

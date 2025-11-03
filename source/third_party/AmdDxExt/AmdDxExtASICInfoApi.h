@@ -1,10 +1,4 @@
-/*
-***************************************************************************************************
-*
-*  Copyright (c) 2012-2016 Advanced Micro Devices, Inc. All rights reserved.
-*
-***************************************************************************************************
-*/
+/* Copyright (C) 2012-2025 Advanced Micro Devices, Inc. All rights reserved. */
 
 /**
 ***************************************************************************************************
@@ -24,7 +18,6 @@
 #include "AmdDxExtApi.h"
 #include "AmdDxExtIface.h"
 #include "AmdDxExtASICInfo.h"
-
 
 const unsigned int AmdDxASICInfoMajorVersion = 2;
 const unsigned int AmdDxASICInfoMinorVersion = 0;
@@ -48,4 +41,4 @@ public:
 
 };
 
-#endif //_AMDDXEXTASICINFOAPI_H_
+#endif

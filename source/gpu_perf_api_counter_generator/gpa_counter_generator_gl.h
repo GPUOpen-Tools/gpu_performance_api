@@ -69,4 +69,4 @@ private:
     std::vector<char*>                   counter_buffers_;         ///< Allocated driver supplied counter buffers.
 };
 
-#endif  // GPU_PERF_API_COUNTER_GENERATOR_GL_GPA_COUNTER_GENERATOR_GL_H_
+#endif

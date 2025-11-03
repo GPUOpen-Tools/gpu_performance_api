@@ -13,12 +13,11 @@
 #include "gpu_perf_api_common/gpa_common_defs.h"
 #include "gpu_perf_api_common/gpa_context_counter_mediator.h"
 #include "gpu_perf_api_common/gpa_unique_object.h"
+#include "gpu_perf_api_common/gpa_hw_support.h"
 
-GpaContext::GpaContext(GpaHwInfo& hw_info, GpaOpenContextFlags flags)
-    : supported_sample_types_(0)
-    , context_flags_(flags)
+GpaContext::GpaContext(const GpaHwInfo& hw_info, GpaOpenContextFlags flags)
+    : context_flags_(flags)
     , hw_info_(hw_info)
-    , invalidate_and_flush_l2_cache_enabled_(false)
     , is_open_(false)
     , is_amd_device_(false)
     , active_session_(nullptr)
@@ -31,16 +30,25 @@ GpaContext::GpaContext(GpaHwInfo& hw_info, GpaOpenContextFlags flags)
     }
 }
 
-GpaContext::~GpaContext()
+GpaContextSampleTypeFlags GpaContext::GetSupportedSampleTypes() const
 {
-}
+    const GpaApiType                api                     = GetApiType();
+    const GpaDriverInfo             driver_info             = QueryDriverInfo();
 
-GpaStatus GpaContext::GetSupportedSampleTypes(GpaContextSampleTypeFlags* sample_types) const
-{
-    GPA_INTERNAL_CHECK_NULL_PARAM(sample_types);
+    // Get device_id
+    GpaUInt32                       device_id               = 0;
+    [[maybe_unused]] bool           available               = hw_info_.GetDeviceId(device_id);
+    assert(available);
 
-    *sample_types = supported_sample_types_;
-    return kGpaStatusOk;
+    // Get revision_id
+    GpaUInt32 revision_id = 0;
+    available             = hw_info_.GetRevisionId(revision_id);
+    assert(available);
+
+    const GpaContextSampleTypeFlags supported_sample_types_ = CalculateSupportedSampleTypes(device_id, revision_id, api, driver_info);
+    // This should never occur! GpaOpenContext should have validated that a proper device was utilized!
+    assert(supported_sample_types_ != 0);
+    return supported_sample_types_;
 }
 
 bool GpaContext::ArePublicCountersExposed() const
@@ -53,19 +61,9 @@ bool GpaContext::AreHardwareCountersExposed() const
     return (context_flags_ & kGpaOpenContextEnableHardwareCountersBit) == 0;
 }
 
-void GpaContext::SetInvalidateAndFlushL2Cache(bool should_invalidate_and_flush_l2_cache)
+const GpaHwInfo& GpaContext::GetHwInfo() const
 {
-    invalidate_and_flush_l2_cache_enabled_ = should_invalidate_and_flush_l2_cache;
-}
-
-bool GpaContext::IsInvalidateAndFlushL2CacheEnabled() const
-{
-    return invalidate_and_flush_l2_cache_enabled_;
-}
-
-const GpaHwInfo* GpaContext::GetHwInfo() const
-{
-    return &hw_info_;
+    return hw_info_;
 }
 
 void GpaContext::UpdateHwInfo(GpaUInt32 num_shader_engines, GpaUInt32 num_compute_units, GpaUInt32 num_simds, GpaUInt32 num_waves_per_simd)
@@ -118,6 +116,40 @@ bool GpaContext::DoesSessionExist(GpaSessionId gpa_session_id) const
 
 GpaStatus GpaContext::BeginSession(IGpaSession* gpa_session)
 {
+#ifdef _WIN32
+    // Our hardware does NOT support parallel execution using the counters.
+    // We have global controls at this time and no UMD to UMD synchronization to prevent collision.
+    // Depending on the queue usage and granularity, it could be expected to work, but that makes
+    // many assumptions of work scheduling on the GPU.
+    //
+    // Use a named mutex to allow for inter-process synchronization.
+    // This helps ensure only 1 app has access to the counters at a time.
+    // As long as they are using GPA to access the HW counters.
+    gpa_mutex_handle = CreateMutexA(NULL, FALSE, "Global\\GpaSession");
+    if (gpa_mutex_handle == NULL)
+    {
+        GPA_LOG_ERROR("Failed to create mutex.");
+        return kGpaStatusErrorFailed;
+    }
+
+    DWORD wait_result = WaitForSingleObject(gpa_mutex_handle, INFINITE);
+    if (wait_result == WAIT_OBJECT_0)
+    {
+        GPA_LOG_MESSAGE("Global GPA Session Mutex acquired successfully.");
+    }
+    else if (wait_result == WAIT_ABANDONED)
+    {
+        GPA_LOG_MESSAGE("Mutex was abandoned. Previous process may have been killed or crashed.");
+    }
+    else
+    {
+        GPA_LOG_ERROR("Failed to acquire mutex. Wait result: %lu", wait_result);
+        CloseHandle(gpa_mutex_handle);
+        gpa_mutex_handle = NULL;
+        return kGpaStatusErrorFailed;
+    }
+#endif
+
     GpaStatus ret_status = kGpaStatusOk;
 
     if (nullptr == gpa_session)
@@ -126,21 +158,20 @@ GpaStatus GpaContext::BeginSession(IGpaSession* gpa_session)
     }
     else
     {
-        active_session_mutex_.lock();
-
-        if (nullptr != active_session_)
         {
-            if (active_session_ != gpa_session)
+            std::lock_guard<std::mutex> lock(active_session_mutex_);
+            if (nullptr != active_session_)
             {
-                ret_status = kGpaStatusErrorOtherSessionActive;
-            }
-            else
-            {
-                ret_status = kGpaStatusErrorSessionAlreadyStarted;
+                if (active_session_ != gpa_session)
+                {
+                    ret_status = kGpaStatusErrorOtherSessionActive;
+                }
+                else
+                {
+                    ret_status = kGpaStatusErrorSessionAlreadyStarted;
+                }
             }
         }
-
-        active_session_mutex_.unlock();
 
         if (kGpaStatusOk == ret_status)
         {
@@ -148,9 +179,8 @@ GpaStatus GpaContext::BeginSession(IGpaSession* gpa_session)
 
             if (kGpaStatusOk == ret_status)
             {
-                active_session_mutex_.lock();
+                std::lock_guard<std::mutex> lock(active_session_mutex_);
                 active_session_ = gpa_session;
-                active_session_mutex_.unlock();
             }
         }
     }
@@ -168,7 +198,7 @@ GpaStatus GpaContext::EndSession(IGpaSession* gpa_session, bool force_end)
     }
     else
     {
-        active_session_mutex_.lock();
+        std::lock_guard<std::mutex> lock(active_session_mutex_);
 
         if (nullptr == active_session_)
         {
@@ -181,8 +211,6 @@ GpaStatus GpaContext::EndSession(IGpaSession* gpa_session, bool force_end)
                 ret_status = kGpaStatusErrorOtherSessionActive;
             }
         }
-
-        active_session_mutex_.unlock();
     }
 
     if (force_end || kGpaStatusOk == ret_status)
@@ -191,11 +219,20 @@ GpaStatus GpaContext::EndSession(IGpaSession* gpa_session, bool force_end)
 
         if (force_end || kGpaStatusOk == ret_status)
         {
-            active_session_mutex_.lock();
+            std::lock_guard<std::mutex> lock(active_session_mutex_);
             active_session_ = nullptr;
-            active_session_mutex_.unlock();
         }
     }
+
+#ifdef _WIN32
+    // Release and close the IPC mutex
+    if (gpa_mutex_handle != NULL)
+    {
+        ReleaseMutex(gpa_mutex_handle);
+        CloseHandle(gpa_mutex_handle);
+        gpa_mutex_handle = NULL;
+    }
+#endif
 
     return ret_status;
 }

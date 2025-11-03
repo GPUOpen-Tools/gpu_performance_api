@@ -18,10 +18,9 @@
 #include "gpu_perf_api_dx12/dx12_gpa_session.h"
 #include "gpu_perf_api_dx12/dx12_utils.h"
 
-Dx12GpaContext::Dx12GpaContext(ID3D12Device* d3d12_device, GpaHwInfo& hw_info, GpaOpenContextFlags flags)
+Dx12GpaContext::Dx12GpaContext(ID3D12Device* d3d12_device, const GpaHwInfo& hw_info, GpaOpenContextFlags flags)
     : GpaContext(hw_info, flags)
 {
-    supported_sample_types_ = kGpaContextSampleTypeDiscreteCounter | kGpaContextSampleTypeSqtt | kGpaContextSampleTypeStreamingCounter;
     d3d12_device_           = d3d12_device;
     d3d12_device_->AddRef();
     amd_device_props_           = {};
@@ -220,8 +219,7 @@ bool Dx12GpaContext::InitializeAmdExtension()
                                 }
                                 else
                                 {
-                                    SetStableClocks(true);
-                                    result = kGpaStatusOk;
+                                    result = SetStableClocks(true);
                                 }
                             }
                         }

@@ -1,4 +1,5 @@
-## Copyright (c) 2023-2025 Advanced Micro Devices, Inc. All rights reserved.
+## Copyright (C) 2023-2025 Advanced Micro Devices, Inc. All rights reserved. ##
+
 include(${GPA_CMAKE_MODULES_DIR}/clang_utils.cmake)
 
 macro(INCLUDE_ADDITIONAL_MODULE)
@@ -24,12 +25,6 @@ function(ADD_STATIC_LIBRARY STATIC_LIB_NAME)
     add_library(${STATIC_LIB_NAME} ${ARGN})
     add_lint_passes(${STATIC_LIB_NAME} ${ARGN})
 endfunction()
-
-## Macro to compile Win32 resource
-macro(INCLUDE_WIN_RESOURCE RES_FILE_NAME)
-    set(RESOURCE_FILE_NAME ${RES_FILE_NAME})
-    include(${GPA_CMAKE_MODULES_DIR}/win_resource_compile.cmake)
-endmacro()
 
 ## MAcro to add linker flags
 macro(ADD_LINKER_FLAGS)

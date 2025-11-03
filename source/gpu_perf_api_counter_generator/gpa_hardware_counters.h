@@ -21,7 +21,7 @@ struct GpaHardwareCounterDescExt
     GpaUInt32               group_index;        ///< Index of group containing this counter.
     GpaUInt32               group_id_driver;    ///< Group ID according to the driver.
     GpaUInt32               counter_id_driver;  ///< Counter ID according to the driver.
-    GpaHardwareCounterDesc* hardware_counters;  ///< The internal counter.
+    const GpaHardwareCounterDesc* hardware_counters;  ///< The internal counter.
 };
 
 /// @brief Maintains a set of hardware counters.
@@ -268,8 +268,8 @@ public:
     {
         current_group_used_counts_.clear();
         hardware_counters_.clear();
-        counter_groups_array_.clear();
-        internal_counter_groups_.clear();
+        counter_groups_array_                             = {};
+        internal_counter_groups_                          = {};
         additional_groups_                                = nullptr;
         additional_group_count_                           = 0;
         sq_counter_groups_                                = nullptr;
@@ -286,7 +286,7 @@ public:
         padded_counters_                                  = nullptr;
         padded_counter_count_                             = 0;
 
-        hardware_exposed_counters_.clear();
+        hardware_exposed_counters_       = {};
         hardware_exposed_counter_groups_ = nullptr;
         hardware_exposed_counters_list_.clear();
         hardware_exposed_counter_internal_indices_list_.clear();
@@ -1025,9 +1025,9 @@ public:
                         *std::min_element(top_time_counter_indices_.begin(), top_time_counter_indices_.end()));
     }
 
-    std::vector<std::vector<GpaHardwareCounterDesc>*>
-                                     counter_groups_array_;      ///< List of counter groups as defined by the list of internal counters in each group.
-    std::vector<GpaCounterGroupDesc> internal_counter_groups_;   ///< List of internal counter groups.
+    gpa_array_view<gpa_array_view<GpaHardwareCounterDesc>>
+                                        counter_groups_array_;      ///< List of counter groups as defined by the list of internal counters in each group.
+    gpa_array_view<GpaCounterGroupDesc> internal_counter_groups_;   ///< List of internal counter groups.
     GpaCounterGroupDesc*             additional_groups_;         ///< List of internal counter groups exposed by the driver, but not known by GPA.
     unsigned int                     additional_group_count_;    ///< The number of internal counter groups exposed by the driver, but not known by GPA.
     GpaSqCounterGroupDesc*           sq_counter_groups_;         ///< List of GpaSqCounterGroupDesc.
@@ -1058,7 +1058,7 @@ public:
     mutable std::map<CounterIndex, GpaHwCounter> counter_hardware_info_map_;  ///< Cache of the counter index and hardware info.
 
     // Hardware exposed counters.
-    std::vector<std::vector<GpaHardwareCounterDesc>*>
+    gpa_array_view<gpa_array_view<GpaHardwareCounterDesc>>
         hardware_exposed_counters_;  ///< List of counter groups as defined by the list of hardware exposed counters in each group.
     GpaCounterGroupExposedCounterDesc*  hardware_exposed_counter_groups_;                 ///< List of hardware exposed counter groups.
     std::vector<GpaHardwareCounterDesc> hardware_exposed_counters_list_;                  ///< Vector of hardware exposed counters.
@@ -1071,4 +1071,4 @@ public:
 
 };
 
-#endif  // GPU_PERF_API_COUNTER_GENERATOR_COMMON_GPA_HARDWARE_COUNTERS_H_
+#endif

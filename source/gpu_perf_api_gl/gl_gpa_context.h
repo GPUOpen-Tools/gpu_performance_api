@@ -22,7 +22,7 @@ using GlContextPtr = GLXContext;  ///< Type alias for GL Context.
 #endif
 #else
 using GlContextPtr = EGLContext;  ///< Type alias for GL Context.
-#endif  // GLES
+#endif
 
 /// @brief Class for OpenGL GPA Context
 class GlGpaContext : public GpaContext
@@ -34,7 +34,7 @@ public:
     /// @param [in] hw_info The hardware info used to create the context.
     /// @param [in] context_flags The flags used to create the context.
     /// @param [in] driver_version The version number of the GL driver.
-    GlGpaContext(GlContextPtr context, GpaHwInfo& hw_info, GpaOpenContextFlags context_flags, int driver_version);
+    GlGpaContext(GlContextPtr context, const GpaHwInfo& hw_info, GpaOpenContextFlags context_flags);
 
     /// @brief Destructor.
     virtual ~GlGpaContext();
@@ -61,7 +61,7 @@ public:
     const GlContextPtr& GetGlContext() const;
 
     /// @copydoc IGpaContext::SetStableClocks()
-    GpaStatus SetStableClocks(bool use_profiling_clocks) override;
+    [[nodiscard]] GpaStatus SetStableClocks(bool use_profiling_clocks) override;
 
     /// @brief Get the number of instances of the specified group.
     ///
@@ -103,9 +103,8 @@ private:
     /// @retval False If there were errors or unexpected situations while querying the counter group information.
     bool PopulateDriverCounterGroupInfo();
 
-    GlContextPtr             gl_context_;      ///< GL rendering context pointer.
-    ogl_utils::AmdXClockMode clock_mode_;      ///< GPU Clock mode.
-    int                      driver_version_;  ///< GL driver version.
+    GlContextPtr             gl_context_;  ///< GL rendering context pointer.
+    ogl_utils::AmdXClockMode clock_mode_;  ///< GPU Clock mode.
 
     typedef std::vector<GpaGlPerfMonitorGroupData> GpaGlPerfGroupVector;
     GpaGlPerfGroupVector                           driver_counter_group_info_;  ///< All the counter group information from the driver.
@@ -119,4 +118,4 @@ private:
     bool                                           driver_supports_GRBMSE_;     ///< Not all hardware supports the GRBMSE blocks, so detect when they exist.
 };
 
-#endif  // GPU_PERF_API_GL_GPA_CONTEXT_H_
+#endif

@@ -134,4 +134,4 @@ private:
 
 } static gs_amdExtD3DDeviceWrapper;
 
-#endif //_AMD_EXT_DEVICE_WRAPPER_H_
+#endif

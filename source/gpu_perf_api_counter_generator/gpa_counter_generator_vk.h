@@ -74,7 +74,7 @@ private:
     /// @param [in] group The group for which the block id needs to be calculated.
     ///
     /// @return The block id according to the driver.
-    static GpaUInt32 CalculateBlockIdVk(GDT_HW_GENERATION generation, GpaCounterGroupDesc* group);
+    static GpaUInt32 CalculateBlockIdVk(GDT_HW_GENERATION generation, const GpaCounterGroupDesc& group);
 
     /// @brief Generates internal counters.
     ///
@@ -85,4 +85,4 @@ private:
     static bool GenerateInternalCounters(GpaHardwareCounters* hardware_counters, GDT_HW_GENERATION generation);
 };
 
-#endif  // GPU_PERF_API_COUNTER_GENERATION_VK_GPA_COUNTER_GENERATOR_VK_H_
+#endif

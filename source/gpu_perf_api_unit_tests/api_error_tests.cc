@@ -15,6 +15,9 @@
 #include "gpu_performance_api/gpu_perf_api_interface_loader.h"
 
 #include "gpu_perf_api_common/gpa_common_defs.h"
+#include "gpu_perf_api_common/gpa_version.h"
+
+#include "gpu_perf_api_unit_tests/utils/gpa_test_apis.h"
 
 /// @brief GPA API Error Tests.
 class GpaApiErrorTest : public ::testing::TestWithParam<GpaApiType>
@@ -103,7 +106,7 @@ void GpaApiErrorTest::LogFunction(GpaLoggingType logging_type, const char* log_m
     EXPECT_EQ('.', message[message.length() - 1]);
 }
 
-TEST_P(GpaApiErrorTest, TestGPA_RegisterLoggingCallback)
+TEST_P(GpaApiErrorTest, RegisterLoggingCallback)
 {
     GpaStatus status = gpa_function_table_->GpaRegisterLoggingCallback(kGpaLoggingError, nullptr);
     EXPECT_EQ(kGpaStatusErrorNullPointer, status);
@@ -115,7 +118,7 @@ TEST_P(GpaApiErrorTest, TestGPA_RegisterLoggingCallback)
     EXPECT_EQ(kGpaStatusOk, status);
 }
 
-TEST_P(GpaApiErrorTest, TestGPA_InitializeAndDestroy)
+TEST_P(GpaApiErrorTest, InitializeAndDestroy)
 {
     GpaStatus status = gpa_function_table_->GpaDestroy();
     EXPECT_EQ(kGpaStatusErrorGpaNotInitialized, status);
@@ -145,7 +148,7 @@ TEST_P(GpaApiErrorTest, TestGPA_InitializeAndDestroy)
     EXPECT_EQ(kGpaStatusErrorInvalidParameter, status);
 }
 
-TEST_P(GpaApiErrorTest, TestGPA_OpenAndCloseContext)
+TEST_P(GpaApiErrorTest, OpenAndCloseContext)
 {
     GpaContextId bad_context_id = reinterpret_cast<GpaContextId>(0xBADF00D);
 
@@ -166,7 +169,7 @@ TEST_P(GpaApiErrorTest, TestGPA_OpenAndCloseContext)
     EXPECT_EQ(kGpaStatusOk, status);
 }
 
-TEST_P(GpaApiErrorTest, TestGPA_ContextInterrogation)
+TEST_P(GpaApiErrorTest, ContextInterrogation)
 {
     GpaContextId bad_context_id = reinterpret_cast<GpaContextId>(0xBADF00D);
 
@@ -261,7 +264,7 @@ TEST_P(GpaApiErrorTest, TestGPA_ContextInterrogation)
     }
 }
 
-TEST_P(GpaApiErrorTest, TestGPA_MaxWaveSlots)
+TEST_P(GpaApiErrorTest, MaxWaveSlots)
 {
     GpaContextId bad_context_id = reinterpret_cast<GpaContextId>(0xBADF00D);
 
@@ -281,7 +284,27 @@ TEST_P(GpaApiErrorTest, TestGPA_MaxWaveSlots)
     EXPECT_EQ(kGpaStatusOk, gpa_function_table_->GpaDestroy());
 }
 
-TEST_P(GpaApiErrorTest, TestGPA_CounterInterrogation)
+TEST_P(GpaApiErrorTest, MaxVGPRs)
+{
+    GpaContextId bad_context_id = reinterpret_cast<GpaContextId>(0xBADF00D);
+
+    // After GPA is initialized, the results will vary based on the parameters.
+    // Earlier parameters should be validated before later parameters.
+    GpaStatus initialization_status = gpa_function_table_->GpaInitialize(kGpaInitializeDefaultBit);
+    ASSERT_EQ(kGpaStatusOk, initialization_status);
+
+    GpaUInt32 vgprs = 0;
+    EXPECT_EQ(kGpaStatusErrorNullPointer, gpa_function_table_->GpaGetDeviceMaxVgprs(nullptr, nullptr));
+    EXPECT_EQ(kGpaStatusErrorNullPointer, gpa_function_table_->GpaGetDeviceMaxVgprs(nullptr, &vgprs));
+    EXPECT_EQ(0, vgprs);
+    EXPECT_EQ(kGpaStatusErrorContextNotFound, gpa_function_table_->GpaGetDeviceMaxVgprs(bad_context_id, nullptr));
+    EXPECT_EQ(kGpaStatusErrorContextNotFound, gpa_function_table_->GpaGetDeviceMaxVgprs(bad_context_id, &vgprs));
+    EXPECT_EQ(0, vgprs);
+
+    EXPECT_EQ(kGpaStatusOk, gpa_function_table_->GpaDestroy());
+}
+
+TEST_P(GpaApiErrorTest, CounterInterrogation)
 {
     // Even if GPA is not initialized, some counter-related queries are valid if appropriate parameters are supplied.
     const char* type_string = nullptr;
@@ -582,7 +605,7 @@ TEST_P(GpaApiErrorTest, TestGPA_CounterInterrogation)
     }
 }
 
-TEST_P(GpaApiErrorTest, TestGPA_SessionHandling)
+TEST_P(GpaApiErrorTest, SessionHandling)
 {
     // Before GPA is initialized, all the entrypoints should return kGpaStatusErrorGpaNotInitialized, no matter what other parameters are supplied.
     // The other parameters should not change values either.
@@ -681,7 +704,7 @@ TEST_P(GpaApiErrorTest, TestGPA_SessionHandling)
     }
 }
 
-TEST_P(GpaApiErrorTest, TestGPA_CounterScheduling)
+TEST_P(GpaApiErrorTest, CounterScheduling)
 {
     // Before GPA is initialized, all the entrypoints should return kGpaStatusErrorGpaNotInitialized, no matter what other parameters are supplied.
     // The other parameters should not change values either.
@@ -765,7 +788,7 @@ TEST_P(GpaApiErrorTest, TestGPA_CounterScheduling)
     }
 }
 
-TEST_P(GpaApiErrorTest, TestGPA_QueryCounterScheduling)
+TEST_P(GpaApiErrorTest, QueryCounterScheduling)
 {
     // Before GPA is initialized, all the entrypoints should return kGpaStatusErrorGpaNotInitialized, no matter what other parameters are supplied.
     // The other parameters should not change values either.
@@ -848,7 +871,7 @@ TEST_P(GpaApiErrorTest, TestGPA_QueryCounterScheduling)
     }
 }
 
-TEST_P(GpaApiErrorTest, TestGPA_SampleHandling)
+TEST_P(GpaApiErrorTest, SampleHandling)
 {
     // Before GPA is initialized, all the entrypoints should return kGpaStatusErrorGpaNotInitialized, no matter what other parameters are supplied.
     // The other parameters should not change values either.
@@ -1205,7 +1228,7 @@ TEST_P(GpaApiErrorTest, TestGPA_SampleHandling)
     }
 }
 
-TEST_P(GpaApiErrorTest, TestGPA_Sqtt)
+TEST_P(GpaApiErrorTest, Sqtt)
 {
     EXPECT_EQ(kGpaStatusErrorGpaNotInitialized, gpa_function_table_->GpaSqttBegin(nullptr, nullptr));
     EXPECT_EQ(kGpaStatusErrorGpaNotInitialized, gpa_function_table_->GpaSqttEnd(nullptr, nullptr));
@@ -1228,7 +1251,7 @@ TEST_P(GpaApiErrorTest, TestGPA_Sqtt)
     }
 }
 
-TEST_P(GpaApiErrorTest, TestGPA_Spm)
+TEST_P(GpaApiErrorTest, Spm)
 {
     EXPECT_EQ(kGpaStatusErrorGpaNotInitialized, gpa_function_table_->GpaSpmBegin(nullptr, nullptr));
     EXPECT_EQ(kGpaStatusErrorGpaNotInitialized, gpa_function_table_->GpaSpmEnd(nullptr, nullptr));
@@ -1251,7 +1274,7 @@ TEST_P(GpaApiErrorTest, TestGPA_Spm)
     }
 }
 
-TEST_P(GpaApiErrorTest, TestGPA_SqttSpm)
+TEST_P(GpaApiErrorTest, SqttSpm)
 {
     EXPECT_EQ(kGpaStatusErrorGpaNotInitialized, gpa_function_table_->GpaSqttSpmBegin(nullptr, nullptr));
     EXPECT_EQ(kGpaStatusErrorGpaNotInitialized, gpa_function_table_->GpaSqttSpmEnd(nullptr, nullptr));
@@ -1274,7 +1297,7 @@ TEST_P(GpaApiErrorTest, TestGPA_SqttSpm)
     }
 }
 
-TEST_P(GpaApiErrorTest, TestGPA_QueryResults)
+TEST_P(GpaApiErrorTest, QueryResults)
 {
     // Before GPA is initialized, all the entrypoints should return kGpaStatusErrorGpaNotInitialized, no matter what other parameters are supplied.
     // The other parameters should not change values either.
@@ -1403,7 +1426,7 @@ TEST_P(GpaApiErrorTest, TestGPA_QueryResults)
     }
 }
 
-TEST_P(GpaApiErrorTest, TestGPA_StatusErrorQuery)
+TEST_P(GpaApiErrorTest, StatusErrorQuery)
 {
     std::string gpa_prefix_string("GPA Status:");
     std::string status_string = gpa_function_table_->GpaGetStatusAsStr(kGpaStatusOk);
@@ -1426,7 +1449,7 @@ TEST_P(GpaApiErrorTest, TestGPA_StatusErrorQuery)
     EXPECT_EQ(0, status_string.compare("GPA Error: Unknown Error."));
 }
 
-TEST_P(GpaApiErrorTest, TestGPA_APIVersion)
+TEST_P(GpaApiErrorTest, ApiVersion)
 {
     GpaStatus status = gpa_function_table_->GpaGetVersion(nullptr, nullptr, nullptr, nullptr);
     EXPECT_EQ(kGpaStatusErrorNullPointer, status);
@@ -1448,8 +1471,11 @@ TEST_P(GpaApiErrorTest, TestGPA_APIVersion)
     EXPECT_EQ(kGpaStatusOk, status);
 }
 
-TEST_P(GpaApiErrorTest, TestGPA_GPAFunctionTable)
+TEST_P(GpaApiErrorTest, FunctionTable)
 {
+    static_assert(GPA_FUNCTION_TABLE_MAJOR_VERSION_NUMBER == GPA_MAJOR_VERSION,
+                  "Make sure to increment GPA_FUNCTION_TABLE_MAJOR_VERSION_NUMBER anytime GPA_MAJOR_VERSION is incremented!");
+
     GpaStatus status = gpa_function_table_->GpaGetFuncTable(nullptr);
     EXPECT_EQ(kGpaStatusErrorNullPointer, status) << "GpaGetFuncTable should return kGpaStatusErrorNullPointer if passed a nullptr";
 
@@ -1467,7 +1493,7 @@ TEST_P(GpaApiErrorTest, TestGPA_GPAFunctionTable)
 
     // The table consists of a certain number of void*'s for each function pointer, as well as
     // two GpaUInt32's for the major_version and minor_version.
-    const std::size_t EXPECTED_TABLE_SIZE = (70 * sizeof(void*)) + (2 * sizeof(GpaUInt32));
+    const std::size_t EXPECTED_TABLE_SIZE = (71 * sizeof(void*)) + (2 * sizeof(GpaUInt32));
     EXPECT_EQ(function_table->minor_version, EXPECTED_TABLE_SIZE) << "A GpaFunctionTable properly "
                                                                      "initialized by GpaGetFuncTable should contain the expected number of entry points; "
                                                                      "additional entry should be appended to the end of the function table in "
@@ -1513,15 +1539,11 @@ TEST_P(GpaApiErrorTest, TestGPA_GPAFunctionTable)
            "minor version number even if initialized to an incorrect value.";
 
     // Note: Whenever GPA function table changes, we need to update this with the last function in the GPA function table
-    EXPECT_EQ(nullptr, function_table->GpaSqttSpmEnd) << "When GpaGetFuncTable receives a GpaFunctionTable with a minor_version set to a value "
-                                                         "that is less than the size of the internal GPA function table, then all entries in the "
-                                                         "GpaFunctionTable beyond this value shall be set to a nullptr.";
+    EXPECT_EQ(nullptr, function_table->GpaGetDeviceMaxVgprs) << "When GpaGetFuncTable receives a GpaFunctionTable with a minor_version set to a value "
+                                                                "that is less than the size of the internal GPA function table, then all entries in the "
+                                                                "GpaFunctionTable beyond this value shall be set to a nullptr.";
 
     delete function_table;
 }
 
-#ifdef _WIN32
-INSTANTIATE_TEST_SUITE_P(WindowsAPI, GpaApiErrorTest, ::testing::Values(kGpaApiDirectx11, kGpaApiDirectx12, kGpaApiVulkan, kGpaApiOpengl));
-#else
-INSTANTIATE_TEST_SUITE_P(LinuxAPI, GpaApiErrorTest, ::testing::Values(kGpaApiVulkan, kGpaApiOpengl));
-#endif
+INSTANTIATE_TEST_SUITE_P(API, GpaApiErrorTest, GetApiParametersList());

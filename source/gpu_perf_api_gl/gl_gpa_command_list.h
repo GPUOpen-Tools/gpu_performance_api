@@ -48,4 +48,4 @@ private:
     GlGpaSample* previous_sample_;  ///< Previous GL sample request.
 };
 
-#endif  // GPU_PERF_API_GL_GPA_COMMAND_LIST_H_
+#endif

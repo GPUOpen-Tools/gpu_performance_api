@@ -265,50 +265,6 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     false,
     {0x67fe9696, 0x8428, 0xcf74, {0x09, 0xd9, 0x91, 0x33, 0xea, 0x0f, 0x14, 0x8c}}},
     {// Discrete Counter Index: 23
-    "VsGsVALUBusy",
-    "VertexGeometry",
-    "The percentage of GPUTime vector ALU instructions are being processed for the VS and GS.",
-    "0,1,2,3,sum4,4,5,6,7,sum4,+,NUM_SIMDS,/,8,/,(100),*,(0),9,10,11,12,sum4,ifnotzero",
-    13,
-    kGpaDataTypeFloat64,
-    kGpaUsageTypePercentage,
-    true,
-    false,
-    {0x0e98794e, 0xd570, 0x20a5, {0x67, 0x1c, 0xb6, 0x5c, 0x39, 0x91, 0xd3, 0x58}}},
-    {// Discrete Counter Index: 24
-    "VsGsVALUBusyCycles",
-    "VertexGeometry",
-    "Number of GPU cycles where vector ALU instructions are being processed for the VS and GS.",
-    "0,1,2,3,sum4,4,5,6,7,sum4,+,NUM_SIMDS,/,(0),8,9,10,11,sum4,ifnotzero",
-    12,
-    kGpaDataTypeFloat64,
-    kGpaUsageTypeCycles,
-    true,
-    false,
-    {0x3558535c, 0xe727, 0xe459, {0x44, 0x84, 0xbc, 0xb6, 0x83, 0xfc, 0xac, 0x2f}}},
-    {// Discrete Counter Index: 25
-    "VsGsSALUBusy",
-    "VertexGeometry",
-    "The percentage of GPUTime scalar ALU instructions are being processed for the VS and GS.",
-    "0,1,2,3,sum4,4,5,6,7,sum4,+,NUM_CUS,/,8,/,(100),*,(0),9,10,11,12,sum4,ifnotzero",
-    13,
-    kGpaDataTypeFloat64,
-    kGpaUsageTypePercentage,
-    true,
-    false,
-    {0x49521e07, 0x5a41, 0x0c17, {0x38, 0xd9, 0x45, 0x07, 0x18, 0xdc, 0xb5, 0xab}}},
-    {// Discrete Counter Index: 26
-    "VsGsSALUBusyCycles",
-    "VertexGeometry",
-    "Number of GPU cycles where scalar ALU instructions are being processed for the VS and GS.",
-    "0,1,2,3,sum4,4,5,6,7,sum4,+,NUM_CUS,/,(0),8,9,10,11,sum4,ifnotzero",
-    12,
-    kGpaDataTypeFloat64,
-    kGpaUsageTypeCycles,
-    true,
-    false,
-    {0xc4f78496, 0x7f24, 0xcb3d, {0x31, 0x08, 0xe9, 0xe8, 0xc7, 0x61, 0xcf, 0x07}}},
-    {// Discrete Counter Index: 27
     "PreTessVALUInstCount",
     "PreTessellation",
     "Average number of vector ALU instructions executed for the VS and HS in a pipeline that uses tessellation. Affected by flow control.",
@@ -319,7 +275,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0xa6894a29, 0x4213, 0x27d4, {0xe1, 0x86, 0xb9, 0xca, 0x61, 0x12, 0xe3, 0xf3}}},
-    {// Discrete Counter Index: 28
+    {// Discrete Counter Index: 24
     "PreTessSALUInstCount",
     "PreTessellation",
     "Average number of scalar ALU instructions executed for the VS and HS in a pipeline that uses tessellation. Affected by flow control.",
@@ -330,7 +286,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0xc6d06968, 0x3557, 0xfb5d, {0x7a, 0x28, 0x5e, 0xda, 0x09, 0x81, 0x90, 0xdb}}},
-    {// Discrete Counter Index: 29
+    {// Discrete Counter Index: 25
     "PreTessVALUBusy",
     "PreTessellation",
     "The percentage of GPUTime vector ALU instructions are being processed for the VS and HS in a pipeline that uses tessellation.",
@@ -341,7 +297,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0x72627e0a, 0xda7e, 0x899a, {0x73, 0x8c, 0x69, 0xe8, 0xba, 0x96, 0xbf, 0x42}}},
-    {// Discrete Counter Index: 30
+    {// Discrete Counter Index: 26
     "PreTessVALUBusyCycles",
     "PreTessellation",
     "Number of GPU cycles vector where ALU instructions are being processed for the VS and HS in a pipeline that uses tessellation.",
@@ -352,7 +308,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0x2d750b51, 0xa75e, 0x380b, {0x1b, 0x42, 0x40, 0xd5, 0x9f, 0x4f, 0xbd, 0xb6}}},
-    {// Discrete Counter Index: 31
+    {// Discrete Counter Index: 27
     "PreTessSALUBusy",
     "PreTessellation",
     "The percentage of GPUTime scalar ALU instructions are being processed for the VS and HS in a pipeline that uses tessellation.",
@@ -363,7 +319,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0x74e778bb, 0xce25, 0x32cd, {0xca, 0xa6, 0x81, 0x0e, 0xb4, 0x4c, 0x95, 0xfa}}},
-    {// Discrete Counter Index: 32
+    {// Discrete Counter Index: 28
     "PreTessSALUBusyCycles",
     "PreTessellation",
     "Number of GPU cycles where scalar ALU instructions are being processed for the VS and HS in a pipeline that uses tessellation.",
@@ -374,7 +330,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0x8aa4a036, 0x313f, 0xf4b0, {0xa8, 0x20, 0xff, 0x0a, 0x6e, 0x71, 0xb1, 0xa2}}},
-    {// Discrete Counter Index: 33
+    {// Discrete Counter Index: 29
     "PreTessVerticesIn",
     "PreTessellation",
     "The number of vertices processed by the VS and HS when using tessellation.",
@@ -385,7 +341,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0xb0d4c894, 0x2fd0, 0x6f4f, {0x0b, 0x07, 0xd5, 0x36, 0x97, 0x69, 0xef, 0x2d}}},
-    {// Discrete Counter Index: 34
+    {// Discrete Counter Index: 30
     "PostTessPrimsOut",
     "PostTessellation",
     "The number of primitives output by the DS and GS when using tessellation.",
@@ -396,7 +352,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0xd38dabe8, 0x1f13, 0xea34, {0xd3, 0xc1, 0xeb, 0x57, 0x83, 0xb7, 0x37, 0xf1}}},
-    {// Discrete Counter Index: 35
+    {// Discrete Counter Index: 31
     "PostTessVALUInstCount",
     "PostTessellation",
     "Average number of vector ALU instructions executed for the DS and GS in a pipeline that uses tessellation. Affected by flow control.",
@@ -407,7 +363,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0x718b7237, 0x1371, 0x4c85, {0x3a, 0xd1, 0xf1, 0x2a, 0xf2, 0x58, 0xba, 0x08}}},
-    {// Discrete Counter Index: 36
+    {// Discrete Counter Index: 32
     "PostTessSALUInstCount",
     "PostTessellation",
     "Average number of scalar ALU instructions executed for the DS and GS in a pipeline that uses tessellation. Affected by flow control.",
@@ -418,7 +374,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0x546cecd8, 0x53d4, 0xc7b7, {0x3b, 0x2e, 0xf5, 0xb2, 0xdb, 0x6c, 0x82, 0x82}}},
-    {// Discrete Counter Index: 37
+    {// Discrete Counter Index: 33
     "PostTessVALUBusy",
     "PostTessellation",
     "The percentage of GPUTime vector ALU instructions are being processed for the DS and GS in a pipeline that uses tessellation.",
@@ -429,7 +385,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0x068d1738, 0xda17, 0x7b6d, {0x9d, 0x88, 0x40, 0x13, 0xa8, 0xb2, 0x7b, 0xf8}}},
-    {// Discrete Counter Index: 38
+    {// Discrete Counter Index: 34
     "PostTessVALUBusyCycles",
     "PostTessellation",
     "Number of GPU cycles vector where ALU instructions are being processed for the DS and GS in a pipeline that uses tessellation.",
@@ -440,7 +396,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0x29951e35, 0xe415, 0x22e9, {0xea, 0x59, 0x03, 0x95, 0x5f, 0xaa, 0x89, 0x73}}},
-    {// Discrete Counter Index: 39
+    {// Discrete Counter Index: 35
     "PostTessSALUBusy",
     "PostTessellation",
     "The percentage of GPUTime scalar ALU instructions are being processed for the DS and GS in a pipeline that uses tessellation.",
@@ -451,7 +407,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0x776fb8e3, 0x1541, 0x75e5, {0x8a, 0x4c, 0x28, 0xd4, 0x3d, 0x39, 0x66, 0x2b}}},
-    {// Discrete Counter Index: 40
+    {// Discrete Counter Index: 36
     "PostTessSALUBusyCycles",
     "PostTessellation",
     "Number of GPU cycles where scalar ALU instructions are being processed for the DS and GS in a pipeline that uses tessellation.",
@@ -462,7 +418,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0xfce0317e, 0xc679, 0xa310, {0xfd, 0x96, 0x85, 0xbb, 0xb4, 0xa8, 0xb7, 0x9d}}},
-    {// Discrete Counter Index: 41
+    {// Discrete Counter Index: 37
     "PrimitiveAssemblyBusy",
     "Timing",
     "The percentage of GPUTime that primitive assembly (clipping and culling) is busy. High values may be caused by having many small primitives; mid to low values may indicate pixel shader or output buffer bottleneck.",
@@ -473,7 +429,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0x54ac5640, 0xc4d7, 0x95e2, {0x20, 0xe0, 0x6a, 0x9f, 0xdf, 0xc0, 0x73, 0x33}}},
-    {// Discrete Counter Index: 42
+    {// Discrete Counter Index: 38
     "PrimitiveAssemblyBusyCycles",
     "Timing",
     "Number of GPU cycles the primitive assembly (clipping and culling) is busy. High values may be caused by having many small primitives; mid to low values may indicate pixel shader or output buffer bottleneck.",
@@ -484,7 +440,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0x99777f2d, 0x9626, 0xc78a, {0xa9, 0x7c, 0xc4, 0x50, 0x5e, 0xba, 0x1e, 0x5f}}},
-    {// Discrete Counter Index: 43
+    {// Discrete Counter Index: 39
     "PrimitivesIn",
     "PrimitiveAssembly",
     "The number of primitives received by the hardware. This includes primitives generated by tessellation.",
@@ -495,7 +451,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0xa515b80d, 0x75c3, 0xc7d2, {0x0d, 0x2f, 0xd7, 0x76, 0x6b, 0x47, 0x59, 0xa6}}},
-    {// Discrete Counter Index: 44
+    {// Discrete Counter Index: 40
     "CulledPrims",
     "PrimitiveAssembly",
     "The number of culled primitives. Typical reasons include scissor, the primitive having zero area, and back or front face culling.",
@@ -506,7 +462,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0x589bdf55, 0x9192, 0x280a, {0x41, 0xc3, 0x58, 0x4b, 0xc9, 0x4f, 0x25, 0x62}}},
-    {// Discrete Counter Index: 45
+    {// Discrete Counter Index: 41
     "ClippedPrims",
     "PrimitiveAssembly",
     "The number of primitives that required one or more clipping operations due to intersecting the view volume or user clip planes.",
@@ -517,7 +473,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0x5ef6f9d5, 0x155e, 0x5baa, {0x16, 0x3f, 0x83, 0x59, 0xd9, 0xea, 0x9b, 0xbf}}},
-    {// Discrete Counter Index: 46
+    {// Discrete Counter Index: 42
     "PAStalledOnRasterizer",
     "PrimitiveAssembly",
     "Percentage of GPUTime that primitive assembly waits for rasterization to be ready to accept data. This roughly indicates for what percentage of time the pipeline is bottlenecked by pixel operations.",
@@ -528,7 +484,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0x6f9f416b, 0x53c1, 0x0457, {0xf8, 0x8c, 0x7b, 0x6b, 0xa8, 0x97, 0x39, 0x74}}},
-    {// Discrete Counter Index: 47
+    {// Discrete Counter Index: 43
     "PAStalledOnRasterizerCycles",
     "PrimitiveAssembly",
     "Number of GPU cycles the primitive assembly waits for rasterization to be ready to accept data. Indicates the number of GPU cycles the pipeline is bottlenecked by pixel operations.",
@@ -539,7 +495,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0x7a8c492a, 0xc566, 0x9328, {0x68, 0x05, 0x76, 0x0d, 0xbf, 0xf5, 0xc0, 0xf2}}},
-    {// Discrete Counter Index: 48
+    {// Discrete Counter Index: 44
     "PSPixelsOut",
     "PixelShader",
     "Pixels exported from shader to color buffers. Does not include killed or alpha tested pixels; if there are multiple render targets, each render target receives one export, so this will be 2 for 1 pixel written to two RTs.",
@@ -550,7 +506,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0x24cba16c, 0xbaa6, 0x6ecd, {0x95, 0xad, 0x92, 0xec, 0xb1, 0x33, 0x8d, 0xa1}}},
-    {// Discrete Counter Index: 49
+    {// Discrete Counter Index: 45
     "PSExportStalls",
     "PixelShader",
     "Pixel shader output stalls. Percentage of GPUBusy. Should be zero for PS or further upstream limited cases; if not zero, indicates a bottleneck in late Z testing or in the color buffer.",
@@ -561,7 +517,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0x9b4f466c, 0xff97, 0x22bb, {0x55, 0x7d, 0x84, 0xd3, 0xc4, 0xc5, 0x18, 0x95}}},
-    {// Discrete Counter Index: 50
+    {// Discrete Counter Index: 46
     "PSExportStallsCycles",
     "PixelShader",
     "Number of GPU cycles the pixel shader output stalls. Should be zero for PS or further upstream limited cases; if not zero, indicates a bottleneck in late Z testing or in the color buffer.",
@@ -572,7 +528,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0x47c72aad, 0x64e6, 0x0864, {0xd5, 0x33, 0xd8, 0xe0, 0xbc, 0x27, 0xc1, 0x56}}},
-    {// Discrete Counter Index: 51
+    {// Discrete Counter Index: 47
     "CSThreadGroupsLaunched",
     "ComputeShader",
     "Total number of thread groups launched.",
@@ -583,7 +539,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0xe1e2f302, 0x868a, 0x1d2e, {0xca, 0x81, 0x99, 0x01, 0xbb, 0xc8, 0xb5, 0x8f}}},
-    {// Discrete Counter Index: 52
+    {// Discrete Counter Index: 48
     "CSWavefrontsLaunched",
     "ComputeShader",
     "The total number of wavefronts launched for the CS.",
@@ -594,7 +550,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0x00c49129, 0x6ae5, 0xf6a0, {0x17, 0x53, 0x47, 0x38, 0xcb, 0xe1, 0x79, 0x38}}},
-    {// Discrete Counter Index: 53
+    {// Discrete Counter Index: 49
     "CSThreadsLaunched",
     "ComputeShader",
     "The number of CS threads launched and processed by the hardware.",
@@ -605,7 +561,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0xcbbbf1ba, 0xd164, 0x1c90, {0x9d, 0xf0, 0x61, 0x20, 0xc1, 0x66, 0x0f, 0xb1}}},
-    {// Discrete Counter Index: 54
+    {// Discrete Counter Index: 50
     "CSThreadGroupSize",
     "ComputeShader",
     "The number of CS threads within each thread group.",
@@ -616,7 +572,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0x8c65008a, 0x9957, 0x7ca6, {0x41, 0x99, 0xf6, 0xfe, 0x94, 0x04, 0x20, 0xf6}}},
-    {// Discrete Counter Index: 55
+    {// Discrete Counter Index: 51
     "CSVALUInsts",
     "ComputeShader",
     "The average number of vector ALU instructions executed per work-item (affected by flow control).",
@@ -627,7 +583,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0x376cb1cc, 0x5a40, 0x9d1d, {0x40, 0x4c, 0xf1, 0x73, 0x6c, 0x0c, 0x50, 0x84}}},
-    {// Discrete Counter Index: 56
+    {// Discrete Counter Index: 52
     "CSVALUUtilization",
     "ComputeShader",
     "The percentage of active vector ALU threads in a wave. A lower number can mean either more thread divergence in a wave or that the work-group size is not a multiple of the wave size. Value range: 0% (bad), 100% (ideal - no thread divergence).",
@@ -638,7 +594,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0xae943d2a, 0x76e1, 0xbb68, {0xe1, 0xe2, 0x0e, 0x06, 0xc9, 0x03, 0x16, 0x11}}},
-    {// Discrete Counter Index: 57
+    {// Discrete Counter Index: 53
     "CSSALUInsts",
     "ComputeShader",
     "The average number of scalar ALU instructions executed per work-item (affected by flow control).",
@@ -649,7 +605,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0xeb211144, 0x8136, 0xff86, {0xe8, 0xbf, 0x4d, 0x04, 0x93, 0xa9, 0x04, 0xcb}}},
-    {// Discrete Counter Index: 58
+    {// Discrete Counter Index: 54
     "CSVFetchInsts",
     "ComputeShader",
     "The average number of vector fetch instructions from the video memory executed per work-item (affected by flow control).",
@@ -660,7 +616,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0x3e2829c0, 0x6215, 0x783b, {0xc2, 0x71, 0x6d, 0x57, 0xff, 0x2c, 0x52, 0x0e}}},
-    {// Discrete Counter Index: 59
+    {// Discrete Counter Index: 55
     "CSSFetchInsts",
     "ComputeShader",
     "The average number of scalar fetch instructions from the video memory executed per work-item (affected by flow control).",
@@ -671,7 +627,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0xda09171c, 0x6a0a, 0x584f, {0xfd, 0xdc, 0xdc, 0x50, 0x62, 0xd6, 0x3a, 0x3e}}},
-    {// Discrete Counter Index: 60
+    {// Discrete Counter Index: 56
     "CSVWriteInsts",
     "ComputeShader",
     "The average number of vector write instructions to the video memory executed per work-item (affected by flow control).",
@@ -682,7 +638,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0x43438c22, 0xe910, 0xb377, {0xb7, 0x67, 0xb3, 0x29, 0x02, 0xe0, 0xdf, 0x0d}}},
-    {// Discrete Counter Index: 61
+    {// Discrete Counter Index: 57
     "CSGDSInsts",
     "ComputeShader",
     "The average number of GDS read or GDS write instructions executed per work item (affected by flow control).",
@@ -693,7 +649,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0x2a867f3e, 0x4a37, 0xad16, {0x55, 0xd1, 0xf0, 0x3d, 0x74, 0x70, 0x78, 0x19}}},
-    {// Discrete Counter Index: 62
+    {// Discrete Counter Index: 58
     "CSLDSInsts",
     "ComputeShader",
     "The average number of LDS read/write instructions executed per work-item (affected by flow control).",
@@ -704,7 +660,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0x61b0b351, 0x7e06, 0xef8e, {0xa8, 0xe0, 0x7a, 0x9e, 0x32, 0x00, 0xa8, 0x36}}},
-    {// Discrete Counter Index: 63
+    {// Discrete Counter Index: 59
     "CSALUStalledByLDS",
     "ComputeShader",
     "The percentage of GPUTime ALU units are stalled by the LDS input queue being full or the output queue being not ready. If there are LDS bank conflicts, reduce them. Otherwise, try reducing the number of LDS accesses if possible. Value range: 0% (optimal) to 100% (bad).",
@@ -715,7 +671,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0x6dc4f1c2, 0xbad0, 0xc9ff, {0x15, 0x6e, 0x88, 0x3b, 0x31, 0x9a, 0x75, 0x2a}}},
-    {// Discrete Counter Index: 64
+    {// Discrete Counter Index: 60
     "CSALUStalledByLDSCycles",
     "ComputeShader",
     "The average number of GPU cycles the each wavefronts' ALU units are stalled by the LDS input queue being full or the output queue being not ready. If there are LDS bank conflicts, reduce them. Otherwise, try reducing the number of LDS accesses if possible.",
@@ -726,7 +682,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0xf970a60b, 0xda5d, 0xe489, {0x62, 0x22, 0x96, 0x9e, 0xe7, 0x90, 0xa8, 0x11}}},
-    {// Discrete Counter Index: 65
+    {// Discrete Counter Index: 61
     "CSLDSBankConflict",
     "ComputeShader",
     "The percentage of GPUTime LDS is stalled by bank conflicts. Value range: 0% (optimal) to 100% (bad).",
@@ -737,7 +693,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0x1065ee10, 0x2e41, 0xea41, {0x1e, 0xb3, 0xb6, 0x1b, 0x49, 0x17, 0x52, 0xf4}}},
-    {// Discrete Counter Index: 66
+    {// Discrete Counter Index: 62
     "CSLDSBankConflictCycles",
     "ComputeShader",
     "Number of GPU cycles the LDS is stalled by bank conflicts. Value range: 0 (optimal) to GPUBusyCycles (bad).",
@@ -748,7 +704,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0x1fd1adf3, 0xc51e, 0x94fd, {0x08, 0x3e, 0xc4, 0x82, 0xa0, 0xa0, 0x80, 0x9e}}},
-    {// Discrete Counter Index: 67
+    {// Discrete Counter Index: 63
     "TexUnitBusy",
     "Timing",
     "The percentage of GPUTime the texture unit is active. This is measured with all extra fetches and any cache or memory effects taken into account.",
@@ -759,7 +715,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0x36afb8d9, 0x42fc, 0xaafe, {0x66, 0xc5, 0x44, 0x95, 0x42, 0x15, 0x3b, 0x2c}}},
-    {// Discrete Counter Index: 68
+    {// Discrete Counter Index: 64
     "TexUnitBusyCycles",
     "Timing",
     "Number of GPU cycles the texture unit is active. This is measured with all extra fetches and any cache or memory effects taken into account.",
@@ -770,7 +726,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0xc68761f2, 0x248c, 0x4f39, {0x65, 0x28, 0xc3, 0x08, 0xb1, 0xc0, 0x80, 0x7c}}},
-    {// Discrete Counter Index: 69
+    {// Discrete Counter Index: 65
     "TexTriFilteringPct",
     "TextureUnit",
     "Percentage of pixels that received trilinear filtering. Note that not all pixels for which trilinear filtering is enabled will receive it (e.g. if the texture is magnified).",
@@ -781,7 +737,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0x1affc3c8, 0xb917, 0x5c81, {0x62, 0x2b, 0x70, 0x04, 0x52, 0x72, 0x08, 0xae}}},
-    {// Discrete Counter Index: 70
+    {// Discrete Counter Index: 66
     "TexTriFilteringCount",
     "TextureUnit",
     "Count of pixels that received trilinear filtering. Note that not all pixels for which trilinear filtering is enabled will receive it (e.g. if the texture is magnified).",
@@ -792,7 +748,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0x5785b3a1, 0xa513, 0x18db, {0x4b, 0x1c, 0xbd, 0xee, 0xf7, 0x5b, 0xb2, 0xb6}}},
-    {// Discrete Counter Index: 71
+    {// Discrete Counter Index: 67
     "NoTexTriFilteringCount",
     "TextureUnit",
     "Count of pixels that did not receive trilinear filtering.",
@@ -803,7 +759,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0x179da29a, 0x81af, 0xc06e, {0xce, 0x8c, 0xa0, 0xa7, 0x31, 0xea, 0x03, 0x0d}}},
-    {// Discrete Counter Index: 72
+    {// Discrete Counter Index: 68
     "TexVolFilteringPct",
     "TextureUnit",
     "Percentage of pixels that received volume filtering.",
@@ -814,7 +770,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0xb5ff6bed, 0x3178, 0xaee4, {0x42, 0xdd, 0xc7, 0x43, 0x91, 0xc0, 0x2a, 0x2d}}},
-    {// Discrete Counter Index: 73
+    {// Discrete Counter Index: 69
     "TexVolFilteringCount",
     "TextureUnit",
     "Count of pixels that received volume filtering.",
@@ -825,7 +781,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0x4bddc587, 0xd589, 0x8128, {0xe1, 0x8c, 0x76, 0x2e, 0xab, 0x2c, 0x87, 0x1f}}},
-    {// Discrete Counter Index: 74
+    {// Discrete Counter Index: 70
     "NoTexVolFilteringCount",
     "TextureUnit",
     "Count of pixels that did not receive volume filtering.",
@@ -836,7 +792,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0x9fe1a854, 0x17c6, 0x9d26, {0xb2, 0xb9, 0x80, 0x61, 0x0c, 0xd5, 0x82, 0x7d}}},
-    {// Discrete Counter Index: 75
+    {// Discrete Counter Index: 71
     "TexAveAnisotropy",
     "TextureUnit",
     "The average degree of anisotropy applied. A number between 1 and 16. The anisotropic filtering algorithm only applies samples where they are required (e.g. there will be no extra anisotropic samples if the view vector is perpendicular to the surface) so this can be much lower than the requested anisotropy.",
@@ -847,7 +803,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0x7ca2a2b9, 0xa4eb, 0xce23, {0xd1, 0x63, 0x59, 0x14, 0x7e, 0x67, 0x23, 0x96}}},
-    {// Discrete Counter Index: 76
+    {// Discrete Counter Index: 72
     "DepthStencilTestBusy",
     "Timing",
     "Percentage of time GPU spent performing depth and stencil tests relative to GPUBusy.",
@@ -858,7 +814,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0x6834fb52, 0x42e8, 0xbb50, {0xfd, 0x48, 0xec, 0x2f, 0x29, 0x04, 0xe7, 0xe0}}},
-    {// Discrete Counter Index: 77
+    {// Discrete Counter Index: 73
     "DepthStencilTestBusyCycles",
     "Timing",
     "Number of GPU cycles spent performing depth and stencil tests.",
@@ -869,7 +825,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0x07ad48f0, 0x49d8, 0x87e7, {0x1e, 0xf5, 0x1e, 0x24, 0xff, 0x2c, 0xef, 0x49}}},
-    {// Discrete Counter Index: 78
+    {// Discrete Counter Index: 74
     "HiZTilesAccepted",
     "DepthAndStencil",
     "Percentage of tiles accepted by HiZ and will be rendered to the depth or color buffers.",
@@ -880,7 +836,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0x56176f45, 0xd7ff, 0x813d, {0x4f, 0x05, 0x3b, 0x2f, 0x04, 0x60, 0x67, 0xe7}}},
-    {// Discrete Counter Index: 79
+    {// Discrete Counter Index: 75
     "HiZTilesAcceptedCount",
     "DepthAndStencil",
     "Count of tiles accepted by HiZ and will be rendered to the depth or color buffers.",
@@ -891,7 +847,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0x95d4e3f6, 0xb2f0, 0xf26e, {0x84, 0x23, 0xaa, 0xcd, 0xfa, 0xf7, 0x9e, 0xa3}}},
-    {// Discrete Counter Index: 80
+    {// Discrete Counter Index: 76
     "HiZTilesRejectedCount",
     "DepthAndStencil",
     "Count of tiles not accepted by HiZ.",
@@ -902,7 +858,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0x156ba142, 0x7eeb, 0xaa6e, {0xa0, 0x0a, 0xf8, 0xae, 0xa4, 0xe4, 0x1e, 0x0b}}},
-    {// Discrete Counter Index: 81
+    {// Discrete Counter Index: 77
     "PreZTilesDetailCulled",
     "DepthAndStencil",
     "Percentage of tiles rejected because the associated prim had no contributing area.",
@@ -913,7 +869,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0xcad7f54d, 0xa044, 0x7574, {0xc4, 0x72, 0x6f, 0x20, 0x65, 0xcb, 0xee, 0xac}}},
-    {// Discrete Counter Index: 82
+    {// Discrete Counter Index: 78
     "PreZTilesDetailCulledCount",
     "DepthAndStencil",
     "Count of tiles rejected because the associated primitive had no contributing area.",
@@ -924,7 +880,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0x49262c8a, 0xb1e6, 0x90dd, {0xf0, 0x96, 0x0f, 0xc4, 0x92, 0x17, 0x15, 0xe9}}},
-    {// Discrete Counter Index: 83
+    {// Discrete Counter Index: 79
     "PreZTilesDetailSurvivingCount",
     "DepthAndStencil",
     "Count of tiles surviving because the associated primitive had contributing area.",
@@ -935,7 +891,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0xf803eaa4, 0xbbed, 0xbd39, {0x77, 0x5f, 0xa6, 0x4d, 0xf9, 0x2e, 0x2c, 0x08}}},
-    {// Discrete Counter Index: 84
+    {// Discrete Counter Index: 80
     "HiZQuadsCulled",
     "DepthAndStencil",
     "Percentage of quads that did not have to continue on in the pipeline after HiZ. They may be written directly to the depth buffer, or culled completely. Consistently low values here may suggest that the Z-range is not being fully utilized.",
@@ -946,7 +902,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0xfa0e319b, 0x5573, 0x6d34, {0x5b, 0xab, 0x90, 0x47, 0x69, 0x92, 0x50, 0x36}}},
-    {// Discrete Counter Index: 85
+    {// Discrete Counter Index: 81
     "HiZQuadsCulledCount",
     "DepthAndStencil",
     "Count of quads that did not have to continue on in the pipeline after HiZ. They may be written directly to the depth buffer, or culled completely. Consistently low values here may suggest that the Z-range is not being fully utilized.",
@@ -957,7 +913,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0x73b0b39d, 0x6df2, 0x3e24, {0x0b, 0x5c, 0x7c, 0xb0, 0xac, 0x8b, 0x6f, 0x39}}},
-    {// Discrete Counter Index: 86
+    {// Discrete Counter Index: 82
     "HiZQuadsAcceptedCount",
     "DepthAndStencil",
     "Count of quads that did continue on in the pipeline after HiZ.",
@@ -968,7 +924,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0x59049ad9, 0x42b5, 0xc7cb, {0x36, 0x16, 0x6a, 0x8f, 0x6a, 0x8e, 0x48, 0x94}}},
-    {// Discrete Counter Index: 87
+    {// Discrete Counter Index: 83
     "PreZQuadsCulled",
     "DepthAndStencil",
     "Percentage of quads rejected based on the detailZ and earlyZ tests.",
@@ -979,7 +935,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0x4e77547b, 0xec55, 0x5663, {0xf0, 0x34, 0xaf, 0x59, 0xbe, 0x66, 0xd7, 0x7d}}},
-    {// Discrete Counter Index: 88
+    {// Discrete Counter Index: 84
     "PreZQuadsCulledCount",
     "DepthAndStencil",
     "Count of quads rejected based on the detailZ and earlyZ tests.",
@@ -990,7 +946,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0x1bf169e6, 0x9304, 0x834e, {0xdf, 0x5f, 0x0c, 0x44, 0xd7, 0x89, 0x0a, 0x08}}},
-    {// Discrete Counter Index: 89
+    {// Discrete Counter Index: 85
     "PreZQuadsSurvivingCount",
     "DepthAndStencil",
     "Count of quads surviving detailZ and earlyZ tests.",
@@ -1001,7 +957,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0x50e25e51, 0x3713, 0x89cb, {0x7f, 0x92, 0x55, 0x9c, 0xde, 0x5e, 0x55, 0x32}}},
-    {// Discrete Counter Index: 90
+    {// Discrete Counter Index: 86
     "PostZQuads",
     "DepthAndStencil",
     "Percentage of quads for which the pixel shader will run and may be postZ tested.",
@@ -1012,7 +968,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0x58f0d34b, 0xeeb8, 0xe8db, {0xab, 0xce, 0xcb, 0x72, 0x58, 0x41, 0x44, 0xbe}}},
-    {// Discrete Counter Index: 91
+    {// Discrete Counter Index: 87
     "PostZQuadCount",
     "DepthAndStencil",
     "Count of quads for which the pixel shader will run and may be postZ tested.",
@@ -1023,7 +979,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0x08404526, 0xce35, 0x939b, {0x34, 0xc8, 0xa7, 0xa3, 0x5a, 0x0f, 0xf4, 0xd6}}},
-    {// Discrete Counter Index: 92
+    {// Discrete Counter Index: 88
     "PreZSamplesPassing",
     "DepthAndStencil",
     "Number of samples tested for Z before shading and passed.",
@@ -1034,7 +990,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0x3bfe6c4d, 0x7422, 0xca03, {0x7e, 0xa5, 0xe6, 0x7f, 0xf1, 0xa0, 0x01, 0x36}}},
-    {// Discrete Counter Index: 93
+    {// Discrete Counter Index: 89
     "PreZSamplesFailingS",
     "DepthAndStencil",
     "Number of samples tested for Z before shading and failed stencil test.",
@@ -1045,7 +1001,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0xdf7f705e, 0x5162, 0xd3b5, {0xda, 0x8b, 0x63, 0x46, 0x6c, 0xf9, 0xc4, 0xe5}}},
-    {// Discrete Counter Index: 94
+    {// Discrete Counter Index: 90
     "PreZSamplesFailingZ",
     "DepthAndStencil",
     "Number of samples tested for Z before shading and failed Z test.",
@@ -1056,7 +1012,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0x4484e950, 0xf7a4, 0x3800, {0xbc, 0x74, 0x78, 0xdd, 0x29, 0x7f, 0x01, 0x7e}}},
-    {// Discrete Counter Index: 95
+    {// Discrete Counter Index: 91
     "PostZSamplesPassing",
     "DepthAndStencil",
     "Number of samples tested for Z after shading and passed.",
@@ -1067,7 +1023,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0x4995d5d6, 0x2330, 0xb986, {0x50, 0x8b, 0xfa, 0xe2, 0x48, 0x56, 0xf4, 0x4c}}},
-    {// Discrete Counter Index: 96
+    {// Discrete Counter Index: 92
     "PostZSamplesFailingS",
     "DepthAndStencil",
     "Number of samples tested for Z after shading and failed stencil test.",
@@ -1078,7 +1034,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0xae558af4, 0xf4be, 0x3dd4, {0x73, 0x16, 0xb2, 0xc4, 0xdc, 0xf0, 0xde, 0xf8}}},
-    {// Discrete Counter Index: 97
+    {// Discrete Counter Index: 93
     "PostZSamplesFailingZ",
     "DepthAndStencil",
     "Number of samples tested for Z after shading and failed Z test.",
@@ -1089,7 +1045,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0xb3684c94, 0x814a, 0xc695, {0xc8, 0x5d, 0xa5, 0xb6, 0xab, 0x79, 0x8b, 0x35}}},
-    {// Discrete Counter Index: 98
+    {// Discrete Counter Index: 94
     "ZUnitStalled",
     "DepthAndStencil",
     "The percentage of GPUTime the depth buffer spends waiting for the color buffer to be ready to accept data. High figures here indicate a bottleneck in color buffer operations.",
@@ -1100,7 +1056,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0x5e86c3ad, 0x1726, 0x3157, {0x1d, 0x01, 0x7e, 0xd1, 0x88, 0xbf, 0x85, 0x4d}}},
-    {// Discrete Counter Index: 99
+    {// Discrete Counter Index: 95
     "ZUnitStalledCycles",
     "DepthAndStencil",
     "Number of GPU cycles the depth buffer spends waiting for the color buffer to be ready to accept data. Larger numbers indicate a bottleneck in color buffer operations.",
@@ -1111,7 +1067,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0x4351fa7f, 0x6737, 0x2c3e, {0x3f, 0xfb, 0xb3, 0xad, 0xdb, 0xdc, 0xee, 0xdd}}},
-    {// Discrete Counter Index: 100
+    {// Discrete Counter Index: 96
     "DBMemRead",
     "DepthAndStencil",
     "Number of bytes read from the depth buffer.",
@@ -1122,7 +1078,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0xdcdb4ee7, 0xbd50, 0x00f7, {0xc0, 0x28, 0x9e, 0x5f, 0x4c, 0xe8, 0x88, 0xc0}}},
-    {// Discrete Counter Index: 101
+    {// Discrete Counter Index: 97
     "DBMemWritten",
     "DepthAndStencil",
     "Number of bytes written to the depth buffer.",
@@ -1133,7 +1089,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0xde5717f8, 0x8a49, 0xee44, {0x46, 0x45, 0x10, 0xde, 0x51, 0xb3, 0x7d, 0xcf}}},
-    {// Discrete Counter Index: 102
+    {// Discrete Counter Index: 98
     "CBMemRead",
     "ColorBuffer",
     "Number of bytes read from the color buffer.",
@@ -1144,7 +1100,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0x84b531d8, 0xa1f8, 0x7f49, {0x7c, 0x27, 0x7b, 0xc9, 0x78, 0x01, 0xf1, 0xe6}}},
-    {// Discrete Counter Index: 103
+    {// Discrete Counter Index: 99
     "CBColorAndMaskRead",
     "ColorBuffer",
     "Total number of bytes read from the color and mask buffers.",
@@ -1155,7 +1111,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0xda41660e, 0xeb6f, 0x32ec, {0x8a, 0x64, 0xb3, 0x2c, 0xa1, 0x7b, 0xd7, 0xeb}}},
-    {// Discrete Counter Index: 104
+    {// Discrete Counter Index: 100
     "CBMemWritten",
     "ColorBuffer",
     "Number of bytes written to the color buffer.",
@@ -1166,7 +1122,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0x550f8ff8, 0x60b6, 0xa6bf, {0x87, 0xd0, 0x25, 0xac, 0x9e, 0x87, 0xde, 0x70}}},
-    {// Discrete Counter Index: 105
+    {// Discrete Counter Index: 101
     "CBColorAndMaskWritten",
     "ColorBuffer",
     "Total number of bytes written to the color and mask buffers.",
@@ -1177,7 +1133,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0x29a04b69, 0x8f5f, 0xb770, {0xa0, 0xf2, 0x34, 0x53, 0xe2, 0xc9, 0x9e, 0x49}}},
-    {// Discrete Counter Index: 106
+    {// Discrete Counter Index: 102
     "CBSlowPixelPct",
     "ColorBuffer",
     "Percentage of pixels written to the color buffer using a half-rate or quarter-rate format.",
@@ -1188,7 +1144,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0x5775943f, 0x0313, 0x7e52, {0x96, 0x38, 0xb2, 0x4a, 0x44, 0x91, 0x97, 0xbc}}},
-    {// Discrete Counter Index: 107
+    {// Discrete Counter Index: 103
     "CBSlowPixelCount",
     "ColorBuffer",
     "Number of pixels written to the color buffer using a half-rate or quarter-rate format.",
@@ -1199,7 +1155,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0x47eacbb0, 0x28c8, 0x22b4, {0x5c, 0x69, 0xc0, 0x0d, 0x58, 0x13, 0xbb, 0x1c}}},
-    {// Discrete Counter Index: 108
+    {// Discrete Counter Index: 104
     "L0CacheHit",
     "MemoryCache",
     "The percentage of read requests that hit the data in the L0 cache. The L0 cache contains vector data, which is data that may vary in each thread across the wavefront. Each request is 128 bytes in size. Value range: 0% (no hit) to 100% (optimal).",
@@ -1210,7 +1166,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0x286c786e, 0x9a42, 0x3371, {0x9d, 0xea, 0xdd, 0x54, 0xe6, 0xe6, 0x12, 0xe9}}},
-    {// Discrete Counter Index: 109
+    {// Discrete Counter Index: 105
     "L0CacheRequestCount",
     "MemoryCache",
     "The number of read requests made to the L0 cache. The L0 cache contains vector data, which is data that may vary in each thread across the wavefront. Each request is 128 bytes in size.",
@@ -1221,7 +1177,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0x74983cae, 0xee57, 0x2e1b, {0xd9, 0x90, 0x51, 0x28, 0xfe, 0xf8, 0x4e, 0x1f}}},
-    {// Discrete Counter Index: 110
+    {// Discrete Counter Index: 106
     "L0CacheHitCount",
     "MemoryCache",
     "The number of read requests which result in a cache hit from the L0 cache. The L0 cache contains vector data, which is data that may vary in each thread across the wavefront. Each request is 128 bytes in size.",
@@ -1232,7 +1188,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0xc0de7338, 0x069b, 0xc5ba, {0xea, 0xd3, 0xc6, 0x5e, 0x03, 0x0c, 0xd2, 0xac}}},
-    {// Discrete Counter Index: 111
+    {// Discrete Counter Index: 107
     "L0CacheMissCount",
     "MemoryCache",
     "The number of read requests which result in a cache miss from the L0 cache. The L0 cache contains vector data, which is data that may vary in each thread across the wavefront. Each request is 128 bytes in size.",
@@ -1243,7 +1199,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0xa2f08766, 0xea1b, 0x6eae, {0x6e, 0xaf, 0xfa, 0xa0, 0x41, 0x25, 0xd3, 0xe6}}},
-    {// Discrete Counter Index: 112
+    {// Discrete Counter Index: 108
     "L1CacheHit",
     "MemoryCache",
     "The percentage of read or write requests that hit the data in the L1 cache. The L1 cache is shared across all WGPs in a single shader engine. Each request is 128 bytes in size. Value range: 0% (no hit) to 100% (optimal).",
@@ -1254,7 +1210,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0x5a34915a, 0x24b8, 0x8baf, {0x2b, 0xf8, 0x58, 0x78, 0xe7, 0x89, 0x4a, 0xe3}}},
-    {// Discrete Counter Index: 113
+    {// Discrete Counter Index: 109
     "L1CacheRequestCount",
     "MemoryCache",
     "The number of read or write requests made to the L1 cache. The L1 cache is shared across all WGPs in a single shader engine. Each request is 128 bytes in size.",
@@ -1265,7 +1221,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0x29c76c67, 0x4611, 0x205d, {0x0b, 0x88, 0xd0, 0x86, 0x68, 0xdf, 0x03, 0xc5}}},
-    {// Discrete Counter Index: 114
+    {// Discrete Counter Index: 110
     "L1CacheHitCount",
     "MemoryCache",
     "The number of read or write requests which result in a cache hit from the L1 cache. The L1 cache is shared across all WGPs in a single shader engine. Each request is 128 bytes in size.",
@@ -1276,7 +1232,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0x1ae150c3, 0xf2d0, 0x82c6, {0xa5, 0x1b, 0xa7, 0x7f, 0xd8, 0xd5, 0xfc, 0x33}}},
-    {// Discrete Counter Index: 115
+    {// Discrete Counter Index: 111
     "L1CacheMissCount",
     "MemoryCache",
     "The number of read or write requests which result in a cache miss from the L1 cache. The L1 cache is shared across all WGPs in a single shader engine. Each request is 128 bytes in size.",
@@ -1287,7 +1243,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0x71bfec6d, 0x257b, 0x849d, {0xe2, 0x12, 0xcd, 0xf5, 0xc1, 0xb1, 0xde, 0x65}}},
-    {// Discrete Counter Index: 116
+    {// Discrete Counter Index: 112
     "L2CacheHit",
     "MemoryCache",
     "The percentage of read or write requests that hit the data in the L2 cache. The L2 cache is shared by many blocks across the GPU, including the Command Processor, Geometry Engine, all WGPs, all Render Backends, and others. Each request is 128 bytes in size. Value range: 0% (no hit) to 100% (optimal).",
@@ -1298,7 +1254,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0x47694e4d, 0x6ce6, 0xf387, {0x08, 0x0d, 0xb1, 0xf3, 0xd0, 0x0b, 0x73, 0xac}}},
-    {// Discrete Counter Index: 117
+    {// Discrete Counter Index: 113
     "L2CacheMiss",
     "MemoryCache",
     "The percentage of read or write requests that miss the data in the L2 cache. The L2 cache is shared by many blocks across the GPU, including the Command Processor, Geometry Engine, all WGPs, all Render Backends, and others. Each request is 128 bytes in size. Value range: 0% (optimal) to 100% (all miss).",
@@ -1309,7 +1265,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0x8aee5458, 0xa58e, 0x11b6, {0x51, 0x31, 0x7f, 0x19, 0xed, 0x07, 0x01, 0x17}}},
-    {// Discrete Counter Index: 118
+    {// Discrete Counter Index: 114
     "L2CacheRequestCount",
     "MemoryCache",
     "The number of read or write requests made to the L2 cache. The L2 cache is shared by many blocks across the GPU, including the Command Processor, Geometry Engine, all WGPs, all Render Backends, and others. Each request is 128 bytes in size.",
@@ -1320,7 +1276,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0x21e9219c, 0xe725, 0x0d96, {0x06, 0xb1, 0xb2, 0x16, 0x98, 0xb7, 0x36, 0xb2}}},
-    {// Discrete Counter Index: 119
+    {// Discrete Counter Index: 115
     "L2CacheHitCount",
     "MemoryCache",
     "The number of read or write requests which result in a cache hit from the L2 cache. The L2 cache is shared by many blocks across the GPU, including the Command Processor, Geometry Engine, all WGPs, all Render Backends, and others. Each request is 128 bytes in size.",
@@ -1331,7 +1287,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0x29ddcb92, 0xd3dd, 0x951b, {0x1b, 0x23, 0xef, 0xe5, 0x2e, 0x4e, 0xee, 0xe4}}},
-    {// Discrete Counter Index: 120
+    {// Discrete Counter Index: 116
     "L2CacheMissCount",
     "MemoryCache",
     "The number of read or write requests which result in a cache miss from the L2 cache. The L2 cache is shared by many blocks across the GPU, including the Command Processor, Geometry Engine, all WGPs, all Render Backends, and others. Each request is 128 bytes in size.",
@@ -1342,7 +1298,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0x376eec7b, 0xab25, 0x9012, {0x06, 0xb5, 0x63, 0x29, 0x1a, 0x17, 0xfd, 0x47}}},
-    {// Discrete Counter Index: 121
+    {// Discrete Counter Index: 117
     "L0TagConflictReadStalledCycles",
     "MemoryCache",
     "The number of cycles read operations from the L0 cache are stalled due to tag conflicts.",
@@ -1353,7 +1309,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0xe2412737, 0xe2bf, 0xc791, {0x5f, 0x2f, 0x64, 0xab, 0xd4, 0xba, 0x47, 0xcf}}},
-    {// Discrete Counter Index: 122
+    {// Discrete Counter Index: 118
     "L0TagConflictWriteStalledCycles",
     "MemoryCache",
     "The number of cycles write operations to the L0 cache are stalled due to tag conflicts.",
@@ -1364,7 +1320,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0x0c2571f3, 0xf084, 0xf351, {0x99, 0xba, 0x0d, 0x9e, 0x23, 0xb4, 0x7e, 0x8e}}},
-    {// Discrete Counter Index: 123
+    {// Discrete Counter Index: 119
     "L0TagConflictAtomicStalledCycles",
     "MemoryCache",
     "The number of cycles atomic operations on the L0 cache are stalled due to tag conflicts.",
@@ -1375,7 +1331,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0xf13f8563, 0x4151, 0x1533, {0xf4, 0x2f, 0x0f, 0x9c, 0x08, 0xa2, 0x02, 0x10}}},
-    {// Discrete Counter Index: 124
+    {// Discrete Counter Index: 120
     "FetchSize",
     "GlobalMemory",
     "The total bytes fetched from the video memory. This is measured with all extra fetches and any cache or memory effects taken into account.",
@@ -1386,7 +1342,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0x664bb3ef, 0x6eca, 0x86b1, {0x1e, 0x2d, 0x30, 0xcb, 0x89, 0x7b, 0x5f, 0xa9}}},
-    {// Discrete Counter Index: 125
+    {// Discrete Counter Index: 121
     "WriteSize",
     "GlobalMemory",
     "The total bytes written to the video memory. This is measured with all extra fetches and any cache or memory effects taken into account.",
@@ -1397,7 +1353,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0xf96f2c16, 0xb1b4, 0x4ec4, {0x22, 0x9c, 0xfc, 0x82, 0xe6, 0xf8, 0x0a, 0x82}}},
-    {// Discrete Counter Index: 126
+    {// Discrete Counter Index: 122
     "MemUnitBusy",
     "GlobalMemory",
     "The percentage of GPUTime the memory unit is active. The result includes the stall time (MemUnitStalled). This is measured with all extra fetches and writes and any cache or memory effects taken into account. Value range: 0% to 100% (fetch-bound).",
@@ -1408,7 +1364,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0xa1efa380, 0x4a72, 0xe066, {0xe0, 0x6a, 0x2a, 0xb7, 0x1a, 0x48, 0x85, 0x21}}},
-    {// Discrete Counter Index: 127
+    {// Discrete Counter Index: 123
     "MemUnitBusyCycles",
     "GlobalMemory",
     "Number of GPU cycles the memory unit is active. The result includes the stall time (MemUnitStalledCycles). This is measured with all extra fetches and writes and any cache or memory effects taken into account.",
@@ -1419,7 +1375,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0x168f077c, 0x4797, 0xb2f5, {0x71, 0x7f, 0x10, 0x5c, 0x72, 0x52, 0x66, 0xc8}}},
-    {// Discrete Counter Index: 128
+    {// Discrete Counter Index: 124
     "MemUnitStalled",
     "GlobalMemory",
     "The percentage of GPUTime the memory unit is stalled. Try reducing the number or size of fetches and writes if possible. Value range: 0% (optimal) to 100% (bad).",
@@ -1430,7 +1386,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0x465ba54f, 0xd250, 0x1453, {0x79, 0x0a, 0x73, 0x1b, 0x10, 0xd2, 0x30, 0xb1}}},
-    {// Discrete Counter Index: 129
+    {// Discrete Counter Index: 125
     "MemUnitStalledCycles",
     "GlobalMemory",
     "Number of GPU cycles the memory unit is stalled.",
@@ -1441,7 +1397,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0x2745659a, 0x0e40, 0xbace, {0x3b, 0x9b, 0x86, 0xa5, 0x4f, 0x8e, 0x46, 0x23}}},
-    {// Discrete Counter Index: 130
+    {// Discrete Counter Index: 126
     "WriteUnitStalled",
     "GlobalMemory",
     "The percentage of GPUTime the Write unit is stalled. Value range: 0% to 100% (bad).",
@@ -1452,7 +1408,7 @@ const GpaCounterDesc kDx11Gfx103PublicCounters[kDx11Gfx103PublicCounterCount] = 
     true,
     false,
     {0x594ad3ce, 0xd1ec, 0x10fc, {0x7d, 0x59, 0x25, 0x73, 0x8e, 0x39, 0x7d, 0x72}}},
-    {// Discrete Counter Index: 131
+    {// Discrete Counter Index: 127
     "WriteUnitStalledCycles",
     "GlobalMemory",
     "Number of GPU cycles the Write unit is stalled.",

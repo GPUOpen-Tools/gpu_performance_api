@@ -24,14 +24,11 @@ VkGpaPass::VkGpaPass(IGpaSession* gpa_session, PassIndex pass_index, GpaCounterS
 
 GpaSample* VkGpaPass::CreateApiSpecificSample(IGpaCommandList* command_list, GpaSampleType sample_type, unsigned int sample_id)
 {
-    VkGpaContext* context = reinterpret_cast<VkGpaContext*>(command_list->GetParentSession()->GetParentContext());
-    assert(nullptr != context);
-
     GpaSample* sample = nullptr;
 
     if (GpaSampleType::kHardware == sample_type)
     {
-        sample = new (std::nothrow) VkGpaHardwareSample(this, command_list, sample_id, context->GetVkDevice());
+        sample = new (std::nothrow) VkGpaHardwareSample(this, command_list, sample_id);
     }
 
     return sample;
@@ -68,180 +65,162 @@ void VkGpaPass::InitializeSampleConfig()
             return;
         }
 
-        const GpaHardwareCounters* hardware_counters = counter_accessor->GetHardwareCounters();
-        assert(hardware_counters != nullptr);
-        if (hardware_counters == nullptr)
+        if (!counter_list_->empty())
         {
-            GPA_LOG_ERROR("Invalid hardware counters. Disabling all counters in pass.");
-            for (size_t i = 0; i < counter_list_->size(); ++i)
+            const GpaHardwareCounters& hardware_counters = counter_accessor->GetHardwareCounters();
+            if (IsTimingPass())
             {
-                CounterIndex counter_index = (*counter_list_)[i];
-                DisableCounterForPass(counter_index);
+                sample_begin_info_amd_.sampleType = VK_GPA_SAMPLE_TYPE_TIMING_AMD;
+
+                const CounterIndex front = counter_list_->front();
+                if (hardware_counters.IsBottomToBottomTimeCounterIndex(front))
+                {
+                    sample_begin_info_amd_.timingPreSample = VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT;
+                }
+                else if (hardware_counters.IsTopToBottomTimeCounterIndex(front))
+                {
+                    sample_begin_info_amd_.timingPreSample = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
+                }
+
+                sample_begin_info_amd_.timingPostSample = VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT;
+
+                // Top-to-Bottom and Bottom-to-Bottom timestamps have already been separated into different
+                // passes, so any additional counters scheduled for this pass can be automatically included.
+                for (const CounterIndex counter : *counter_list_)
+                {
+                    EnableCounterForPass(counter);
+                }
             }
-        }
-        else
-        {
-            if (!counter_list_->empty())
+            else
             {
-                if (IsTimingPass())
+                // All the shader stages.
+                VkGpaSqShaderStageFlagBitsAMD mask_value = VK_GPA_SQ_SHADER_STAGE_FLAG_BITS_MAX_ENUM_AMD;
+
+                sample_begin_info_amd_.sampleType = VK_GPA_SAMPLE_TYPE_CUMULATIVE_AMD;
+
+                // Add all desired counters.
+                for (const CounterIndex counter_index : *counter_list_)
                 {
-                    sample_begin_info_amd_.sampleType = VK_GPA_SAMPLE_TYPE_TIMING_AMD;
+                    const GpaHardwareCounterDescExt* counter  = &hardware_counters.hardware_counters_.at(counter_index);
+                    const VkGpaPerfBlockAMD          block    = static_cast<VkGpaPerfBlockAMD>(counter->group_id_driver);
+                    const GpaUInt32                  instance = hardware_counters.internal_counter_groups_[counter->group_index].block_instance;
+                    const GpaUInt32                  event_id = static_cast<GpaUInt32>(counter->hardware_counters->counter_index_in_group);
 
-                    if (hardware_counters->IsBottomToBottomTimeCounterIndex(counter_list_->at(0)))
+                    if (reinterpret_cast<VkGpaContext*>(GetGpaSession()->GetParentContext())->GetNumInstances(block) <= instance)
                     {
-                        sample_begin_info_amd_.timingPreSample = VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT;
-                    }
-                    else if (hardware_counters->IsTopToBottomTimeCounterIndex(counter_list_->at(0)))
-                    {
-                        sample_begin_info_amd_.timingPreSample = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
-                    }
-
-                    sample_begin_info_amd_.timingPostSample = VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT;
-
-                    // Top-to-Bottom and Bottom-to-Bottom timestamps have already been separated into different
-                    // passes, so any additional counters scheduled for this pass can be automatically included.
-                    for (const auto counter : *counter_list_)
-                    {
-                        EnableCounterForPass(counter);
-                    }
-                }
-                else
-                {
-                    // All the shader stages.
-                    VkGpaSqShaderStageFlagBitsAMD mask_value = VK_GPA_SQ_SHADER_STAGE_FLAG_BITS_MAX_ENUM_AMD;
-
-                    sample_begin_info_amd_.sampleType = VK_GPA_SAMPLE_TYPE_CUMULATIVE_AMD;
-
-                    // Add all desired counters.
-                    for (size_t i = 0; i < counter_list_->size(); i++)
-                    {
-                        const GpaHardwareCounterDescExt* counter  = &hardware_counters->hardware_counters_.at(counter_list_->at(i));
-                        VkGpaPerfBlockAMD                block    = static_cast<VkGpaPerfBlockAMD>(counter->group_id_driver);
-                        GpaUInt32                        instance = hardware_counters->internal_counter_groups_[counter->group_index].block_instance;
-                        GpaUInt32                        event_id = static_cast<GpaUInt32>(counter->hardware_counters->counter_index_in_group);
-
-                        if (reinterpret_cast<VkGpaContext*>(GetGpaSession()->GetParentContext())->GetNumInstances(block) <= instance)
-                        {
-                            DisableCounterForPass(counter_list_->at(i));
-                            continue;
-                        }
-
-                        if (reinterpret_cast<VkGpaContext*>(GetGpaSession()->GetParentContext())->GetMaxEventId(block) <= event_id)
-                        {
-                            DisableCounterForPass(counter_list_->at(i));
-                            continue;
-                        }
-
-                        // Validate requested counter vs number of actual hardware counters and group index.
-                        uint32_t group_index = counter->group_index;
-                        uint32_t counters    = 0;
-
-                        if (group_index < static_cast<GpaUInt32>(hardware_counters->internal_counter_groups_.size()))
-                        {
-                            counters = hardware_counters->internal_counter_groups_[group_index].num_counters;
-                        }
-                        else
-                        {
-                            counters =
-                                hardware_counters->additional_groups_[group_index - static_cast<GpaUInt32>(hardware_counters->internal_counter_groups_.size())]
-                                    .num_counters;
-                        }
-
-                        if (counter->hardware_counters->counter_index_in_group > counters)
-                        {
-                            assert(counter->hardware_counters->counter_index_in_group <= counters);
-                            DisableCounterForPass(counter_list_->at(i));
-                            continue;
-                        }
-
-                        if (group_index >
-                            (static_cast<GpaUInt32>(hardware_counters->internal_counter_groups_.size()) + hardware_counters->additional_group_count_))
-                        {
-                            assert(group_index <=
-                                   (static_cast<GpaUInt32>(hardware_counters->internal_counter_groups_.size()) + hardware_counters->additional_group_count_));
-                            DisableCounterForPass(counter_list_->at(i));
-                            continue;
-                        }
-
-                        // Add counter to valid vector.
-                        VkGpaPerfCounterAMD this_counter;
-                        this_counter.blockType     = block;
-                        this_counter.blockInstance = instance;
-                        this_counter.eventID       = event_id;
-
-                        counter_ids_.push_back(this_counter);
-
-                        // If dealing with an SQ or SqWgp counter, check if the stage mask needs to be set.
-                        if (block == VK_GPA_PERF_BLOCK_SQ_AMD || block == VK_GPA_PERF_BLOCK_SQWGP_AMD)
-                        {
-                            GpaSqShaderStage stage = kSqAll;
-
-                            for (unsigned int j = 0; j < hardware_counters->sq_group_count_ - 1; j++)
-                            {
-                                if (hardware_counters->sq_counter_groups_[j].group_index == counter->group_index)
-                                {
-                                    stage = hardware_counters->sq_counter_groups_[j].sq_shader_stage;
-                                    break;
-                                }
-                            }
-
-                            if (stage == kSqEs)
-                            {
-                                mask_value = VK_GPA_SQ_SHADER_STAGE_ES_BIT_AMD;
-                            }
-                            else if (stage == kSqGs)
-                            {
-                                mask_value = VK_GPA_SQ_SHADER_STAGE_GS_BIT_AMD;
-                            }
-                            else if (stage == kSqVs)
-                            {
-                                mask_value = VK_GPA_SQ_SHADER_STAGE_VS_BIT_AMD;
-                            }
-                            else if (stage == kSqPs)
-                            {
-                                mask_value = VK_GPA_SQ_SHADER_STAGE_PS_BIT_AMD;
-                            }
-                            else if (stage == kSqLs)
-                            {
-                                mask_value = VK_GPA_SQ_SHADER_STAGE_LS_BIT_AMD;
-                            }
-                            else if (stage == kSqHs)
-                            {
-                                mask_value = VK_GPA_SQ_SHADER_STAGE_HS_BIT_AMD;
-                            }
-                            else if (stage == kSqCs)
-                            {
-                                mask_value = VK_GPA_SQ_SHADER_STAGE_CS_BIT_AMD;
-                            }
-                        }
-
-                        EnableCounterForPass(counter_list_->at(i));
+                        DisableCounterForPass(counter_index);
+                        continue;
                     }
 
-                    sample_begin_info_amd_.perfCounterCount                 = GetNumEnabledCountersForPass();
-                    sample_begin_info_amd_.pPerfCounters                    = counter_ids_.data();
-                    sample_begin_info_amd_.streamingPerfTraceSampleInterval = 0;
-                    sample_begin_info_amd_.sqThreadTraceDeviceMemoryLimit   = 0;
-                    sample_begin_info_amd_.perfCounterDeviceMemoryLimit     = 0;
-                    sample_begin_info_amd_.cacheFlushOnCounterCollection    = VK_FALSE;
+                    if (reinterpret_cast<VkGpaContext*>(GetGpaSession()->GetParentContext())->GetMaxEventId(block) <= event_id)
+                    {
+                        DisableCounterForPass(counter_index);
+                        continue;
+                    }
 
-                    // Set shader mask.
-                    sample_begin_info_amd_.sqShaderMaskEnable = VK_TRUE;
-                    sample_begin_info_amd_.sqShaderMask       = mask_value;
+                    // Validate requested counter vs number of actual hardware counters and group index.
+                    const uint32_t group_index = counter->group_index;
+                    uint32_t       counters    = 0;
 
-                    // Sq Thread trace.
-                    sample_begin_info_amd_.sqThreadTraceEnable                    = VK_FALSE;
-                    sample_begin_info_amd_.sqThreadTraceSuppressInstructionTokens = VK_TRUE;
+                    if (group_index < static_cast<GpaUInt32>(hardware_counters.internal_counter_groups_.size()))
+                    {
+                        counters = hardware_counters.internal_counter_groups_[group_index].num_counters;
+                    }
+                    else
+                    {
+                        counters = hardware_counters.additional_groups_[group_index - static_cast<GpaUInt32>(hardware_counters.internal_counter_groups_.size())]
+                                       .num_counters;
+                    }
+
+                    if (counter->hardware_counters->counter_index_in_group > counters)
+                    {
+                        assert(counter->hardware_counters->counter_index_in_group <= counters);
+                        DisableCounterForPass(counter_index);
+                        continue;
+                    }
+
+                    if (group_index > (static_cast<GpaUInt32>(hardware_counters.internal_counter_groups_.size()) + hardware_counters.additional_group_count_))
+                    {
+                        assert(group_index <=
+                               (static_cast<GpaUInt32>(hardware_counters.internal_counter_groups_.size()) + hardware_counters.additional_group_count_));
+                        DisableCounterForPass(counter_index);
+                        continue;
+                    }
+
+                    // Add counter to valid vector.
+                    VkGpaPerfCounterAMD this_counter;
+                    this_counter.blockType     = block;
+                    this_counter.blockInstance = instance;
+                    this_counter.eventID       = event_id;
+
+                    counter_ids_.push_back(this_counter);
+
+                    // If dealing with an SQ or SqWgp counter, check if the stage mask needs to be set.
+                    if (block == VK_GPA_PERF_BLOCK_SQ_AMD || block == VK_GPA_PERF_BLOCK_SQWGP_AMD)
+                    {
+                        GpaSqShaderStage stage = kSqAll;
+
+                        for (unsigned int j = 0; j < hardware_counters.sq_group_count_ - 1; j++)
+                        {
+                            if (hardware_counters.sq_counter_groups_[j].group_index == counter->group_index)
+                            {
+                                stage = hardware_counters.sq_counter_groups_[j].sq_shader_stage;
+                                break;
+                            }
+                        }
+
+                        if (stage == kSqEs)
+                        {
+                            mask_value = VK_GPA_SQ_SHADER_STAGE_ES_BIT_AMD;
+                        }
+                        else if (stage == kSqGs)
+                        {
+                            mask_value = VK_GPA_SQ_SHADER_STAGE_GS_BIT_AMD;
+                        }
+                        else if (stage == kSqVs)
+                        {
+                            mask_value = VK_GPA_SQ_SHADER_STAGE_VS_BIT_AMD;
+                        }
+                        else if (stage == kSqPs)
+                        {
+                            mask_value = VK_GPA_SQ_SHADER_STAGE_PS_BIT_AMD;
+                        }
+                        else if (stage == kSqLs)
+                        {
+                            mask_value = VK_GPA_SQ_SHADER_STAGE_LS_BIT_AMD;
+                        }
+                        else if (stage == kSqHs)
+                        {
+                            mask_value = VK_GPA_SQ_SHADER_STAGE_HS_BIT_AMD;
+                        }
+                        else if (stage == kSqCs)
+                        {
+                            mask_value = VK_GPA_SQ_SHADER_STAGE_CS_BIT_AMD;
+                        }
+                    }
+
+                    EnableCounterForPass(counter_index);
                 }
 
-                // Insert L2 cache invalidate and flush around counter sample.
-                if (GetGpaSession()->GetParentContext()->IsInvalidateAndFlushL2CacheEnabled())
-                {
-                    sample_begin_info_amd_.cacheFlushOnCounterCollection = 1;
-                }
+                sample_begin_info_amd_.perfCounterCount                 = GetNumEnabledCountersForPass();
+                sample_begin_info_amd_.pPerfCounters                    = counter_ids_.data();
+                sample_begin_info_amd_.streamingPerfTraceSampleInterval = 0;
+                sample_begin_info_amd_.sqThreadTraceDeviceMemoryLimit   = 0;
+                sample_begin_info_amd_.perfCounterDeviceMemoryLimit     = 0;
 
-                is_sample_begin_info_initialized_ = true;
+                // Set shader mask.
+                sample_begin_info_amd_.sqShaderMaskEnable = VK_TRUE;
+                sample_begin_info_amd_.sqShaderMask       = mask_value;
+
+                // Sq Thread trace.
+                sample_begin_info_amd_.sqThreadTraceEnable                    = VK_FALSE;
+                sample_begin_info_amd_.sqThreadTraceSuppressInstructionTokens = VK_TRUE;
             }
+
+            // Insert L2 cache invalidate and flush around counter sample.
+            sample_begin_info_amd_.cacheFlushOnCounterCollection = 1;
+
+            is_sample_begin_info_initialized_ = true;
         }
     }
 }

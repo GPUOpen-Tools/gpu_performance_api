@@ -162,7 +162,7 @@ void vk_utils::DebugReportQueueFamilyTimestampBits(VkPhysicalDevice vk_physical_
         GPA_LOG_ERROR("Vulkan entrypoints are not initialized.");
     }
 }
-#endif  // _DEBUG
+#endif
 
 bool vk_utils::IsDeviceSupportedForProfiling(VkPhysicalDevice vk_physical_device)
 {

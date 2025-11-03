@@ -491,4 +491,4 @@ protected:
     virtual bool OpenCounters() = 0;
 };
 
-#endif  // GPU_PERF_API_COMMON_GPA_SESSION_INTERFACE_H_
+#endif

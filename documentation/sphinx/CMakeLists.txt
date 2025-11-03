@@ -1,4 +1,5 @@
-## Copyright (c) 2018-2025 Advanced Micro Devices, Inc. All rights reserved.
+## Copyright (C) 2018-2025 Advanced Micro Devices, Inc. All rights reserved. ##
+
 find_program(SPHINX_EXECUTABLE sphinx-build)
 if(NOT SPHINX_EXECUTABLE)
   message(FATAL_ERROR "SPHINX_EXECUTABLE (sphinx-build) is not found!")

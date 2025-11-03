@@ -51,4 +51,4 @@
 /// Macro for an enum value string.
 #define GPA_ENUM_STRING_VAL(X, Y) Y
 
-#endif  // GPU_PERF_API_COMMON_GPA_COMMON_DEFS_H_
+#endif

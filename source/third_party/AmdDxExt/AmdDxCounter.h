@@ -1,10 +1,4 @@
-/*
-***************************************************************************************************
-*
-*  Copyright (c) 2016 Advanced Micro Devices, Inc. All rights reserved.
-*
-***************************************************************************************************
-*/
+/* Copyright (C) 2016-2025 Advanced Micro Devices, Inc. All rights reserved. */
 /**
 ***************************************************************************************************
 * @file  amddxcounter.h
@@ -100,5 +94,5 @@ static inline UINT AmdCtrEncodeApiCounter(
     return (counter.value | AMDDeviceDependentHWCounterIdStart);
 }
 
-#endif //_AMDDXCOUNTER_H_
+#endif
 

@@ -1,4 +1,5 @@
-## Copyright (c) 2025 Advanced Micro Devices, Inc. All rights reserved.
+## Copyright (C) 2025 Advanced Micro Devices, Inc. All rights reserved. ##
+
 add_subdirectory(gpu_perf_api_common)
 add_subdirectory(gpu_perf_api_counter_generator)
 add_subdirectory(gpu_perf_api_counters)

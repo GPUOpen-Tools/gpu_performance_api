@@ -139,4 +139,4 @@ private:
     bool use_pre2240_config_;              ///< Flag indicating whether to use pre-22.40 configuration.
 };
 
-#endif  // GPU_PERF_API_DX12_DX12_GPA_COMMAND_LIST_H_
+#endif

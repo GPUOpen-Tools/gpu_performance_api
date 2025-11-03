@@ -1,5 +1,5 @@
 # GPUPerfAPI Build Instructions
----
+
 ## Table of Contents
 * [Windows Build Information](#windows-build-information)
 * [Linux Build Information](#linux-build-information)
@@ -28,7 +28,7 @@ The Windows projects each include a .rc file that embeds the VERSIONINFO resourc
 
 ##### Prerequisites
  * Microsoft Visual Studio 2022 (17.13.5)
- * Within the Visual Studio Installer, the following workloads: 
+ * Within the Visual Studio Installer, the following workloads:
    * Desktop development with C++
  * Within the Visual Studio Installer, the following individual components:
    * Windows 11 SDK (10.0.22621.0)

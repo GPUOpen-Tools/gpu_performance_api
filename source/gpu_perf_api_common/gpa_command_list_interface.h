@@ -94,4 +94,4 @@ public:
     virtual GpaCommandListType GetCmdType() const = 0;
 };
 
-#endif  // GPU_PERF_API_COMMON_GPA_COMMAND_LIST_INTERFACE_H_
+#endif

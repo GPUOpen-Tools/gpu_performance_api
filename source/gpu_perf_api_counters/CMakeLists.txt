@@ -1,9 +1,9 @@
-## Copyright (c) 2018-2025 Advanced Micro Devices, Inc. All rights reserved.
+## Copyright (C) 2018-2025 Advanced Micro Devices, Inc. All rights reserved. ##
+
 set(GPA_PROJECT_NAME GPUPerfAPICounters)
 set(ProjectName ${GPA_PROJECT_NAME})
 
 include(${GPA_CMAKE_MODULES_DIR}/common.cmake)
-include(${CMAKE_COMMON_SRC_GLOBAL_DEVICE_INFO})
 
 INCLUDE_ADDITIONAL_MODULE()
 
@@ -19,11 +19,10 @@ add_lint_passes(GPUPerfAPICounters)
 target_sources(GPUPerfAPICounters PRIVATE
     ${GPA_PUBLIC_HEADER}/gpu_performance_api/gpu_perf_api_counters.h
     gpa_counter_context_handler.h
-    gpu_perf_api_counters.cc
     gpa_counter_context_handler.cc
+    gpu_perf_api_counters.cc
+    gpu_perf_api_counters.rc
 )
-
-INCLUDE_WIN_RESOURCE(gpu_perf_api_counters)
 
 if(NOT ${skipvulkan})
     set(LIB_NAMES ${LIB_NAMES} GPUPerfAPICounterGenerator-VK)
@@ -53,7 +52,9 @@ target_link_libraries(GPUPerfAPICounters PRIVATE
     ${LIB_NAMES}
     ${GPA_COMMON_LINK_NO_ARCHIVE_FLAG}
     $<$<PLATFORM_ID:Linux>:X11>
-    AMD::adl_util
+    $<$<PLATFORM_ID:Windows>:AMD::adl_util>
+    AMD::device_info
+    AMD::tsingleton
 )
 
 ADD_LINKER_FLAGS()

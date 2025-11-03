@@ -41,13 +41,12 @@ private:
     /// @brief Returns the AMD hardware info for the given device and monitor.
     ///
     /// @param [in] d3d11_device DirectX 11 device pointer.
-    /// @param [in] h_monitor monitor Instance.
     /// @param [in] primary_vendor_id Vendor id.
     /// @param [in] primary_device_id Device id.
     /// @param [out] hw_info Hardware info.
     ///
     /// @return True upon successful operation otherwise false.
-    bool GetAmdHwInfo(ID3D11Device* d3d11_device, HMONITOR h_monitor, const int& primary_vendor_id, const int& primary_device_id, GpaHwInfo& hw_info) const;
+    bool GetAmdHwInfo(ID3D11Device* d3d11_device, const int& primary_vendor_id, const int& primary_device_id, GpaHwInfo& hw_info) const;
 
     /// @brief Constructor.
     Dx11GpaImplementor();
@@ -58,10 +57,10 @@ private:
     bool InitializeAmdExtFunction() const;
 
     /// @copydoc GpaImplementor::OpenApiContext(GpaContextInfoPtr, GpaHwInfo&, GpaOpenContextFlags)
-    IGpaContext* OpenApiContext(GpaContextInfoPtr context_info, GpaHwInfo& hw_info, GpaOpenContextFlags flags) override final;
+    IGpaContext* OpenApiContext(GpaContextInfoPtr context_info, const GpaHwInfo& hw_info, GpaOpenContextFlags flags) override final;
 
-    /// @copydoc GpaImplementor::CloseApiContext(GpaDeviceIdentifier, IGpaContext*)
-    bool CloseApiContext(GpaDeviceIdentifier device_identifier, IGpaContext* context) override final;
+    /// @copydoc GpaImplementor::CloseApiContext(IGpaContext*)
+    [[nodiscard]] bool CloseApiContext(IGpaContext* context) override final;
 
     /// @copydoc GpaImplementor::GetDeviceIdentifierFromContextInfo()
     GpaDeviceIdentifier GetDeviceIdentifierFromContextInfo(GpaContextInfoPtr context_info) const override final;
@@ -69,4 +68,4 @@ private:
     mutable PFNAmdDxExtCreate11 amd_dx_ext_create11_func_ptr_;  ///< AMD DirectX 11 extension Function pointer.
 };
 
-#endif  // GPU_PERF_API_DX11_DX11_GPA_IMPLEMENTOR_H_
+#endif

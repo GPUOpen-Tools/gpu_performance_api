@@ -70,4 +70,4 @@ private:
     Dx12GpaSampleConfig amd_ext_sample_config_;
 };
 
-#endif  // GPU_PERF_API_DX12_DX12_GPA_PASS_H_
+#endif

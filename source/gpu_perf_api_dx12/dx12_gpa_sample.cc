@@ -126,34 +126,34 @@ GpaSampleResult* Dx12GpaSample::PopulateSampleResult()
             {
                 if (GetPass()->IsTimingPass())
                 {
-                    const GpaHardwareCounters* hardware_counters = GetPass()->GetSessionContextCounterAccessor()->GetHardwareCounters();
+                    const GpaHardwareCounters& hardware_counters = GetPass()->GetSessionContextCounterAccessor()->GetHardwareCounters();
 
                     for (CounterCount i = 0; i < GetPass()->GetEnabledCounterCount(); ++i)
                     {
                         CounterIndex counter_index;
                         GetPass()->GetCounterByIndexInPass(i, &counter_index);
 
-                        if (counter_index == hardware_counters->gpu_time_bottom_to_bottom_duration_counter_index_)
+                        if (counter_index == hardware_counters.gpu_time_bottom_to_bottom_duration_counter_index_)
                         {
                             GetSampleResultLocation()->GetAsCounterSampleResult()->GetResultBuffer()[i] = timing_data[1] - timing_data[0];
                         }
-                        else if (counter_index == hardware_counters->gpu_time_bottom_to_bottom_start_counter_index_)
+                        else if (counter_index == hardware_counters.gpu_time_bottom_to_bottom_start_counter_index_)
                         {
                             GetSampleResultLocation()->GetAsCounterSampleResult()->GetResultBuffer()[i] = timing_data[0];
                         }
-                        else if (counter_index == hardware_counters->gpu_time_bottom_to_bottom_end_counter_index_)
+                        else if (counter_index == hardware_counters.gpu_time_bottom_to_bottom_end_counter_index_)
                         {
                             GetSampleResultLocation()->GetAsCounterSampleResult()->GetResultBuffer()[i] = timing_data[1];
                         }
-                        else if (counter_index == hardware_counters->gpu_time_top_to_bottom_duration_counter_index_)
+                        else if (counter_index == hardware_counters.gpu_time_top_to_bottom_duration_counter_index_)
                         {
                             GetSampleResultLocation()->GetAsCounterSampleResult()->GetResultBuffer()[i] = timing_data[1] - timing_data[0];
                         }
-                        else if (counter_index == hardware_counters->gpu_time_top_to_bottom_start_counter_index_)
+                        else if (counter_index == hardware_counters.gpu_time_top_to_bottom_start_counter_index_)
                         {
                             GetSampleResultLocation()->GetAsCounterSampleResult()->GetResultBuffer()[i] = timing_data[0];
                         }
-                        else if (counter_index == hardware_counters->gpu_time_top_to_bottom_end_counter_index_)
+                        else if (counter_index == hardware_counters.gpu_time_top_to_bottom_end_counter_index_)
                         {
                             GetSampleResultLocation()->GetAsCounterSampleResult()->GetResultBuffer()[i] = timing_data[1];
                         }

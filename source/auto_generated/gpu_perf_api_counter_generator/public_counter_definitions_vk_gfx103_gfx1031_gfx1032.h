@@ -27,4 +27,4 @@ namespace vk_gfx103_gfx1031_gfx1032
 }  // namespace vk_gfx103_gfx1031_gfx1032
 
 // clang-format on
-#endif  // GPA_AUTO_GEN_COUNTER_GEN_PUBLIC_COUNTER_DEFINITIONS_VK_GFX103_GFX1031_GFX1032_H_
+#endif

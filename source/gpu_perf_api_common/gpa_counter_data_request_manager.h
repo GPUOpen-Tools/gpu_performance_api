@@ -73,4 +73,4 @@ protected:
     GenerationDataRequestCreatorMap counter_data_request_items_;
 };
 
-#endif  // GPU_PERF_API_COMMON_GPA_COUNTER_DATA_REQUEST_MANAGER_H_
+#endif

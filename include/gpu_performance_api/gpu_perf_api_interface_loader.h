@@ -19,7 +19,6 @@
 // the "USE_DEBUG_GPA" preprocessor macro should be defined before
 // including this header file
 
-
 #ifndef GPU_PERFORMANCE_API_GPU_PERF_API_INTERFACE_LOADER_H_
 #define GPU_PERFORMANCE_API_GPU_PERF_API_INTERFACE_LOADER_H_
 
@@ -27,19 +26,19 @@
 #include <Windows.h>
 #define GPA_MAX_PATH MAX_PATH  ///< Macro for max path length.
 #ifdef _WIN64
-#define GPA_IS_64_BIT  ///< Macro specifying 64-bit build.
-#else
-#define GPA_IS_32_BIT  ///< Macro specifying 32-bit build.
+#define GPA_IS_64_BIT 1  ///< Macro specifying 64-bit build.
 #endif
 #else
 #include <dlfcn.h>
 #include <unistd.h>
 #define GPA_MAX_PATH 4096  ///< Macro for max path length.
-#ifdef __x86_64__
-#define GPA_IS_64_BIT  ///< Macro specifying 64-bit build.
-#else
-#define GPA_IS_32_BIT  ///< Macro specifying 32-bit build.
+#if defined(__x86_64__) || defined(__aarch64__)
+#define GPA_IS_64_BIT 1  ///< Macro specifying 64-bit build.
 #endif
+#endif
+
+#ifndef GPA_IS_64_BIT
+#error "32-bit builds are no longer supported as of GPA 4.0."
 #endif
 
 #include <wchar.h>
@@ -92,16 +91,13 @@ typedef std::string LocaleString;  ///< Typedef for ANSI vs. Unicode string.
 #define GPA_LIB_PREFIX TFORMAT("")           ///< Macro for platform-specific lib file prefix.
 #define GPA_LIB_SUFFIX TFORMAT(".dll")       ///< Macro for platform-specific lib file suffix.
 #define GPA_X64_ARCH_SUFFIX TFORMAT("-x64")  ///< Macro for 64-bit lib file architecture suffix.
-#define GPA_X86_ARCH_SUFFIX TFORMAT("")      ///< Macro for 32-bit lib file architecture suffix.
 #else
 #define GPA_LIB_PREFIX TFORMAT("lib")      ///< Macro for platform-specific lib file prefix.
 #define GPA_LIB_SUFFIX TFORMAT(".so")      ///< Macro for platform-specific lib file suffix.
 #define GPA_X64_ARCH_SUFFIX TFORMAT("")    ///< Macro for 64-bit lib file architecture suffix.
-#define GPA_X86_ARCH_SUFFIX TFORMAT("32")  ///< Macro for 32-bit lib file architecture suffix.
 #endif
 
 #define GPA_DEBUG_SUFFIX TFORMAT("-d")            ///< Macro for debug suffix.
-#define GPA_INTERNAL_SUFFIX TFORMAT("-Internal")  ///< Macro for internal build lib file suffix.
 
 #define ARRAY_LENGTH(x) (sizeof(x) / sizeof(x[0]))  ///< Macro to calculate array length.
 
@@ -224,16 +220,11 @@ static inline const LocaleChar* GpaInterfaceLoaderGetLibraryFileName(GpaApiType 
         return filename_static_string;
     }
 
-#ifdef GPA_IS_64_BIT
     STR_CAT(filename_static_string, ARRAY_LENGTH(filename_static_string), GPA_X64_ARCH_SUFFIX);
-#else
-    STR_CAT(filename_static_string, ARRAY_LENGTH(filename_static_string), GPA_X86_ARCH_SUFFIX);
-#endif
 
 #ifdef USE_DEBUG_GPA
     STR_CAT(filename_static_string, ARRAY_LENGTH(filename_static_string), GPA_DEBUG_SUFFIX);
 #endif
-
 
     STR_CAT(filename_static_string, ARRAY_LENGTH(filename_static_string), GPA_LIB_SUFFIX);
 
@@ -695,6 +686,6 @@ private:
     static GpaApiManager* gpa_api_manager_;  ///< GPA Api Manager pointer.
 };
 
-#endif  //__cplusplus
+#endif
 
-#endif  // GPU_PERFORMANCE_API_GPU_PERF_API_INTERFACE_LOADER_H_
+#endif

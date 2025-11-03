@@ -1,4 +1,3 @@
-.. Copyright (c) 2018-2025 Advanced Micro Devices, Inc. All rights reserved.
 .. GPU Performance Counters
 
 .. _gpa_counters:
@@ -10,13 +9,11 @@ The performance counters exposed through GPU Performance API are organized into
 groups to help provide clarity and organization to all the available data.
 Below is a collective list of counters from all the supported hardware
 generations. Some of the counters may not be available depending on the
-hardware being profiled. To view which GPUs belong to which hardware
-generations, the best reference is the `gs_cardInfo array in the
-device_info
-<https://github.com/GPUOpen-Tools/device_info/blob/master/DeviceInfo.cpp#L10>`_
-repository on GitHub. You can see how the various cards map to hardware
-generations by looking at the `GDT_HW_GENERATION enum
-<https://github.com/GPUOpen-Tools/device_info/blob/master/DeviceInfo.h#L74>`_
+hardware being profiled.
+
+To view which GPUs belong to which hardware generations, the best reference
+is the `GPUOpen-Tools/device_info <https://github.com/GPUOpen-Tools/device_info>`_
+repository on GitHub.
 
 For Graphics workloads, it is recommended that you initially profile with
 counters from the Timing group to determine whether the profiled calls are
@@ -30,7 +27,7 @@ information on the stage and whether or not potential optimizations exist.
 Pipeline-Based Counter Groups
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
-On RDNA, RDNA2, and RDNA3 hardware, certain use cases allow the driver to make
+On RDNA and newer hardware, certain use cases allow the driver to make
 optimizations by combining two shader stages together. For example, in a Vertex
 + Geometry + Pixel Shader pipeline (VS-GS-PS), the Vertex and Geometry Shaders
 get combined and GPUPerfAPI exposes them in the "VertexGeometry" group

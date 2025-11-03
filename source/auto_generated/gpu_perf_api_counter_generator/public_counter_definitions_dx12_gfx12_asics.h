@@ -35,4 +35,4 @@ namespace dx12_gfx12_asics
 
 }  // namespace dx12_gfx12asics
 
-#endif  // GPA_AUTO_GEN_COUNTER_GEN_PUBLIC_COUNTER_DEFINITIONS_DX12_GFX12_ASICS_H_
+#endif

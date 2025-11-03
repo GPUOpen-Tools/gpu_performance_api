@@ -65,4 +65,4 @@ namespace ogl_utils
     };
 }  // namespace ogl_utils
 
-#endif  // GPU_PERF_API_GL_GL_AMD_DRIVER_EXT_H_
+#endif

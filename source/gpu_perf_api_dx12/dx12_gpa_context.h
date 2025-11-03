@@ -30,7 +30,7 @@ public:
     /// @param [in] d3d12_device ID3D12Device pointer.
     /// @param [in] hw_info Hardware info.
     /// @param [in] flags Context flags.
-    Dx12GpaContext(ID3D12Device* d3d12_device, GpaHwInfo& hw_info, GpaOpenContextFlags flags);
+    Dx12GpaContext(ID3D12Device* d3d12_device, const GpaHwInfo& hw_info, GpaOpenContextFlags flags);
 
     /// @brief Destructor.
     virtual ~Dx12GpaContext();
@@ -81,7 +81,7 @@ public:
     }
 
     /// @copydoc IGpaContext::SetStableClocks()
-    GpaStatus SetStableClocks(bool use_profiling_clocks) override;
+    [[nodiscard]] GpaStatus SetStableClocks(bool use_profiling_clocks) override;
 
     /// @brief Returns the driver version according to ADLUtil.
     ///
@@ -111,4 +111,4 @@ private:
     uint32_t                       driver_sub_minor_ver_;        ///< ADL driver sub_minor version.
 };
 
-#endif  // GPU_PERF_API_DX12_DX12_GPA_CONTEXT_H_
+#endif

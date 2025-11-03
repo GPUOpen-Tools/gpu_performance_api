@@ -32,7 +32,7 @@ static void GetExpectedCountersForGeneration(GpaHwGeneration           generatio
     const GpaCounterDesc* public_counters      = nullptr;
     size_t                public_counter_count = 0;
 
-    std::vector<std::vector<GpaHardwareCounterDesc>*> hardware_counter_groups;
+    gpa_array_view<gpa_array_view<GpaHardwareCounterDesc>> hardware_counter_groups;
 
     switch (generation)
     {
@@ -73,15 +73,15 @@ static void GetExpectedCountersForGeneration(GpaHwGeneration           generatio
     const size_t num_hardware_counter_groups = hardware_counter_groups.size();
     for (size_t i = 0; i < num_hardware_counter_groups; ++i)
     {
-        const size_t num_counters_in_group = hardware_counter_groups[i]->size();
+        const size_t num_counters_in_group = hardware_counter_groups[i].size();
         for (size_t j = 0; j < num_counters_in_group; ++j)
         {
-            hardware_counter_names.push_back(hardware_counter_groups[i]->at(j).name);
+            hardware_counter_names.push_back(hardware_counter_groups[i][j].name);
         }
     }
 }
 
-static std::vector<GpaCounterDesc> GetExpectedPublicCounters(GpaHwGeneration generation)
+static gpa_array_view<GpaCounterDesc> GetExpectedPublicCounters(GpaHwGeneration generation)
 {
     const GpaCounterDesc* public_counters      = nullptr;
     size_t                public_counter_count = 0;
@@ -113,14 +113,7 @@ static std::vector<GpaCounterDesc> GetExpectedPublicCounters(GpaHwGeneration gen
         break;
     }
 
-    std::vector<GpaCounterDesc> public_counter_list;
-    public_counter_list.reserve(public_counter_count);
-    for (size_t i = 0; i < public_counter_count; i++)
-    {
-        public_counter_list.push_back(public_counters[i]);
-    }
-
-    return public_counter_list;
+    return gpa_array_view<GpaCounterDesc>(public_counters, public_counter_count);
 }
 
 TEST(CounterDllTests, Dx11UnsupportedHardwareGenerations)
@@ -166,20 +159,10 @@ TEST(CounterDllTests, Dx11DerivedCounterBlocksGfx12)
 // Test the Dx11 counter names on all supported hardware
 TEST(CounterDllTests, Dx11CounterNamesByDeviceId)
 {
-    VerifyHardwareNotSupported(kGpaApiDirectx11, kDevIdUnknown);
-    VerifyHardwareNotSupported(kGpaApiDirectx11, kDevIdSI);
-    VerifyHardwareNotSupported(kGpaApiDirectx11, kDevIdCI);
-    VerifyHardwareNotSupported(kGpaApiDirectx11, kDevIdCIHawaii);
-    VerifyHardwareNotSupported(kGpaApiDirectx11, kDevIdMi250X);
-    VerifyHardwareNotSupported(kGpaApiDirectx11, kDevIdMi210);
-    VerifyHardwareNotSupported(kGpaApiDirectx11, kDevIdUnsupported1);
-    VerifyHardwareNotSupported(kGpaApiDirectx11, kDevIdUnsupported2);
-    VerifyHardwareNotSupported(kGpaApiDirectx11, kDevIdVI);
-    VerifyHardwareNotSupported(kGpaApiDirectx11, kDevIdGfx8);
-    VerifyHardwareNotSupported(kGpaApiDirectx11, kDevIdGfx8Ellesmere);
-    VerifyHardwareNotSupported(kGpaApiDirectx11, kDevIdGfx8Tonga);
-    VerifyHardwareNotSupported(kGpaApiDirectx11, kDevIdGfx8Iceland);
-    VerifyHardwareNotSupported(kGpaApiDirectx11, kDevIdGfx9);
+    for (auto const& device_id : kUnsupportedDeviceIds)
+    {
+        VerifyHardwareNotSupported(kGpaApiDirectx11, device_id);
+    }
 
     std::vector<const char*> derived_counter_names;
     std::vector<const char*> hardware_counter_names;
@@ -197,6 +180,7 @@ TEST(CounterDllTests, Dx11CounterNamesByDeviceId)
     VerifyCounterNames(kGpaApiDirectx11, kDevIdGfx11_0_3, derived_counter_names, empty_list_to_skip_tests);
     VerifyCounterNames(kGpaApiDirectx11, kDevIdGfx11_0_3B, derived_counter_names, empty_list_to_skip_tests);
     VerifyCounterNames(kGpaApiDirectx11, kDevIdGfx11_5_0, derived_counter_names, empty_list_to_skip_tests);
+    VerifyCounterNames(kGpaApiDirectx11, kDevIdGfx11_5_3, derived_counter_names, empty_list_to_skip_tests);
 
     GetExpectedCountersForGeneration(kGpaHwGenerationGfx12, derived_counter_names, hardware_counter_names);
     VerifyCounterNames(kGpaApiDirectx11, kDevIdGfx12_0_0, derived_counter_names, hardware_counter_names);
@@ -291,10 +275,21 @@ TEST(CounterDllTests, Dx11CounterLibTestGfx1150)
     VerifyCounterByPassCounterLibEntry(kGpaApiDirectx11, kDevIdGfx11_5_0, REVISION_ID_ANY);
 }
 
+TEST(CounterDllTests, Dx11CounterLibTestGfx1153)
+{
+    VerifyCounterLibInterface(kGpaApiDirectx11, kDevIdGfx11_5_3, REVISION_ID_ANY);
+    VerifyCounterByPassCounterLibEntry(kGpaApiDirectx11, kDevIdGfx11_5_3, REVISION_ID_ANY);
+}
+
 TEST(CounterDllTests, Dx11CounterFormulaTest)
 {
     VerifyCounterFormula(GetExpectedPublicCounters(kGpaHwGenerationGfx10));
     VerifyCounterFormula(GetExpectedPublicCounters(kGpaHwGenerationGfx103));
     VerifyCounterFormula(GetExpectedPublicCounters(kGpaHwGenerationGfx11));
     VerifyCounterFormula(GetExpectedPublicCounters(kGpaHwGenerationGfx12));
+}
+
+TEST(GpaCounterLibGetSupportedSampleTypes, Directx11)
+{
+    VerifySupportedSampleTypes(kGpaApiDirectx11);
 }

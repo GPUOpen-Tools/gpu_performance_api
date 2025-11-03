@@ -23,10 +23,9 @@
 #include "gpu_perf_api_vk/vk_gpa_session.h"
 #include "gpu_perf_api_vk/vk_utils.h"
 
-VkGpaContext::VkGpaContext(const GpaVkContextOpenInfo* open_info, GpaHwInfo& hw_info, GpaOpenContextFlags flags)
+VkGpaContext::VkGpaContext(const GpaVkContextOpenInfo* open_info, const GpaHwInfo& hw_info, GpaOpenContextFlags flags)
     : GpaContext(hw_info, flags)
 {
-    supported_sample_types_ = kGpaContextSampleTypeDiscreteCounter;
     physical_device_        = open_info->physical_device;
     device_                 = open_info->device;
     amd_device_properties_  = {};
@@ -42,7 +41,7 @@ VkGpaContext::~VkGpaContext()
         GPA_LOG_ERROR("Driver was unable to set stable clocks back to default.");
 #ifdef __linux__
         GPA_LOG_MESSAGE("In Linux, make sure to run your application with root privileges.");
-#endif  // __linux__
+#endif
     }
 
     vk_utils::ReleasePhysicalDeviceGpaPropertiesAMD(&amd_device_properties_);
@@ -82,7 +81,7 @@ GpaStatus VkGpaContext::Open()
             GPA_LOG_ERROR("Driver was unable to set stable clocks for profiling.");
 #ifdef __linux__
             GPA_LOG_MESSAGE("In Linux, make sure to run your application with root privileges.");
-#endif  // __linux__
+#endif
         }
 
         SetAsOpened(true);

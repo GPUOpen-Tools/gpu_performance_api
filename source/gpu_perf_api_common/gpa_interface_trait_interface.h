@@ -38,4 +38,4 @@ public:
     virtual GpaObjectType ObjectType() const = 0;
 };
 
-#endif  // GPU_PERF_API_COMMON_GPA_INTERFACE_TRAIT_INTERFACE_H_
+#endif

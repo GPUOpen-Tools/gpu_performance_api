@@ -34,7 +34,7 @@
 #define GET_PROC_ADDRESS_TYPE eglGetProcAddress
 #define GET_PROC_ADDRESS_FUNC _eglGetProcAddress
 
-#endif  // GLES
+#endif
 
 #ifdef _LINUX
 #include <dlfcn.h>
@@ -205,4 +205,4 @@ namespace ogl_utils
     extern std::map<GLExtension, Supported> gl_extensions_map;  ///< Map of GL extensions and its status.
 }  // namespace ogl_utils
 
-#endif  // GPA_COUNTER_GENERATOR_GL_GL_ENTRY_POINTS_H_
+#endif

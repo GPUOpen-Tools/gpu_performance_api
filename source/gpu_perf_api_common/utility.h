@@ -33,4 +33,4 @@ namespace gpa_util
     bool GetCurrentModulePath(std::string& current_module_path);
 }
 
-#endif  // GPU_PERF_API_COMMON_UTILITY_H_
+#endif

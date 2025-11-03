@@ -55,4 +55,4 @@ private:
     GpaCounterGeneratorDx12Base& operator=(GpaCounterGeneratorDx12Base&&) = delete;
 };
 
-#endif  // GPU_PERF_API_COUNTER_GENERATOR_DX12_GPA_COUNTER_GENERATOR_DX12_BASE_H_
+#endif

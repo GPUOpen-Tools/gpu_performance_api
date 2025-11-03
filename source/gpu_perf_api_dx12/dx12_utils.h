@@ -70,4 +70,4 @@ namespace dx12_utils
     bool GetTimestampFrequency(ID3D12Device* d3d12_device, UINT64& timestamp_frequency);
 }  // namespace dx12_utils
 
-#endif  // GPU_PERF_API_DX12_DX12_UTILS_H_
+#endif

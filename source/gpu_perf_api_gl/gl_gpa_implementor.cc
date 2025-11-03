@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2018-2024 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2018-2025 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief GL GPA Implementation
@@ -122,8 +122,6 @@ bool GlGpaImplementor::GetHwInfoFromApi(const GpaContextInfoPtr context_info, Gp
             return false;
         }
 
-        gl_driver_version_ = asic_info.driver_version;
-
         if (ogl_utils::AsicInfo::kUnassignedAsicInfo != asic_info.device_id)
         {
             hw_info.SetDeviceId(asic_info.device_id);
@@ -176,37 +174,23 @@ bool GlGpaImplementor::VerifyApiHwSupport(const GpaContextInfoPtr context_info, 
 {
     UNREFERENCED_PARAMETER(context_info);
     UNREFERENCED_PARAMETER(flags);
-
-    bool is_supported = false;
-
-    GDT_HW_GENERATION generation = GDT_HW_GENERATION_NONE;
-
-    if (!hw_info.GetHwGeneration(generation))
-    {
-        GPA_LOG_ERROR("Unable to get hardware generation.");
-    }
-    else
-    {
-        is_supported = true;
-    }
-
-    return is_supported;
+    UNREFERENCED_PARAMETER(hw_info);
+    return true;
 }
 
 GlGpaImplementor::GlGpaImplementor()
     : is_gl_entry_points_initialized_(false)
-    , gl_driver_version_(INT_MAX)
 {
 }
 
-IGpaContext* GlGpaImplementor::OpenApiContext(GpaContextInfoPtr context_info, GpaHwInfo& hw_info, GpaOpenContextFlags flags)
+IGpaContext* GlGpaImplementor::OpenApiContext(GpaContextInfoPtr context_info, const GpaHwInfo& hw_info, GpaOpenContextFlags flags)
 {
     UNREFERENCED_PARAMETER(context_info);
     GlGpaContext* ret_gpa_context = nullptr;
 
     GlContextPtr gl_context = static_cast<GlContextPtr>(context_info);
 
-    GlGpaContext* gl_gpa_context = new (std::nothrow) GlGpaContext(gl_context, hw_info, flags, gl_driver_version_);
+    GlGpaContext* gl_gpa_context = new (std::nothrow) GlGpaContext(gl_context, hw_info, flags);
 
     if (nullptr == gl_gpa_context)
     {
@@ -228,21 +212,27 @@ IGpaContext* GlGpaImplementor::OpenApiContext(GpaContextInfoPtr context_info, Gp
     return ret_gpa_context;
 }
 
-bool GlGpaImplementor::CloseApiContext(GpaDeviceIdentifier device_identifier, IGpaContext* context)
+bool GlGpaImplementor::CloseApiContext(IGpaContext* context)
 {
-    UNREFERENCED_PARAMETER(device_identifier);
-    assert(nullptr != device_identifier);
     assert(nullptr != context);
+
+    GpaStatus set_default_clocks_result = kGpaStatusOk;
 
     if (nullptr != context)
     {
-        delete reinterpret_cast<GlGpaContext*>(context);
-        context = nullptr;
+        GlGpaContext* gl_gpa_context = reinterpret_cast<GlGpaContext*>(context);
+        set_default_clocks_result    = gl_gpa_context->SetStableClocks(false);
+        if (set_default_clocks_result != kGpaStatusOk)
+        {
+            assert(!"Unable to set clocks back to default");
+            GPA_LOG_ERROR("Unable to set clocks back to default");
+        }
+        delete gl_gpa_context;
     }
 
     ogl_utils::UnloadGl();
 
-    return true;
+    return set_default_clocks_result == kGpaStatusOk;
 }
 
 GpaDeviceIdentifier GlGpaImplementor::GetDeviceIdentifierFromContextInfo(GpaContextInfoPtr context_info) const

@@ -143,4 +143,4 @@ void UpdateMaxDiscreteBlockEvents(BlockMap* block_map, const char* block_name, u
 /// @param [in] max_spm_events New maximum SPM events value.
 void UpdateMaxSpmBlockEvents(BlockMap* block_map, const char* block_name, uint32_t max_spm_events);
 
-#endif  // GPA_COUNTER_GENERATOR_COMMON_GPA_COUNTER_H_
+#endif

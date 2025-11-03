@@ -10,7 +10,7 @@
 
 #if defined(WIN32)
 #include <Windows.h>
-#endif  // WIN32
+#endif
 
 #include <vector>
 #ifdef DEBUG_PUBLIC_COUNTER_SPLITTER
@@ -683,4 +683,4 @@ private:
     }
 };
 
-#endif  // GPU_PERF_API_COUNTER_GENERATOR_COMMON_GPA_SPLIT_COUNTERS_CONSOLIDATED_H_
+#endif

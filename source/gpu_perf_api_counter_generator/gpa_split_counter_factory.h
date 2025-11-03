@@ -117,4 +117,4 @@ private:
     virtual ~GpaSplitCounterFactory(void) {};
 };
 
-#endif  // GPU_PERF_API_COUNTER_GENERATOR_COMMON_GPA_SPLIT_COUNTER_FACTORY_H_
+#endif

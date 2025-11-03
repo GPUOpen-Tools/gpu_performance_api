@@ -19,9 +19,4 @@
 /// @param [out] adapter_desc The adapter description
 GpaStatus DxGetAdapterDesc(IUnknown* device, DXGI_ADAPTER_DESC& adapter_desc);
 
-/// Get the first monitor attached to the given device
-/// @return Handle to the monitor, nullptr on error
-/// @param [in] device The device
-HMONITOR DxGetDeviceMonitor(IUnknown* device);
-
-#endif  // _GPA_DX_DX_UTILS_H_
+#endif

@@ -89,4 +89,4 @@ public:
     virtual bool IsCopySecondarySampleSupported() const = 0;
 };
 
-#endif  // GPU_PERF_API_COMMON_GPA_IMPLEMENTOR_INTERFACE_H_
+#endif

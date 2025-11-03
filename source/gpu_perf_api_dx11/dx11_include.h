@@ -19,4 +19,4 @@
 
 #define PE_BLOCK_ID_MAX PE_BLOCK_MAX_GFX12  ///< Macro for count of DX11 block id; needs an update every generation.
 
-#endif  // GPU_PERF_API_DX11_DX11_INCLUDE_H_
+#endif

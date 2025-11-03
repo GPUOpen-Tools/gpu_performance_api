@@ -10,6 +10,7 @@
 #include <gtest/gtest.h>
 
 #include "gpu_performance_api/gpu_perf_api_interface_loader.h"
+#include "gpu_perf_api_unit_tests/utils/gpa_test_apis.h"
 
 GpaApiManager*    GpaApiManager::gpa_api_manager_ = nullptr;
 GpaFuncTableInfo* gpa_function_table_info         = NULL;
@@ -158,6 +159,8 @@ TEST_F(GpaInterfaceLoaderTest, TestGetLibraryFullPath)
     }
 }
 
+#if defined(VK) && defined(GL)
+
 TEST_F(GpaInterfaceLoaderTest, TestDeleteInstance)
 {
     GpaApiType second_api = kGpaApiOpengl;
@@ -241,13 +244,11 @@ TEST_F(GpaInterfaceLoaderTest, TestLoadAPIWithPath)
     GpaApiManager::DeleteInstance();
 }
 
+#endif
+
 TEST_P(GpaInterfaceLoaderTest, Api)
 {
     Run();
 }
 
-#ifdef _WIN32
-INSTANTIATE_TEST_SUITE_P(WindowsAPI, GpaInterfaceLoaderTest, ::testing::Values(kGpaApiDirectx11, kGpaApiDirectx12, kGpaApiVulkan, kGpaApiOpengl));
-#else
-INSTANTIATE_TEST_SUITE_P(LinuxAPI, GpaInterfaceLoaderTest, ::testing::Values(kGpaApiVulkan, kGpaApiOpengl));
-#endif
+INSTANTIATE_TEST_SUITE_P(API, GpaInterfaceLoaderTest, GetApiParametersList());

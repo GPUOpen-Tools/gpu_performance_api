@@ -68,10 +68,12 @@ protected:
     /// @brief Checks whether the device is supported.
     ///
     /// @param [in] context_info Context info pointer.
+    /// @param [in] flags Context flags
+    /// @param [in] driver_info Driver Version and type
     /// @param [out] hw_info Hardware information if device is supported.
     ///
     /// @return kGpaStatusOk if operation is successful.
-    GpaStatus IsDeviceSupported(GpaContextInfoPtr context_info, GpaOpenContextFlags flags, GpaHwInfo* hw_info) const;
+    GpaStatus IsDeviceSupported(GpaContextInfoPtr context_info, GpaOpenContextFlags flags, GpaDriverInfo const& driver_info, GpaHwInfo* hw_info) const;
 
     /// @brief Checks whether the driver is supported.
     ///
@@ -119,7 +121,7 @@ private:
     /// @param [in] flags Context flags.
     ///
     /// @return IGpaContext pointer if operation is successful otherwise nullptr.
-    virtual IGpaContext* OpenApiContext(GpaContextInfoPtr context_info, GpaHwInfo& hw_info, GpaOpenContextFlags flags) = 0;
+    virtual IGpaContext* OpenApiContext(GpaContextInfoPtr context_info, const GpaHwInfo& hw_info, GpaOpenContextFlags flags) = 0;
 
     /// @brief Performs the API-specific tasks needed to close the context and release the relevant resources.
     ///
@@ -127,7 +129,7 @@ private:
     /// @param [in] gpa_context Context object pointer.
     ///
     /// @return True if closing of the context was successful otherwise false.
-    virtual bool CloseApiContext(GpaDeviceIdentifier device_identifier, IGpaContext* gpa_context) = 0;
+    [[nodiscard]] virtual bool CloseApiContext(IGpaContext* gpa_context) = 0;
 
     /// @brief Returns the API specific device identifier.
     ///
@@ -149,4 +151,4 @@ private:
     GpaInitializeFlags               init_flags_;                        ///< Flags specified when initializing GPA.
 };
 
-#endif  // GPU_PERF_API_COMMON_GPA_IMPLEMENTOR_H_
+#endif

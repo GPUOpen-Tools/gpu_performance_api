@@ -42,4 +42,4 @@ namespace oglp_gfx103_asics
 
 }  // namespace oglp_gfx103asics
 
-#endif  // GPA_AUTO_GEN_COUNTER_GEN_PUBLIC_COUNTER_DEFINITIONS_OGLP_GFX103_ASICS_H_
+#endif

@@ -14,6 +14,7 @@
 #include <dlfcn.h>
 #endif
 
+#include <array>
 #include <gtest/gtest.h>
 
 #include "gpu_performance_api/gpu_perf_api.h"
@@ -27,31 +28,77 @@
 
 #include "gpu_perf_api_unit_tests/counters/gpa_counter_desc.h"
 
-static const unsigned int kDevIdUnknown       = 0xFFFFFFFF;  ///< bogus device id.
-static const unsigned int kDevIdSI            = 0x6798;      ///< 7970 Series.
-static const unsigned int kDevIdCI            = 0x6649;      ///< FirePro W5100.
-static const unsigned int kDevIdCIHawaii      = 0x67A0;      ///< HAWAII XTGL.
-static const unsigned int kDevIdVI            = 0x98E4;      ///< VI (Gfx8 Stoney).
-static const unsigned int kDevIdGfx8          = kDevIdVI;    ///< Gfx8 (Stoney).
-static const unsigned int kDevIdGfx8Ellesmere = 0x67DF;      ///< Gfx8 Ellesmere.
-static const unsigned int kDevIdGfx8Tonga     = 0x6920;      ///< Gfx8 Tonga.
-static const unsigned int kDevIdGfx8Iceland   = 0x6900;      ///< Gfx8 R7 M260 (Iceland).
-static const unsigned int kDevIdGfx9          = 0x6863;      ///< Gfx9.
-static const unsigned int kDevIdMi250X        = 0x740C;      ///< GFX9_0_A (MI250X).
-static const unsigned int kDevIdMi210         = 0x740F;      ///< GFX9_0_A (MI210).
-static const unsigned int kDevIdGfx10         = 0x7310;      ///< Gfx10.
-static const unsigned int kDevIdGfx10_3       = 0x73A0;      ///< Gfx10_3.
-static const unsigned int kDevIdGfx10_3_1     = 0x73DF;      ///< Gfx10_3_1.
-static const unsigned int kDevIdGfx10_3_4     = 0x743F;      ///< Gfx10_3_4.
-static const unsigned int kDevIdGfx11         = 0x744C;      ///< Gfx11.
-static const unsigned int kDevIdGfx11_0_3     = 0x15BF;      ///< Gfx11_0_3.
-static const unsigned int kDevIdGfx11_0_3B    = 0x15C8;      ///< Gfx11_0_3B.
-static const unsigned int kDevIdGfx11_5_0     = 0x150E;      ///< GFX11_5_0.
-static const unsigned int kDevIdGfx12_0_0     = 0x7590;      ///< GFX12_0_0.
-static const unsigned int kDevIdGfx12_0_1     = 0x7550;      ///< GFX12_0_1.
-static const unsigned int kDevIdUnsupported1 = 0x1506;  ///< An unsupported device id.
-static const unsigned int kDevIdUnsupported2 = 0x164e;  ///< An unsupported device id.
-static const unsigned int kDevIdUnsupported3 = 0x13C0;  ///< An unsupported device id.
+constexpr unsigned int kDevIdUnknown       = 0xFFFFFFFF;  ///< bogus device id.
+constexpr unsigned int kDevIdSI            = 0x6798;      ///< 7970 Series.
+constexpr unsigned int kDevIdCI            = 0x6649;      ///< FirePro W5100.
+constexpr unsigned int kDevIdCIHawaii      = 0x67A0;      ///< HAWAII XTGL.
+constexpr unsigned int kDevIdVI            = 0x98E4;      ///< VI (Gfx8 Stoney).
+constexpr unsigned int kDevIdGfx8          = kDevIdVI;    ///< Gfx8 (Stoney).
+constexpr unsigned int kDevIdGfx8Ellesmere = 0x67DF;      ///< Gfx8 Ellesmere.
+constexpr unsigned int kDevIdGfx8Tonga     = 0x6920;      ///< Gfx8 Tonga.
+constexpr unsigned int kDevIdGfx8Iceland   = 0x6900;      ///< Gfx8 R7 M260 (Iceland).
+constexpr unsigned int kDevIdGfx9          = 0x6863;      ///< Gfx9.
+constexpr unsigned int kDevIdMi250X        = 0x740C;      ///< GFX9_0_A (MI250X).
+constexpr unsigned int kDevIdMi210         = 0x740F;      ///< GFX9_0_A (MI210).
+constexpr unsigned int kDevIdMi300X        = 0x74A1;      ///< GDT_GFX9_4_2 (MI300)
+constexpr unsigned int kDevIdMi300XHF      = 0x74A9;      ///< GDT_GFX9_4_2 (MI300XHF)
+constexpr unsigned int kDevIdUnsupported1  = 0x1506;      ///< An unsupported device id.
+constexpr unsigned int kDevIdUnsupported2  = 0x164e;      ///< An unsupported device id.
+constexpr unsigned int kDevIdUnsupported3  = 0x13C0;      ///< An unsupported device id.
+
+inline constexpr std::array kUnsupportedDeviceIds = {
+    kDevIdUnknown,
+    kDevIdSI,
+    kDevIdCI,
+    kDevIdCIHawaii,
+    kDevIdVI,
+    kDevIdGfx8,
+    kDevIdGfx8Ellesmere,
+    kDevIdGfx8Tonga,
+    kDevIdGfx8Iceland,
+    kDevIdGfx9,
+    kDevIdMi250X,
+    kDevIdMi210,
+    kDevIdMi300X,
+    kDevIdMi300XHF,
+    kDevIdUnsupported1,
+    kDevIdUnsupported2,
+    kDevIdUnsupported3,
+};
+
+constexpr unsigned int kDevIdGfx10         = 0x7310;      ///< Gfx10.
+constexpr unsigned int kDevIdGfx10_3       = 0x73A0;      ///< Gfx10_3.
+constexpr unsigned int kDevIdGfx10_3_1     = 0x73DF;      ///< Gfx10_3_1.
+constexpr unsigned int kDevIdGfx10_3_3     = 0x163f;      ///< Gfx10_3_3.
+constexpr unsigned int kDevIdGfx10_3_4     = 0x743F;      ///< Gfx10_3_4.
+constexpr unsigned int kDevIdGfx10_3_5     = 0x164D;      ///< Gfx10_3_5.
+constexpr unsigned int kDevIdGfx11         = 0x744C;      ///< Gfx11.
+constexpr unsigned int kDevIdGfx11_0_3     = 0x15BF;      ///< Gfx11_0_3.
+constexpr unsigned int kDevIdGfx11_0_3B    = 0x15C8;      ///< Gfx11_0_3B.
+constexpr unsigned int kDevIdGfx11_0_3H    = 0x1900;      ///< Gfx11_0_3 HawkPoint
+constexpr unsigned int kDevIdGfx11_0_3H2   = 0x1900;      ///< Gfx11_0_3 HawkPoint2
+constexpr unsigned int kDevIdGfx11_5_0     = 0x150E;      ///< GFX11_5_0.
+constexpr unsigned int kDevIdGfx11_5_3     = 0x150E;      ///< GFX11_5_3.
+constexpr unsigned int kDevIdGfx12_0_0     = 0x7590;      ///< GFX12_0_0.
+constexpr unsigned int kDevIdGfx12_0_1     = 0x7550;      ///< GFX12_0_1.
+
+inline constexpr std::array kSupportedDeviceIds = {
+    kDevIdGfx10,
+    kDevIdGfx10_3,
+    kDevIdGfx10_3_1,
+    kDevIdGfx10_3_3,
+    kDevIdGfx10_3_4,
+    kDevIdGfx10_3_5,
+    kDevIdGfx11,
+    kDevIdGfx11_0_3,
+    kDevIdGfx11_0_3B,
+    kDevIdGfx11_0_3H,
+    kDevIdGfx11_0_3H2,
+    kDevIdGfx11_5_0,
+    kDevIdGfx11_5_3,
+    kDevIdGfx12_0_0,
+    kDevIdGfx12_0_1,
+};
 
 /// Name of the counter library.
 extern const char* kCountersLibName;
@@ -91,7 +138,7 @@ void* GetEntryPoint(LibHandle lib_handle, const char* entrypoint_name);
 /// @param [in] api The API being used in the test.
 /// @param [in] generation The hardware generation being used.
 /// @param [in] public_counters Public descriptions of the counter.
-void VerifyDerivedCounterCount(const GpaApiType api, const GpaHwGeneration generation, const std::vector<GpaCounterDesc>& counter_descriptions);
+void VerifyDerivedCounterCount(const GpaApiType api, const GpaHwGeneration generation, const gpa_array_view<GpaCounterDesc> counter_descriptions);
 
 void VerifyNotImplemented(GpaApiType api, unsigned int device_id);
 
@@ -102,6 +149,8 @@ void VerifyInvalidOpenContextParameters(GpaApiType api, unsigned int device_id);
 void VerifyHardwareNotSupported(GpaApiType api, unsigned int device_id);
 
 void VerifyHardwareNotSupported(GpaApiType api, GpaHwGeneration generation);
+
+void VerifySupportedSampleTypes(GpaApiType api);
 
 void VerifyCounterNames(GpaApiType                      api,
                         unsigned int                    device_id,
@@ -150,7 +199,7 @@ void VerifyCounterCalculation(GpaApiType                           api,
 /// @brief Verifies the counter calculation.
 ///
 /// @param [in] public_counters Public descriptions of the counter
-void VerifyCounterFormula(const std::vector<GpaCounterDesc>& public_counters);
+void VerifyCounterFormula(const gpa_array_view<GpaCounterDesc> public_counters);
 
 /// @brief Returns a string describing the hardware counters and passes for each public counter, and the scheduling of the
 /// combined counters, passes, and result locations.
@@ -164,4 +213,4 @@ void ExplainCountersInPassAndResultLocations(GpaApiType                   api,
                                              const std::vector<uint32_t>& counters_to_enable,
                                              std::stringstream*           output_stream);
 
-#endif  // GPU_PERF_API_UNIT_TESTS_COUNTER_GENERATOR_TESTS_H_
+#endif

@@ -1,4 +1,5 @@
-## Copyright (c) 2018-2025 Advanced Micro Devices, Inc. All rights reserved.
+## Copyright (C) 2018-2025 Advanced Micro Devices, Inc. All rights reserved. ##
+
 set(CMAKE_FOLDER "Tests")
 
 set(GPA_PROJECT_NAME GPUPerfAPIUnitTests)
@@ -6,7 +7,6 @@ set(ProjectName ${GPA_PROJECT_NAME})
 
 include(${GPA_CMAKE_MODULES_DIR}/common.cmake)
 
-include(${CMAKE_COMMON_SRC_GLOBAL_DEVICE_INFO})
 include(${CMAKE_COMMON_SRC_GLOBAL_AMD_DX_EXT})
 include(${CMAKE_COMMON_SRC_GLOBAL_AMD_VK_EXT})
 include(${GPA_CMAKE_MODULES_DIR}/gpa_vulkan.cmake)
@@ -27,7 +27,6 @@ set(SOURCE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/api_error_tests.cc
                  ${GPA_SRC_COUNTER_GENERATOR}/gpa_derived_counter_evaluator.hpp
                  ${ADDITIONAL_UNIT_TEST_SOURCES})
 
-
 if(NOT ${skipopengl})
     set(SOURCE_FILES ${SOURCE_FILES} ${CMAKE_CURRENT_SOURCE_DIR}/counter_generator_gl_tests.cc)
 endif()
@@ -44,10 +43,6 @@ if(WIN32)
     if(NOT ${skipdx11})
         set(SOURCE_FILES ${SOURCE_FILES} ${CMAKE_CURRENT_SOURCE_DIR}/counter_generator_dx11_tests.cc)
     endif()
-endif()
-
-if(NOT DEFINED UNITTEST_COUNTER_DIR)
-    set(UNITTEST_COUNTER_DIR ${CMAKE_CURRENT_LIST_DIR}/counters)
 endif()
 
 set(HEADER_FILES ${CMAKE_CURRENT_SOURCE_DIR}/counter_generator_tests.h
@@ -124,7 +119,9 @@ target_link_libraries(${GPA_PROJECT_NAME}
                       GTest::gtest
                       $<$<PLATFORM_ID:Linux>:dl>
                       $<$<PLATFORM_ID:Linux>:pthread>
-                      AMD::adl_util)
+                      $<$<PLATFORM_ID:Windows>:AMD::adl_util>
+                      AMD::device_info
+                      )
 
 ADD_LINKER_FLAGS()
 
@@ -137,4 +134,3 @@ SET_EXECUTABLE_NAME(${GPA_PROJECT_NAME})
 if(WIN32)
     source_group("Utils" FILES ${UTIL_FILES})
 endif()
-

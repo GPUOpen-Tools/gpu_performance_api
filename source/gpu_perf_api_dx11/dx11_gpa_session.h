@@ -33,4 +33,4 @@ private:
     /// @copydoc GpaSession::CreateApiPass()
     GpaPass* CreateApiPass(PassIndex pass_index) override;
 };
-#endif  // GPU_PERF_API_DX11_DX11_GPA_SESSION_H_
+#endif

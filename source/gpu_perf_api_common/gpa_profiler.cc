@@ -313,4 +313,4 @@ Profiler profiler_singleton;
 #else
 // !ENABLE_PROFILING
 
-#endif  // ENABLE_PROFILING
+#endif

@@ -55,13 +55,13 @@ private:
     VkInstance vk_instance_;
 
     /// @copydoc GpaImplementor::OpenApiContext()
-    IGpaContext* OpenApiContext(GpaContextInfoPtr context_info, GpaHwInfo& hw_info, GpaOpenContextFlags flags) override final;
+    IGpaContext* OpenApiContext(GpaContextInfoPtr context_info, const GpaHwInfo& hw_info, GpaOpenContextFlags flags) override final;
 
     /// @copydoc GpaImplementor::CloseApiContext()
-    bool CloseApiContext(GpaDeviceIdentifier device_identifier, IGpaContext* context) override final;
+    [[nodiscard]] bool CloseApiContext(IGpaContext* context) override final;
 
     /// @copydoc GpaImplementor::GetDeviceIdentifierFromContextInfo()
     GpaDeviceIdentifier GetDeviceIdentifierFromContextInfo(GpaContextInfoPtr context_info) const override final;
 };
 
-#endif  // GPU_PERF_API_VK_VK_GPA_IMPLEMENTOR_H_
+#endif

@@ -145,11 +145,11 @@
 #define DISCRETE_WRITEUNITSTALLED_PUBLIC_OGLP_GFX10 128
 #define DISCRETE_WRITEUNITSTALLEDCYCLES_PUBLIC_OGLP_GFX10 129
 
-/// Number of public counters for OGLP GFX10 
+/// Number of public counters for OGLP GFX10
 const size_t kOglpGfx10PublicCounterCount = 130;
 
-/// Array of public counters for OGLP GFX10 
+/// Array of public counters for OGLP GFX10
 extern const GpaCounterDesc kOglpGfx10PublicCounters[kOglpGfx10PublicCounterCount];
 
 // clang-format on
-#endif  // GPA_AUTO_GEN_UNIT_TESTS_COUNTERS_PUBLIC_OGLP_GFX10
+#endif

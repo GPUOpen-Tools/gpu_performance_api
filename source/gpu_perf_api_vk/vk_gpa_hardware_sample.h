@@ -25,8 +25,7 @@ public:
     /// @param [in] pass Pass object.
     /// @param [in] cmd_list Gpa command list.
     /// @param [in] sample_id Sample Id.
-    /// @param [in] device Vk device.
-    VkGpaHardwareSample(GpaPass* pas, IGpaCommandList* cmd_list, unsigned int sample_id, VkDevice device);
+    VkGpaHardwareSample(GpaPass* pas, IGpaCommandList* cmd_list, unsigned int sample_id);
 
     /// @brief Destructor.
     virtual ~VkGpaHardwareSample();
@@ -76,9 +75,8 @@ private:
     VkGpaSessionAMD gpa_session_;                ///< The underlying driver extension session that this sample is on.
     GpaUInt32       num_counters_;               ///< Number of counters in this sample.
     uint32_t        sample_index_;               ///< Index of the sample being measured.
-    VkDevice        device_;                     ///< The device on which the counters are being collected.
     VkCommandBuffer command_buffer_;             ///< The command buffer for this sample.
     bool            has_any_hardware_counters_;  ///< Flag indicating if there are any non-skipped hardware counters in this request.
 };
 
-#endif  // GPU_PERF_API_VK_VK_GPA_HARDWARE_SAMPLE_H_
+#endif

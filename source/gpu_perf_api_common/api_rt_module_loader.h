@@ -74,4 +74,4 @@ private:
     T* run_time_module_ = nullptr;  ///< The DynamicLibraryModule instance that wraps the RT API.
 };
 
-#endif  // GPU_PERF_API_COMMON_API_RT_MODULE_LOADER_H_
+#endif

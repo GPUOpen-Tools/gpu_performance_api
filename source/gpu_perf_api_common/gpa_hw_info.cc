@@ -7,53 +7,10 @@
 
 #include "gpu_perf_api_common/gpa_hw_info.h"
 #include "gpu_perf_api_common/logging.h"
+#include "gpu_perf_api_common/gpa_hw_support.h"
 
 #include <assert.h>
 #include <DeviceInfoUtils.h>
-
-GpaHwInfo::GpaHwInfo()
-    : device_id_(0)
-    , device_id_set_(false)
-    , revision_id_(0)
-    , revision_id_set_(false)
-    , vendor_id_(0)
-    , vendor_id_set_(false)
-    , device_name_set_(false)
-    , gpu_index_(0)
-    , gpu_index_set_(false)
-    , generation_(GDT_HW_GENERATION_NONE)
-    , generation_set_(false)
-    , timestamp_frequency_(1)
-    , timestamp_frequency_set_(false)
-    , num_simd_(0)
-    , num_simd_set_(false)
-    , num_cu_(0)
-    , num_cu_set_(false)
-    , num_waves_per_simd_(0)
-    , num_waves_per_simd_set_(false)
-    , asic_type_(GDT_ASIC_TYPE_NONE)
-    , num_shader_engines_(0)
-    , num_shader_engines_set_(false)
-    , num_shader_arrays_(0)
-    , num_shader_arrays_set_(false)
-    , su_clock_prim_(0)
-    , su_clock_prim_set_(false)
-    , num_prim_pipes_(0)
-    , num_prim_pipes_set_(false)
-{
-    // These devices are APUs that do not support stable power state for profiling
-    // therefore they do not properly support GPA, and GPA will not support them.
-    // They need to be explicitly handled in the common case that there is also a discrete GPU in the system,
-    // and GPA needs to avoid reporting an error about these unsupported devices.
-    unsupported_device_ids_.push_back(0x1506);
-    unsupported_device_ids_.push_back(0x164e);
-    unsupported_device_ids_.push_back(0x13c0);
-
-    // These are MI (Machine Inferencing) devices that do not have a full graphics pipeline
-    // and are not currently supported by GPA.
-    unsupported_device_ids_.push_back(0x740C);
-    unsupported_device_ids_.push_back(0x740F);
-}
 
 bool GpaHwInfo::GetDeviceId(GpaUInt32& id) const
 {
@@ -61,19 +18,14 @@ bool GpaHwInfo::GetDeviceId(GpaUInt32& id) const
     return device_id_set_;
 }
 
-bool GpaHwInfo::IsUnsupportedDeviceId() const
+bool GpaHwInfo::IsUnsupportedDeviceId(const GpaApiType api, GpaDriverInfo const& driver_info) const
 {
     bool is_unsupported = true;
-    if (device_id_set_)
+    if (device_id_set_ && revision_id_set_)
     {
-        is_unsupported = IsUnsupportedDeviceId(device_id_);
+        is_unsupported = IsDeviceUnprofilable(device_id_, revision_id_, api, driver_info);
     }
     return is_unsupported;
-}
-
-bool GpaHwInfo::IsUnsupportedDeviceId(const GpaUInt32& id) const
-{
-    return std::find(unsupported_device_ids_.begin(), unsupported_device_ids_.end(), id) != unsupported_device_ids_.end();
 }
 
 bool GpaHwInfo::GetRevisionId(GpaUInt32& id) const
@@ -154,49 +106,55 @@ void GpaHwInfo::SetTimeStampFrequency(const GpaUInt64& frequency)
     timestamp_frequency_     = frequency;
 }
 
-void GpaHwInfo::SetNumberSimds(const size_t& num_simd)
+void GpaHwInfo::SetNumberSimds(const GpaUInt32 num_simd)
 {
     num_simd_set_ = true;
     num_simd_     = num_simd;
 }
 
-void GpaHwInfo::SetNumberCus(const size_t& num_cu)
+void GpaHwInfo::SetNumberCus(const GpaUInt32 num_cu)
 {
     num_cu_set_ = true;
     num_cu_     = num_cu;
 }
 
-void GpaHwInfo::SetWavesPerSimd(const size_t& numWaves)
+void GpaHwInfo::SetWavesPerSimd(const GpaUInt32 numWaves)
 {
     num_waves_per_simd_set_ = true;
-    num_waves_per_simd_    = numWaves;
+    num_waves_per_simd_     = numWaves;
 }
 
-void GpaHwInfo::SetNumberShaderEngines(const size_t& num_se)
+void GpaHwInfo::SetNumberShaderEngines(const GpaUInt32 num_se)
 {
     num_shader_engines_set_ = true;
     num_shader_engines_     = num_se;
 }
 
-void GpaHwInfo::SetNumberShaderArrays(const size_t& num_sa)
+void GpaHwInfo::SetNumberShaderArrays(const GpaUInt32 num_sa)
 {
     num_shader_arrays_set_ = true;
     num_shader_arrays_     = num_sa;
 }
 
-void GpaHwInfo::SetSuClocksPrim(const size_t& su_clock_primitives)
+void GpaHwInfo::SetSuClocksPrim(const GpaUInt32 su_clock_primitives)
 {
     su_clock_prim_set_ = true;
     su_clock_prim_     = su_clock_primitives;
 }
 
-void GpaHwInfo::SetNumberPrimPipes(const size_t& num_primitive_pipes)
+void GpaHwInfo::SetNumberPrimPipes(const GpaUInt32 num_primitive_pipes)
 {
     num_prim_pipes_set_ = true;
     num_prim_pipes_     = num_primitive_pipes;
 }
 
-bool GpaHwInfo::UpdateDeviceInfoBasedOnDeviceId()
+void GpaHwInfo::SetNumberVgprs(const GpaUInt32 num_vgpr)
+{
+    num_vgpr_set_ = true;
+    num_vgpr_     = num_vgpr;
+}
+
+bool GpaHwInfo::UpdateDeviceInfoBasedOnDeviceId(const GpaApiType api, GpaDriverInfo const& driver_info)
 {
     std::vector<GDT_GfxCardInfo> card_list;
     GDT_GfxCardInfo              card_info         = {};
@@ -262,37 +220,42 @@ bool GpaHwInfo::UpdateDeviceInfoBasedOnDeviceId()
     {
         if (!num_shader_engines_set_)
         {
-            SetNumberShaderEngines(device_info.m_nNumShaderEngines);
+            SetNumberShaderEngines(static_cast<GpaUInt32>(device_info.m_nNumShaderEngines));
         }
 
         if (!num_shader_arrays_set_)
         {
-            SetNumberShaderArrays(device_info.numberSHs());
+            SetNumberShaderArrays(static_cast<GpaUInt32>(device_info.numberSHs()));
         }
 
         if (!num_cu_set_)
         {
-            SetNumberCus(device_info.numberCUs());
+            SetNumberCus(static_cast<GpaUInt32>(device_info.numberCUs()));
         }
 
         if (!num_simd_set_)
         {
-            SetNumberSimds(device_info.numberSIMDs());
+            SetNumberSimds(static_cast<GpaUInt32>(device_info.numberSIMDs()));
         }
 
         if (!su_clock_prim_set_)
         {
-            SetSuClocksPrim(device_info.m_suClocksPrim);
+            SetSuClocksPrim(static_cast<GpaUInt32>(device_info.m_suClocksPrim));
         }
 
         if (!num_waves_per_simd_set_)
         {
-            SetWavesPerSimd(device_info.m_nMaxWavePerSIMD);
+            SetWavesPerSimd(static_cast<GpaUInt32>(device_info.m_nMaxWavePerSIMD));
         }
 
         if (!num_prim_pipes_set_)
         {
-            SetNumberPrimPipes(device_info.m_nNumPrimPipes);
+            SetNumberPrimPipes(static_cast<GpaUInt32>(device_info.m_nNumPrimPipes));
+        }
+
+        if (!num_vgpr_set_)
+        {
+            SetNumberVgprs(static_cast<GpaUInt32>(device_info.numberVGPRs()));
         }
 
         asic_type_ = card_info.m_asicType;
@@ -306,7 +269,7 @@ bool GpaHwInfo::UpdateDeviceInfoBasedOnDeviceId()
         if (IsAmd())
         {
             // Checking for recognized unsupported cards and only logging debug message if an unsupported card is found.
-            if (IsUnsupportedDeviceId(device_id_))
+            if (IsUnsupportedDeviceId(api, driver_info))
             {
                 GPA_LOG_DEBUG_MESSAGE("Device ID of unsupported card found: 0x%04X.", device_id_);
             }

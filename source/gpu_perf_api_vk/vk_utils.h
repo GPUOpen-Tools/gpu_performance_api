@@ -40,7 +40,7 @@ namespace vk_utils
     ///
     /// @param [in] vk_physical_device The physical device to which the queue family belongs.
     void DebugReportQueueFamilyTimestampBits(VkPhysicalDevice vk_physical_device);
-#endif  //_DEBUG
+#endif
 
     /// @brief Checks whether the device is supported for profiling or not.
     ///
@@ -59,4 +59,4 @@ namespace vk_utils
 
 }  // namespace vk_utils
 
-#endif  // GPU_PERF_API_VK_VK_UTILS_H_
+#endif

@@ -19,4 +19,4 @@
 void AutoDefinePublicDerivedCountersVkGfx10(GpaDerivedCounters& c);
 
 // clang-format on
-#endif  // GPA_AUTO_GEN_COUNTER_GEN_PUBLIC_COUNTER_DEFINITIONS_VK_GFX10_H_
+#endif

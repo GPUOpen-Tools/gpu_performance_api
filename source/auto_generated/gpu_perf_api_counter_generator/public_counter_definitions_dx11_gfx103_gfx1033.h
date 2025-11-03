@@ -27,4 +27,4 @@ namespace dx11_gfx103_gfx1033
 }  // namespace dx11_gfx103_gfx1033
 
 // clang-format on
-#endif  // GPA_AUTO_GEN_COUNTER_GEN_PUBLIC_COUNTER_DEFINITIONS_DX11_GFX103_GFX1033_H_
+#endif

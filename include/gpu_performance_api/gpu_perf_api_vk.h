@@ -13,7 +13,7 @@
 
 #ifndef VULKAN_H_
 #include <vulkan/vulkan.h>
-#endif  // VULKAN_H_
+#endif
 
 #include "gpu_performance_api/gpu_perf_api_types.h"
 
@@ -67,4 +67,4 @@ typedef struct GpaVkContextOpenInfoType2
     PFN_vkGetDeviceProcAddr   get_device_proc_addr;    ///< The vkGetDeviceProcAddr function pointer.
 } GpaVkContextOpenInfo2;
 
-#endif  // GPU_PERFORMANCE_API_GPU_PERF_API_VK_H_
+#endif

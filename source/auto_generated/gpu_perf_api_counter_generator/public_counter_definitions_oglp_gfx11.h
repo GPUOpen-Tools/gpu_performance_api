@@ -19,4 +19,4 @@
 void AutoDefinePublicDerivedCountersOglpGfx11(GpaDerivedCounters& c);
 
 // clang-format on
-#endif  // GPA_AUTO_GEN_COUNTER_GEN_PUBLIC_COUNTER_DEFINITIONS_OGLP_GFX11_H_
+#endif

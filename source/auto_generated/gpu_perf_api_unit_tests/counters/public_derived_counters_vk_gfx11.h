@@ -133,11 +133,11 @@
 #define DISCRETE_TOTALRAYTESTS_PUBLIC_VK_GFX11 116
 #define DISCRETE_RAYTESTSPERWAVE_PUBLIC_VK_GFX11 117
 
-/// Number of public counters for VK GFX11 
+/// Number of public counters for VK GFX11
 const size_t kVkGfx11PublicCounterCount = 118;
 
-/// Array of public counters for VK GFX11 
+/// Array of public counters for VK GFX11
 extern const GpaCounterDesc kVkGfx11PublicCounters[kVkGfx11PublicCounterCount];
 
 // clang-format on
-#endif  // GPA_AUTO_GEN_UNIT_TESTS_COUNTERS_PUBLIC_VK_GFX11
+#endif

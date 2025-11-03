@@ -122,4 +122,4 @@ private:
     std::map<ClientSampleId, CopiedSampleInfo> copied_sample_map_;
 };
 
-#endif  // GPU_PERF_API_VK_VK_GPA_COMMAND_LIST_H_
+#endif

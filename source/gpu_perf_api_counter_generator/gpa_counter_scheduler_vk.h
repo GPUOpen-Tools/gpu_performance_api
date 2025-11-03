@@ -31,4 +31,4 @@ private:
     GpaCounterSchedulerVk() = delete;
 };
 
-#endif  // GPU_PERF_API_COUNTER_GENERATOR_VK_GPA_COUNTER_SCHEDULER_VK_H_
+#endif

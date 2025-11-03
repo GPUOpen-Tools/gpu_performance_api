@@ -282,7 +282,7 @@ void ogl_utils::UnloadGl()
         FreeLibrary(gl_lib_handle);
 #else
         dlclose(gl_lib_handle);
-#endif  // !_WIN32
+#endif
         gl_lib_handle = nullptr;
     }
 

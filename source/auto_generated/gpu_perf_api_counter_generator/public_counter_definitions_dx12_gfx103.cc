@@ -697,112 +697,6 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "67fe9696-8428-cf74-09d9-9133ea0f148c");
     }
     { // Index:26
-        static constexpr std::array<GpaUInt32, 13> kHardwareCounters = {
-                17981,
-                18493,
-                19005,
-                19517,
-                15933,
-                16445,
-                16957,
-                17469,
-                24,
-                10433,
-                10765,
-                11097,
-                11429,
-        };
-        c.DefineDerivedCounter("VsGsVALUBusy",
-                               "VertexGeometry",
-                               "The percentage of GPUTime vector ALU instructions are being processed for the VS and GS.",
-                               kGpaDataTypeFloat64,
-                               kGpaUsageTypePercentage,
-                               true,
-                               false,
-                               kHardwareCounters,
-                               "0,1,2,3,sum4,4,5,6,7,sum4,+,NUM_SIMDS,/,8,/,(100),*,(0),9,10,11,12,sum4,ifnotzero",
-                               "0e98794e-d570-20a5-671c-b65c3991d358");
-    }
-    { // Index:27
-        static constexpr std::array<GpaUInt32, 12> kHardwareCounters = {
-                17981,
-                18493,
-                19005,
-                19517,
-                15933,
-                16445,
-                16957,
-                17469,
-                10433,
-                10765,
-                11097,
-                11429,
-        };
-        c.DefineDerivedCounter("VsGsVALUBusyCycles",
-                               "VertexGeometry",
-                               "Number of GPU cycles where vector ALU instructions are being processed for the VS and GS.",
-                               kGpaDataTypeFloat64,
-                               kGpaUsageTypeCycles,
-                               true,
-                               false,
-                               kHardwareCounters,
-                               "0,1,2,3,sum4,4,5,6,7,sum4,+,NUM_SIMDS,/,(0),8,9,10,11,sum4,ifnotzero",
-                               "3558535c-e727-e459-4484-bcb683fcac2f");
-    }
-    { // Index:28
-        static constexpr std::array<GpaUInt32, 13> kHardwareCounters = {
-                17924,
-                18436,
-                18948,
-                19460,
-                15876,
-                16388,
-                16900,
-                17412,
-                24,
-                10433,
-                10765,
-                11097,
-                11429,
-        };
-        c.DefineDerivedCounter("VsGsSALUBusy",
-                               "VertexGeometry",
-                               "The percentage of GPUTime scalar ALU instructions are being processed for the VS and GS.",
-                               kGpaDataTypeFloat64,
-                               kGpaUsageTypePercentage,
-                               true,
-                               false,
-                               kHardwareCounters,
-                               "0,1,2,3,sum4,4,5,6,7,sum4,+,NUM_CUS,/,8,/,(100),*,(0),9,10,11,12,sum4,ifnotzero",
-                               "49521e07-5a41-0c17-38d9-450718dcb5ab");
-    }
-    { // Index:29
-        static constexpr std::array<GpaUInt32, 12> kHardwareCounters = {
-                17924,
-                18436,
-                18948,
-                19460,
-                15876,
-                16388,
-                16900,
-                17412,
-                10433,
-                10765,
-                11097,
-                11429,
-        };
-        c.DefineDerivedCounter("VsGsSALUBusyCycles",
-                               "VertexGeometry",
-                               "Number of GPU cycles where scalar ALU instructions are being processed for the VS and GS.",
-                               kGpaDataTypeFloat64,
-                               kGpaUsageTypeCycles,
-                               true,
-                               false,
-                               kHardwareCounters,
-                               "0,1,2,3,sum4,4,5,6,7,sum4,+,NUM_CUS,/,(0),8,9,10,11,sum4,ifnotzero",
-                               "c4f78496-7f24-cb3d-3108-e9e8c761cf07");
-    }
-    { // Index:30
         static constexpr std::array<GpaUInt32, 8> kHardwareCounters = {
                 24072,
                 24584,
@@ -824,7 +718,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "(0),0,1,2,3,sum4,4,5,6,7,sum4,/,4,5,6,7,sum4,ifnotzero",
                                "a6894a29-4213-27d4-e186-b9ca6112e3f3");
     }
-    { // Index:31
+    { // Index:27
         static constexpr std::array<GpaUInt32, 8> kHardwareCounters = {
                 24068,
                 24580,
@@ -846,7 +740,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "(0),0,1,2,3,sum4,4,5,6,7,sum4,/,4,5,6,7,sum4,ifnotzero",
                                "c6d06968-3557-fb5d-7a28-5eda098190db");
     }
-    { // Index:32
+    { // Index:28
         static constexpr std::array<GpaUInt32, 9> kHardwareCounters = {
                 24125,
                 24637,
@@ -869,7 +763,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "(0),0,1,2,3,sum4,NUM_SIMDS,/,8,/,(100),*,4,5,6,7,sum4,ifnotzero",
                                "72627e0a-da7e-899a-738c-69e8ba96bf42");
     }
-    { // Index:33
+    { // Index:29
         static constexpr std::array<GpaUInt32, 8> kHardwareCounters = {
                 24125,
                 24637,
@@ -891,7 +785,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "(0),0,1,2,3,sum4,NUM_SIMDS,/,4,5,6,7,sum4,ifnotzero",
                                "2d750b51-a75e-380b-1b42-40d59f4fbdb6");
     }
-    { // Index:34
+    { // Index:30
         static constexpr std::array<GpaUInt32, 9> kHardwareCounters = {
                 24068,
                 24580,
@@ -914,7 +808,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "(0),0,1,2,3,sum4,NUM_CUS,/,8,/,(100),*,4,5,6,7,sum4,ifnotzero",
                                "74e778bb-ce25-32cd-caa6-810eb44c95fa");
     }
-    { // Index:35
+    { // Index:31
         static constexpr std::array<GpaUInt32, 8> kHardwareCounters = {
                 24068,
                 24580,
@@ -936,7 +830,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "(0),0,1,2,3,sum4,NUM_CUS,/,4,5,6,7,sum4,ifnotzero",
                                "8aa4a036-313f-f4b0-a820-ff0a6e71b1a2");
     }
-    { // Index:36
+    { // Index:32
         static constexpr std::array<GpaUInt32, 8> kHardwareCounters = {
                 104250,
                 104389,
@@ -958,7 +852,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "(0),0,1,2,3,sum4,4,5,6,7,sum4,ifnotzero",
                                "b0d4c894-2fd0-6f4f-0b07-d5369769ef2d");
     }
-    { // Index:37
+    { // Index:33
         static constexpr std::array<GpaUInt32, 8> kHardwareCounters = {
                 104168,
                 104307,
@@ -980,7 +874,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "(0),0,1,2,3,sum4,4,5,6,7,sum4,ifnotzero",
                                "d38dabe8-1f13-ea34-d3c1-eb5783b737f1");
     }
-    { // Index:38
+    { // Index:34
         static constexpr std::array<GpaUInt32, 12> kHardwareCounters = {
                 15880,
                 16392,
@@ -1006,7 +900,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "(0),0,1,2,3,sum4,4,5,6,7,sum4,/,8,9,10,11,sum4,ifnotzero",
                                "718b7237-1371-4c85-3ad1-f12af258ba08");
     }
-    { // Index:39
+    { // Index:35
         static constexpr std::array<GpaUInt32, 12> kHardwareCounters = {
                 15876,
                 16388,
@@ -1032,7 +926,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "(0),0,1,2,3,sum4,4,5,6,7,sum4,/,8,9,10,11,sum4,ifnotzero",
                                "546cecd8-53d4-c7b7-3b2e-f5b2db6c8282");
     }
-    { // Index:40
+    { // Index:36
         static constexpr std::array<GpaUInt32, 9> kHardwareCounters = {
                 15933,
                 16445,
@@ -1055,7 +949,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "(0),0,1,2,3,sum4,NUM_SIMDS,/,8,/,(100),*,4,5,6,7,sum4,ifnotzero",
                                "068d1738-da17-7b6d-9d88-4013a8b27bf8");
     }
-    { // Index:41
+    { // Index:37
         static constexpr std::array<GpaUInt32, 8> kHardwareCounters = {
                 15933,
                 16445,
@@ -1077,7 +971,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "(0),0,1,2,3,sum4,NUM_SIMDS,/,4,5,6,7,sum4,ifnotzero",
                                "29951e35-e415-22e9-ea59-03955faa8973");
     }
-    { // Index:42
+    { // Index:38
         static constexpr std::array<GpaUInt32, 9> kHardwareCounters = {
                 15876,
                 16388,
@@ -1100,7 +994,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "(0),0,1,2,3,sum4,NUM_CUS,/,8,/,(100),*,4,5,6,7,sum4,ifnotzero",
                                "776fb8e3-1541-75e5-8a4c-28d43d39662b");
     }
-    { // Index:43
+    { // Index:39
         static constexpr std::array<GpaUInt32, 8> kHardwareCounters = {
                 15876,
                 16388,
@@ -1122,7 +1016,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "(0),0,1,2,3,sum4,NUM_CUS,/,4,5,6,7,sum4,ifnotzero",
                                "fce0317e-c679-a310-fd96-85bbb4a8b79d");
     }
-    { // Index:44
+    { // Index:40
         static constexpr std::array<GpaUInt32, 25> kHardwareCounters = {
                 145,
                 421,
@@ -1161,7 +1055,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,4,-,8,12,+,16,+,20,(2),*,+,SU_CLOCKS_PRIM,*,-,1,5,-,9,13,+,17,+,21,(2),*,+,SU_CLOCKS_PRIM,*,-,max,2,6,-,10,14,+,18,+,22,(2),*,+,SU_CLOCKS_PRIM,*,-,max,3,7,-,11,15,+,19,+,23,(2),*,+,SU_CLOCKS_PRIM,*,-,max,(0),max,24,/,(100),*,(100),min",
                                "54ac5640-c4d7-95e2-20e0-6a9fdfc07333");
     }
-    { // Index:45
+    { // Index:41
         static constexpr std::array<GpaUInt32, 24> kHardwareCounters = {
                 145,
                 421,
@@ -1199,7 +1093,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,4,-,8,12,+,16,+,20,(2),*,+,SU_CLOCKS_PRIM,*,-,1,5,-,9,13,+,17,+,21,(2),*,+,SU_CLOCKS_PRIM,*,-,max,2,6,-,10,14,+,18,+,22,(2),*,+,SU_CLOCKS_PRIM,*,-,max,3,7,-,11,15,+,19,+,23,(2),*,+,SU_CLOCKS_PRIM,*,-,max,(0),max",
                                "99777f2d-9626-c78a-a97c-c4505eba1e5f");
     }
-    { // Index:46
+    { // Index:42
         static constexpr std::array<GpaUInt32, 4> kHardwareCounters = {
                 48,
                 324,
@@ -1217,7 +1111,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,sum4",
                                "a515b80d-75c3-c7d2-0d2f-d7766b4759a6");
     }
-    { // Index:47
+    { // Index:43
         static constexpr std::array<GpaUInt32, 20> kHardwareCounters = {
                 54,
                 330,
@@ -1251,7 +1145,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,sum20",
                                "589bdf55-9192-280a-41c3-584bc94f2562");
     }
-    { // Index:48
+    { // Index:44
         static constexpr std::array<GpaUInt32, 4> kHardwareCounters = {
                 61,
                 337,
@@ -1269,7 +1163,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,sum4",
                                "5ef6f9d5-155e-5baa-163f-8359d9ea9bbf");
     }
-    { // Index:49
+    { // Index:45
         static constexpr std::array<GpaUInt32, 5> kHardwareCounters = {
                 149,
                 425,
@@ -1288,7 +1182,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,max4,4,/,(100),*",
                                "6f9f416b-53c1-0457-f88c-7b6ba8973974");
     }
-    { // Index:50
+    { // Index:46
         static constexpr std::array<GpaUInt32, 4> kHardwareCounters = {
                 149,
                 425,
@@ -1306,7 +1200,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,max4",
                                "7a8c492a-c566-9328-6805-760dbff5c0f2");
     }
-    { // Index:51
+    { // Index:47
         static constexpr std::array<GpaUInt32, 32> kHardwareCounters = {
                 28116,
                 28341,
@@ -1352,7 +1246,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,sum32",
                                "24cba16c-baa6-6ecd-95ad-92ecb1338da1");
     }
-    { // Index:52
+    { // Index:48
         static constexpr std::array<GpaUInt32, 33> kHardwareCounters = {
                 28118,
                 28343,
@@ -1399,7 +1293,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,max32,32,/,(100),*",
                                "9b4f466c-ff97-22bb-557d-84d3c4c51895");
     }
-    { // Index:53
+    { // Index:49
         static constexpr std::array<GpaUInt32, 32> kHardwareCounters = {
                 28118,
                 28343,
@@ -1445,7 +1339,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,max32",
                                "47c72aad-64e6-0864-d533-d8e0bc27c156");
     }
-    { // Index:54
+    { // Index:50
         static constexpr std::array<GpaUInt32, 8> kHardwareCounters = {
                 10438,
                 10770,
@@ -1467,7 +1361,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,4,5,6,7,sum8",
                                "e1e2f302-868a-1d2e-ca81-9901bbc8b58f");
     }
-    { // Index:55
+    { // Index:51
         static constexpr std::array<GpaUInt32, 8> kHardwareCounters = {
                 10441,
                 10773,
@@ -1489,7 +1383,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,4,5,6,7,sum8",
                                "00c49129-6ae5-f6a0-1753-4738cbe17938");
     }
-    { // Index:56
+    { // Index:52
         static constexpr std::array<GpaUInt32, 4> kHardwareCounters = {
                 26064,
                 26576,
@@ -1507,7 +1401,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,sum4",
                                "cbbbf1ba-d164-1c90-9df0-6120c1660fb1");
     }
-    { // Index:57
+    { // Index:53
         static constexpr std::array<GpaUInt32, 12> kHardwareCounters = {
                 26064,
                 26576,
@@ -1533,7 +1427,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "(0),0,1,2,3,sum4,4,5,6,7,8,9,10,11,sum8,/,4,5,6,7,8,9,10,11,sum8,ifnotzero",
                                "8c65008a-9957-7ca6-4199-f6fe940420f6");
     }
-    { // Index:58
+    { // Index:54
         static constexpr std::array<GpaUInt32, 8> kHardwareCounters = {
                 26120,
                 26632,
@@ -1555,7 +1449,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,sum4,4,5,6,7,sum4,/",
                                "376cb1cc-5a40-9d1d-404c-f1736c0c5084");
     }
-    { // Index:59
+    { // Index:55
         static constexpr std::array<GpaUInt32, 12> kHardwareCounters = {
                 26138,
                 26650,
@@ -1581,7 +1475,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "(0),0,1,2,3,sum4,4,5,6,7,sum4,(64),(32),8,9,10,11,sum4,ifnotzero,*,/,(100),*,4,5,6,7,sum4,ifnotzero,(100),min",
                                "ae943d2a-76e1-bb68-e1e2-0e06c9031611");
     }
-    { // Index:60
+    { // Index:56
         static constexpr std::array<GpaUInt32, 8> kHardwareCounters = {
                 26116,
                 26628,
@@ -1603,7 +1497,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "(0),0,1,2,3,sum4,4,5,6,7,sum4,/,4,5,6,7,sum4,ifnotzero",
                                "eb211144-8136-ff86-e8bf-4d0493a904cb");
     }
-    { // Index:61
+    { // Index:57
         static constexpr std::array<GpaUInt32, 8> kHardwareCounters = {
                 26125,
                 26637,
@@ -1625,7 +1519,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "(0),0,1,2,3,sum4,4,5,6,7,sum4,/,4,5,6,7,sum4,ifnotzero",
                                "3e2829c0-6215-783b-c271-6d57ff2c520e");
     }
-    { // Index:62
+    { // Index:58
         static constexpr std::array<GpaUInt32, 8> kHardwareCounters = {
                 26117,
                 26629,
@@ -1647,7 +1541,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "(0),0,1,2,3,sum4,4,5,6,7,sum4,/,4,5,6,7,sum4,ifnotzero",
                                "da09171c-6a0a-584f-fddc-dc5062d63a3e");
     }
-    { // Index:63
+    { // Index:59
         static constexpr std::array<GpaUInt32, 8> kHardwareCounters = {
                 26126,
                 26638,
@@ -1669,7 +1563,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "(0),0,1,2,3,sum4,4,5,6,7,sum4,/,4,5,6,7,sum4,ifnotzero",
                                "43438c22-e910-b377-b767-b32902e0df0d");
     }
-    { // Index:64
+    { // Index:60
         static constexpr std::array<GpaUInt32, 8> kHardwareCounters = {
                 26111,
                 26623,
@@ -1691,7 +1585,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "(0),0,1,2,3,sum4,4,5,6,7,sum4,/,4,5,6,7,sum4,ifnotzero",
                                "2a867f3e-4a37-ad16-55d1-f03d74707819");
     }
-    { // Index:65
+    { // Index:61
         static constexpr std::array<GpaUInt32, 8> kHardwareCounters = {
                 26115,
                 26627,
@@ -1713,7 +1607,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "(0),0,1,2,3,sum4,4,5,6,7,sum4,/,4,5,6,7,sum4,ifnotzero",
                                "61b0b351-7e06-ef8e-a8e0-7a9e3200a836");
     }
-    { // Index:66
+    { // Index:62
         static constexpr std::array<GpaUInt32, 9> kHardwareCounters = {
                 26087,
                 26599,
@@ -1736,7 +1630,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,sum4,4,5,6,7,sum4,/,8,/,(100),*",
                                "6dc4f1c2-bad0-c9ff-156e-883b319a752a");
     }
-    { // Index:67
+    { // Index:63
         static constexpr std::array<GpaUInt32, 9> kHardwareCounters = {
                 26087,
                 26599,
@@ -1759,7 +1653,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,sum4,4,5,6,7,sum4,/,8,/,(100),*",
                                "5df8c003-fd53-db5a-61bc-78e23bd3df89");
     }
-    { // Index:68
+    { // Index:64
         static constexpr std::array<GpaUInt32, 8> kHardwareCounters = {
                 26087,
                 26599,
@@ -1781,7 +1675,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,sum4,4,5,6,7,sum4,/",
                                "f970a60b-da5d-e489-6222-969ee790a811");
     }
-    { // Index:69
+    { // Index:65
         static constexpr std::array<GpaUInt32, 5> kHardwareCounters = {
                 26341,
                 26853,
@@ -1800,7 +1694,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,sum4,NUM_SIMDS,/,4,/,(100),*",
                                "1065ee10-2e41-ea41-1eb3-b61b491752f4");
     }
-    { // Index:70
+    { // Index:66
         static constexpr std::array<GpaUInt32, 4> kHardwareCounters = {
                 26341,
                 26853,
@@ -1818,7 +1712,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,sum4,NUM_SIMDS,/",
                                "1fd1adf3-c51e-94fd-083e-c482a0a0809e");
     }
-    { // Index:71
+    { // Index:67
         static constexpr std::array<GpaUInt32, 81> kHardwareCounters = {
                 29919,
                 30155,
@@ -1913,7 +1807,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,max80,80,/,(100),*",
                                "36afb8d9-42fc-aafe-66c5-449542153b2c");
     }
-    { // Index:72
+    { // Index:68
         static constexpr std::array<GpaUInt32, 80> kHardwareCounters = {
                 29919,
                 30155,
@@ -2007,7 +1901,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,max80",
                                "c68761f2-248c-4f39-6528-c308b1c0807c");
     }
-    { // Index:73
+    { // Index:69
         static constexpr std::array<GpaUInt32, 128> kHardwareCounters = {
                 29973,
                 30209,
@@ -2149,7 +2043,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,sum64,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,sum64,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,sum64,+,/,(100),*",
                                "1affc3c8-b917-5c81-622b-7004527208ae");
     }
-    { // Index:74
+    { // Index:70
         static constexpr std::array<GpaUInt32, 64> kHardwareCounters = {
                 29973,
                 30209,
@@ -2227,7 +2121,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,sum64,(4),*",
                                "5785b3a1-a513-18db-4b1c-bdeef75bb2b6");
     }
-    { // Index:75
+    { // Index:71
         static constexpr std::array<GpaUInt32, 64> kHardwareCounters = {
                 29972,
                 30208,
@@ -2305,7 +2199,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,sum64,(4),*",
                                "179da29a-81af-c06e-ce8c-a0a731ea030d");
     }
-    { // Index:76
+    { // Index:72
         static constexpr std::array<GpaUInt32, 128> kHardwareCounters = {
                 29975,
                 30211,
@@ -2447,7 +2341,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,sum64,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,sum64,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,sum64,+,/,(100),*",
                                "b5ff6bed-3178-aee4-42dd-c74391c02a2d");
     }
-    { // Index:77
+    { // Index:73
         static constexpr std::array<GpaUInt32, 64> kHardwareCounters = {
                 29975,
                 30211,
@@ -2525,7 +2419,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,sum64,(4),*",
                                "4bddc587-d589-8128-e18c-762eab2c871f");
     }
-    { // Index:78
+    { // Index:74
         static constexpr std::array<GpaUInt32, 64> kHardwareCounters = {
                 29974,
                 30210,
@@ -2603,7 +2497,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,sum64,(4),*",
                                "9fe1a854-17c6-9d26-b2b9-80610cd5827d");
     }
-    { // Index:79
+    { // Index:75
         static constexpr std::array<GpaUInt32, 720> kHardwareCounters = {
                 29993,
                 30229,
@@ -3337,7 +3231,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,sum80,(2),80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,sum80,*,+,(4),160,161,162,163,164,165,166,167,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,184,185,186,187,188,189,190,191,192,193,194,195,196,197,198,199,200,201,202,203,204,205,206,207,208,209,210,211,212,213,214,215,216,217,218,219,220,221,222,223,224,225,226,227,228,229,230,231,232,233,234,235,236,237,238,239,sum80,*,+,(6),240,241,242,243,244,245,246,247,248,249,250,251,252,253,254,255,256,257,258,259,260,261,262,263,264,265,266,267,268,269,270,271,272,273,274,275,276,277,278,279,280,281,282,283,284,285,286,287,288,289,290,291,292,293,294,295,296,297,298,299,300,301,302,303,304,305,306,307,308,309,310,311,312,313,314,315,316,317,318,319,sum80,*,+,(8),320,321,322,323,324,325,326,327,328,329,330,331,332,333,334,335,336,337,338,339,340,341,342,343,344,345,346,347,348,349,350,351,352,353,354,355,356,357,358,359,360,361,362,363,364,365,366,367,368,369,370,371,372,373,374,375,376,377,378,379,380,381,382,383,384,385,386,387,388,389,390,391,392,393,394,395,396,397,398,399,sum80,*,+,(10),400,401,402,403,404,405,406,407,408,409,410,411,412,413,414,415,416,417,418,419,420,421,422,423,424,425,426,427,428,429,430,431,432,433,434,435,436,437,438,439,440,441,442,443,444,445,446,447,448,449,450,451,452,453,454,455,456,457,458,459,460,461,462,463,464,465,466,467,468,469,470,471,472,473,474,475,476,477,478,479,sum80,*,+,(12),480,481,482,483,484,485,486,487,488,489,490,491,492,493,494,495,496,497,498,499,500,501,502,503,504,505,506,507,508,509,510,511,512,513,514,515,516,517,518,519,520,521,522,523,524,525,526,527,528,529,530,531,532,533,534,535,536,537,538,539,540,541,542,543,544,545,546,547,548,549,550,551,552,553,554,555,556,557,558,559,sum80,*,+,(14),560,561,562,563,564,565,566,567,568,569,570,571,572,573,574,575,576,577,578,579,580,581,582,583,584,585,586,587,588,589,590,591,592,593,594,595,596,597,598,599,600,601,602,603,604,605,606,607,608,609,610,611,612,613,614,615,616,617,618,619,620,621,622,623,624,625,626,627,628,629,630,631,632,633,634,635,636,637,638,639,sum80,*,+,(16),640,641,642,643,644,645,646,647,648,649,650,651,652,653,654,655,656,657,658,659,660,661,662,663,664,665,666,667,668,669,670,671,672,673,674,675,676,677,678,679,680,681,682,683,684,685,686,687,688,689,690,691,692,693,694,695,696,697,698,699,700,701,702,703,704,705,706,707,708,709,710,711,712,713,714,715,716,717,718,719,sum80,*,+,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,sum80,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,sum80,+,160,161,162,163,164,165,166,167,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,184,185,186,187,188,189,190,191,192,193,194,195,196,197,198,199,200,201,202,203,204,205,206,207,208,209,210,211,212,213,214,215,216,217,218,219,220,221,222,223,224,225,226,227,228,229,230,231,232,233,234,235,236,237,238,239,sum80,+,240,241,242,243,244,245,246,247,248,249,250,251,252,253,254,255,256,257,258,259,260,261,262,263,264,265,266,267,268,269,270,271,272,273,274,275,276,277,278,279,280,281,282,283,284,285,286,287,288,289,290,291,292,293,294,295,296,297,298,299,300,301,302,303,304,305,306,307,308,309,310,311,312,313,314,315,316,317,318,319,sum80,+,320,321,322,323,324,325,326,327,328,329,330,331,332,333,334,335,336,337,338,339,340,341,342,343,344,345,346,347,348,349,350,351,352,353,354,355,356,357,358,359,360,361,362,363,364,365,366,367,368,369,370,371,372,373,374,375,376,377,378,379,380,381,382,383,384,385,386,387,388,389,390,391,392,393,394,395,396,397,398,399,sum80,+,400,401,402,403,404,405,406,407,408,409,410,411,412,413,414,415,416,417,418,419,420,421,422,423,424,425,426,427,428,429,430,431,432,433,434,435,436,437,438,439,440,441,442,443,444,445,446,447,448,449,450,451,452,453,454,455,456,457,458,459,460,461,462,463,464,465,466,467,468,469,470,471,472,473,474,475,476,477,478,479,sum80,+,480,481,482,483,484,485,486,487,488,489,490,491,492,493,494,495,496,497,498,499,500,501,502,503,504,505,506,507,508,509,510,511,512,513,514,515,516,517,518,519,520,521,522,523,524,525,526,527,528,529,530,531,532,533,534,535,536,537,538,539,540,541,542,543,544,545,546,547,548,549,550,551,552,553,554,555,556,557,558,559,sum80,+,560,561,562,563,564,565,566,567,568,569,570,571,572,573,574,575,576,577,578,579,580,581,582,583,584,585,586,587,588,589,590,591,592,593,594,595,596,597,598,599,600,601,602,603,604,605,606,607,608,609,610,611,612,613,614,615,616,617,618,619,620,621,622,623,624,625,626,627,628,629,630,631,632,633,634,635,636,637,638,639,sum80,+,640,641,642,643,644,645,646,647,648,649,650,651,652,653,654,655,656,657,658,659,660,661,662,663,664,665,666,667,668,669,670,671,672,673,674,675,676,677,678,679,680,681,682,683,684,685,686,687,688,689,690,691,692,693,694,695,696,697,698,699,700,701,702,703,704,705,706,707,708,709,710,711,712,713,714,715,716,717,718,719,sum80,+,/",
                                "7ca2a2b9-a4eb-ce23-d163-59147e672396");
     }
-    { // Index:80
+    { // Index:76
         static constexpr std::array<GpaUInt32, 17> kHardwareCounters = {
                 69168,
                 69559,
@@ -3368,7 +3262,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,max16,16,/,(100),*",
                                "6834fb52-42e8-bb50-fd48-ec2f2904e7e0");
     }
-    { // Index:81
+    { // Index:77
         static constexpr std::array<GpaUInt32, 16> kHardwareCounters = {
                 69168,
                 69559,
@@ -3398,7 +3292,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,max16",
                                "07ad48f0-49d8-87e7-1ef5-1e24ff2cef49");
     }
-    { // Index:82
+    { // Index:78
         static constexpr std::array<GpaUInt32, 32> kHardwareCounters = {
                 69039,
                 69430,
@@ -3444,7 +3338,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,sum16,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16,-,(0),max,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,sum16,/,(100),*",
                                "56176f45-d7ff-813d-4f05-3b2f046067e7");
     }
-    { // Index:83
+    { // Index:79
         static constexpr std::array<GpaUInt32, 32> kHardwareCounters = {
                 69028,
                 69419,
@@ -3490,7 +3384,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,sum16,-,(0),max",
                                "95d4e3f6-b2f0-f26e-8423-aacdfaf79ea3");
     }
-    { // Index:84
+    { // Index:80
         static constexpr std::array<GpaUInt32, 16> kHardwareCounters = {
                 69039,
                 69430,
@@ -3520,7 +3414,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16",
                                "156ba142-7eeb-aa6e-a00a-f8aea4e41e0b");
     }
-    { // Index:85
+    { // Index:81
         static constexpr std::array<GpaUInt32, 32> kHardwareCounters = {
                 69028,
                 69419,
@@ -3566,7 +3460,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,sum16,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16,/,(100),*",
                                "cad7f54d-a044-7574-c472-6f2065cbeeac");
     }
-    { // Index:86
+    { // Index:82
         static constexpr std::array<GpaUInt32, 16> kHardwareCounters = {
                 69052,
                 69443,
@@ -3596,7 +3490,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16",
                                "49262c8a-b1e6-90dd-f096-0fc4921715e9");
     }
-    { // Index:87
+    { // Index:83
         static constexpr std::array<GpaUInt32, 16> kHardwareCounters = {
                 69028,
                 69419,
@@ -3626,7 +3520,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16",
                                "f803eaa4-bbed-bd39-775f-a64df92e2c08");
     }
-    { // Index:88
+    { // Index:84
         static constexpr std::array<GpaUInt32, 128> kHardwareCounters = {
                 1303,
                 1881,
@@ -3768,7 +3662,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,sum64,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,sum64,-,(0),max,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,sum64,/,(100),*",
                                "fa0e319b-5573-6d34-5bab-904769925036");
     }
-    { // Index:89
+    { // Index:85
         static constexpr std::array<GpaUInt32, 128> kHardwareCounters = {
                 1303,
                 1881,
@@ -3910,7 +3804,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,sum64,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,sum64,-,(0),max",
                                "73b0b39d-6df2-3e24-0b5c-7cb0ac8b6f39");
     }
-    { // Index:90
+    { // Index:86
         static constexpr std::array<GpaUInt32, 64> kHardwareCounters = {
                 1379,
                 1957,
@@ -3988,7 +3882,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,sum64",
                                "59049ad9-42b5-c7cb-3616-6a8f6a8e4894");
     }
-    { // Index:91
+    { // Index:87
         static constexpr std::array<GpaUInt32, 144> kHardwareCounters = {
                 1379,
                 1957,
@@ -4146,7 +4040,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,sum64,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,sum16,-,(0),max,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,sum64,/,(100),*",
                                "4e77547b-ec55-5663-f034-af59be66d77d");
     }
-    { // Index:92
+    { // Index:88
         static constexpr std::array<GpaUInt32, 80> kHardwareCounters = {
                 1379,
                 1957,
@@ -4240,7 +4134,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,sum64,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,sum16,-,(0),max",
                                "1bf169e6-9304-834e-df5f-0c44d7890a08");
     }
-    { // Index:93
+    { // Index:89
         static constexpr std::array<GpaUInt32, 16> kHardwareCounters = {
                 1403,
                 1981,
@@ -4270,7 +4164,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16",
                                "50e25e51-3713-89cb-7f92-559cde5e5532");
     }
-    { // Index:94
+    { // Index:90
         static constexpr std::array<GpaUInt32, 80> kHardwareCounters = {
                 1403,
                 1981,
@@ -4364,7 +4258,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,sum64,/,(100),*",
                                "58f0d34b-eeb8-e8db-abce-cb72584144be");
     }
-    { // Index:95
+    { // Index:91
         static constexpr std::array<GpaUInt32, 16> kHardwareCounters = {
                 1403,
                 1981,
@@ -4394,7 +4288,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16",
                                "08404526-ce35-939b-34c8-a7a35a0ff4d6");
     }
-    { // Index:96
+    { // Index:92
         static constexpr std::array<GpaUInt32, 16> kHardwareCounters = {
                 69201,
                 69592,
@@ -4424,7 +4318,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16",
                                "3bfe6c4d-7422-ca03-7ea5-e67ff1a00136");
     }
-    { // Index:97
+    { // Index:93
         static constexpr std::array<GpaUInt32, 16> kHardwareCounters = {
                 69203,
                 69594,
@@ -4454,7 +4348,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16",
                                "df7f705e-5162-d3b5-da8b-63466cf9c4e5");
     }
-    { // Index:98
+    { // Index:94
         static constexpr std::array<GpaUInt32, 16> kHardwareCounters = {
                 69202,
                 69593,
@@ -4484,7 +4378,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16",
                                "4484e950-f7a4-3800-bc74-78dd297f017e");
     }
-    { // Index:99
+    { // Index:95
         static constexpr std::array<GpaUInt32, 16> kHardwareCounters = {
                 69198,
                 69589,
@@ -4514,7 +4408,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16",
                                "4995d5d6-2330-b986-508b-fae24856f44c");
     }
-    { // Index:100
+    { // Index:96
         static constexpr std::array<GpaUInt32, 16> kHardwareCounters = {
                 69200,
                 69591,
@@ -4544,7 +4438,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16",
                                "ae558af4-f4be-3dd4-7316-b2c4dcf0def8");
     }
-    { // Index:101
+    { // Index:97
         static constexpr std::array<GpaUInt32, 16> kHardwareCounters = {
                 69199,
                 69590,
@@ -4574,7 +4468,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16",
                                "b3684c94-814a-c695-c85d-a5b6ab798b35");
     }
-    { // Index:102
+    { // Index:98
         static constexpr std::array<GpaUInt32, 17> kHardwareCounters = {
                 69070,
                 69461,
@@ -4605,7 +4499,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,max16,16,/,(100),*",
                                "5e86c3ad-1726-3157-1d01-7ed188bf854d");
     }
-    { // Index:103
+    { // Index:99
         static constexpr std::array<GpaUInt32, 16> kHardwareCounters = {
                 69070,
                 69461,
@@ -4635,7 +4529,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,max16",
                                "4351fa7f-6737-2c3e-3ffb-b3addbdceedd");
     }
-    { // Index:104
+    { // Index:100
         static constexpr std::array<GpaUInt32, 32> kHardwareCounters = {
                 69072,
                 69463,
@@ -4681,7 +4575,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16,(256),*,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,sum16,(32),*,+",
                                "dcdb4ee7-bd50-00f7-c028-9e5f4ce888c0");
     }
-    { // Index:105
+    { // Index:101
         static constexpr std::array<GpaUInt32, 32> kHardwareCounters = {
                 69084,
                 69475,
@@ -4727,7 +4621,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16,(32),*,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,sum16,(32),*,+",
                                "de5717f8-8a49-ee44-4645-10de51b37dcf");
     }
-    { // Index:106
+    { // Index:102
         static constexpr std::array<GpaUInt32, 16> kHardwareCounters = {
                 75408,
                 75861,
@@ -4757,7 +4651,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16,(32),*",
                                "84b531d8-a1f8-7f49-7c27-7bc97801f1e6");
     }
-    { // Index:107
+    { // Index:103
         static constexpr std::array<GpaUInt32, 64> kHardwareCounters = {
                 75539,
                 75992,
@@ -4835,7 +4729,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,sum64,(32),*",
                                "da41660e-eb6f-32ec-8a64-b32ca17bd7eb");
     }
-    { // Index:108
+    { // Index:104
         static constexpr std::array<GpaUInt32, 16> kHardwareCounters = {
                 75398,
                 75851,
@@ -4865,7 +4759,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16,(32),*",
                                "550f8ff8-60b6-a6bf-87d0-25ac9e87de70");
     }
-    { // Index:109
+    { // Index:105
         static constexpr std::array<GpaUInt32, 64> kHardwareCounters = {
                 75537,
                 75990,
@@ -4943,7 +4837,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,sum64,(32),*",
                                "29a04b69-8f5f-b770-a0f2-3453e2c99e49");
     }
-    { // Index:110
+    { // Index:106
         static constexpr std::array<GpaUInt32, 32> kHardwareCounters = {
                 75442,
                 75895,
@@ -4989,7 +4883,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,sum16,/,(100),*,(100),min",
                                "5775943f-0313-7e52-9638-b24a449197bc");
     }
-    { // Index:111
+    { // Index:107
         static constexpr std::array<GpaUInt32, 16> kHardwareCounters = {
                 75442,
                 75895,
@@ -5019,7 +4913,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16",
                                "47eacbb0-28c8-22b4-5c69-c00d5813bb1c");
     }
-    { // Index:112
+    { // Index:108
         static constexpr std::array<GpaUInt32, 160> kHardwareCounters = {
                 64153,
                 64214,
@@ -5193,7 +5087,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "(0),(1),80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,sum80,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,sum80,/,-,(100),*,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,sum80,ifnotzero",
                                "286c786e-9a42-3371-9dea-dd54e6e612e9");
     }
-    { // Index:113
+    { // Index:109
         static constexpr std::array<GpaUInt32, 80> kHardwareCounters = {
                 64153,
                 64214,
@@ -5287,7 +5181,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,sum80",
                                "74983cae-ee57-2e1b-d990-5128fef84e1f");
     }
-    { // Index:114
+    { // Index:110
         static constexpr std::array<GpaUInt32, 160> kHardwareCounters = {
                 64153,
                 64214,
@@ -5461,7 +5355,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,sum80,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,sum80,-",
                                "c0de7338-069b-c5ba-ead3-c65e030cd2ac");
     }
-    { // Index:115
+    { // Index:111
         static constexpr std::array<GpaUInt32, 80> kHardwareCounters = {
                 64162,
                 64223,
@@ -5555,7 +5449,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,sum80",
                                "a2f08766-ea1b-6eae-6eaf-faa04125d3e6");
     }
-    { // Index:116
+    { // Index:112
         static constexpr std::array<GpaUInt32, 12> kHardwareCounters = {
                 12055,
                 12567,
@@ -5581,7 +5475,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "(0),0,1,2,3,sum4,0,1,2,3,4,5,6,7,8,9,10,11,sum12,/,(100),*,0,1,2,3,4,5,6,7,8,9,10,11,sum12,ifnotzero",
                                "3346d2cf-b7e4-45b6-c0a0-350ce18159c0");
     }
-    { // Index:117
+    { // Index:113
         static constexpr std::array<GpaUInt32, 12> kHardwareCounters = {
                 12055,
                 12567,
@@ -5607,7 +5501,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,4,5,6,7,8,9,10,11,sum12",
                                "b5ac4201-c4cd-caa5-6ca7-4bc9a3abee01");
     }
-    { // Index:118
+    { // Index:114
         static constexpr std::array<GpaUInt32, 4> kHardwareCounters = {
                 12055,
                 12567,
@@ -5625,7 +5519,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,sum4",
                                "beebef4f-8f6c-9363-eda9-bb385ffec363");
     }
-    { // Index:119
+    { // Index:115
         static constexpr std::array<GpaUInt32, 8> kHardwareCounters = {
                 12056,
                 12568,
@@ -5647,7 +5541,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,4,5,6,7,sum8",
                                "07f5afb2-75b2-4fc3-1a6a-579958f77dd3");
     }
-    { // Index:120
+    { // Index:116
         static constexpr std::array<GpaUInt32, 12> kHardwareCounters = {
                 12020,
                 12532,
@@ -5673,7 +5567,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "(0),0,1,2,3,sum4,0,1,2,3,4,5,6,7,8,9,10,11,sum12,/,(100),*,0,1,2,3,4,5,6,7,8,9,10,11,sum12,ifnotzero",
                                "adf51399-597b-f017-8ec1-21817f92e91d");
     }
-    { // Index:121
+    { // Index:117
         static constexpr std::array<GpaUInt32, 12> kHardwareCounters = {
                 12020,
                 12532,
@@ -5699,7 +5593,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,4,5,6,7,8,9,10,11,sum12",
                                "8c92ca8c-7dcc-88a0-3037-9704aa4f64ac");
     }
-    { // Index:122
+    { // Index:118
         static constexpr std::array<GpaUInt32, 4> kHardwareCounters = {
                 12020,
                 12532,
@@ -5717,7 +5611,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,sum4",
                                "778be78f-cf83-9558-e967-868e997e6743");
     }
-    { // Index:123
+    { // Index:119
         static constexpr std::array<GpaUInt32, 8> kHardwareCounters = {
                 12021,
                 12533,
@@ -5739,7 +5633,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,4,5,6,7,sum8",
                                "351650dc-d349-dca8-2b78-b14a1479cf26");
     }
-    { // Index:124
+    { // Index:120
         static constexpr std::array<GpaUInt32, 64> kHardwareCounters = {
                 94097,
                 94180,
@@ -5817,7 +5711,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "(0),(1),32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,sum32,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,sum32,/,-,(100),*,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,sum32,ifnotzero",
                                "5a34915a-24b8-8baf-2bf8-5878e7894ae3");
     }
-    { // Index:125
+    { // Index:121
         static constexpr std::array<GpaUInt32, 32> kHardwareCounters = {
                 94097,
                 94180,
@@ -5863,7 +5757,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,sum32",
                                "29c76c67-4611-205d-0b88-d08668df03c5");
     }
-    { // Index:126
+    { // Index:122
         static constexpr std::array<GpaUInt32, 64> kHardwareCounters = {
                 94097,
                 94180,
@@ -5941,7 +5835,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,sum32,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,sum32,-",
                                "1ae150c3-f2d0-82c6-a51b-a77fd8d5fc33");
     }
-    { // Index:127
+    { // Index:123
         static constexpr std::array<GpaUInt32, 32> kHardwareCounters = {
                 94101,
                 94184,
@@ -5987,7 +5881,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,sum32",
                                "71bfec6d-257b-849d-e212-cdf5c1b1de65");
     }
-    { // Index:128
+    { // Index:124
         static constexpr std::array<GpaUInt32, 32> kHardwareCounters = {
                 98322,
                 98576,
@@ -6033,7 +5927,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "(0),(1),16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,sum16,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16,/,-,(100),*,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16,ifnotzero",
                                "47694e4d-6ce6-f387-080d-b1f3d00b73ac");
     }
-    { // Index:129
+    { // Index:125
         static constexpr std::array<GpaUInt32, 32> kHardwareCounters = {
                 98362,
                 98616,
@@ -6079,7 +5973,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,sum16,/,(100),*",
                                "8aee5458-a58e-11b6-5131-7f19ed070117");
     }
-    { // Index:130
+    { // Index:126
         static constexpr std::array<GpaUInt32, 16> kHardwareCounters = {
                 98322,
                 98576,
@@ -6109,7 +6003,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16",
                                "21e9219c-e725-0d96-06b1-b21698b736b2");
     }
-    { // Index:131
+    { // Index:127
         static constexpr std::array<GpaUInt32, 32> kHardwareCounters = {
                 98322,
                 98576,
@@ -6155,7 +6049,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,sum16,-",
                                "29ddcb92-d3dd-951b-1b23-efe52e4eeee4");
     }
-    { // Index:132
+    { // Index:128
         static constexpr std::array<GpaUInt32, 16> kHardwareCounters = {
                 98362,
                 98616,
@@ -6185,7 +6079,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16",
                                "376eec7b-ab25-9012-06b5-63291a17fd47");
     }
-    { // Index:133
+    { // Index:129
         static constexpr std::array<GpaUInt32, 80> kHardwareCounters = {
                 64187,
                 64248,
@@ -6279,7 +6173,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,max80",
                                "e2412737-e2bf-c791-5f2f-64abd4ba47cf");
     }
-    { // Index:134
+    { // Index:130
         static constexpr std::array<GpaUInt32, 80> kHardwareCounters = {
                 64188,
                 64249,
@@ -6373,7 +6267,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,max80",
                                "0c2571f3-f084-f351-99ba-0d9e23b47e8e");
     }
-    { // Index:135
+    { // Index:131
         static constexpr std::array<GpaUInt32, 80> kHardwareCounters = {
                 64189,
                 64250,
@@ -6467,7 +6361,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,max80",
                                "f13f8563-4151-1533-f42f-0f9c08a20210");
     }
-    { // Index:136
+    { // Index:132
         static constexpr std::array<GpaUInt32, 64> kHardwareCounters = {
                 98418,
                 98672,
@@ -6545,7 +6439,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16,(32),*,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,sum16,(64),*,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum16,(96),*,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,sum16,(128),*,sum4",
                                "664bb3ef-6eca-86b1-1e2d-30cb897b5fa9");
     }
-    { // Index:137
+    { // Index:133
         static constexpr std::array<GpaUInt32, 32> kHardwareCounters = {
                 98402,
                 98656,
@@ -6591,7 +6485,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,sum16,-,(32),*,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,sum16,(64),*,+",
                                "f96f2c16-b1b4-4ec4-229c-fc82e6f80a82");
     }
-    { // Index:138
+    { // Index:134
         static constexpr std::array<GpaUInt32, 81> kHardwareCounters = {
                 29919,
                 30155,
@@ -6686,7 +6580,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,max80,80,/,(100),*",
                                "a1efa380-4a72-e066-e06a-2ab71a488521");
     }
-    { // Index:139
+    { // Index:135
         static constexpr std::array<GpaUInt32, 80> kHardwareCounters = {
                 29919,
                 30155,
@@ -6780,7 +6674,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,max80",
                                "168f077c-4797-b2f5-717f-105c725266c8");
     }
-    { // Index:140
+    { // Index:136
         static constexpr std::array<GpaUInt32, 81> kHardwareCounters = {
                 64180,
                 64241,
@@ -6875,7 +6769,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,max80,80,/,(100),*",
                                "465ba54f-d250-1453-790a-731b10d230b1");
     }
-    { // Index:141
+    { // Index:137
         static constexpr std::array<GpaUInt32, 80> kHardwareCounters = {
                 64180,
                 64241,
@@ -6969,7 +6863,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,max80",
                                "2745659a-0e40-bace-3b9b-86a54f8e4623");
     }
-    { // Index:142
+    { // Index:138
         static constexpr std::array<GpaUInt32, 17> kHardwareCounters = {
                 98407,
                 98661,
@@ -7000,7 +6894,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,max16,16,/,(100),*",
                                "594ad3ce-d1ec-10fc-7d59-25738e397d72");
     }
-    { // Index:143
+    { // Index:139
         static constexpr std::array<GpaUInt32, 16> kHardwareCounters = {
                 98407,
                 98661,
@@ -7030,7 +6924,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,max16",
                                "ede3305e-abd4-d6bf-6b00-ffc57a29fce3");
     }
-    { // Index:144
+    { // Index:140
         static constexpr std::array<GpaUInt32, 16> kHardwareCounters = {
                 83346,
                 83436,
@@ -7060,7 +6954,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16,(32),*",
                                "48207266-a1ef-290a-3c77-effd1260fa2c");
     }
-    { // Index:145
+    { // Index:141
         static constexpr std::array<GpaUInt32, 16> kHardwareCounters = {
                 83348,
                 83438,
@@ -7090,7 +6984,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16,(32),*",
                                "4bbe92de-f79e-ed39-bfde-9e08390cdb21");
     }
-    { // Index:146
+    { // Index:142
         static constexpr std::array<GpaUInt32, 80> kHardwareCounters = {
                 48902,
                 49094,
@@ -7184,7 +7078,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,sum80",
                                "20c646f5-fa99-51c2-b583-0a3d77d675a8");
     }
-    { // Index:147
+    { // Index:143
         static constexpr std::array<GpaUInt32, 160> kHardwareCounters = {
                 48900,
                 49092,
@@ -7358,7 +7252,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,sum80,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,sum80,sum2",
                                "7769ceee-824d-b84a-8779-bb3f8e449582");
     }
-    { // Index:148
+    { // Index:144
         static constexpr std::array<GpaUInt32, 240> kHardwareCounters = {
                 48902,
                 49094,
@@ -7612,7 +7506,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,sum80,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,sum80,sum2,160,161,162,163,164,165,166,167,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,184,185,186,187,188,189,190,191,192,193,194,195,196,197,198,199,200,201,202,203,204,205,206,207,208,209,210,211,212,213,214,215,216,217,218,219,220,221,222,223,224,225,226,227,228,229,230,231,232,233,234,235,236,237,238,239,sum80,sum2",
                                "ce6e4c7f-cf9d-6f8f-4456-70f670354bbe");
     }
-    { // Index:149
+    { // Index:145
         static constexpr std::array<GpaUInt32, 80> kHardwareCounters = {
                 48866,
                 49058,
@@ -7706,7 +7600,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,sum80",
                                "45b0cd7f-3b43-6344-37d7-054062e50f60");
     }
-    { // Index:150
+    { // Index:146
         static constexpr std::array<GpaUInt32, 4> kHardwareCounters = {
                 11727,
                 12239,
@@ -7724,7 +7618,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,sum4,MAX_WAVES,/,(100),*",
                                "6ff3d7f2-d585-9834-d335-9edba99113c8");
     }
-    { // Index:151
+    { // Index:147
         static constexpr std::array<GpaUInt32, 16> kHardwareCounters = {
                 10573,
                 10905,
@@ -7754,7 +7648,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,sum4,4,5,6,7,max4,/,8,9,10,11,sum4,12,13,14,15,max4,/,max,NUM_SIMDS,/,(100),*",
                                "eb057dbb-db3b-7cff-8cb7-e7d567859a71");
     }
-    { // Index:152
+    { // Index:148
         static constexpr std::array<GpaUInt32, 16> kHardwareCounters = {
                 10585,
                 10917,
@@ -7784,7 +7678,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,sum4,4,5,6,7,max4,/,8,9,10,11,sum4,12,13,14,15,max4,/,max,NUM_CUS,/,(100),*",
                                "cbf8280f-b918-8035-a48f-c17db2d7719c");
     }
-    { // Index:153
+    { // Index:149
         static constexpr std::array<GpaUInt32, 16> kHardwareCounters = {
                 10556,
                 10888,
@@ -7814,7 +7708,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,sum4,4,5,6,7,max4,/,8,9,10,11,sum4,12,13,14,15,max4,/,max,(100),*",
                                "fe374a4e-6034-e9b6-c4ad-6cd1e0257654");
     }
-    { // Index:154
+    { // Index:150
         static constexpr std::array<GpaUInt32, 8> kHardwareCounters = {
                 10591,
                 10923,
@@ -7836,7 +7730,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,sum4,4,5,6,7,max4,/,NUM_CUS,/,(100),*",
                                "93c71348-8437-1765-8c26-b9c6be2457a0");
     }
-    { // Index:155
+    { // Index:151
         static constexpr std::array<GpaUInt32, 16> kHardwareCounters = {
                 10570,
                 10902,
@@ -7866,7 +7760,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,sum4,4,5,6,7,max4,/,8,9,10,11,sum4,12,13,14,15,max4,/,max,NUM_SIMDS,/,(100),*",
                                "5276ed38-4c29-3d43-46ce-10873b4f9fe4");
     }
-    { // Index:156
+    { // Index:152
         static constexpr std::array<GpaUInt32, 16> kHardwareCounters = {
                 10587,
                 10919,
@@ -7896,7 +7790,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,sum4,4,5,6,7,max4,/,8,9,10,11,sum4,12,13,14,15,max4,/,max,NUM_CUS,/,(100),*",
                                "8dd8e95f-fc8e-a976-9acc-8d8451eb762f");
     }
-    { // Index:157
+    { // Index:153
         static constexpr std::array<GpaUInt32, 16> kHardwareCounters = {
                 10554,
                 10886,
@@ -7926,7 +7820,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,sum4,4,5,6,7,max4,/,8,9,10,11,sum4,12,13,14,15,max4,/,max,(100),*",
                                "eb7c04c4-0a0b-57f5-5ea7-f144550f52b0");
     }
-    { // Index:158
+    { // Index:154
         static constexpr std::array<GpaUInt32, 8> kHardwareCounters = {
                 10569,
                 10901,
@@ -7948,7 +7842,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,sum4,4,5,6,7,max4,/,NUM_SIMDS,/,(100),*",
                                "a05c9f87-3381-d2bb-f7cd-c7b717cda321");
     }
-    { // Index:159
+    { // Index:155
         static constexpr std::array<GpaUInt32, 8> kHardwareCounters = {
                 10553,
                 10885,
@@ -7970,7 +7864,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,sum4,4,5,6,7,max4,/,(100),*",
                                "0811591e-7c8a-4930-84ee-e675053aad10");
     }
-    { // Index:160
+    { // Index:156
         static constexpr std::array<GpaUInt32, 9> kHardwareCounters = {
                 28114,
                 28339,
@@ -7993,7 +7887,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,max4,4,max,5,6,7,8,max4,/,(100),*",
                                "3671cdd8-5f82-f2d0-f229-a611af360830");
     }
-    { // Index:161
+    { // Index:157
         static constexpr std::array<GpaUInt32, 20> kHardwareCounters = {
                 10584,
                 10916,
@@ -8027,7 +7921,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,sum4,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,max16,/,NUM_CUS,/,(100),*",
                                "87e9d8b0-dae4-59e5-9797-b31084e4370c");
     }
-    { // Index:162
+    { // Index:158
         static constexpr std::array<GpaUInt32, 20> kHardwareCounters = {
                 10568,
                 10900,
@@ -8061,7 +7955,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,sum4,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,max16,/,NUM_SIMDS,/,(100),*",
                                "5327574d-a131-c833-44d2-ff4f10103502");
     }
-    { // Index:163
+    { // Index:159
         static constexpr std::array<GpaUInt32, 20> kHardwareCounters = {
                 10552,
                 10884,
@@ -8095,7 +7989,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,sum4,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,max16,/,(100),*",
                                "399ee0f1-dce6-07fa-ccab-8bd96f2f50a4");
     }
-    { // Index:164
+    { // Index:160
         static constexpr std::array<GpaUInt32, 8> kHardwareCounters = {
                 10589,
                 10921,
@@ -8117,7 +8011,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,sum4,4,5,6,7,max4,/,NUM_CUS,/,(100),*",
                                "03b6b0e1-67eb-688c-a733-e4e31ceb86ae");
     }
-    { // Index:165
+    { // Index:161
         static constexpr std::array<GpaUInt32, 8> kHardwareCounters = {
                 10574,
                 10906,
@@ -8139,7 +8033,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,sum4,4,5,6,7,max4,/,NUM_SIMDS,/,(100),*",
                                "7ad91320-c40d-6994-dc34-73101a7926f7");
     }
-    { // Index:166
+    { // Index:162
         static constexpr std::array<GpaUInt32, 8> kHardwareCounters = {
                 10558,
                 10890,
@@ -8161,7 +8055,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,sum4,4,5,6,7,max4,/,(100),*",
                                "664e8676-aa15-9861-14d5-c3e4ee208fa1");
     }
-    { // Index:167
+    { // Index:163
         static constexpr std::array<GpaUInt32, 8> kHardwareCounters = {
                 10592,
                 10924,
@@ -8183,7 +8077,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx103(GpaDerivedCounters& c)
                                "0,1,2,3,sum4,4,5,6,7,max4,/,NUM_CUS,/,(100),*",
                                "ea835ad2-e28a-3d46-3e08-04d51e072a71");
     }
-    { // Index:168
+    { // Index:164
         static constexpr std::array<GpaUInt32, 8> kHardwareCounters = {
                 10596,
                 10928,

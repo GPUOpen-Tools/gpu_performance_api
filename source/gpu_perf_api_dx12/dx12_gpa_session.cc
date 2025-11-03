@@ -684,7 +684,7 @@ GpaStatus Dx12GpaSession::SpmCalculateDerivedCounters(const GpaSpmData* spm_data
             return kGpaStatusErrorFailed;
         }
     }
-#endif  // _DEBUG
+#endif
 
     // Generally the SPM data is 16-bits, but some blocks only support 32-bit.
     // Track if the data is returned as 32-bit data, so it can be processed correctly.
@@ -801,17 +801,16 @@ GpaStatus Dx12GpaSession::SpmCalculateDerivedCounters(const GpaSpmData* spm_data
 
         GDT_HW_GENERATION hw_generation;
         assert(GetParentContext() != nullptr);
-        assert(GetParentContext()->GetHwInfo() != nullptr);
-        const GpaHwInfo* hw_info = GetParentContext()->GetHwInfo();
-        if (!hw_info->GetHwGeneration(hw_generation))
+        const GpaHwInfo& hw_info = GetParentContext()->GetHwInfo();
+        if (!hw_info.GetHwGeneration(hw_generation))
         {
             GPA_LOG_ERROR("Unable to get HW generation while calculating SPM derived counter.");
             return kGpaStatusErrorFailed;
         }
 
-        uint64_t max_waves_per_shader_engine = (hw_info->GetNumberSimds() * hw_info->GetWavesPerSimd()) / hw_info->GetNumberShaderEngines();
+        const uint64_t max_waves_per_shader_engine = (hw_info.GetNumberSimds() * hw_info.GetWavesPerSimd()) / hw_info.GetNumberShaderEngines();
 
-        const std::set<unsigned int>& level_counters = counter_accessor->GetHardwareCounters()->level_waves_indices_;
+        const std::set<unsigned int>& level_counters = counter_accessor->GetHardwareCounters().level_waves_indices_;
 
         // Store the running sum of a particular level counter.
         std::map<uint32_t, int64_t> level_counter_summations;
@@ -913,26 +912,18 @@ GpaStatus Dx12GpaSession::SpmCalculateDerivedCounters(const GpaSpmData* spm_data
             {
                 const auto& samples = sample_sets[current_sample];
 
-                std::vector<const uint64_t*> results;
-                std::vector<GpaDataType>     types;
-
                 constexpr uint32_t              kCounterSourcePublic       = static_cast<uint32_t>(GpaCounterSource::kPublic);
                 const gpa_array_view<GpaUInt32> required_hardware_counters = std::get<kCounterSourcePublic>(internal_counters_required);
 
                 const size_t required_count = required_hardware_counters.size();
-                results.reserve(required_count);
 
-                types.resize(required_count, kGpaDataTypeUint64);
-
-                std::vector<GpaUInt64> all_results(required_count);
+                std::vector<GpaUInt64> results(required_count);
 
                 unsigned int result_index = 0;
                 for (const GpaUInt32 counter : required_hardware_counters)
                 {
-                    GpaUInt64* result_buffer = &(all_results.data()[result_index]);
+                    GpaUInt64* result_buffer = &results[result_index];
                     ++result_index;
-
-                    results.push_back(result_buffer);
 
                     auto counter_result_entry = counter_result_map[counter];
 
@@ -946,27 +937,10 @@ GpaStatus Dx12GpaSession::SpmCalculateDerivedCounters(const GpaSpmData* spm_data
                     }
                 }
 
-                GpaDataType current_counter_type = counter_accessor->GetCounterDataType(exposed_counter_index);
+                // The code below is only valid while the only data types supported are Float64 and Uint64
+                static_assert(kGpaDataTypeLast == 2);
 
-                // compute using supplied function. value order is as defined when registered
-                if (kGpaDataTypeFloat64 == current_counter_type)
-                {
-                    double float_value = 0;
-                    status = counter_accessor->ComputePublicCounterValue(source_local_index, results, types, &float_value, GetParentContext()->GetHwInfo());
-
-                    *dest_results = static_cast<uint64_t>(float_value);
-                }
-                else if (kGpaDataTypeUint64 == current_counter_type)
-                {
-                    status = counter_accessor->ComputePublicCounterValue(
-                        source_local_index, results, types, reinterpret_cast<GpaUInt64*>(dest_results), GetParentContext()->GetHwInfo());
-                }
-                else
-                {
-                    assert(0);
-                    GPA_LOG_ERROR("Unknown counter sample result data type.");
-                    status = kGpaStatusErrorInvalidDataType;
-                }
+                status = counter_accessor->ComputePublicCounterValue(source_local_index, results, &dest_results, GetParentContext()->GetHwInfo());
 
                 break;
             }

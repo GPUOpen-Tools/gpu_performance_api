@@ -20,24 +20,24 @@ struct GpaSqCounterGroupDesc;
 
 namespace counter_oglp_gfx103
 {
-    extern std::vector<std::vector<GpaHardwareCounterDesc>*>          kOglpCounterGroupArrayGfx103; ///< Array of hardware counter groups for Oglp for Gfx103 family
-    extern std::vector<GpaCounterGroupDesc>                           kHwOglpGroupsGfx103; ///< Array of counter groups for Oglp for Gfx103 family
-    extern GpaCounterGroupExposedCounterDesc                          kHwOglpExposedCountersByGroupGfx103[]; ///< Array of exposed counter groups for Oglp for Gfx103 family
-    extern GpaPaddedCounterDesc                                       kOglpPaddedCounterByGroupGfx103[]; ///< Array of reserved counter for Oglp for Gfx103 family
-    extern GpaSqCounterGroupDesc                                      kHwOglpSqGroupsGfx103[]; ///< Array of SQ groups for Oglp for Gfx103 family
-    extern unsigned int                                               kHwOglpSqIsolatedGroupsGfx103[]; ///< Array of counter groups isolated from SQ counter groups for Oglp for Gfx103 family
-    extern const unsigned int                                         kHwOglpGpuTimeBottomToBottomDurationIndexGfx103; ///< Index of delta between the previous command reaching bottom of pipe and the current command reaching bottom of pipe, will not include latency of first data to travel through pipeline, best for large data sets. for Oglp for Gfx103 family
-    extern const unsigned int                                         kHwOglpGpuTimeBottomToBottomStartIndexGfx103; ///< Index of time of the previous command reaching bottom of pipe for Oglp for Gfx103 family
-    extern const unsigned int                                         kHwOglpGpuTimeBottomToBottomEndIndexGfx103; ///< Index of time of the current command reaching bottom of pipe for Oglp for Gfx103 family
-    extern const unsigned int                                         kHwOglpGpuTimeTopToBottomDurationIndexGfx103; ///< Index of execution duration of the current command from top of pipe to bottom of pipe, may include overhead of time in queue for Oglp for Gfx103 family
-    extern const unsigned int                                         kHwOglpGpuTimeTopToBottomStartIndexGfx103; ///< Index of time that the current command reaches the top of pipe for Oglp for Gfx103 family
-    extern const unsigned int                                         kHwOglpGpuTimeTopToBottomEndIndexGfx103; ///< Index of time that the current command reaches the bottom of pipe for Oglp for Gfx103 family
-    extern const std::set<unsigned int>                               kHwOglpTimestampBlockIdsGfx103; ///< Timestamp block id's for Oglp for Gfx103 family
-    extern const std::set<unsigned int>                               kHwOglpTimeCounterIndicesGfx103; ///< Timestamp counter indices for Oglp for Gfx103 family
-    extern const unsigned int                                         kHwOglpGroupCountGfx103; ///< Hardware Group Count for Oglp for Gfx103 family
-    extern const unsigned int                                         kOglpPaddedCounterGroupCountGfx103; ///< reserved counter group count for Oglp for Gfx103 family
-    extern const unsigned int                                         kHwOglpSqGroupCountGfx103; ///< Hardware SQ Group Count for Oglp for Gfx103 family
-    extern const unsigned int                                         kHwOglpSqIsolatedGroupCountGfx103; ///< Hardware Isolated Group Count for Oglp for Gfx103 family
+    extern const gpa_array_view<gpa_array_view<GpaHardwareCounterDesc>> kOglpCounterGroupArrayGfx103; ///< Array of hardware counter groups for Oglp for Gfx103 family
+    extern const gpa_array_view<GpaCounterGroupDesc>                    kHwOglpGroupsGfx103; ///< Array of counter groups for Oglp for Gfx103 family
+    extern GpaCounterGroupExposedCounterDesc                            kHwOglpExposedCountersByGroupGfx103[]; ///< Array of exposed counter groups for Oglp for Gfx103 family
+    extern GpaPaddedCounterDesc                                         kOglpPaddedCounterByGroupGfx103[]; ///< Array of reserved counter for Oglp for Gfx103 family
+    extern GpaSqCounterGroupDesc                                        kHwOglpSqGroupsGfx103[]; ///< Array of SQ groups for Oglp for Gfx103 family
+    extern unsigned int                                                 kHwOglpSqIsolatedGroupsGfx103[]; ///< Array of counter groups isolated from SQ counter groups for Oglp for Gfx103 family
+    extern const unsigned int                                           kHwOglpGpuTimeBottomToBottomDurationIndexGfx103; ///< Index of delta between the previous command reaching bottom of pipe and the current command reaching bottom of pipe, will not include latency of first data to travel through pipeline, best for large data sets. for Oglp for Gfx103 family
+    extern const unsigned int                                           kHwOglpGpuTimeBottomToBottomStartIndexGfx103; ///< Index of time of the previous command reaching bottom of pipe for Oglp for Gfx103 family
+    extern const unsigned int                                           kHwOglpGpuTimeBottomToBottomEndIndexGfx103; ///< Index of time of the current command reaching bottom of pipe for Oglp for Gfx103 family
+    extern const unsigned int                                           kHwOglpGpuTimeTopToBottomDurationIndexGfx103; ///< Index of execution duration of the current command from top of pipe to bottom of pipe, may include overhead of time in queue for Oglp for Gfx103 family
+    extern const unsigned int                                           kHwOglpGpuTimeTopToBottomStartIndexGfx103; ///< Index of time that the current command reaches the top of pipe for Oglp for Gfx103 family
+    extern const unsigned int                                           kHwOglpGpuTimeTopToBottomEndIndexGfx103; ///< Index of time that the current command reaches the bottom of pipe for Oglp for Gfx103 family
+    extern const std::set<unsigned int>                                 kHwOglpTimestampBlockIdsGfx103; ///< Timestamp block id's for Oglp for Gfx103 family
+    extern const std::set<unsigned int>                                 kHwOglpTimeCounterIndicesGfx103; ///< Timestamp counter indices for Oglp for Gfx103 family
+    extern const unsigned int                                           kHwOglpGroupCountGfx103; ///< Hardware Group Count for Oglp for Gfx103 family
+    extern const unsigned int                                           kOglpPaddedCounterGroupCountGfx103; ///< reserved counter group count for Oglp for Gfx103 family
+    extern const unsigned int                                           kHwOglpSqGroupCountGfx103; ///< Hardware SQ Group Count for Oglp for Gfx103 family
+    extern const unsigned int                                           kHwOglpSqIsolatedGroupCountGfx103; ///< Hardware Isolated Group Count for Oglp for Gfx103 family
 
 /// @brief If the requested ASIC type is supported, then the global GPU generation block instance counters are updated.
 ///
@@ -48,11 +48,10 @@ inline bool OverrideMaxBlockEvents(GDT_HW_ASIC_TYPE asic_type)
 {
     UNREFERENCED_PARAMETER(asic_type);
 
-
     return true;
 }
 } //  namespace counter_oglp_gfx103
 
 // clang-format on
 
-#endif  // GPA_AUTO_GENERATED_GPU_PERF_API_COUNTER_GENERATOR_GPA_HW_COUNTER_OGLP_GFX103_H_
+#endif

@@ -1,4 +1,5 @@
-## Copyright (c) 2018-2025 Advanced Micro Devices, Inc. All rights reserved.
+## Copyright (C) 2018-2025 Advanced Micro Devices, Inc. All rights reserved. ##
+
 include(${CMAKE_CURRENT_LIST_DIR}/Global-Internal.cmake)
 
 # ProjectName must be set by each Tools project
@@ -55,7 +56,11 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 if(WIN32)
     set(COMMON_COMPILATION_FLAGS ${COMMON_COMPILATION_FLAGS} /W4 /WX)
 else()
-    set(COMMON_COMPILATION_FLAGS ${COMMON_COMPILATION_FLAGS} -std=c++17 -D_LINUX -fPIC -Wall -Werror)
+    set(COMMON_COMPILATION_FLAGS ${COMMON_COMPILATION_FLAGS} -D_LINUX -fPIC -Wall -Werror)
+
+    if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+        set(COMMON_COMPILATION_FLAGS ${COMMON_COMPILATION_FLAGS} -fbracket-depth=1024)
+    endif()
 endif()
 
 ## Set Global defintions
@@ -160,7 +165,6 @@ endif()
 set_property(DIRECTORY PROPERTY COMPILE_OPTIONS ${COMMON_COMPILATION_FLAGS}
                                 $<$<CONFIG:DEBUG>:${COMMON_DEBUG_COMPILATION_FLAGS}>
                                 $<$<CONFIG:RELEASE>:${COMMON_RELEASE_COMPILATION_FLAGS}>)
-
 
 ## var for adding additional library dependencies
 ## For usage add this to target_link_libraries(...)

@@ -146,7 +146,8 @@ bool GpaCounterGeneratorGl::GenerateDriverSuppliedInternalCounters(GpaHardwareCo
             for (int c = 0; c < num_counters; c++)
             {
                 counter.group_index       = driver_supplied_groups_[i].group_index + 1;
-                counter.hardware_counters = new (std::nothrow) GpaHardwareCounterDesc;
+                auto* hardware_counter    = new (std::nothrow) GpaHardwareCounterDesc;
+                counter.hardware_counters = hardware_counter;
 
                 if (nullptr == counter.hardware_counters)
                 {
@@ -156,9 +157,9 @@ bool GpaCounterGeneratorGl::GenerateDriverSuppliedInternalCounters(GpaHardwareCo
                     return false;
                 }
 
-                hardware_counter_descs_.push_back(counter.hardware_counters);
+                hardware_counter_descs_.push_back(hardware_counter);
 
-                counter.hardware_counters->counter_index_in_group = c;
+                hardware_counter->counter_index_in_group = c;
 
                 GLsizei name_length;
                 ogl_utils::ogl_get_perf_monitor_counter_string_amd(driver_perf_group_id, c, 0, &name_length, nullptr);
@@ -179,7 +180,7 @@ bool GpaCounterGeneratorGl::GenerateDriverSuppliedInternalCounters(GpaHardwareCo
 
                 ogl_utils::ogl_get_perf_monitor_counter_string_amd(driver_perf_group_id, c, name_length, nullptr, counter_name);
 
-                counter.hardware_counters->name = GPA_HIDE_NAME(counter_name);
+                hardware_counter->name = GPA_HIDE_NAME(counter_name);
 
                 size_t description_length              = 1 + strlen(kDriverSuppliedCounter);  // 1 for the terminating null.
                 auto hw_group_desc = new (std::nothrow) char[description_length];
@@ -197,7 +198,7 @@ bool GpaCounterGeneratorGl::GenerateDriverSuppliedInternalCounters(GpaHardwareCo
                 memset(hw_group_desc, 0, description_length);
                 strcpy_s(hw_group_desc, description_length, GPA_HIDE_NAME(kDriverSuppliedCounter));
 
-                counter.hardware_counters->description = hw_group_desc;
+                hardware_counter->description = hw_group_desc;
 
                 size_t hw_group_name_length      = 1 + strlen(group_name);  // 1 for the terminating null.
                 auto hw_group_name = new (std::nothrow) char[hw_group_name_length];
@@ -215,8 +216,8 @@ bool GpaCounterGeneratorGl::GenerateDriverSuppliedInternalCounters(GpaHardwareCo
                 memset(hw_group_name, 0, hw_group_name_length);
                 strcpy_s(hw_group_name, hw_group_name_length, GPA_HIDE_NAME(group_name));
 
-                counter.hardware_counters->group = hw_group_name;
-                counter.hardware_counters->type  = kGpaDataTypeUint64;
+                hardware_counter->group          = hw_group_name;
+                hardware_counter->type           = kGpaDataTypeUint64;
                 counter.group_id_driver          = driver_perf_group_id;
                 counter.counter_id_driver        = 0;
 
@@ -253,13 +254,13 @@ GpaStatus GpaCounterGeneratorGl::GenerateInternalCounters(GpaHardwareCounters* h
     // Iterate over counter array, which will either be populated with only exposed counters or all counters in internal builds.
     for (unsigned int g = 0; g < counter_array_size; g++)
     {
-        std::vector<GpaHardwareCounterDesc>* gl_group = hardware_counters->counter_groups_array_.at(g);
-        GpaCounterGroupDesc                  group    = hardware_counters->internal_counter_groups_.at(g + offset);
+        const gpa_array_view<GpaHardwareCounterDesc>& gl_group = hardware_counters->counter_groups_array_[g];
+        const GpaCounterGroupDesc&                    group    = hardware_counters->internal_counter_groups_[g + offset];
 
-        const unsigned int num_exposed_counters_in_group = static_cast<unsigned int>(gl_group->size());
+        const unsigned int num_exposed_counters_in_group = static_cast<unsigned int>(gl_group.size());
         const unsigned int total_counters_in_group       = static_cast<int>(group.num_counters);
 
-        if (strncmp(gl_group->at(0).group, group.name, strlen(group.name)) != 0)
+        if (strncmp(gl_group[0].group, group.name, strlen(group.name)) != 0)
         {
             global_counter_group_base += total_counters_in_group;
             offset++;
@@ -270,14 +271,14 @@ GpaStatus GpaCounterGeneratorGl::GenerateInternalCounters(GpaHardwareCounters* h
         for (unsigned int c = 0; c < num_exposed_counters_in_group; c++)
         {
             counter.group_index       = g + offset;
-            counter.hardware_counters = &(gl_group->at(c));
+            counter.hardware_counters = &(gl_group[c]);
 
             // Temporarily set the group_id_driver to be group index, but we actually need to query the group IDs from GL.
             // GPUPerfAPIGL will query the runtime in OpenContext for this information and will update the group Ids.
             counter.group_id_driver   = g + offset;
             counter.counter_id_driver = 0;
 
-            global_counter_index = static_cast<GpaUInt32>(global_counter_group_base + gl_group->at(c).counter_index_in_group);
+            global_counter_index = static_cast<GpaUInt32>(global_counter_group_base + gl_group[c].counter_index_in_group);
             hardware_counters->hardware_counters_.insert(std::pair<GpaUInt32, GpaHardwareCounterDescExt>(global_counter_index, counter));
         }
         // Adding total number of counters in group to "skip" past counters just added above.

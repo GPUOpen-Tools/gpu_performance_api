@@ -5,16 +5,10 @@
 /// @brief Manages a set of derived counters.
 //==============================================================================
 
-#include <stdio.h>
-#include <string.h>  // For strcpy.
-
-#ifdef __cplusplus
-#include <cstdint>
-#else
-#include <stdint.h>
-#endif
-
 #include <algorithm>
+#include <cstdio>
+#include <cstring>
+#include <cstdint>
 #include <sstream>
 
 #include "gpu_perf_api_common/gpa_common_defs.h"
@@ -25,21 +19,6 @@
 #include "gpu_perf_api_counter_generator/gpa_derived_counter.h"
 #include "gpu_perf_api_counter_generator/gpa_derived_counter_evaluator.hpp"
 #include "gpu_perf_api_counter_generator/gpa_hardware_counters.h"
-
-GpaDerivedCounterInfoClass::GpaDerivedCounterInfoClass()
-    : counter_index_(0u)
-    , counter_name_(nullptr)
-    , counter_group_(nullptr)
-    , counter_description_(nullptr)
-    , data_type_(kGpaDataTypeLast)
-    , usage_type_(kGpaUsageTypeLast)
-    , discrete_counter_(false)
-    , spm_counter_(false)
-    , compute_expression_(nullptr)
-    , counter_info_(nullptr)
-    , derived_counter_info_init_(false)
-{
-}
 
 GpaDerivedCounterInfoClass::GpaDerivedCounterInfoClass(unsigned int              index,
                                                        const char*               counter_name,
@@ -62,8 +41,6 @@ GpaDerivedCounterInfoClass::GpaDerivedCounterInfoClass(unsigned int             
     , spm_counter_(spm_counter)
     , internal_counters_required_(internal_counters_required)
     , compute_expression_(compute_expression)
-    , counter_info_(nullptr)
-    , derived_counter_info_init_(false)
 {
     uint32_t bytes[8];
 #ifdef _WIN32
@@ -145,12 +122,12 @@ bool GpaDerivedCounterInfoClass::InitializeDerivedCounterHardwareInfo(const IGpa
 
             if (nullptr != counter_info_->gpa_derived_counter)
             {
-                const GpaHardwareCounters* hardware_counters = gpa_counter_accessor->GetHardwareCounters();
+                const GpaHardwareCounters& hardware_counters = gpa_counter_accessor->GetHardwareCounters();
 
                 for (const GpaUInt32 internal_counter : internal_counters_required_)
                 {
                     GpaHwCounter hw_counter;
-                    if (hardware_counters->GetHardwareInfo(internal_counter, hw_counter))
+                    if (hardware_counters.GetHardwareInfo(internal_counter, hw_counter))
                     {
                         hw_counter_info_list_.push_back(hw_counter);
                     }
@@ -212,7 +189,7 @@ void GpaDerivedCounters::DefineDerivedCounter(const char*               counter_
     assert(strlen(compute_expression) > 0);
     assert(uuid);
 
-    unsigned int index = static_cast<unsigned int>(derived_counter_list_.size());
+    const auto index = static_cast<unsigned int>(derived_counter_list_.size());
 
 #ifdef ANDROID
     if ((strcmp(counter_name, "LocalVidMemBytes") == 0) || (strcmp(counter_name, "PcieBytes") == 0))
@@ -221,22 +198,22 @@ void GpaDerivedCounters::DefineDerivedCounter(const char*               counter_
     }
 #endif
 
-    bool add_counter = ((kGpaSessionSampleTypeDiscreteCounter == sample_type_) && discrete_counter) ||
-                       ((kGpaSessionSampleTypeStreamingCounter == sample_type_) && spm_counter);
+    const bool add_counter = ((kGpaSessionSampleTypeDiscreteCounter == sample_type_) && discrete_counter) ||
+                             ((kGpaSessionSampleTypeStreamingCounter == sample_type_) && spm_counter);
 
     if (add_counter)
     {
-        derived_counter_list_.push_back(GpaDerivedCounterInfoClass(index,
-                                                                   counter_name,
-                                                                   counter_group,
-                                                                   counter_description,
-                                                                   data_type,
-                                                                   usage_type,
-                                                                   discrete_counter,
-                                                                   spm_counter,
-                                                                   internal_counters_required,
-                                                                   compute_expression,
-                                                                   uuid));
+        derived_counter_list_.emplace_back(GpaDerivedCounterInfoClass(index,
+                                                                      counter_name,
+                                                                      counter_group,
+                                                                      counter_description,
+                                                                      data_type,
+                                                                      usage_type,
+                                                                      discrete_counter,
+                                                                      spm_counter,
+                                                                      internal_counters_required,
+                                                                      compute_expression,
+                                                                      uuid));
     }
 }
 
@@ -273,12 +250,12 @@ GpaUInt32 GpaDerivedCounters::GetNumCounters() const
 }
 
 GpaStatus GpaDerivedCounters::ComputeCounterValue(GpaUInt32                       counter_index,
-                                                  const vector<const GpaUInt64*>& results,
-                                                  vector<GpaDataType>&            internal_counter_types,
+                                                  const gpa_array_view<GpaUInt64> results,
                                                   void*                           result,
-                                                  const GpaHwInfo*                hw_info) const
+                                                  const GpaHwInfo&                hw_info) const
 {
-    if (nullptr == derived_counter_list_[counter_index].compute_expression_)
+    const char* compute_expression = derived_counter_list_[counter_index].compute_expression_;
+    if (nullptr == compute_expression)
     {
         GPA_LOG_ERROR("Unable to compute counter value: no equation specified.");
         return kGpaStatusErrorInvalidCounterEquation;
@@ -286,30 +263,25 @@ GpaStatus GpaDerivedCounters::ComputeCounterValue(GpaUInt32                     
 
     GpaStatus status = kGpaStatusOk;
 
-    if (internal_counter_types[0] == kGpaDataTypeUint64)
+    const GpaDataType date_type = derived_counter_list_[counter_index].data_type_;
+
+    static_assert(kGpaDataTypeLast == 2);
+
+    if (date_type == kGpaDataTypeFloat64)
     {
-        if (derived_counter_list_[counter_index].data_type_ == kGpaDataTypeFloat64)
-        {
-            status = EvaluateExpression<GpaFloat64, GpaUInt64>(
-                derived_counter_list_[counter_index].compute_expression_, result, results, derived_counter_list_[counter_index].data_type_, hw_info);
+        status = EvaluateExpression<GpaFloat64>(compute_expression, result, results, date_type, hw_info);
 
-        }
-        else if (derived_counter_list_[counter_index].data_type_ == kGpaDataTypeUint64)
-        {
-            status = EvaluateExpression<GpaUInt64, GpaUInt64>(
-                derived_counter_list_[counter_index].compute_expression_, result, results, derived_counter_list_[counter_index].data_type_, hw_info);
+    }
+    else if (date_type == kGpaDataTypeUint64)
+    {
+        status = EvaluateExpression<GpaUInt64>(compute_expression, result, results, date_type, hw_info);
 
-        }
-        else
-        {
-            // Derived counter type not recognized or not currently supported.
-            GPA_LOG_ERROR("Unable to compute counter value: unrecognized derived counter type.");
-            assert(false);
-        }
     }
     else
     {
+        // Derived counter type not recognized or not currently supported.
         GPA_LOG_ERROR("Unable to compute counter value: unrecognized derived counter type.");
+        assert(false);
         return kGpaStatusErrorInvalidDataType;
     }
 

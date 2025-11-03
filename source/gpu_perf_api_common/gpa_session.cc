@@ -265,12 +265,12 @@ GpaCounterSource GpaSession::GetCounterSource(GpaUInt32 internal_counter_index) 
 
     if (nullptr != counter_accessor)
     {
-        const GpaHardwareCounters* hardware_counters = counter_accessor->GetHardwareCounters();
+        const GpaHardwareCounters& hardware_counters = counter_accessor->GetHardwareCounters();
 
-        GpaCounterGroupAccessor counter_group_accessor(hardware_counters->internal_counter_groups_,
-                                                       static_cast<unsigned int>(hardware_counters->internal_counter_groups_.size()),
-                                                       hardware_counters->additional_groups_,
-                                                       hardware_counters->additional_group_count_);
+        GpaCounterGroupAccessor counter_group_accessor(hardware_counters.internal_counter_groups_,
+                                                       static_cast<unsigned int>(hardware_counters.internal_counter_groups_.size()),
+                                                       hardware_counters.additional_groups_,
+                                                       hardware_counters.additional_group_count_);
 
         counter_group_accessor.SetCounterIndex(internal_counter_index);
 
@@ -952,8 +952,6 @@ GpaStatus GpaSession::GetSampleResult(GpaUInt32 sample_id, size_t sample_result_
             return kGpaStatusErrorIndexOutOfRange;
         }
 
-        std::vector<const GpaUInt64*> results;
-        std::vector<GpaDataType>      types;
         const std::variant<gpa_array_view<GpaUInt32>, GpaUInt32> internal_counters_required =
             GpaContextCounterMediator::Instance()->GetCounterAccessor(this)->GetInternalCountersRequired(exposed_counter_index);
         CounterResultLocationMap result_locations = counter_result_locations_[exposed_counter_index];
@@ -975,21 +973,16 @@ GpaStatus GpaSession::GetSampleResult(GpaUInt32 sample_id, size_t sample_result_
         {
             constexpr uint32_t              kCounterSourcePublic      = static_cast<uint32_t>(GpaCounterSource::kPublic);
             const gpa_array_view<GpaUInt32> require_hardware_counters = std::get<kCounterSourcePublic>(internal_counters_required);
-            size_t                          required_count            = require_hardware_counters.size();
-            results.reserve(required_count);
-            types.reserve(required_count);
+            const size_t                    required_count            = require_hardware_counters.size();
 
-            std::vector<GpaUInt64> all_results(required_count);
+            std::vector<GpaUInt64> results(required_count);
 
             unsigned int result_index = 0;
 
             for (const GpaUInt32 counter : require_hardware_counters)
             {
-                GpaUInt64* result_buffer = &(all_results.data()[result_index]);
+                GpaUInt64* result_buffer = &(results[result_index]);
                 ++result_index;
-                results.push_back(result_buffer);
-                GpaDataType type = kGpaDataTypeUint64;  // All hardware counters are UINT64.
-                types.push_back(type);
 
                 std::map<unsigned int, GpaCounterResultLocation>::iterator result_location_iter = result_locations.find(counter);
 
@@ -1008,31 +1001,13 @@ GpaStatus GpaSession::GetSampleResult(GpaUInt32 sample_id, size_t sample_result_
 
             }
 
-            GpaDataType current_counter_type = counter_accessor->GetCounterDataType(exposed_counter_index);
+            // The code below is only valid while the only data types supported are Float64 and Uint64
+            static_assert(kGpaDataTypeLast == 2);
 
-            // Compute using supplied function. value order is as defined when registered.
-            if (kGpaDataTypeFloat64 == current_counter_type)
-            {
-                status = counter_accessor->ComputePublicCounterValue(source_local_index,
-                                                                     results,
-                                                                     types,
-                                                                     reinterpret_cast<GpaFloat64*>(counter_sample_results) + counter_index_iter,
-                                                                     parent_context_->GetHwInfo());
-            }
-            else if (kGpaDataTypeUint64 == current_counter_type)
-            {
-                status = counter_accessor->ComputePublicCounterValue(source_local_index,
-                                                                     results,
-                                                                     types,
-                                                                     reinterpret_cast<GpaUInt64*>(counter_sample_results) + counter_index_iter,
-                                                                     parent_context_->GetHwInfo());
-            }
-            else
-            {
-                assert(0);
-                GPA_LOG_ERROR("Unknown counter sample result data type.");
-                status = kGpaStatusErrorInvalidDataType;
-            }
+            // Since GpaUInt64 and GpaFloat64 are the same size it doesn't matter which type we use to increment the pointer.
+            void* result = reinterpret_cast<GpaUInt64*>(counter_sample_results) + counter_index_iter;
+
+            status = counter_accessor->ComputePublicCounterValue(source_local_index, results, result, parent_context_->GetHwInfo());
 
             break;
         }

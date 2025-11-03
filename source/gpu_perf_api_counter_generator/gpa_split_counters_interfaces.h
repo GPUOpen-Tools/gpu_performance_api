@@ -575,4 +575,4 @@ protected:
     }
 };
 
-#endif  // GPU_PERF_API_COUNTER_GENERATOR_COMMON_GPA_SPLIT_COUNTERS_INTERFACES_H_
+#endif

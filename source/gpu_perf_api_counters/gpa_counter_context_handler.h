@@ -32,12 +32,12 @@ public:
     /// Initializes the counter for the context.
     ///
     /// @return true upon success otherwise false.
-    bool InitCounters();
+    bool InitCounters(GpaDriverInfo const& driver_info);
 
     /// Returns the hardware info of the context.
     ///
     /// @return Pointer to hardware info.
-    const GpaHwInfo* GetHardwareInfo() const;
+    const GpaHwInfo& GetHardwareInfo() const;
 
     /// Returns the counter accessor for the given context.
     ///
@@ -109,7 +109,8 @@ public:
                                  const GpaSessionSampleType           sample_type,
                                  const GpaCounterContextHardwareInfo& gpa_counter_context_hardware_info,
                                  const GpaOpenContextFlags&           context_flags,
-                                 GpaCounterContext*                   gpa_counter_context);
+                                 GpaCounterContext*                   gpa_counter_context,
+                                 GpaDriverInfo const&                 driver_info);
 
     /// Returns the counter accessor for the given context.
     ///
@@ -170,4 +171,4 @@ private:
     std::map<GpaApiType, IGpaCounterScheduler*> gpa_counter_scheduler_map_;    ///< Map of counter scheduler.
 };
 
-#endif  // GPU_PERF_API_COUNTERS_GPA_COUNTER_CONTEXT_HANDLER_H_
+#endif

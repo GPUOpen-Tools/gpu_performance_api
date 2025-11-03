@@ -1,4 +1,5 @@
-## Copyright (c) 2018-2025 Advanced Micro Devices, Inc. All rights reserved.
+## Copyright (C) 2018-2025 Advanced Micro Devices, Inc. All rights reserved. ##
+
 include(${GPA_CMAKE_MODULES_DIR}/utils.cmake)
 
 # Include global cmake common file

@@ -1,10 +1,4 @@
-/*
-***************************************************************************************************
-*
-*  Copyright (c) 2008-2016 Advanced Micro Devices, Inc. All rights reserved.
-*
-***************************************************************************************************
-*/
+/* Copyright (C) 2008-2025 Advanced Micro Devices, Inc. All rights reserved. */
 /**
 ***************************************************************************************************
 * @file  amddxext.h
@@ -13,7 +7,6 @@
 */
 #ifndef _AMDDXEXT_H_
 #define _AMDDXEXT_H_
-
 
 /// Extended Primitive Topology enumeration
 enum AmdDxExtPrimitiveTopology
@@ -36,7 +29,6 @@ enum AmdDxExtPrimitiveTopology
     AmdDxExtPrimitiveTopology_Max                = 14
 };
 
-
 enum AmdDxExtFeatureToken
 {
     AmdDxExtFeature_ScreenRectSupport           = 1, // Screen Rect supported - data is BOOL
@@ -44,4 +36,4 @@ enum AmdDxExtFeatureToken
     AmdDxExtFeature_DeviceCtxSupport            = 3, // Device Ctx Support
 };
 
-#endif // _AMDDXEXT_H_
+#endif

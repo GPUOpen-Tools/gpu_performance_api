@@ -449,7 +449,9 @@ GPA_LIB_DECL GpaStatus GpaGetSupportedSampleTypes(GpaContextId gpa_context_id, G
         }
         CHECK_NULL_PARAM(sample_types);
 
-        return (*gpa_context_id)->GetSupportedSampleTypes(sample_types);
+        *sample_types = (*gpa_context_id)->GetSupportedSampleTypes();
+
+        return kGpaStatusOk;
     }
     catch (...)
     {
@@ -471,11 +473,11 @@ GPA_LIB_DECL GpaStatus GpaGetDeviceAndRevisionId(GpaContextId gpa_context_id, Gp
         CHECK_NULL_PARAM(device_id);
         CHECK_NULL_PARAM(revision_id);
 
-        const GpaHwInfo* hw_info = (*gpa_context_id)->GetHwInfo();
+        const GpaHwInfo& hw_info = (*gpa_context_id)->GetHwInfo();
 
         GpaStatus ret_status = kGpaStatusErrorFailed;
 
-        if (nullptr != hw_info && hw_info->GetDeviceId(*device_id) && hw_info->GetRevisionId(*revision_id))
+        if (hw_info.GetDeviceId(*device_id) && hw_info.GetRevisionId(*revision_id))
         {
             ret_status = kGpaStatusOk;
         }
@@ -505,10 +507,10 @@ GPA_LIB_DECL GpaStatus GpaGetDeviceName(GpaContextId gpa_context_id, const char*
         }
         CHECK_NULL_PARAM(device_name);
 
-        const GpaHwInfo* hw_info    = (*gpa_context_id)->GetHwInfo();
+        const GpaHwInfo& hw_info    = (*gpa_context_id)->GetHwInfo();
         GpaStatus        ret_status = kGpaStatusErrorFailed;
 
-        if (nullptr != hw_info && hw_info->GetDeviceName(*device_name))
+        if (hw_info.GetDeviceName(*device_name))
         {
             ret_status = kGpaStatusOk;
         }
@@ -574,11 +576,11 @@ GPA_LIB_DECL GpaStatus GpaGetDeviceGeneration(GpaContextId gpa_context_id, GpaHw
         }
         CHECK_NULL_PARAM(hardware_generation);
 
-        const GpaHwInfo* hw_info    = (*gpa_context_id)->GetHwInfo();
+        const GpaHwInfo& hw_info    = (*gpa_context_id)->GetHwInfo();
         GpaStatus        ret_status = kGpaStatusErrorFailed;
 
         GDT_HW_GENERATION gdt_hw_generation;
-        if (nullptr != hw_info && hw_info->GetHwGeneration(gdt_hw_generation))
+        if (hw_info.GetHwGeneration(gdt_hw_generation))
         {
             ret_status = kGpaStatusOk;
 
@@ -651,20 +653,48 @@ GPA_LIB_DECL GpaStatus GpaGetDeviceMaxWaveSlots(GpaContextId gpa_context_id, Gpa
         }
         CHECK_NULL_PARAM(max_wave_slots);
 
-        GpaStatus ret_status = kGpaStatusErrorFailed;
+        // Calculate the max wave slots
+        const GpaHwInfo& hw_info = (*gpa_context_id)->GetHwInfo();
+        *max_wave_slots          = hw_info.GetMaxWaveSlots();
 
-        if (const GpaHwInfo* hw_info = (*gpa_context_id)->GetHwInfo(); nullptr != hw_info)
-        {
-            ret_status = kGpaStatusOk;
-
-            const auto num_simds           = static_cast<GpaUInt32>(hw_info->GetNumberSimds());
-            const auto wave_slots_per_simd = static_cast<GpaUInt32>(hw_info->GetWavesPerSimd());
-            const auto max                 = num_simds * wave_slots_per_simd;
-
-            *max_wave_slots = max;
-        }
+        constexpr GpaStatus ret_status = kGpaStatusOk;
 
         GPA_INTERNAL_LOG(GpaGetDeviceMaxWaveSlots, MAKE_PARAM_STRING(gpa_context_id) << MAKE_PARAM_STRING(ret_status) << MAKE_PARAM_STRING(*max_wave_slots));
+
+        return ret_status;
+    }
+    catch (...)
+    {
+        return kGpaStatusErrorException;
+    }
+}
+
+GPA_LIB_DECL GpaStatus GpaGetDeviceMaxVgprs(GpaContextId gpa_context_id, GpaUInt32* max_vgprs)
+{
+    try
+    {
+        PROFILE_FUNCTION(GpaGetDeviceMaxVgprs);
+        TRACE_FUNCTION(GpaGetDeviceMaxVgprs);
+
+        if (const GpaStatus status = CheckGPAContentIdExistsAndIsOpen(gpa_context_id); status != kGpaStatusOk)
+        {
+            return status;
+        }
+        CHECK_NULL_PARAM(max_vgprs);
+
+        GpaStatus ret_status = kGpaStatusOk;
+
+        const GpaHwInfo& hw_info = (*gpa_context_id)->GetHwInfo();
+
+        *max_vgprs = hw_info.GetTotalVgprs();
+
+        if (*max_vgprs == 0)
+        {
+            assert(!"All supported GPUs should have a non-0 value!");
+            ret_status = kGpaStatusErrorHardwareNotSupported;
+        }
+
+        GPA_INTERNAL_LOG(GpaGetDeviceMaxVgprs, MAKE_PARAM_STRING(gpa_context_id) << MAKE_PARAM_STRING(ret_status) << MAKE_PARAM_STRING(*max_vgprs));
 
         return ret_status;
     }
@@ -947,15 +977,7 @@ GPA_LIB_DECL GpaStatus GpaCreateSession(GpaContextId gpa_context_id, GpaSessionS
 
         CHECK_NULL_PARAM(gpa_session_id);
 
-        GpaContextSampleTypeFlags context_sample_types;
-
-        GpaStatus local_status = (*gpa_context_id)->GetSupportedSampleTypes(&context_sample_types);
-
-        if (kGpaStatusOk != local_status)
-        {
-            GPA_LOG_ERROR("Unable to get supported sample types from context.");
-            return local_status;
-        }
+        const GpaContextSampleTypeFlags context_sample_types = (*gpa_context_id)->GetSupportedSampleTypes();
 
         // Next check that the set of sample types specified is compatible with context's set of supported sample types.
         {
@@ -1828,12 +1850,7 @@ GPA_LIB_DECL GpaStatus GpaBeginCommandList(GpaSessionId       gpa_session_id,
         if (nullptr != *gpa_command_list_id)
         {
             status = (*(*gpa_command_list_id))->Begin();
-
-            if (status)
-            {
-                (*gpa_session_id)->GetParentContext()->SetInvalidateAndFlushL2Cache(true);
-            }
-            else
+            if (!status)
             {
                 GPA_LOG_ERROR("Unable to begin the command list.");
             }

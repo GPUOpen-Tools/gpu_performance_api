@@ -73,4 +73,4 @@ private:
     std::vector<VkGpaPerfCounterAMD> counter_ids_;
 };
 
-#endif  // GPU_PERF_API_VK_VK_GPA_PASS_H_
+#endif

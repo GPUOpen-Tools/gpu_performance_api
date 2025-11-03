@@ -27,30 +27,30 @@ bool GpaCounterGeneratorVk::IsAmdGpu(GDT_HW_GENERATION generation)
     return generation >= GDT_HW_GENERATION_FIRST_AMD && generation < GDT_HW_GENERATION_LAST;
 }
 
-GpaUInt32 GpaCounterGeneratorVk::CalculateBlockIdVk(GDT_HW_GENERATION generation, GpaCounterGroupDesc* group)
+GpaUInt32 GpaCounterGeneratorVk::CalculateBlockIdVk(GDT_HW_GENERATION generation, const GpaCounterGroupDesc& group)
 {
-    GpaUInt32 group_index = static_cast<GpaUInt32>(group->group_index);
+    GpaUInt32 group_index = static_cast<GpaUInt32>(group.group_index);
 
     if (IsAmdGpu(generation))
     {
         if (generation == GDT_HW_GENERATION_GFX10)
         {
-            return static_cast<GpaUInt32>(counter_vk_gfx10::kHwVkDriverEnumGfx10[group_index]);
+            return static_cast<GpaUInt32>(counter_vk_gfx10::kHwVkDriverBlockIdGfx10[group_index]);
         }
 
         if (generation == GDT_HW_GENERATION_GFX103)
         {
-            return static_cast<GpaUInt32>(counter_vk_gfx103::kHwVkDriverEnumGfx103[group_index]);
+            return static_cast<GpaUInt32>(counter_vk_gfx103::kHwVkDriverBlockIdGfx103[group_index]);
         }
 
         if (generation == GDT_HW_GENERATION_GFX11)
         {
-            return static_cast<GpaUInt32>(counter_vk_gfx11::kHwVkDriverEnumGfx11[group_index]);
+            return static_cast<GpaUInt32>(counter_vk_gfx11::kHwVkDriverBlockIdGfx11[group_index]);
         }
 
         if (generation == GDT_HW_GENERATION_GFX12)
         {
-            return static_cast<GpaUInt32>(counter_vk_gfx12::kHwVkDriverEnumGfx12[group_index]);
+            return static_cast<GpaUInt32>(counter_vk_gfx12::kHwVkDriverBlockIdGfx12[group_index]);
         }
 
         // Don't recognize the specified hardware generation.
@@ -150,13 +150,13 @@ bool GpaCounterGeneratorVk::GenerateInternalCounters(GpaHardwareCounters* hardwa
     // Iterate over counter array, which will either be populated with only exposed counters or all counters in internal builds.
     for (unsigned int g = 0; g < counter_array_size; g++)
     {
-        std::vector<GpaHardwareCounterDesc>* group_counters = hardware_counters->counter_groups_array_.at(g);
-        GpaCounterGroupDesc                  group          = hardware_counters->internal_counter_groups_.at(g + offset);
+        const gpa_array_view<GpaHardwareCounterDesc>& group_counters = hardware_counters->counter_groups_array_[g];
+        const GpaCounterGroupDesc&                    group          = hardware_counters->internal_counter_groups_[g + offset];
 
-        const unsigned int num_exposed_counters_in_group = static_cast<unsigned int>(group_counters->size());
+        const unsigned int num_exposed_counters_in_group = static_cast<unsigned int>(group_counters.size());
         const unsigned int total_counters_in_group       = static_cast<unsigned int>(group.num_counters);
 
-        if (strcmp(group_counters->at(0).group, group.name) != 0)
+        if (strcmp(group_counters[0].group, group.name) != 0)
         {
             global_counter_group_base += total_counters_in_group;
             offset++;
@@ -165,15 +165,15 @@ bool GpaCounterGeneratorVk::GenerateInternalCounters(GpaHardwareCounters* hardwa
         }
 
         // Calculate per-block values outside the for loop.
-        GpaUInt32 block_id = CalculateBlockIdVk(generation, &group);
+        const GpaUInt32 block_id = CalculateBlockIdVk(generation, group);
 
         for (unsigned int c = 0; c < num_exposed_counters_in_group; c++)
         {
             counter.group_index       = g + offset;
-            counter.hardware_counters = &(group_counters->at(c));
+            counter.hardware_counters = &(group_counters[c]);
             counter.group_id_driver   = block_id;
 
-            global_counter_index = static_cast<GpaUInt32>(global_counter_group_base + group_counters->at(c).counter_index_in_group);
+            global_counter_index = static_cast<GpaUInt32>(global_counter_group_base + group_counters[c].counter_index_in_group);
             hardware_counters->hardware_counters_.insert(std::pair<GpaUInt32, GpaHardwareCounterDescExt>(global_counter_index, counter));
         }
         // Adding total number of counters in group to "skip" past counters just added above.

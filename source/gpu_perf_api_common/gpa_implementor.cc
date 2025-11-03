@@ -11,11 +11,14 @@
 #include "gpu_perf_api_common/adapter.h"
 #endif
 
-#include <ADLUtil.h>
+#ifdef _WIN32
+#include "ADLUtil.h"
+#endif
 
 #include "gpu_perf_api_common/gpa_context_counter_mediator.h"
 #include "gpu_perf_api_common/gpa_unique_object.h"
 #include "gpu_perf_api_common/logging.h"
+#include "gpu_perf_api_common/gpa_hw_support.h"
 
 GpaImplementor::GpaImplementor()
     : is_initialized_(false)
@@ -109,6 +112,7 @@ GpaStatus GpaImplementor::OpenContext(void* context, GpaOpenContextFlags flags, 
     {
         GpaHwInfo hw_info;
 
+        const GpaDriverInfo driver_info = QueryDriverInfo();
         if (!IsDriverSupported(context))
         {
             // Driver not supported, logging error.
@@ -116,7 +120,7 @@ GpaStatus GpaImplementor::OpenContext(void* context, GpaOpenContextFlags flags, 
             return kGpaStatusErrorDriverNotSupported;
         }
 
-        if (IsDeviceSupported(context, flags, &hw_info) != kGpaStatusOk)
+        if (IsDeviceSupported(context, flags, driver_info, &hw_info) != kGpaStatusOk)
         {
             GPA_LOG_ERROR("Device not supported.");
             gpa_status = kGpaStatusErrorHardwareNotSupported;
@@ -172,7 +176,7 @@ GpaStatus GpaImplementor::CloseContext(GpaContextId gpa_context_id)
 
         if (is_found)
         {
-            if (CloseApiContext(found_iter->first, gpa_context))
+            if (CloseApiContext(gpa_context))
             {
                 app_context_info_gpa_context_map_.erase(found_iter);
                 GpaUniqueObjectManager::Instance()->DeleteObject(gpa_context_id);
@@ -293,10 +297,15 @@ bool GpaImplementor::IsDeviceGenerationSupported(const GpaHwInfo& hw_info) const
     return false;
 }
 
-GpaStatus GpaImplementor::IsDeviceSupported(GpaContextInfoPtr context_info, GpaOpenContextFlags flags, GpaHwInfo* hw_info) const
+GpaStatus GpaImplementor::IsDeviceSupported(GpaContextInfoPtr    context_info,
+                                            GpaOpenContextFlags  flags,
+                                            GpaDriverInfo const& driver_info,
+                                            GpaHwInfo*           hw_info) const
 {
     bool         found_matching_hw_info = false;
+#ifdef _WIN32
     AsicInfoList asic_info_list;
+#endif
     GpaHwInfo    api_hw_info;
 
     if (!GetHwInfoFromApi(context_info, flags, api_hw_info))
@@ -305,15 +314,18 @@ GpaStatus GpaImplementor::IsDeviceSupported(GpaContextInfoPtr context_info, GpaO
         return kGpaStatusErrorFailed;
     }
 
+    const GpaApiType api = GetApiType();
+
     if (api_hw_info.IsAmd())
     {
         // Checking for AMD GPUs that are not supported by GPA for one reason or another.
-        if (api_hw_info.IsUnsupportedDeviceId())
+        if (api_hw_info.IsUnsupportedDeviceId(api, driver_info))
         {
             GPA_LOG_ERROR("The current hardware does not properly support GPUPerfAPI.");
             return kGpaStatusErrorHardwareNotSupported;
         }
 
+#ifdef _WIN32
         AMDTADLUtils::Instance()->GetAsicInfoList(asic_info_list);
         AMDTADLUtils::DeleteInstance();
         GpaHwInfo asic_hw_info;
@@ -327,8 +339,7 @@ GpaStatus GpaImplementor::IsDeviceSupported(GpaContextInfoPtr context_info, GpaO
 
         for (const auto& asic_info : asic_info_list)
         {
-            // Skip integrated GPUs that are not supported.
-            if (asic_hw_info.IsUnsupportedDeviceId(asic_info.deviceID))
+            if (IsDeviceUnprofilable(asic_info.deviceID, asic_info.revID, api, driver_info))
             {
                 continue;
             }
@@ -338,7 +349,7 @@ GpaStatus GpaImplementor::IsDeviceSupported(GpaContextInfoPtr context_info, GpaO
             asic_hw_info.SetDeviceId(asic_info.deviceID);
             asic_hw_info.SetRevisionId(asic_info.revID);
             asic_hw_info.SetGpuIndex(asic_info.gpuIndex);
-            asic_hw_info.UpdateDeviceInfoBasedOnDeviceId();
+            asic_hw_info.UpdateDeviceInfoBasedOnDeviceId(api, driver_info);
 
             if (CompareHwInfo(api_hw_info, asic_hw_info))
             {
@@ -350,13 +361,14 @@ GpaStatus GpaImplementor::IsDeviceSupported(GpaContextInfoPtr context_info, GpaO
                     api_hw_info.SetRevisionId(asic_info.revID);
                 }
 
-                api_hw_info.UpdateDeviceInfoBasedOnDeviceId();
+                api_hw_info.UpdateDeviceInfoBasedOnDeviceId(api, driver_info);
 
                 // This device matches what the application is running on, so break from the loop.
                 found_matching_hw_info = true;
                 break;
             }
         }
+#endif
     }
 
 #if defined(WIN32)
@@ -387,7 +399,7 @@ GpaStatus GpaImplementor::IsDeviceSupported(GpaContextInfoPtr context_info, GpaO
                 else
                 {
                     // This call makes sure the hw generation is set correctly.
-                    asic_hw_info.UpdateDeviceInfoBasedOnDeviceId();
+                    asic_hw_info.UpdateDeviceInfoBasedOnDeviceId(api, driver_info);
                 }
 
                 if (CompareHwInfo(api_hw_info, asic_hw_info))
@@ -400,7 +412,7 @@ GpaStatus GpaImplementor::IsDeviceSupported(GpaContextInfoPtr context_info, GpaO
                         api_hw_info.SetRevisionId(asic_info.revID);
                     }
 
-                    api_hw_info.UpdateDeviceInfoBasedOnDeviceId();
+                    api_hw_info.UpdateDeviceInfoBasedOnDeviceId(api, driver_info);
 
                     // This device matches what the application is running on, so break from the loop.
                     found_matching_hw_info = true;
@@ -414,14 +426,14 @@ GpaStatus GpaImplementor::IsDeviceSupported(GpaContextInfoPtr context_info, GpaO
         }
     }
 
-#endif  // WIN32
+#endif
 
     if (!found_matching_hw_info)
     {
         // This code path is for systems where ADL is not available. ADL is not available on ROCm systems as well as on amdgpu systems.
         // API specific hardware information mostly gets basic information (namely just needs to get VendorID and DeviceID), so we need to update
         // the device info with additional information that we store per-deviceID.
-        bool device_info_ok = api_hw_info.UpdateDeviceInfoBasedOnDeviceId();
+        const bool device_info_ok = api_hw_info.UpdateDeviceInfoBasedOnDeviceId(api, driver_info);
 
         if (!device_info_ok)
         {

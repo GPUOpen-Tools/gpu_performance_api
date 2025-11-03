@@ -27,4 +27,4 @@ namespace oglp_gfx11_gfx1103
 }  // namespace oglp_gfx11_gfx1103
 
 // clang-format on
-#endif  // GPA_AUTO_GEN_COUNTER_GEN_PUBLIC_COUNTER_DEFINITIONS_OGLP_GFX11_GFX1103_H_
+#endif

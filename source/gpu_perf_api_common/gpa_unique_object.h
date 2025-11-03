@@ -192,4 +192,4 @@ private:
     mutable std::mutex             mutex_;                   ///< Mutex for unique object manager class.
 };
 
-#endif  // GPU_PERF_API_COMMON_GPA_UNIQUE_OBJECT_H_
+#endif

@@ -287,6 +287,21 @@ GPA_LIB_DECL GpaStatus GpaGetDeviceGeneration(GpaContextId gpa_context_id, GpaHw
 /// @retval kGpaStatusErrorContextNotOpen If the supplied context has not been opened.
 GPA_LIB_DECL GpaStatus GpaGetDeviceMaxWaveSlots(GpaContextId gpa_context_id, GpaUInt32* max_wave_slots);
 
+/// @brief Gets the max number of VGPRs on the GPU.
+///
+/// @ingroup gpa_context_interrogation
+///
+/// @param [in] gpa_context_id Unique identifier of the opened context.
+/// @param [out] max_vgprs The value that will be set to the maximum number of VGPRs.
+///
+/// @return The GPA result status of the operation.
+/// @retval kGpaStatusOk If the operation is successful.
+/// @retval kGpaStatusErrorNullPointer If any of the parameters are NULL.
+/// @retval kGpaStatusErrorContextNotFound If the supplied context is invalid.
+/// @retval kGpaStatusErrorContextNotOpen If the supplied context has not been opened.
+/// @retval kGpaStatusErrorHardwareNotSupported If the number of VGPRs is 0.
+GPA_LIB_DECL GpaStatus GpaGetDeviceMaxVgprs(GpaContextId gpa_context_id, GpaUInt32* max_vgprs);
+
 /// @defgroup gpa_counter_interrogation GPA Counter Interrogation
 
 /// @brief Gets the number of counters available.
@@ -1264,6 +1279,6 @@ GPA_LIB_DECL const char* GpaGetStatusAsStr(GpaStatus status);
 
 #else  // Not USE_GPA
 #include "gpu_performance_api/gpu_perf_api_stub.h"
-#endif  // USE_GPA
+#endif
 
-#endif  // GPU_PERFORMANCE_API_GPU_PERF_API_H_
+#endif

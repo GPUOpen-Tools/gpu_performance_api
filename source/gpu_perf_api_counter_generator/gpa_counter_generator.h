@@ -18,7 +18,7 @@
 /// Internal function. We don't want this exposed by the internal DLLs though, so it doesn't use GPALIB_DECL.
 ///
 /// @param [in] desired_api The API to generate counters for.
-/// @param [in] sample_type The type of samples to generate counters for.
+/// @param [in] sample_type The type of samples to generate counters for. kGpaSessionSampleTypeSqtt is an invalid sample type.
 /// @param [in] vendor_id The vendor id to generate counters for.
 /// @param [in] device_id The device id to generate counters for.
 /// @param [in] revision_id The revision id to generate counters for.
@@ -40,4 +40,4 @@ GpaStatus GenerateCounters(GpaApiType             desired_api,
                            IGpaCounterAccessor**  counter_accessor_out,
                            IGpaCounterScheduler** counter_scheduler_out);
 
-#endif  // GPU_PERF_API_COUNTER_GENERATOR_GPA_COUNTER_GENERATOR_H_
+#endif

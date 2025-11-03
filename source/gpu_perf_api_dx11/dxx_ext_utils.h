@@ -22,4 +22,4 @@ namespace dxx_ext_utils
     bool IsMultiGpuPerfExtSupported(IAmdDxExt* dxx_ext);
 }  // namespace dxx_ext_utils
 
-#endif  // GPU_PERF_API_DX11_DXX_EXT_UTILS_H_
+#endif

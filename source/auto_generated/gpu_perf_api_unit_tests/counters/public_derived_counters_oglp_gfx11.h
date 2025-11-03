@@ -125,11 +125,11 @@
 #define DISCRETE_LOCALVIDMEMBYTES_PUBLIC_OGLP_GFX11 108
 #define DISCRETE_PCIEBYTES_PUBLIC_OGLP_GFX11 109
 
-/// Number of public counters for OGLP GFX11 
+/// Number of public counters for OGLP GFX11
 const size_t kOglpGfx11PublicCounterCount = 110;
 
-/// Array of public counters for OGLP GFX11 
+/// Array of public counters for OGLP GFX11
 extern const GpaCounterDesc kOglpGfx11PublicCounters[kOglpGfx11PublicCounterCount];
 
 // clang-format on
-#endif  // GPA_AUTO_GEN_UNIT_TESTS_COUNTERS_PUBLIC_OGLP_GFX11
+#endif

@@ -17,11 +17,10 @@
 
 static const uint32_t kInvalidSampleIndex = static_cast<uint32_t>(-1);  ///< Invalid sample index.
 
-VkGpaHardwareSample::VkGpaHardwareSample(GpaPass* pass, IGpaCommandList* command_list, unsigned int sample_id, VkDevice device)
+VkGpaHardwareSample::VkGpaHardwareSample(GpaPass* pass, IGpaCommandList* command_list, unsigned int sample_id)
     : VkGpaSample(pass, command_list, GpaSampleType::kHardware, sample_id)
     , num_counters_(0)
     , sample_index_(kInvalidSampleIndex)
-    , device_(device)
     , command_buffer_(vk_gpa_command_list_->GetVkCommandBuffer())
     , has_any_hardware_counters_(false)
 {
@@ -149,34 +148,34 @@ GpaSampleResult* VkGpaHardwareSample::PopulateSampleResults()
             {
                 if (GetPass()->IsTimingPass())
                 {
-                    const GpaHardwareCounters* hardware_counters = GetPass()->GetSessionContextCounterAccessor()->GetHardwareCounters();
+                    const GpaHardwareCounters& hardware_counters = GetPass()->GetSessionContextCounterAccessor()->GetHardwareCounters();
 
                     for (CounterCount i = 0; i < GetPass()->GetEnabledCounterCount(); ++i)
                     {
                         CounterIndex counter_index;
                         GetPass()->GetCounterByIndexInPass(i, &counter_index);
 
-                        if (counter_index == hardware_counters->gpu_time_bottom_to_bottom_duration_counter_index_)
+                        if (counter_index == hardware_counters.gpu_time_bottom_to_bottom_duration_counter_index_)
                         {
                             GetSampleResultLocation()->GetAsCounterSampleResult()->GetResultBuffer()[i] = timing_data[1] - timing_data[0];
                         }
-                        else if (counter_index == hardware_counters->gpu_time_bottom_to_bottom_start_counter_index_)
+                        else if (counter_index == hardware_counters.gpu_time_bottom_to_bottom_start_counter_index_)
                         {
                             GetSampleResultLocation()->GetAsCounterSampleResult()->GetResultBuffer()[i] = timing_data[0];
                         }
-                        else if (counter_index == hardware_counters->gpu_time_bottom_to_bottom_end_counter_index_)
+                        else if (counter_index == hardware_counters.gpu_time_bottom_to_bottom_end_counter_index_)
                         {
                             GetSampleResultLocation()->GetAsCounterSampleResult()->GetResultBuffer()[i] = timing_data[1];
                         }
-                        else if (counter_index == hardware_counters->gpu_time_top_to_bottom_duration_counter_index_)
+                        else if (counter_index == hardware_counters.gpu_time_top_to_bottom_duration_counter_index_)
                         {
                             GetSampleResultLocation()->GetAsCounterSampleResult()->GetResultBuffer()[i] = timing_data[1] - timing_data[0];
                         }
-                        else if (counter_index == hardware_counters->gpu_time_top_to_bottom_start_counter_index_)
+                        else if (counter_index == hardware_counters.gpu_time_top_to_bottom_start_counter_index_)
                         {
                             GetSampleResultLocation()->GetAsCounterSampleResult()->GetResultBuffer()[i] = timing_data[0];
                         }
-                        else if (counter_index == hardware_counters->gpu_time_top_to_bottom_end_counter_index_)
+                        else if (counter_index == hardware_counters.gpu_time_top_to_bottom_end_counter_index_)
                         {
                             GetSampleResultLocation()->GetAsCounterSampleResult()->GetResultBuffer()[i] = timing_data[1];
                         }

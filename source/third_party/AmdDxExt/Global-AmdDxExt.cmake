@@ -1,4 +1,5 @@
-## Copyright (c) 2018 Advanced Micro Devices, Inc. All rights reserved.
+## Copyright (C) 2018-2025 Advanced Micro Devices, Inc. All rights reserved. ##
+
 cmake_minimum_required(VERSION 3.10)
 
 ## Define AMD DirectX extension directory

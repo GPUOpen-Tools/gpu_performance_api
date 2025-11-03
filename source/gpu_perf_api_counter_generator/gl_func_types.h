@@ -38,4 +38,4 @@ namespace ogl_utils
 #endif
 
 }
-#endif  // GPA_COUNTER_GENERATOR_GL_GL_FUNC_TYPES_H_
+#endif

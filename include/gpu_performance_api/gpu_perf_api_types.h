@@ -68,7 +68,7 @@ typedef unsigned __int64 GpaUInt64;  ///< GPA specific type for 64-bit unsigned 
 #define GPA_LIB_DECL extern "C"
 #else
 #define GPA_LIB_DECL
-#endif  // _cplusplus
+#endif
 #endif
 
 typedef unsigned long long GpaUInt64;  ///< GPA specific type for 64-bit unsigned integer.
@@ -99,7 +99,7 @@ typedef unsigned long long GpaUInt64;  ///< GPA specific type for 64-bit unsigne
 #define FALSE 0
 #endif
 
-#endif  // __linux__
+#endif
 
 /// Macro for max uint32.
 #define GPA_UINT32_MAX UINT_MAX
@@ -360,7 +360,14 @@ typedef struct GpaSpmData
     GpaUInt32                number_of_bytes_per_counter_data;  ///< Number of bytes for each CounterData entry.
     const GpaUInt64*         timestamps;                        ///< Array of number_of_timestamps number of timestamps.
     const GpaSpmCounterInfo* spm_counter_info;                  ///< Array of number_of_spm_counter_info number of SpmCounterInfo.
+    //  Layout (m counters for n timestamps)
+    //  Ctr_0_t1, Ctr_0_t2,...., Ctr_0_tn
+    //  Ctr_1_t1, Ctr_1_t2,...., Ctr_1,tn
+    // .
+    // .
+    // .
+    // Ctr_m_t1, Ctr_m_t2,...., Ctr_m_tn
     const GpaUInt16* counter_data_16bit;  ///< Array of number_of_spm_counter_info * number_of_timestamps counter delta values (may be 16 or 32-bit values).
 } GpaSpmData;
 
-#endif  // GPU_PERFORMANCE_API_GPU_PERF_API_TYPES_H_
+#endif

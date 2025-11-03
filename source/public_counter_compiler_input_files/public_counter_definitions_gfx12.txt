@@ -1,8 +1,8 @@
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Copyright (c) 2025 Advanced Micro Devices, Inc. All rights reserved.
-;;
-;; Counter definitions for DX/VK/OGLP for Gfx12 (GFX IP v12)
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#######################################
+## Copyright (c) 2025 Advanced Micro Devices, Inc. All rights reserved.
+##
+## Counter definitions for Gfx12 (GFX IP v12)
+#######################################
 
 name=GPUTime
 desc=#Timing#Time this API command took to execute on the GPU in nanoseconds from the time the previous command reached the bottom of the pipeline (BOP) to the time this command reaches the bottom of the pipeline (BOP). Does not include time that draw calls are processed in parallel.
@@ -340,8 +340,6 @@ GE2_SE*_GE_SE_SPI_GSPRIM_VALID[0..3]
 SPI*_PERF_HS_WAVE[0..3]
 eqn=0..3,sum4,(0),4..7,sum4,ifnotzero
 
-
-
 name=PreTessVerticesIn
 desc=#PreTessellation#The number of unique vertices processed by the VS and HS when using tessellation.
 type=gpa_float64
@@ -365,7 +363,6 @@ usage=items
 GE2_SE*_GE_SE_DS_PRIMS[0..3]
 SPI*_PERF_HS_WAVE[0..3]
 eqn=(0),0..3,sum4,4..7,sum4,ifnotzero
-
 
 name=PrimitiveAssemblyBusy
 desc=#Timing#The percentage of GPUTime that primitive assembly (clipping and culling) is busy. High values may be caused by having many small primitives; mid to low values may indicate pixel shader or output buffer bottleneck.
@@ -693,7 +690,6 @@ TA*_PERF_SEL_ANISO_14_CYCLE_QUADS[0..63]
 TA*_PERF_SEL_ANISO_16_CYCLE_QUADS[0..63]
 eqn=0..63,sum64,(2),64..127,sum64,*,+,(4),128..191,sum64,*,+,(6),192..255,sum64,*,+,(8),256..319,sum64,*,+,(10),320..383,sum64,*,+,(12),384..447,sum64,*,+,(14),448..511,sum64,*,+,(16),512..575,sum64,*,+,0..63,sum64,64..127,sum64,+,128..191,sum64,+,192..255,sum64,+,256..319,sum64,+,320..383,sum64,+,384..447,sum64,+,448..511,sum64,+,512..575,sum64,+,/
 
-
 name=DepthStencilTestBusy
 desc=#Timing#Percentage of time GPU spent performing depth and stencil tests relative to GPUBusy.
 type=gpa_float64
@@ -939,15 +935,15 @@ usage=bytes
 CB*_PERF_SEL_CC_CRW_GLX_REQ_WRITE_REQUEST[0..15]
 eqn=0..15,sum16,(32),*
 
-; Cache counters
-;
-; L0 data (TCP) and L1 (GL1) provide only a requests and misses counter. Scalar and Instruction caches (SQC) and L2 (GL2C) all provide a requests,
-; hits, and misses counter. For L2CacheHit, we are intentionally using similar counters and formulas to those used in L0CacheHit and L1CacheHit.
-; By using the "MISS" counter in all cases, we 1) have a consistent formula between L0, L1 and L2 and 2) the scheduler will ensure all the L2Cache
-; hardware counters are in the same pass (this won't be guaranteed if L2CacheHit uses "HIT" and L2CacheMiss uses "MISS"). For InstCacheHit and
-; ScalarCacheHit, we use HITS, MISSES and MISSES_DUPLICATE, to calculate the number of requests. This is done to ensure that the number of requests
-; always equals the number of hits + misses. There are small variances in the data where sometimes the number of requests is slightly different
-; than the number of hits + misses. This is just "noise", but by using hits + misses, we ensure that the data always adds up.
+# Cache counters
+#
+# L0 data (TCP) and L1 (GL1) provide only a requests and misses counter. Scalar and Instruction caches (SQC) and L2 (GL2C) all provide a requests,
+# hits, and misses counter. For L2CacheHit, we are intentionally using similar counters and formulas to those used in L0CacheHit and L1CacheHit.
+# By using the "MISS" counter in all cases, we 1) have a consistent formula between L0, L1 and L2 and 2) the scheduler will ensure all the L2Cache
+# hardware counters are in the same pass (this won't be guaranteed if L2CacheHit uses "HIT" and L2CacheMiss uses "MISS"). For InstCacheHit and
+# ScalarCacheHit, we use HITS, MISSES and MISSES_DUPLICATE, to calculate the number of requests. This is done to ensure that the number of requests
+# always equals the number of hits + misses. There are small variances in the data where sometimes the number of requests is slightly different
+# than the number of hits + misses. This is just "noise", but by using hits + misses, we ensure that the data always adds up.
 
 name=L0CacheHit
 desc=#MemoryCache#The percentage of read requests that hit the data in the L0 cache. The L0 cache contains vector data, which is data that may vary in each thread across the wavefront. Each request is 128 bytes in size. Value range: 0% (no hit) to 100% (optimal).
@@ -1000,7 +996,7 @@ desc=#MemoryCache#The percentage of read requests made from executing shader cod
 type=gpa_float64
 usage=percentage
 [OGLPGfx12]
-;[DX11Gfx12]
+#[DX11Gfx12]
 [DX12Gfx12]
 [VKGfx12]
 SQWGP*_SQC_PERF_SEL_DCACHE_HITS[0..31]
@@ -1013,7 +1009,7 @@ desc=#MemoryCache#The number of read requests made from executing shader code to
 type=gpa_float64
 usage=items
 [OGLPGfx12]
-;[DX11Gfx12]
+#[DX11Gfx12]
 [DX12Gfx12]
 [VKGfx12]
 SQWGP*_SQC_PERF_SEL_DCACHE_HITS[0..31]
@@ -1026,7 +1022,7 @@ desc=#MemoryCache#The number of read requests made from executing shader code wh
 type=gpa_float64
 usage=items
 [OGLPGfx12]
-;[DX11Gfx12]
+#[DX11Gfx12]
 [DX12Gfx12]
 [VKGfx12]
 SQWGP*_SQC_PERF_SEL_DCACHE_HITS[0..31]
@@ -1037,7 +1033,7 @@ desc=#MemoryCache#The number of read requests made from executing shader code wh
 type=gpa_float64
 usage=items
 [OGLPGfx12]
-;[DX11Gfx12]
+#[DX11Gfx12]
 [DX12Gfx12]
 [VKGfx12]
 SQWGP*_SQC_PERF_SEL_DCACHE_MISSES[0..31]
@@ -1049,7 +1045,7 @@ desc=#MemoryCache#The percentage of read requests made that hit the data in the 
 type=gpa_float64
 usage=percentage
 [OGLPGfx12]
-;[DX11Gfx12]
+#[DX11Gfx12]
 [DX12Gfx12]
 [VKGfx12]
 SQWGP*_SQC_PERF_SEL_ICACHE_HITS[0..31]
@@ -1062,7 +1058,7 @@ desc=#MemoryCache#The number of read requests made to the Instruction cache. The
 type=gpa_float64
 usage=items
 [OGLPGfx12]
-;[DX11Gfx12]
+#[DX11Gfx12]
 [DX12Gfx12]
 [VKGfx12]
 SQWGP*_SQC_PERF_SEL_ICACHE_HITS[0..31]
@@ -1075,7 +1071,7 @@ desc=#MemoryCache#The number of read requests which result in a cache hit from t
 type=gpa_float64
 usage=items
 [OGLPGfx12]
-;[DX11Gfx12]
+#[DX11Gfx12]
 [DX12Gfx12]
 [VKGfx12]
 SQWGP*_SQC_PERF_SEL_ICACHE_HITS[0..31]
@@ -1086,7 +1082,7 @@ desc=#MemoryCache#The number of read requests which result in a cache miss from 
 type=gpa_float64
 usage=items
 [OGLPGfx12]
-;[DX11Gfx12]
+#[DX11Gfx12]
 [DX12Gfx12]
 [VKGfx12]
 SQWGP*_SQC_PERF_SEL_ICACHE_MISSES[0..31]
@@ -1101,9 +1097,9 @@ usage=percentage
 [DX11Gfx12]
 [DX12Gfx12]
 [VKGfx12]
-GL2C*_PERF_SEL_REQ[0..17]
-GL2C*_PERF_SEL_MISS[0..17]
-eqn=(0),(1),18..35,sum18,0..17,sum18,/,-,(100),*,0..17,sum18,ifnotzero
+GL2C*_PERF_SEL_REQ[0..31]
+GL2C*_PERF_SEL_MISS[0..31]
+eqn=(0),(1),32..63,sum32,0..31,sum32,/,-,(100),*,0..31,sum32,ifnotzero
 
 name=L2CacheMiss
 desc=#MemoryCache#The percentage of read or write requests that miss the data in the L2 cache. The L2 cache is shared by many blocks across the GPU, including the Command Processor, Geometry Engine, all WGPs, all Render Backends, and others. Each request is 128 bytes in size. Value range: 0% (optimal) to 100% (all miss).
@@ -1113,9 +1109,9 @@ usage=percentage
 [DX11Gfx12]
 [DX12Gfx12]
 [VKGfx12]
-GL2C*_PERF_SEL_MISS[0..17]
-GL2C*_PERF_SEL_REQ[0..17]
-eqn=0..17,sum18,18..35,sum18,/,(100),*
+GL2C*_PERF_SEL_MISS[0..31]
+GL2C*_PERF_SEL_REQ[0..31]
+eqn=0..31,sum32,32..63,sum32,/,(100),*
 
 name=L2CacheRequestCount
 desc=#MemoryCache#The number of read or write requests made to the L2 cache. The L2 cache is shared by many blocks across the GPU, including the Command Processor, Geometry Engine, all WGPs, all Render Backends, and others. Each request is 128 bytes in size.
@@ -1125,8 +1121,8 @@ usage=items
 [DX11Gfx12]
 [DX12Gfx12]
 [VKGfx12]
-GL2C*_PERF_SEL_REQ[0..17]
-eqn=0..17,sum18
+GL2C*_PERF_SEL_REQ[0..31]
+eqn=0..31,sum32
 
 name=L2CacheHitCount
 desc=#MemoryCache#The number of read or write requests which result in a cache hit from the L2 cache. The L2 cache is shared by many blocks across the GPU, including the Command Processor, Geometry Engine, all WGPs, all Render Backends, and others. Each request is 128 bytes in size.
@@ -1136,9 +1132,9 @@ usage=items
 [DX11Gfx12]
 [DX12Gfx12]
 [VKGfx12]
-GL2C*_PERF_SEL_REQ[0..17]
-GL2C*_PERF_SEL_MISS[0..17]
-eqn=0..17,sum18,18..35,sum18,-
+GL2C*_PERF_SEL_REQ[0..31]
+GL2C*_PERF_SEL_MISS[0..31]
+eqn=0..31,sum32,32..63,sum32,-
 
 name=L2CacheMissCount
 desc=#MemoryCache#The number of read or write requests which result in a cache miss from the L2 cache. The L2 cache is shared by many blocks across the GPU, including the Command Processor, Geometry Engine, all WGPs, all Render Backends, and others. Each request is 128 bytes in size.
@@ -1148,8 +1144,8 @@ usage=items
 [DX11Gfx12]
 [DX12Gfx12]
 [VKGfx12]
-GL2C*_PERF_SEL_MISS[0..17]
-eqn=0..17,sum18
+GL2C*_PERF_SEL_MISS[0..31]
+eqn=0..31,sum32
 
 name=L0TagConflictReadStalledCycles
 desc=#MemoryCache#The number of cycles read operations from the L0 cache are stalled due to tag conflicts.
@@ -1192,11 +1188,13 @@ usage=bytes
 [DX11Gfx12]
 [DX12Gfx12]
 [VKGfx12]
-GL2C*_PERF_SEL_EA_RDREQ_32B[0..17]
-GL2C*_PERF_SEL_EA_RDREQ_64B[0..17]
-GL2C*_PERF_SEL_EA_RDREQ_128B[0..17]
-GL2C*_PERF_SEL_EA_RDREQ_256B[0..17]
-eqn=GL2C*_PERF_SEL_EA_RDREQ_32B,sum18,(32),*,GL2C*_PERF_SEL_EA_RDREQ_64B,sum18,(64),*,GL2C*_PERF_SEL_EA_RDREQ_128B,sum18,(128),*,GL2C*_PERF_SEL_EA_RDREQ_256B,sum18,(256),*,sum4
+GL2C*_PERF_SEL_EA_RDREQ_32B[0..31]
+GL2C*_PERF_SEL_EA_RDREQ_64B[0..31]
+GL2C*_PERF_SEL_EA_RDREQ_128B[0..31]
+GL2C*_PERF_SEL_EA_RDREQ_256B[0..31]
+GL2C*_PERF_SEL_EA_RDREQ_COMPRESSED_128B[0..31]
+GL2C*_PERF_SEL_EA_RDREQ_COMPRESSED_256B[0..31]
+eqn=GL2C*_PERF_SEL_EA_RDREQ_32B,sum32,(32),*,GL2C*_PERF_SEL_EA_RDREQ_64B,sum32,(64),*,GL2C*_PERF_SEL_EA_RDREQ_128B,sum32,(128),*,GL2C*_PERF_SEL_EA_RDREQ_256B,sum32,(256),*,GL2C*_PERF_SEL_EA_RDREQ_COMPRESSED_128B,sum32,(128),*,GL2C*_PERF_SEL_EA_RDREQ_COMPRESSED_256B,sum32,(256),*,sum6
 
 name=WriteSize
 desc=#GlobalMemory#The total bytes written to the video memory. This is measured with all extra fetches and any cache or memory effects taken into account.
@@ -1206,9 +1204,13 @@ usage=bytes
 [DX11Gfx12]
 [DX12Gfx12]
 [VKGfx12]
-GL2C*_PERF_SEL_EA_WRREQ[0..17]
-GL2C*_PERF_SEL_EA_WRREQ_64B[0..17]
-eqn=GL2C*_PERF_SEL_EA_WRREQ,sum18,GL2C*_PERF_SEL_EA_WRREQ_64B,sum18,-,(32),*,GL2C*_PERF_SEL_EA_WRREQ_64B,sum18,(64),*,+
+GL2C*_PERF_SEL_EA_WRREQ_32B[0..31]
+GL2C*_PERF_SEL_EA_WRREQ_64B[0..31]
+GL2C*_PERF_SEL_EA_WRREQ_128B[0..31]
+GL2C*_PERF_SEL_EA_WRREQ_256B[0..31]
+GL2C*_PERF_SEL_EA_WRREQ_COMPRESSED_128B[0..31]
+GL2C*_PERF_SEL_EA_WRREQ_COMPRESSED_256B[0..31]
+eqn=GL2C*_PERF_SEL_EA_WRREQ_32B,sum32,(32),*,GL2C*_PERF_SEL_EA_WRREQ_64B,sum32,(64),*,GL2C*_PERF_SEL_EA_WRREQ_128B,sum32,(128),*,GL2C*_PERF_SEL_EA_WRREQ_256B,sum32,(256),*,GL2C*_PERF_SEL_EA_WRREQ_COMPRESSED_128B,sum32,(128),*,GL2C*_PERF_SEL_EA_WRREQ_COMPRESSED_256B,sum32,(256),*,sum6
 
 name=MemUnitBusy
 desc=#GlobalMemory#The percentage of GPUTime the memory unit is active. The result includes the stall time (MemUnitStalled). This is measured with all extra fetches and writes and any cache or memory effects taken into account. Value range: 0% to 100% (fetch-bound).
@@ -1264,9 +1266,9 @@ usage=percentage
 [DX11Gfx12]
 [DX12Gfx12]
 [VKGfx12]
-GL2C*_PERF_SEL_EA_WRREQ_STALL[0..17]
+GL2C*_PERF_SEL_EA_WRREQ_STALL[0..31]
 CPF_PERF_SEL_CPF_STAT_BUSY
-eqn=0..17,max18,18,/,(100),*
+eqn=0..31,max32,32,/,(100),*
 
 name=WriteUnitStalledCycles
 desc=#GlobalMemory#Number of GPU cycles the Write unit is stalled.
@@ -1276,8 +1278,8 @@ usage=cycles
 [DX11Gfx12]
 [DX12Gfx12]
 [VKGfx12]
-GL2C*_PERF_SEL_EA_WRREQ_STALL[0..17]
-eqn=0..17,max18
+GL2C*_PERF_SEL_EA_WRREQ_STALL[0..31]
+eqn=0..31,max32
 
 name=LocalVidMemBytes
 desc=#GlobalMemory#Number of bytes read from or written to the Infinity Cache (if available) or local video memory
@@ -1307,7 +1309,7 @@ desc=#RayTracing#The number of ray triangle intersection tests.
 type=gpa_float64
 usage=items
 [DX12Gfx12]
-;[OGLPGfx12]
+#[OGLPGfx12]
 [VKGfx12]
 TD*_PERF_SEL_RAY_TRACING_BVH4_TRI_NODE[0..63]
 eqn=0..63,sum64
@@ -1317,7 +1319,7 @@ desc=#RayTracing#The number of ray box intersection tests.
 type=gpa_float64
 usage=items
 [DX12Gfx12]
-;[OGLPGfx12]
+#[OGLPGfx12]
 [VKGfx12]
 TD*_PERF_SEL_RAY_TRACING_BVH4_FP16_BOX_NODE[0..63]
 TD*_PERF_SEL_RAY_TRACING_BVH4_FP32_BOX_NODE[0..63]
@@ -1328,7 +1330,7 @@ desc=#RayTracing#Total number of ray intersection tests, includes both box and t
 type=gpa_float64
 usage=items
 [DX12Gfx12]
-;[OGLPGfx12]
+#[OGLPGfx12]
 [VKGfx12]
 TD*_PERF_SEL_RAY_TRACING_BVH4_TRI_NODE[0..63]
 TD*_PERF_SEL_RAY_TRACING_BVH4_FP16_BOX_NODE[0..63]
@@ -1340,7 +1342,7 @@ desc=#RayTracing#The number of ray intersection tests per wave.
 type=gpa_float64
 usage=items
 [DX12Gfx12]
-;[OGLPGfx12]
+#[OGLPGfx12]
 [VKGfx12]
 TD*_PERF_SEL_TOTAL_NUM_RAY_TRACING_BVH4_INSTR[0..63]
 eqn=0..63,max64

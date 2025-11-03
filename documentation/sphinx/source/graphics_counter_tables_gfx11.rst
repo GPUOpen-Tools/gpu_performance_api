@@ -1,4 +1,3 @@
-.. Copyright(c) 2018-2025 Advanced Micro Devices, Inc. All rights reserved.
 .. Graphics Performance Counters for RDNA3
 
 .. *** Note, this is an auto-generated file. Do not edit. Execute PublicCounterCompiler to rebuild.
@@ -14,9 +13,6 @@ Timing Group
     :widths: 15, 10, 10, 65
 
     "GPUTime", "Discrete", "Nanoseconds", "Time this API command took to execute on the GPU in nanoseconds from the time the previous command reached the bottom of the pipeline (BOP) to the time this command reaches the bottom of the pipeline (BOP). Does not include time that draw calls are processed in parallel."
-    "ExecutionDuration", "Discrete", "Nanoseconds", "GPU command execution duration in nanoseconds, from the time the command enters the top of the pipeline (TOP) to the time the command reaches the bottom of the pipeline (BOP). Does not include time that draw calls are processed in parallel."
-    "ExecutionStart", "Discrete", "Nanoseconds", "GPU command execution start time in nanoseconds. This is the time the command enters the top of the pipeline (TOP)."
-    "ExecutionEnd", "Discrete", "Nanoseconds", "GPU command execution end time in nanoseconds. This is the time the command reaches the bottom of the pipeline (BOP)."
     "GPUBusy", "Discrete, Streaming", "Percentage", "The percentage of time the GPU command processor was busy."
     "GPUBusyCycles", "Discrete, Streaming", "Cycles", "Number of GPU cycles that the GPU command processor was busy."
     "TessellatorBusy", "Discrete, Streaming", "Percentage", "The percentage of time the tessellation engine is busy."
@@ -42,6 +38,9 @@ Timing Group
     "TexUnitBusyCycles", "Discrete, Streaming", "Cycles", "Number of GPU cycles the texture unit is active. This is measured with all extra fetches and any cache or memory effects taken into account."
     "DepthStencilTestBusy", "Discrete, Streaming", "Percentage", "Percentage of time GPU spent performing depth and stencil tests relative to GPUBusy."
     "DepthStencilTestBusyCycles", "Discrete, Streaming", "Cycles", "Number of GPU cycles spent performing depth and stencil tests."
+    "ExecutionDuration", "Discrete", "Nanoseconds", "GPU command execution duration in nanoseconds, from the time the command enters the top of the pipeline (TOP) to the time the command reaches the bottom of the pipeline (BOP). Does not include time that draw calls are processed in parallel."
+    "ExecutionStart", "Discrete", "Nanoseconds", "GPU command execution start time in nanoseconds. This is the time the command enters the top of the pipeline (TOP)."
+    "ExecutionEnd", "Discrete", "Nanoseconds", "GPU command execution end time in nanoseconds. This is the time the command reaches the bottom of the pipeline (BOP)."
 
 VertexGeometry Group
 %%%%%%%%%%%%%%%%%%%%
@@ -182,7 +181,6 @@ MemoryCache Group
     "L1CacheRequestCount", "Discrete", "Items", "The number of read or write requests made to the L1 cache. The L1 cache is shared across all WGPs in a single shader engine. Each request is 128 bytes in size."
     "L1CacheHitCount", "Discrete, Streaming", "Items", "The number of read or write requests which result in a cache hit from the L1 cache. The L1 cache is shared across all WGPs in a single shader engine. Each request is 128 bytes in size."
     "L1CacheMissCount", "Discrete, Streaming", "Items", "The number of read or write requests which result in a cache miss from the L1 cache. The L1 cache is shared across all WGPs in a single shader engine. Each request is 128 bytes in size."
-    "L2CacheHit", "Discrete, Streaming", "Percentage", "The percentage of read or write requests that hit the data in the L2 cache. The L2 cache is shared by many blocks across the GPU, including the Command Processor, Geometry Engine, all WGPs, all Render Backends, and others. Each request is 128 bytes in size. Value range: 0% (no hit) to 100% (optimal)."
     "L2CacheMiss", "Discrete, Streaming", "Percentage", "The percentage of read or write requests that miss the data in the L2 cache. The L2 cache is shared by many blocks across the GPU, including the Command Processor, Geometry Engine, all WGPs, all Render Backends, and others. Each request is 128 bytes in size. Value range: 0% (optimal) to 100% (all miss)."
     "L2CacheRequestCount", "Discrete, Streaming", "Items", "The number of read or write requests made to the L2 cache. The L2 cache is shared by many blocks across the GPU, including the Command Processor, Geometry Engine, all WGPs, all Render Backends, and others. Each request is 128 bytes in size."
     "L2CacheHitCount", "Discrete, Streaming", "Items", "The number of read or write requests which result in a cache hit from the L2 cache. The L2 cache is shared by many blocks across the GPU, including the Command Processor, Geometry Engine, all WGPs, all Render Backends, and others. Each request is 128 bytes in size."
@@ -190,6 +188,7 @@ MemoryCache Group
     "L0TagConflictReadStalledCycles", "Discrete, Streaming", "Items", "The number of cycles read operations from the L0 cache are stalled due to tag conflicts."
     "L0TagConflictWriteStalledCycles", "Discrete, Streaming", "Items", "The number of cycles write operations to the L0 cache are stalled due to tag conflicts."
     "L0TagConflictAtomicStalledCycles", "Discrete, Streaming", "Items", "The number of cycles atomic operations on the L0 cache are stalled due to tag conflicts."
+    "L2CacheHit", "Discrete, Streaming", "Percentage", "The percentage of read or write requests that hit the data in the L2 cache. The L2 cache is shared by many blocks across the GPU, including the Command Processor, Geometry Engine, all WGPs, all Render Backends, and others. Each request is 128 bytes in size. Value range: 0% (no hit) to 100% (optimal)."
 
 GlobalMemory Group
 %%%%%%%%%%%%%%%%%%

@@ -30,4 +30,4 @@ private:
     GpaCounterSchedulerDx12() = delete;
 };
 
-#endif  // GPU_PERF_API_COUNTER_GENERATOR_DX12_GPA_COUNTER_SCHEDULER_DX12_H_
+#endif

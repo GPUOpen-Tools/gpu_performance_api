@@ -131,4 +131,4 @@ public:
     virtual GpaSessionSampleType GetSampleType() const = 0;
 };
 
-#endif  // GPU_PERF_API_COUNTER_GENERATOR_GPA_COUNTER_SCHEDULER_INTERFACE_H_
+#endif

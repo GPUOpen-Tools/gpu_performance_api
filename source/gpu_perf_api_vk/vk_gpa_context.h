@@ -27,7 +27,7 @@ public:
     /// @param [in] open_info Vulkan context info pointer.
     /// @param [in] hw_info Hardware info.
     /// @param [in] flags Context flags.
-    VkGpaContext(const GpaVkContextOpenInfoType* open_info, GpaHwInfo& hw_info, GpaOpenContextFlags flags);
+    VkGpaContext(const GpaVkContextOpenInfoType* open_info, const GpaHwInfo& hw_info, GpaOpenContextFlags flags);
 
     /// @brief Destructor.
     virtual ~VkGpaContext();
@@ -71,7 +71,7 @@ public:
     GpaUInt32 GetMaxEventId(VkGpaPerfBlockAMD block) const;
 
     /// @copydoc IGpaContext::SetStableClocks(bool)
-    GpaStatus SetStableClocks(bool use_profiling_clocks) override;
+    [[nodiscard]] GpaStatus SetStableClocks(bool use_profiling_clocks) override;
 
 private:
     /// @brief Deletes a VkGpaSession and its associated counter data. Prerequisite: Assumes m_sessionList has been protected using session_list_mutex_.
@@ -87,4 +87,4 @@ private:
     VkPhysicalDeviceGpaPropertiesAMD amd_device_properties_;  ///< Physical Device properties exposed by the AMD GPA Extension.
     VkGpaDeviceClockModeAMD          clock_mode_;             ///< GPU Clock mode.
 };
-#endif  // GPU_PERF_API_VK_VK_GPA_CONTEXT_H_
+#endif

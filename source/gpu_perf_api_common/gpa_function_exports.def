@@ -69,3 +69,4 @@ EXPORTS
     GpaGetDeviceMaxWaveSlots
     GpaSqttSpmBegin
     GpaSqttSpmEnd
+    GpaGetDeviceMaxVgprs

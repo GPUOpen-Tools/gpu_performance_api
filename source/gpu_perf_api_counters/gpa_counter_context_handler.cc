@@ -94,13 +94,13 @@ GpaCounterContextHandler::GpaCounterContextHandler(const GpaApiType&            
     }
 }
 
-bool GpaCounterContextHandler::InitCounters()
+bool GpaCounterContextHandler::InitCounters(GpaDriverInfo const& driver_info)
 {
     if (!initialized_)
     {
-        if (gpa_hw_info_.UpdateDeviceInfoBasedOnDeviceId())
+        if (gpa_hw_info_.UpdateDeviceInfoBasedOnDeviceId(gpa_api_type_, driver_info))
         {
-            if (gpa_hw_info_.IsUnsupportedDeviceId())
+            if (gpa_hw_info_.IsUnsupportedDeviceId(gpa_api_type_, driver_info))
             {
                 return false;
             }
@@ -111,10 +111,16 @@ bool GpaCounterContextHandler::InitCounters()
 
             if (gpa_hw_info_.GetVendorId(vendorId) && gpa_hw_info_.GetDeviceId(deviceId) && gpa_hw_info_.GetRevisionId(revisionId))
             {
+                // If this is SQTT, there's no counter scheduler or accessor.
+                assert(sample_type_ != kGpaSessionSampleTypeSqtt);
+
                 const GpaStatus status = GenerateCounters(
                     gpa_api_type_,
                     sample_type_,
                     vendorId, deviceId, revisionId, gpa_open_context_flags_, &gpa_counter_accessor_, &gpa_counter_scheduler_);
+
+                assert(gpa_counter_accessor_ != nullptr);
+                assert(gpa_counter_scheduler_ != nullptr);
 
                 if (kGpaStatusOk == status)
                 {
@@ -127,9 +133,9 @@ bool GpaCounterContextHandler::InitCounters()
     return initialized_;
 }
 
-const GpaHwInfo* GpaCounterContextHandler::GetHardwareInfo() const
+const GpaHwInfo& GpaCounterContextHandler::GetHardwareInfo() const
 {
-    return &gpa_hw_info_;
+    return gpa_hw_info_;
 }
 
 const IGpaCounterAccessor* GpaCounterContextHandler::GetCounterAccessor() const
@@ -200,7 +206,8 @@ GpaStatus GpaCounterContextManager::OpenCounterContext(const GpaApiType&        
                                                        const GpaSessionSampleType           sample_type,
                                                        const GpaCounterContextHardwareInfo& gpa_counter_context_hardware_info,
                                                        const GpaOpenContextFlags&           context_flags,
-                                                       GpaCounterContext*                   gpa_counter_context)
+                                                       GpaCounterContext*                   gpa_counter_context,
+                                                       GpaDriverInfo const&                 driver_info)
 {
     Init(api_type, sample_type);
 
@@ -211,7 +218,7 @@ GpaStatus GpaCounterContextManager::OpenCounterContext(const GpaApiType&        
 
     if (nullptr != gpa_new_counter_context)
     {
-        if (gpa_new_counter_context->InitCounters())
+        if (gpa_new_counter_context->InitCounters(driver_info))
         {
             GpaCounterContext gpa_counter_context_ret = new (std::nothrow) _GpaCounterContext(gpa_new_counter_context);
 

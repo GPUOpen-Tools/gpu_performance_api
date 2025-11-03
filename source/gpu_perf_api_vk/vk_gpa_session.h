@@ -45,4 +45,4 @@ private:
     GpaPass* CreateApiPass(PassIndex pass_index) override;
 };
 
-#endif  // GPU_PERF_API_VK_VK_GPA_SESSION_H_
+#endif

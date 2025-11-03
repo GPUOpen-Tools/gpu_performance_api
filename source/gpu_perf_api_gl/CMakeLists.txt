@@ -1,10 +1,10 @@
-## Copyright (c) 2018-2025 Advanced Micro Devices, Inc. All rights reserved.
+## Copyright (C) 2018-2025 Advanced Micro Devices, Inc. All rights reserved. ##
+
 set(GPA_PROJECT_NAME GPUPerfAPIGL)
 set(ProjectName ${GPA_PROJECT_NAME})
 
 include (${GPA_CMAKE_MODULES_DIR}/common.cmake)
 
-include(${CMAKE_COMMON_SRC_GLOBAL_DEVICE_INFO})
 include(${CMAKE_COMMON_LIB_GLOBAL_EXT_OPENGL})
 
 INCLUDE_ADDITIONAL_MODULE()
@@ -35,15 +35,17 @@ target_sources(GPUPerfAPIGL PRIVATE
     gl_gpa_pass.h
     gl_gpa_sample.h
     gl_gpa_session.h
+    gpu_perf_api_gl.rc
 )
-INCLUDE_WIN_RESOURCE(gpu_perf_api_gl)
 
 target_link_libraries(GPUPerfAPIGL PRIVATE
     ${GPA_COMMON_LINK_ARCHIVE_FLAG}
     GPUPerfAPI-Common
     ${GPA_COMMON_LINK_NO_ARCHIVE_FLAG}
     GPUPerfAPICounterGenerator-GL
-    AMD::adl_util
+    $<$<PLATFORM_ID:Windows>:AMD::adl_util>
+    AMD::device_info
+    AMD::tsingleton
 )
 
 ADD_LINKER_FLAGS()

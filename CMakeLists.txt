@@ -1,9 +1,10 @@
-## Copyright (c) 2018-2025 Advanced Micro Devices, Inc. All rights reserved.
+## Copyright (C) 2018-2025 Advanced Micro Devices, Inc. All rights reserved. ##
+
 cmake_minimum_required(VERSION 3.25)
 set(GPA_CMAKE_MODULES_DIR ${CMAKE_CURRENT_SOURCE_DIR}/build/cmake_modules)
 
 set(GPA_MAJOR_VERSION 4)
-set(GPA_MINOR_VERSION 1)
+set(GPA_MINOR_VERSION 2)
 set(GPA_UPDATE_VERSION 0)
 
 if(NOT DEFINED build)
@@ -19,7 +20,6 @@ include(${GPA_CMAKE_MODULES_DIR}/build_flags.cmake)
 include(${GPA_CMAKE_MODULES_DIR}/utils.cmake)
 include(${GPA_CMAKE_MODULES_DIR}/common.cmake)
 include(${GPA_CMAKE_MODULES_DIR}/fetch_dependencies.cmake)
-
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -41,17 +41,18 @@ if(NOT ${skiptests} AND NOT TARGET gtest)
     endblock()
 endif()
 
-add_subdirectory(external/adl)
+add_subdirectory(external/device_info)
 add_subdirectory(external/tsingleton)
-add_subdirectory(external/adl_util)
-add_subdirectory(external/dynamic_library_module)
+if (WIN32)
+    add_subdirectory(external/adl)
+    add_subdirectory(external/adl_util)
+endif()
 
 if(NOT ${skipdocs})
     add_subdirectory(documentation/sphinx)
 endif()
 
 add_subdirectory(source)
-
 
 set(CPACK_ARCHIVE_COMPONENT_INSTALL ON)
 set(CPACK_COMPONENTS_GROUPING IGNORE)

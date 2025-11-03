@@ -134,4 +134,4 @@ private:
     IAmdExtGpaSession* spm_amd_ext_session_;    ///< AMD SPM Ext GPA session.
     const GpaSpmData*  spm_data_;               ///< Collected SPM data.
 };
-#endif  // GPU_PERF_API_DX12_DX12_GPA_SESSION_H_
+#endif

@@ -1,4 +1,3 @@
-.. Copyright (c) 2018-2025 Advanced Micro Devices, Inc. All rights reserved.
 .. GPU Performance API Usage
 
 .. highlight:: c++
@@ -18,7 +17,7 @@ The main change in GPA 4.0 is that the counters are no longer exposed via the Gp
 Not all hardware and not all rendering APIs support all the ``GpaSessionSampleTypes``, so after creating the GpaContext you should call ``GpaGetSupportedSampleTypes(..)`` to query which GpaSessionSampleTypes are supported on the given configuration.
 Users of the GPU Performance API should still only be looking for the ``kGpaSessionSampleTypeDiscreteCounter`` sample type. No support will be provided for the other sample types. Once the GpaSession is created, you can then use ``GpaGetNumCounters(..)`` and all
 of the ``GpaGetCounter*(..)`` entrypoints to query information about the available counters.
-	
+
 Below you will find an example of a likely subset of GPA 3.x series of API calls, and then a similar series of calls using the modified GPA 4.0 entrypoints. Note that no error checking is being done here for sake of clarity.
 
 Example of GPA 3.x Usage
@@ -72,7 +71,7 @@ Comments are added in the code below to explain the new code changes.
     // the discrete counters may not be supported while other sample types are supported.
     GpaContextSampleTypeFlags supported_sample_types = kGpaSessionSampleTypeLast;
     GpaGetSupportedSampleTypes(context, &supported_sample_types);
-	
+
     if (supported_sample_types & kGpaSessionSampleTypeDiscreteCounter != 0)
     {
         // The set of available counters are now dependent on the SampleType being collected within
@@ -284,6 +283,7 @@ The following methods can be used to query information about the context:
     "GpaGetDeviceName", "Gets the device name of the GPU associated with the specified context."
     "GpaGetDeviceGeneration", "Gets the device generation of the GPU associated with the specified context."
     "GpaGetDeviceMaxWaveSlots", "Gets the max wave slots of the GPU associated with the specified context."
+    "GpaGetDeviceMaxVgprs", "Gets the max number of VGPRs of the GPU associated with the specified context."
 
 Creating and Using a Session
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@
@@ -497,9 +497,3 @@ To deploy an application that uses GPUPerfAPI, simply make sure that the
 necessary GPUPerfAPI library is available and can be loaded using the normal
 library search mechanism for the host operating system (i.e. in the PATH on
 Windows and LD_LIBRARY_PATH on Linux).
-
-When deploying the DirectX 11 version on Windows, you will also need to deploy
-GPUPerfAPIDXGetAMDDeviceInfo-x64.dll, if you need to support systems with
-multiple AMD GPUs. This library is used by GPA to determine which GPU is being
-used for rendering at runtime.  For single-GPU systems, this library is not
-required.

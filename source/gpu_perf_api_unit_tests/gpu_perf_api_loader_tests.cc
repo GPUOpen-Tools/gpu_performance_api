@@ -10,6 +10,7 @@
 #include <gtest/gtest.h>
 
 #include "gpu_perf_api_unit_tests/utils/gpu_perf_api_loader.h"
+#include "gpu_perf_api_unit_tests/utils/gpa_test_apis.h"
 
 class GpuPerfApiLoaderTest : public ::testing::TestWithParam<GpaApiType>
 {
@@ -70,8 +71,4 @@ TEST_P(GpuPerfApiLoaderTest, api)
     Run();
 }
 
-#ifdef _WIN32
-INSTANTIATE_TEST_SUITE_P(WindowsAPI, GpuPerfApiLoaderTest, ::testing::Values(kGpaApiDirectx11, kGpaApiDirectx12, kGpaApiVulkan, kGpaApiOpengl));
-#else
-INSTANTIATE_TEST_SUITE_P(LinuxAPI, GpuPerfApiLoaderTest, ::testing::Values(kGpaApiVulkan, kGpaApiOpengl));
-#endif
+INSTANTIATE_TEST_SUITE_P(API, GpuPerfApiLoaderTest, GetApiParametersList());

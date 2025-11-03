@@ -28,7 +28,7 @@ public:
     /// @param [in] d3d11_device ID3D11Device pointer.
     /// @param [in] hw_info Hardware info.
     /// @param [in] context_flags Context flags.
-    Dx11GpaContext(ID3D11Device* d3d11_device, GpaHwInfo& hw_info, GpaOpenContextFlags context_flags);
+    Dx11GpaContext(ID3D11Device* d3d11_device, const GpaHwInfo& hw_info, GpaOpenContextFlags context_flags);
 
     /// @brief Destructor.
     ~Dx11GpaContext();
@@ -87,7 +87,7 @@ public:
     GpaUInt32 GetMaxEventId(PE_BLOCK_ID block) const;
 
     /// @copydoc IGpaContext::SetStableClocks()
-    GpaStatus SetStableClocks(bool use_profiling_clocks) override;
+    [[nodiscard]] GpaStatus SetStableClocks(bool use_profiling_clocks) override;
 
 private:
     /// @brief Initializes the AMD extensions.
@@ -105,4 +105,4 @@ private:
     PE_CLOCK_MODE         clock_mode_;                           ///< GPU Clock mode.
 };
 
-#endif  // GPU_PERF_API_DX11_DX11_GPA_CONTEXT_H_
+#endif

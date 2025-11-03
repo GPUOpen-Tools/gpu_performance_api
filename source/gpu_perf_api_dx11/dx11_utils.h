@@ -44,4 +44,4 @@ namespace dx11_utils
     bool GetTimestampFrequency(ID3D11Device* d3d11_device, UINT64& timestamp_frequency);
 }  // namespace dx11_utils
 
-#endif  // GPU_PERF_API_DX11_DX11_UTILS_H_
+#endif

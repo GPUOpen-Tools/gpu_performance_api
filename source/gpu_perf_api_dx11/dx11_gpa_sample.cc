@@ -145,13 +145,13 @@ bool Dx11GpaSample::PopulateResult()
                 if (SUCCEEDED(hr))
                 {
                     // Copy top data if requested.
-                    if (GetPass()->GetTopToBottomTimingDurationCounterIndex() != static_cast<DWORD>(-1))
+                    if (GetPass()->FindTopToBottomTimingDurationCounter())
                     {
                         *sample_result->GetAsCounterSampleResult()->GetResultBuffer() = timing_data[0];
                     }
 
                     // Copy bottom data if requested.
-                    if (GetPass()->GetBottomToBottomTimingDurationCounterIndex() != static_cast<DWORD>(-1))
+                    if (GetPass()->FindBottomToBottomTimingDurationCounter())
                     {
                         *sample_result->GetAsCounterSampleResult()->GetResultBuffer() = timing_data[1];
                     }
@@ -218,7 +218,7 @@ bool Dx11GpaSample::BeginRequest()
     if (nullptr != dx11_gpa_context)
     {
         IGpaCounterAccessor*       counter_accessor  = GpaContextCounterMediator::Instance()->GetCounterAccessor(GetPass()->GetGpaSession());
-        const GpaHardwareCounters* hardware_counters = counter_accessor->GetHardwareCounters();
+        const GpaHardwareCounters& hardware_counters = counter_accessor->GetHardwareCounters();
 
         if (dx11_gpa_pass->IsTimingPass())
         {
@@ -231,12 +231,12 @@ bool Dx11GpaSample::BeginRequest()
                 // Counter not created, create here.
                 D3D11_COUNTER_DESC ctr_desc = {};
                 ctr_desc.Counter            = static_cast<D3D11_COUNTER>(
-                    hardware_counters->hardware_counters_.at(hardware_counters->gpu_time_bottom_to_bottom_duration_counter_index_).counter_id_driver);
+                    hardware_counters.hardware_counters_.at(hardware_counters.gpu_time_bottom_to_bottom_duration_counter_index_).counter_id_driver);
 
-                if (dx11_gpa_pass->GetTopToBottomTimingDurationCounterIndex() != static_cast<DWORD>(-1))
+                if (dx11_gpa_pass->FindTopToBottomTimingDurationCounter())
                 {
                     ctr_desc.Counter = static_cast<D3D11_COUNTER>(
-                        hardware_counters->hardware_counters_.at(hardware_counters->gpu_time_top_to_bottom_duration_counter_index_).counter_id_driver);
+                        hardware_counters.hardware_counters_.at(hardware_counters.gpu_time_top_to_bottom_duration_counter_index_).counter_id_driver);
                 }
 
                 assert(ctr_desc.Counter != 0);
@@ -411,19 +411,20 @@ bool Dx11GpaSample::CreateSampleExperiment()
                 bool engine_param_set_success = true;
 
                 IGpaCounterAccessor*       counter_accessor  = GpaContextCounterMediator::Instance()->GetCounterAccessor(GetPass()->GetGpaSession());
-                const GpaHardwareCounters* hardware_counters = counter_accessor->GetHardwareCounters();
+                const GpaHardwareCounters& hardware_counters = counter_accessor->GetHardwareCounters();
 
                 if (nullptr != amd_dx_ext_perf_experiment_)
                 {
                     auto assign_engine_param = [&](CounterIndex counter_index) -> bool {
-                        const GpaHardwareCounterDescExt* counter = &hardware_counters->hardware_counters_.at(counter_index);
+                        const GpaHardwareCounterDescExt* counter = &hardware_counters.hardware_counters_.at(counter_index);
                         engine_param_set_success                 = true;
 
                         if (counter->group_id_driver == PE_BLOCK_SQ ||
                             counter->group_id_driver == PE_BLOCK_SQWGP)
                         {
                             // Set all valid shader engines to the current stage mask.
-                            for (unsigned int ii = 0; ii < dx11_gpa_context->GetHwInfo()->GetNumberShaderEngines(); ii++)
+                            const size_t num_shader_engines = dx11_gpa_context->GetHwInfo().GetNumberShaderEngines();
+                            for (unsigned int ii = 0; ii < num_shader_engines; ii++)
                             {
                                 SqEngineParamValue sq_engine_param_value;
 
@@ -477,13 +478,13 @@ bool Dx11GpaSample::CreateAndAddCounterToExperiment()
     if (nullptr != amd_dx_ext_perf_counters_)
     {
         IGpaCounterAccessor*       counter_accessor = GpaContextCounterMediator::Instance()->GetCounterAccessor(GetPass()->GetGpaSession());
-        const GpaHardwareCounters* hardware_counters = counter_accessor->GetHardwareCounters();
+        const GpaHardwareCounters& hardware_counters = counter_accessor->GetHardwareCounters();
 
         auto add_counter_to_experiment = [&](CounterIndex counter_index) -> bool {
             success = true;
             // Need to Add a counter.
-            const GpaHardwareCounterDescExt* counter = &hardware_counters->hardware_counters_.at(counter_index);
-            UINT32 instance = static_cast<unsigned int>(hardware_counters->internal_counter_groups_[counter->group_index].block_instance);
+            const GpaHardwareCounterDescExt* counter = &hardware_counters.hardware_counters_.at(counter_index);
+            const UINT32 instance = static_cast<unsigned int>(hardware_counters.internal_counter_groups_[counter->group_index].block_instance);
 
             // Add valid counters to the experiment.
             PE_RESULT result = PE_ERROR_NOT_SUPPORTED;

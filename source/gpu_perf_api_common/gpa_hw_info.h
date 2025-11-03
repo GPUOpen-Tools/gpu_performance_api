@@ -15,6 +15,7 @@
 #include "DeviceInfo.h"
 
 #include "gpu_performance_api/gpu_perf_api_types.h"
+#include "gpu_performance_api/gpu_perf_api_counters.h"
 
 static const int kAmdVendorId    = 0x1002;  ///< The AMD vendor ID.
 static const int kNvidiaVendorId = 0x10DE;  ///< The Nvidia vendor ID.
@@ -25,7 +26,7 @@ class GpaHwInfo
 {
 public:
     /// @brief Default constructor.
-    GpaHwInfo();
+    GpaHwInfo() = default;
 
     /// @brief Destructor.
     ~GpaHwInfo() = default;
@@ -68,42 +69,47 @@ public:
     /// @brief Sets the number of SIMDs.
     ///
     /// @param [in] num_simd The number of SIMDs.
-    void SetNumberSimds(const size_t& num_simd);
+    void SetNumberSimds(const GpaUInt32 num_simd);
 
     /// @brief Sets the number of compute units.
     ///
     /// @param [in] num_cu The number of compute units.
-    void SetNumberCus(const size_t& num_cu);
+    void SetNumberCus(const GpaUInt32 num_cu);
 
     /// @brief Sets the number of waves per SIMD.
     ///
     /// @param [in] numWaves The number of waves per SIMD.
-    void SetWavesPerSimd(const size_t& numWaves);
+    void SetWavesPerSimd(const GpaUInt32 numWaves);
 
     /// @brief Sets the number of shader engines.
     ///
     /// @param [in] num_se The number of shader engines.
-    void SetNumberShaderEngines(const size_t& num_se);
+    void SetNumberShaderEngines(const GpaUInt32 num_se);
 
     /// @brief Sets the number of shader arrays.
     ///
     /// @param [in] num_sa The number of shader arrays.
-    void SetNumberShaderArrays(const size_t& num_sa);
+    void SetNumberShaderArrays(const GpaUInt32 num_sa);
 
     /// @brief Sets the SU clock primitives.
     ///
     /// @param [in] su_clock_primitives The number of SU clock primitives.
-    void SetSuClocksPrim(const size_t& su_clock_primitives);
+    void SetSuClocksPrim(const GpaUInt32 su_clock_primitives);
 
     /// @brief Sets the number of primitive pipes.
     ///
     /// @param [in] num_primitive_pipes The number of primitive pipes.
-    void SetNumberPrimPipes(const size_t& num_primitive_pipes);
+    void SetNumberPrimPipes(const GpaUInt32 num_primitive_pipes);
+
+    /// @brief Sets the number of VGPRs.
+    ///
+    /// @param [in] num_vgpr The number of VGPRs.
+    void SetNumberVgprs(const GpaUInt32 num_vgpr);
 
     /// @brief Gets the number of shader engines.
     ///
     /// @return The number of shader engines.
-    size_t GetNumberShaderEngines() const
+    GpaUInt32 GetNumberShaderEngines() const
     {
         return num_shader_engines_;
     }
@@ -111,7 +117,7 @@ public:
     /// @brief Gets the number of shader arrays.
     ///
     /// @return The number of shader arrays.
-    size_t GetNumberShaderArrays() const
+    GpaUInt32 GetNumberShaderArrays() const
     {
         return num_shader_arrays_;
     }
@@ -119,7 +125,7 @@ public:
     /// @brief Gets the number of SIMDs.
     ///
     /// @return The number of SIMDs.
-    size_t GetNumberSimds() const
+    GpaUInt32 GetNumberSimds() const
     {
         return num_simd_;
     }
@@ -127,7 +133,7 @@ public:
     /// @brief Gets the number of Compute Units.
     ///
     /// @return The number of Compute Units.
-    size_t GetNumberCus() const
+    GpaUInt32 GetNumberCus() const
     {
         return num_cu_;
     }
@@ -135,15 +141,31 @@ public:
     /// @brief Gets the max number of waves per SIMD.
     ///
     /// @return the number of waves per SIMD.
-    size_t GetWavesPerSimd() const
+    GpaUInt32 GetWavesPerSimd() const
     {
         return num_waves_per_simd_;
+    }
+
+    /// @brief Calculate the max wave slots
+    ///
+    /// @return The maximum number of wave slots
+    GpaUInt32 GetMaxWaveSlots() const
+    {
+        return num_simd_ * num_waves_per_simd_;
+    }
+
+    /// @brief Gets the max number of VGPRs.
+    ///
+    /// @return The number of VGPRs.
+    GpaUInt32 GetTotalVgprs() const
+    {
+        return num_vgpr_;
     }
 
     /// @brief Gets the number of clocks per primitive.
     ///
     /// @return The number of clocks per primitive.
-    size_t GetSuClocksPrim() const
+    GpaUInt32 GetSuClocksPrim() const
     {
         return su_clock_prim_;
     }
@@ -151,7 +173,7 @@ public:
     /// @brief Gets the number of primitive pipes.
     ///
     /// @return The number of primitive pipes.
-    size_t GetNumberPrimPipes() const
+    GpaUInt32 GetNumberPrimPipes() const
     {
         return num_prim_pipes_;
     }
@@ -170,17 +192,12 @@ public:
     /// @return True if the device ID is available; false otherwise.
     bool GetDeviceId(GpaUInt32& id) const;
 
-    /// @brief Checks if the current card is unsupported based on the device ID.
+    /// @brief Checks if the current card is unsupported based on the device ID and graphics API.
     ///
-    /// @return True if the current device ID is in the unsupported card list; false otherwise.
-    bool IsUnsupportedDeviceId() const;
-
-    /// @brief Checks if card is unsupported based on the device ID.
+    /// @param [in] api The API being used.
     ///
-    /// @param [in] id The device ID.
-    ///
-    /// @return True if the device ID is in the unsupported card list; false otherwise.
-    bool IsUnsupportedDeviceId(const GpaUInt32& id) const;
+    /// @return True if the current device is unsupported.
+    bool IsUnsupportedDeviceId(const GpaApiType api, GpaDriverInfo const& driver_info) const;
 
     /// @brief Gets the vendor ID.
     ///
@@ -232,8 +249,10 @@ public:
     ///
     /// Sets devInfo and sets DeviceName and HWGeneration if not previously set.
     ///
+    /// @param [in] api The API being used.
+    ///
     /// @return True if HW should be supported and information is obtained correctly.
-    bool UpdateDeviceInfoBasedOnDeviceId();
+    bool UpdateDeviceInfoBasedOnDeviceId(const GpaApiType api, GpaDriverInfo const& driver_info);
 
     /// @brief Uses the device id and name to assign a revision id.
     ///
@@ -283,50 +302,52 @@ public:
     bool operator==(const GpaHwInfo& other_hw_info) const;
 
 private:
-    GpaUInt32              device_id_;               ///< The device ID.
-    bool                   device_id_set_;           ///< Indicates if the Device ID has been set.
-    std::vector<GpaUInt32> unsupported_device_ids_;  ///< List of unsupported cards by device ID.
+    GpaUInt32 device_id_     = {};  ///< The device ID.
+    bool      device_id_set_ = {};  ///< Indicates if the Device ID has been set.
 
-    GpaUInt32 revision_id_;      ///< The revision ID.
-    bool      revision_id_set_;  ///< Indicates if the Revision ID has been set.
+    GpaUInt32 revision_id_     = {};  ///< The revision ID.
+    bool      revision_id_set_ = {};  ///< Indicates if the Revision ID has been set.
 
-    GpaUInt32 vendor_id_;      ///< The vendor ID.
-    bool      vendor_id_set_;  ///< Indicates if the vendor ID has been set.
+    GpaUInt32 vendor_id_     = {};  ///< The vendor ID.
+    bool      vendor_id_set_ = {};  ///< Indicates if the vendor ID has been set.
 
-    std::string device_name_;      ///< The device name.
-    bool        device_name_set_;  ///< Indicates if the device name has been set.
+    std::string device_name_     = {};  ///< The device name.
+    bool        device_name_set_ = {};  ///< Indicates if the device name has been set.
 
-    unsigned int gpu_index_;      ///< Index of the GPU in the system.
-    bool         gpu_index_set_;  ///< Indicates the GPU index has been set.
+    unsigned int gpu_index_     = {};  ///< Index of the GPU in the system.
+    bool         gpu_index_set_ = {};  ///< Indicates the GPU index has been set.
 
-    GDT_HW_GENERATION generation_;      ///< The hardware generation.
-    bool              generation_set_;  ///< Indicates if the hardware generation has been set.
+    GDT_HW_GENERATION generation_     = GDT_HW_GENERATION_NONE;  ///< The hardware generation.
+    bool              generation_set_ = {};                      ///< Indicates if the hardware generation has been set.
 
-    GpaUInt64 timestamp_frequency_;      ///< The frequency of the time stamp clock.
-    bool      timestamp_frequency_set_;  ///< Indicates if the timestamp frequency has been set.
+    GpaUInt64 timestamp_frequency_     = 1;   ///< The frequency of the time stamp clock.
+    bool      timestamp_frequency_set_ = {};  ///< Indicates if the timestamp frequency has been set.
 
-    size_t num_simd_;      ///< Number of SIMDs.
-    bool   num_simd_set_;  ///< Indicates if the number of SIMDs has been set.
+    GpaUInt32 num_simd_     = {};  ///< Number of SIMDs.
+    bool      num_simd_set_ = {};  ///< Indicates if the number of SIMDs has been set.
 
-    size_t num_cu_;      ///< Number of Compute Units.
-    bool   num_cu_set_;  ///< Indicates if the Compute Units has been set.
+    GpaUInt32 num_cu_     = {};  ///< Number of Compute Units.
+    bool      num_cu_set_ = {};  ///< Indicates if the Compute Units has been set.
 
-    size_t num_waves_per_simd_;      ///< Maximum number of waves per SIMD.
-    bool   num_waves_per_simd_set_;  ///< Indicates the WavesPerSimd has been set.
+    GpaUInt32 num_waves_per_simd_     = {};  ///< Maximum number of waves per SIMD.
+    bool      num_waves_per_simd_set_ = {};  ///< Indicates the WavesPerSimd has been set.
 
-    GDT_HW_ASIC_TYPE asic_type_;  ///< Indicates the ASIC type of this device.
+    GDT_HW_ASIC_TYPE asic_type_ = GDT_ASIC_TYPE_NONE;  ///< Indicates the ASIC type of this device.
 
-    size_t num_shader_engines_;      ///< Number of shader engines.
-    bool   num_shader_engines_set_;  ///< Indicates if the shader engines has been set.
+    GpaUInt32 num_shader_engines_     = {};  ///< Number of shader engines.
+    bool      num_shader_engines_set_ = {};  ///< Indicates if the shader engines has been set.
 
-    size_t num_shader_arrays_;      ///< Number of shader arrays.
-    bool   num_shader_arrays_set_;  ///< Indicates if the shader engines has been set.
+    GpaUInt32 num_shader_arrays_     = {};  ///< Number of shader arrays.
+    bool      num_shader_arrays_set_ = {};  ///< Indicates if the shader engines has been set.
 
-    size_t su_clock_prim_;      ///< Number of clocks it takes to process a primitive.
-    bool   su_clock_prim_set_;  ///< Indicates whether the SU Clock prim is set or not.
+    GpaUInt32 su_clock_prim_     = {};  ///< Number of clocks it takes to process a primitive.
+    bool      su_clock_prim_set_ = {};  ///< Indicates whether the SU Clock prim is set or not.
 
-    size_t num_prim_pipes_;      ///< Number of primitive pipes.
-    bool   num_prim_pipes_set_;  ///< Indicates whether primitive pipes is set or not.
+    GpaUInt32 num_prim_pipes_     = {};  ///< Number of primitive pipes.
+    bool      num_prim_pipes_set_ = {};  ///< Indicates whether primitive pipes is set or not.
+
+    GpaUInt32 num_vgpr_     = {};  ///< Maximum number of VGPRs.
+    bool      num_vgpr_set_ = {};  ///< Indicates the number of VGPRs has been set.
 };
 
-#endif  // GPU_PERF_API_COMMON_GPA_HW_INFO_H_
+#endif

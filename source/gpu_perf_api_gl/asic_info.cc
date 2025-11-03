@@ -18,7 +18,9 @@
 #include <windows.h>
 #endif
 
+#ifdef _WIN32
 #include "ADLUtil.h"
+#endif
 #include "asic_info.h"
 
 #include "gpu_perf_api_common/logging.h"

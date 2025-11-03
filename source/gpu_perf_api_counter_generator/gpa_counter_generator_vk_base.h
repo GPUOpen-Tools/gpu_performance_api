@@ -54,4 +54,4 @@ private:
     GpaCounterGeneratorVkBase& operator=(GpaCounterGeneratorVkBase&&) = delete;
 };
 
-#endif  // GPU_PERF_API_COUNTER_GENERATOR_VK_GPA_COUNTER_GENERATOR_VK_BASE_H_
+#endif

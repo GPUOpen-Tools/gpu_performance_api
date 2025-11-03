@@ -12,8 +12,11 @@
 
 // clang-format off
 
-#include <vector>
-#include <set>
+#include "gpu_perf_api_common/gpa_array_view.hpp"
+#include <array>
+#include <cassert>
+
+#include "DeviceInfo.h"
 
 struct GpaHardwareCounterDesc;
 
@@ -28,17 +31,16 @@ namespace counter_gfx103_gfx1033
 /// @return True if the ASIC is matched by this file.
 inline bool MatchAsic(GDT_HW_ASIC_TYPE asic_type)
 {
-    static std::set<GDT_HW_ASIC_TYPE> asics_supported = { GDT_GFX10_3_3 };
+    static constexpr std::array asics_supported = { GDT_GFX10_3_3 };
 
-    return asics_supported.find(asic_type) != asics_supported.end();
+    return std::find(asics_supported.begin(), asics_supported.end(), asic_type) != asics_supported.end();
 }
 
-/// @brief Replaces count number of block instance counters at the destination with the overriding source counters.
+/// @brief This function is called on variant hardware which has a different register spec and therefore we need to substitute the base set of counters with the variant's set.
 ///
 /// @param [in] dest_counter Destination to update.
 /// @param [in] src_counter Source to update from.
-/// @param [in] count Number of counters to update.
-inline void ReplaceBlockInstanceCounters(std::vector<GpaHardwareCounterDesc> &dest_counter, const std::vector<GpaHardwareCounterDesc> &src_counter)
+inline void ReplaceBlockInstanceCounters(gpa_array_view<GpaHardwareCounterDesc> &dest_counter, const gpa_array_view<GpaHardwareCounterDesc> &src_counter)
 {
     assert(src_counter.size() == dest_counter.size());
     dest_counter = src_counter;
@@ -64,4 +66,4 @@ bool OverrideMaxBlockEvents(GDT_HW_ASIC_TYPE asic_type);
 
 // clang-format on
 
-#endif  // GPA_AUTO_GENERATED_GPU_PERF_API_COUNTER_GENERATOR_GPA_HW_COUNTER_GFX103_GFX1033_H_
+#endif

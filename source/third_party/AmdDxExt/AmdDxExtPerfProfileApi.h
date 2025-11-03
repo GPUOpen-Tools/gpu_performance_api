@@ -1,10 +1,4 @@
-/*
-***************************************************************************************************
-*
-*  Copyright (c) 2011-2016 Advanced Micro Devices, Inc. All rights reserved.
-*
-***************************************************************************************************
-*/
+/* Copyright (C) 2011-2025 Advanced Micro Devices, Inc. All rights reserved. */
 
 /**
 ***************************************************************************************************
@@ -59,7 +53,6 @@ public:
     virtual PE_RESULT SetClockMode(PE_CLOCK_MODE mode, PE_SET_CLOCK_MODE_OUTPUT* pOutput) = 0;
 };
 
-
 /**
 ***************************************************************************************************
 * @brief Abstract perf profile extension perf counter interface class
@@ -78,7 +71,6 @@ public:
     IAmdDxExtPerfCounter() {};
     virtual ~IAmdDxExtPerfCounter() = 0 {};
 };
-
 
 /**
 ***************************************************************************************************
@@ -143,7 +135,6 @@ public:
     virtual ~IAmdDxExtTrace() = 0 {};
 };
 
-
 /**
 ***************************************************************************************************
 * @brief Abstract perf profile extension thread trace interface class
@@ -167,7 +158,6 @@ public:
 
 };
 
-
 /**
 ***************************************************************************************************
 * @brief Abstract perf profile extension counter stream trace interface class
@@ -190,7 +180,6 @@ public:
     IAmdDxExtCounterStreamTrace() {};
     virtual ~IAmdDxExtCounterStreamTrace() = 0 {};
 };
-
 
 /**
 ***************************************************************************************************
@@ -249,7 +238,6 @@ public:
     virtual unsigned int GetNumShaderEngines() = 0;
 };
 
-
 /**
 ***************************************************************************************************
 * @brief Abstract perf profile extension driver statistics interface class
@@ -275,5 +263,5 @@ public:
     virtual ~IAmdDxExtDriverStats() = 0 {};
 };
 
-#endif // _AMDDXEXTPERFPROFILEAPI_H_
+#endif
 

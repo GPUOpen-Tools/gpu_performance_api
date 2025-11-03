@@ -45,4 +45,4 @@ namespace dx12_gfx103_asics
 
 }  // namespace dx12_gfx103asics
 
-#endif  // GPA_AUTO_GEN_COUNTER_GEN_PUBLIC_COUNTER_DEFINITIONS_DX12_GFX103_ASICS_H_
+#endif

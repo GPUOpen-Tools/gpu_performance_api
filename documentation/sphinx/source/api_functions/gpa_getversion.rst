@@ -1,5 +1,3 @@
-.. Copyright (c) 2018-2021 Advanced Micro Devices, Inc. All rights reserved.
-
 GpaGetVersion
 @@@@@@@@@@@@@
 

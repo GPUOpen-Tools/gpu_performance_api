@@ -1,10 +1,4 @@
-/*
-***************************************************************************************************
-*
-*  Copyright (c) 2017 Advanced Micro Devices, Inc. All rights reserved.
-*
-***************************************************************************************************
-*/
+/* Copyright (C) 2017-2025 Advanced Micro Devices, Inc. All rights reserved. */
 
 /**
 ***********************************************************************************************************************
@@ -32,11 +26,11 @@
 *    HMODULE m_hAmdD3d12 = AmdGetDxcModuleHandle();
 *
 *    // alternatively it's also possible to use LoadLibrary but it's not allowed on rs2 for a windows store app:
-*    //#ifdef _WIN64
+*
 *    //    HMODULE m_hAmdD3d12 = LoadLibrary(L"amdxc64.dll");
-*    //#else
+*
 *    //    HMODULE m_hAmdD3d12 = LoadLibrary("amdxc32.dll");
-*    //#endif
+*
 *
 *    if (m_hAmdD3d12 != NULL)
 *    {

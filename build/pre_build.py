@@ -1,6 +1,4 @@
-## Copyright (c) 2018-2025 Advanced Micro Devices, Inc. All rights reserved.
-#! /usr/bin/python
-# Utility Python script to generate GPA projects on Windows and Linux
+## Copyright (C) 2018-2025 Advanced Micro Devices, Inc. All rights reserved. ##
 
 import os
 import sys
@@ -9,8 +7,6 @@ import argparse
 import subprocess
 import time
 import stat
-
-import gpa_utils as GpaUtils
 
 def remove_readonly(func, path, _):
     "Clear the readonly bit and reattempt the removal"
@@ -112,8 +108,6 @@ def GenerateProjectFileUsingCmake(cmake_generator, target_platform,
 
     return True
 
-
-
 script_parser = argparse.ArgumentParser(description="Utility script to generate GPA Unix/Windows projects")
 if sys.platform == "win32":
     script_parser.add_argument("--vs", default="2022", choices=["2022"], help="specify the version of Visual Studio to be used with this script (default: 2022; overrides --ninja)")
@@ -149,10 +143,8 @@ script_parser.add_argument("--clang_tidy", action="store_true", help="Run clang-
 script_parser.add_argument("--fixlint", action="store_true", help="Apply fixes suggested by clang-format and/or clang-tidy directly to source files")
 script_parser.add_argument("--cleanlint", action="store_true", help="Fail and stop a build if clang-format and/or clang-tidy suggests a fix")
 
-
 # parse the command line arguments
 build_args = script_parser.parse_args()
-
 
 # Set the BUILD version number.
 cmake_additional_args=["-Dbuild=" + build_args.build_number]
@@ -265,7 +257,6 @@ if build_args.nofetch == True:
 else:
     cmake_additional_args.append("-DGPA_NO_FETCH=OFF")
 
-
 print(cmake_generator)
 
 if sys.platform == "win32":
@@ -292,7 +283,6 @@ for config in cmake_generator_configs:
         # Append _android to output dir if building for android
         if build_args.android == True:
             cmake_output_path = cmake_output_path + "_android"
-
 
     if GenerateProjectFileUsingCmake(cmake_generator, platform,
                                         config, cmake_additional_args,
@@ -333,9 +323,17 @@ if (build_args.build):
         if(p.returncode != 0):
             print("\nERROR: CMake build failed with %d" % p.returncode)
             sys.exit(1)
-        
+
         # We currently only package release binaries.
         if (build_args.package and config == "release"):
+            ctest_args = ["ctest", "-C", "Release", "--tests-regex", "GPUPerfAPIUnitTests", "--output-on-failure"]
+            p = subprocess.Popen(ctest_args, cwd=cmake_output_dir, stderr=subprocess.STDOUT)
+            p.wait()
+            sys.stdout.flush()
+
+            if(p.returncode != 0):
+                print("\nERROR: CTest failed with %d" % p.returncode)
+                sys.exit(1)
 
             cpack_args = ["cpack", "-C", "Release"]
             p = subprocess.Popen(cpack_args, cwd=cmake_output_dir, stderr=subprocess.STDOUT)

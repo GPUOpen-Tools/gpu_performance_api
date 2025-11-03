@@ -69,7 +69,7 @@ BEGIN
             VALUE "FileVersion", GPA_MAJOR_VERSION_STR "." GPA_MINOR_VERSION_STR "." GPA_UPDATE_VERSION_STR "." GPA_BUILD_NUMBER_STR
             VALUE "InternalName", "GPUPerfAPIGL"
             VALUE "LegalCopyright", GPA_COPYRIGHT_STR
-            VALUE "OriginalFilename", "GPUPerfAPIGL" AMDT_PROJECT_SUFFIX_STR ".dll"
+            VALUE "OriginalFilename", "GPUPerfAPIGL" AMDT_PROJECT_SUFFIX ".dll"
             VALUE "ProductName", "GPUPerfAPIGL"
             VALUE "ProductVersion", GPA_MAJOR_VERSION_STR "." GPA_MINOR_VERSION_STR "." GPA_UPDATE_VERSION_STR "." GPA_BUILD_NUMBER_STR
         END

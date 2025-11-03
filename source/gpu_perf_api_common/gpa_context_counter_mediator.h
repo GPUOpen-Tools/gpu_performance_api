@@ -124,4 +124,4 @@ private:
     mutable std::mutex  context_info_map_mutex_;  ///< Mutex for context info map.
 };
 
-#endif  // GPU_PERF_API_COMMON_GPA_CONTEXT_COUNTER_MEDIATOR_H_
+#endif

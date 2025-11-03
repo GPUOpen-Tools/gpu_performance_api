@@ -55,6 +55,9 @@ typedef GpaStatus (*GpaGetDeviceGenerationPtrType)(GpaContextId, GpaHwGeneration
 /// Typedef for a function pointer for GpaGetDeviceMaxWaveSlots.
 typedef GpaStatus (*GpaGetDeviceMaxWaveSlotsPtrType)(GpaContextId, GpaUInt32*);
 
+/// Typedef for a function pointer for GpaGetDeviceMaxVgprs.
+typedef GpaStatus (*GpaGetDeviceMaxVgprsPtrType)(GpaContextId, GpaUInt32*);
+
 /// Typedef for a function pointer for GpaGetNumCounters.
 typedef GpaStatus (*GpaGetNumCountersPtrType)(GpaSessionId, GpaUInt32*);
 
@@ -226,4 +229,4 @@ typedef GpaStatus (*GpaGetSampleResultPtrType)(GpaSessionId, GpaUInt32, size_t, 
 /// Typedef for a function pointer for GpaGetStatusAsStr.
 typedef const char* (*GpaGetStatusAsStrPtrType)(GpaStatus);
 
-#endif  // GPU_PERFORMANCE_API_GPU_PERF_API_FUNCTION_TYPES_H_
+#endif

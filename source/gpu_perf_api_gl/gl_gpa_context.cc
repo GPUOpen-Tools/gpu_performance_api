@@ -14,11 +14,10 @@
 
 #include "gpu_perf_api_gl/gl_gpa_session.h"
 
-GlGpaContext::GlGpaContext(GlContextPtr context, GpaHwInfo& hw_info, GpaOpenContextFlags context_flags, int driver_version)
+GlGpaContext::GlGpaContext(GlContextPtr context, const GpaHwInfo& hw_info, GpaOpenContextFlags context_flags)
     : GpaContext(hw_info, context_flags)
     , gl_context_(context)
     , clock_mode_(ogl_utils::kAmdXDefaultMode)
-    , driver_version_(driver_version)
     , driver_supports_GL1CG_(false)
     , driver_supports_ATCL2_(false)
     , driver_supports_CHCG_(false)
@@ -28,7 +27,6 @@ GlGpaContext::GlGpaContext(GlContextPtr context, GpaHwInfo& hw_info, GpaOpenCont
     , driver_supports_PC_(false)
     , driver_supports_GRBMSE_(false)
 {
-    supported_sample_types_ = kGpaContextSampleTypeDiscreteCounter;
 }
 
 GlGpaContext::~GlGpaContext()
@@ -284,7 +282,7 @@ bool GlGpaContext::ValidateAndUpdateGlCounters(IGpaSession* session) const
     GpaUInt32         revision_id = 0;
     GpaUInt32         vendor_id   = 0;
 
-    const GpaHwInfo hwInfo = *(GetHwInfo());
+    const GpaHwInfo& hwInfo = GetHwInfo();
 
     if (!hwInfo.GetHwGeneration(generation) || !hwInfo.GetDeviceId(device_id) || !hwInfo.GetVendorId(vendor_id) || !hwInfo.GetRevisionId(revision_id))
     {
@@ -306,14 +304,14 @@ bool GlGpaContext::ValidateAndUpdateGlCounters(IGpaSession* session) const
                 return false;
             }
 
-            GpaHardwareCounters* hardware_counters = const_cast<GpaHardwareCounters*>(counter_accessor->GetHardwareCounters());
-            GpaUInt32            num_expected_driver_groups =
-                static_cast<GpaUInt32>(hardware_counters->counter_groups_array_.size() + hardware_counters->additional_group_count_) - 1;
+            GpaHardwareCounters& hardware_counters = const_cast<GpaHardwareCounters&>(counter_accessor->GetHardwareCounters());
+            const GpaUInt32      num_expected_driver_groups =
+                static_cast<GpaUInt32>(hardware_counters.counter_groups_array_.size() + hardware_counters.additional_group_count_) - 1;
 
             // Accumulate the total number of block instances available, since that is what GPA uses internally.
             // The driver only exposes block instances on the current hardware, so this total will be less than what GPA expects if lower-end hardware is used.
             // The extra block instances in GPA will be ignored when profiling.
-            GpaUInt32 total_group_instances = std::accumulate(
+            const GpaUInt32 total_group_instances = std::accumulate(
                 driver_counter_group_info_.begin(), driver_counter_group_info_.end(), 0, [](GpaUInt32 total, const GpaGlPerfMonitorGroupData& data) {
                     return total + data.num_instances;
                 });
@@ -327,14 +325,14 @@ bool GlGpaContext::ValidateAndUpdateGlCounters(IGpaSession* session) const
             }
 
             // Iterate through all of GPA's expanded groups, verify the order, and then update the group ID based on what was returned from the driver.
-            std::map<GpaUInt32, GpaHardwareCounterDescExt>::iterator hardware_counter_iter = hardware_counters->hardware_counters_.begin();
-            GpaGlPerfGroupVector::const_iterator                     driver_group_iter     = driver_counter_group_info_.cbegin();
-            GpaUInt32 internal_counter_groups_count = static_cast<GpaUInt32>(hardware_counters->internal_counter_groups_.size());
+            auto            hardware_counter_iter         = hardware_counters.hardware_counters_.begin();
+            auto            driver_group_iter             = driver_counter_group_info_.cbegin();
+            const GpaUInt32 internal_counter_groups_count = static_cast<GpaUInt32>(hardware_counters.internal_counter_groups_.size());
 
             for (GpaUInt32 gpa_group_index = 0; gpa_group_index < internal_counter_groups_count; ++gpa_group_index)
             {
-                GpaCounterGroupDesc* gpa_group = &hardware_counters->internal_counter_groups_.at(gpa_group_index);
-                std::string          gpa_group_name(gpa_group->name);
+                const GpaCounterGroupDesc& gpa_group = hardware_counters.internal_counter_groups_[gpa_group_index];
+                const std::string          gpa_group_name(gpa_group.name);
 
                 // These groups (GL1CG, ATCL2, CHCG, GUS, UMC, RPB, PC, GRBMSE) only exist (and are only exposed) on some hardware but GPA expects that they always exist.
                 // If they don't exist then skip this GPA group and continue to the next group.
@@ -375,7 +373,7 @@ bool GlGpaContext::ValidateAndUpdateGlCounters(IGpaSession* session) const
                 if (gpa_group_index != 0)
                 {
                     // Block instance index reset back to 0 because a new block has started.
-                    if (gpa_group->block_instance == 0)
+                    if (gpa_group.block_instance == 0)
                     {
                         ++driver_group_iter;
                     }
@@ -482,7 +480,7 @@ bool GlGpaContext::ValidateAndUpdateGlCounters(IGpaSession* session) const
                 if (driver_group_iter->num_instances > 1)
                 {
                     // Append the current GPA block instance to the current driver group name on OGLP driver when the hardware has more than one instance of this group.
-                    driver_group_name_extended.append(std::to_string(gpa_group->block_instance));
+                    driver_group_name_extended.append(std::to_string(gpa_group.block_instance));
                 }
 
                 // Check if current gpa_group_name matches current driver_group_name and then validate and update if match is found.
@@ -491,8 +489,8 @@ bool GlGpaContext::ValidateAndUpdateGlCounters(IGpaSession* session) const
                 {
                     // Make sure the GPA number of counters and maximum active counters match for this block (regardless of which block instance).
                     // Remove the number of counters added for padding which are used to account for other hardware, so the driver will not be returning them on the current hardware.
-                    GpaUInt32       num_padding_counters = hardware_counters->GetPaddedCounterCount(gpa_group->group_index);
-                    const GpaUInt32 gpa_num_counters     = (gpa_group->num_counters - num_padding_counters);
+                    const GpaUInt32 num_padding_counters = hardware_counters.GetPaddedCounterCount(gpa_group.group_index);
+                    const GpaUInt32 gpa_num_counters     = (gpa_group.num_counters - num_padding_counters);
                     if (static_cast<GpaUInt32>(driver_group_iter->num_counters) != gpa_num_counters)
                     {
                         GPA_LOG_MESSAGE("GPA's group %s is expecting %d counters but the driver is reporting %d.",
@@ -500,7 +498,7 @@ bool GlGpaContext::ValidateAndUpdateGlCounters(IGpaSession* session) const
                                         gpa_num_counters,
                                         driver_group_iter->num_counters);
                     }
-                    const GpaUInt32 gpa_num_max_active = gpa_group->max_active_discrete_counters;
+                    const GpaUInt32 gpa_num_max_active = gpa_group.max_active_discrete_counters;
                     if (static_cast<GpaUInt32>(driver_group_iter->max_active_discrete_counters_per_instance) != gpa_num_max_active)
                     {
                         GPA_LOG_MESSAGE("GPA's group %s is expecting %d max active discrete counters, but the driver is reporting %d.",
@@ -510,7 +508,7 @@ bool GlGpaContext::ValidateAndUpdateGlCounters(IGpaSession* session) const
                     }
 
                     // Iterate through each counter within this group and update the driver group ID.
-                    while ((hardware_counter_iter != hardware_counters->hardware_counters_.end()) &&
+                    while ((hardware_counter_iter != hardware_counters.hardware_counters_.end()) &&
                            strncmp(gpa_group_name.c_str(), hardware_counter_iter->second.hardware_counters->name, gpa_group_name.size()) == 0)
                     {
                         hardware_counter_iter->second.group_id_driver = driver_group_iter->group_id;

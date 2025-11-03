@@ -1,4 +1,3 @@
-.. Copyright(c) 2018-2025 Advanced Micro Devices, Inc. All rights reserved.
 .. Graphics Performance Counters for RDNA2
 
 .. *** Note, this is an auto-generated file. Do not edit. Execute PublicCounterCompiler to rebuild.
@@ -14,9 +13,6 @@ Timing Group
     :widths: 15, 10, 10, 65
 
     "GPUTime", "Discrete", "Nanoseconds", "Time this API command took to execute on the GPU in nanoseconds from the time the previous command reached the bottom of the pipeline (BOP) to the time this command reaches the bottom of the pipeline (BOP). Does not include time that draw calls are processed in parallel."
-    "ExecutionDuration", "Discrete", "Nanoseconds", "GPU command execution duration in nanoseconds, from the time the command enters the top of the pipeline (TOP) to the time the command reaches the bottom of the pipeline (BOP). Does not include time that draw calls are processed in parallel."
-    "ExecutionStart", "Discrete", "Nanoseconds", "GPU command execution start time in nanoseconds. This is the time the command enters the top of the pipeline (TOP)."
-    "ExecutionEnd", "Discrete", "Nanoseconds", "GPU command execution end time in nanoseconds. This is the time the command reaches the bottom of the pipeline (BOP)."
     "GPUBusy", "Discrete, Streaming", "Percentage", "The percentage of time the GPU command processor was busy."
     "GPUBusyCycles", "Discrete, Streaming", "Cycles", "Number of GPU cycles that the GPU command processor was busy."
     "TessellatorBusy", "Discrete, Streaming", "Percentage", "The percentage of time the tessellation engine is busy."
@@ -42,6 +38,9 @@ Timing Group
     "TexUnitBusyCycles", "Discrete, Streaming", "Cycles", "Number of GPU cycles the texture unit is active. This is measured with all extra fetches and any cache or memory effects taken into account."
     "DepthStencilTestBusy", "Discrete, Streaming", "Percentage", "Percentage of time GPU spent performing depth and stencil tests relative to GPUBusy."
     "DepthStencilTestBusyCycles", "Discrete, Streaming", "Cycles", "Number of GPU cycles spent performing depth and stencil tests."
+    "ExecutionDuration", "Discrete", "Nanoseconds", "GPU command execution duration in nanoseconds, from the time the command enters the top of the pipeline (TOP) to the time the command reaches the bottom of the pipeline (BOP). Does not include time that draw calls are processed in parallel."
+    "ExecutionStart", "Discrete", "Nanoseconds", "GPU command execution start time in nanoseconds. This is the time the command enters the top of the pipeline (TOP)."
+    "ExecutionEnd", "Discrete", "Nanoseconds", "GPU command execution end time in nanoseconds. This is the time the command reaches the bottom of the pipeline (BOP)."
 
 VertexGeometry Group
 %%%%%%%%%%%%%%%%%%%%
@@ -53,10 +52,6 @@ VertexGeometry Group
     "GSVerticesOut", "Discrete, Streaming", "Items", "The number of vertices output by the GS."
     "VsGsVALUInstCount", "Discrete", "Items", "Average number of vector ALU instructions executed for the VS and GS in a VS-[GS-]PS pipeline. Affected by flow control."
     "VsGsSALUInstCount", "Discrete", "Items", "Average number of scalar ALU instructions executed for the VS and GS. Affected by flow control."
-    "VsGsVALUBusy", "Discrete", "Percentage", "The percentage of GPUTime vector ALU instructions are being processed for the VS and GS."
-    "VsGsVALUBusyCycles", "Discrete", "Cycles", "Number of GPU cycles where vector ALU instructions are being processed for the VS and GS."
-    "VsGsSALUBusy", "Discrete", "Percentage", "The percentage of GPUTime scalar ALU instructions are being processed for the VS and GS."
-    "VsGsSALUBusyCycles", "Discrete", "Cycles", "Number of GPU cycles where scalar ALU instructions are being processed for the VS and GS."
 
 PreTessellation Group
 %%%%%%%%%%%%%%%%%%%%%
@@ -209,14 +204,6 @@ MemoryCache Group
     "L0CacheRequestCount", "Discrete, Streaming", "Items", "The number of read requests made to the L0 cache. The L0 cache contains vector data, which is data that may vary in each thread across the wavefront. Each request is 128 bytes in size."
     "L0CacheHitCount", "Discrete, Streaming", "Items", "The number of read requests which result in a cache hit from the L0 cache. The L0 cache contains vector data, which is data that may vary in each thread across the wavefront. Each request is 128 bytes in size."
     "L0CacheMissCount", "Discrete, Streaming", "Items", "The number of read requests which result in a cache miss from the L0 cache. The L0 cache contains vector data, which is data that may vary in each thread across the wavefront. Each request is 128 bytes in size."
-    "ScalarCacheHit", "Discrete, Streaming", "Percentage", "The percentage of read requests made from executing shader code that hit the data in the Scalar cache. The Scalar cache contains data that does not vary in each thread across the wavefront. Each request is 64 bytes in size. Value range: 0% (no hit) to 100% (optimal)."
-    "ScalarCacheRequestCount", "Discrete, Streaming", "Items", "The number of read requests made from executing shader code to the Scalar cache. The Scalar cache contains data that does not vary in each thread across the wavefront. Each request is 64 bytes in size."
-    "ScalarCacheHitCount", "Discrete, Streaming", "Items", "The number of read requests made from executing shader code which result in a cache hit from the Scalar cache. The Scalar cache contains data that does not vary in each thread across the wavefront. Each request is 64 bytes in size."
-    "ScalarCacheMissCount", "Discrete, Streaming", "Items", "The number of read requests made from executing shader code which result in a cache miss from the Scalar cache. The Scalar cache contains data that does not vary in each thread across the wavefront. Each request is 64 bytes in size."
-    "InstCacheHit", "Discrete, Streaming", "Percentage", "The percentage of read requests made that hit the data in the Instruction cache. The Instruction cache supplies shader code to an executing shader. Each request is 64 bytes in size. Value range: 0% (no hit) to 100% (optimal)."
-    "InstCacheRequestCount", "Discrete, Streaming", "Items", "The number of read requests made to the Instruction cache. The Instruction cache supplies shader code to an executing shader. Each request is 64 bytes in size."
-    "InstCacheHitCount", "Discrete, Streaming", "Items", "The number of read requests which result in a cache hit from the Instruction cache. The Instruction cache supplies shader code to an executing shader. Each request is 64 bytes in size."
-    "InstCacheMissCount", "Discrete, Streaming", "Items", "The number of read requests which result in a cache miss from the Instruction cache. The Instruction cache supplies shader code to an executing shader. Each request is 64 bytes in size."
     "L1CacheHit", "Discrete, Streaming", "Percentage", "The percentage of read or write requests that hit the data in the L1 cache. The L1 cache is shared across all WGPs in a single shader engine. Each request is 128 bytes in size. Value range: 0% (no hit) to 100% (optimal)."
     "L1CacheRequestCount", "Discrete", "Items", "The number of read or write requests made to the L1 cache. The L1 cache is shared across all WGPs in a single shader engine. Each request is 128 bytes in size."
     "L1CacheHitCount", "Discrete, Streaming", "Items", "The number of read or write requests which result in a cache hit from the L1 cache. The L1 cache is shared across all WGPs in a single shader engine. Each request is 128 bytes in size."
@@ -229,6 +216,14 @@ MemoryCache Group
     "L0TagConflictReadStalledCycles", "Discrete, Streaming", "Items", "The number of cycles read operations from the L0 cache are stalled due to tag conflicts."
     "L0TagConflictWriteStalledCycles", "Discrete, Streaming", "Items", "The number of cycles write operations to the L0 cache are stalled due to tag conflicts."
     "L0TagConflictAtomicStalledCycles", "Discrete, Streaming", "Items", "The number of cycles atomic operations on the L0 cache are stalled due to tag conflicts."
+    "ScalarCacheHit", "Discrete, Streaming", "Percentage", "The percentage of read requests made from executing shader code that hit the data in the Scalar cache. The Scalar cache contains data that does not vary in each thread across the wavefront. Each request is 64 bytes in size. Value range: 0% (no hit) to 100% (optimal)."
+    "ScalarCacheRequestCount", "Discrete, Streaming", "Items", "The number of read requests made from executing shader code to the Scalar cache. The Scalar cache contains data that does not vary in each thread across the wavefront. Each request is 64 bytes in size."
+    "ScalarCacheHitCount", "Discrete, Streaming", "Items", "The number of read requests made from executing shader code which result in a cache hit from the Scalar cache. The Scalar cache contains data that does not vary in each thread across the wavefront. Each request is 64 bytes in size."
+    "ScalarCacheMissCount", "Discrete, Streaming", "Items", "The number of read requests made from executing shader code which result in a cache miss from the Scalar cache. The Scalar cache contains data that does not vary in each thread across the wavefront. Each request is 64 bytes in size."
+    "InstCacheHit", "Discrete, Streaming", "Percentage", "The percentage of read requests made that hit the data in the Instruction cache. The Instruction cache supplies shader code to an executing shader. Each request is 64 bytes in size. Value range: 0% (no hit) to 100% (optimal)."
+    "InstCacheRequestCount", "Discrete, Streaming", "Items", "The number of read requests made to the Instruction cache. The Instruction cache supplies shader code to an executing shader. Each request is 64 bytes in size."
+    "InstCacheHitCount", "Discrete, Streaming", "Items", "The number of read requests which result in a cache hit from the Instruction cache. The Instruction cache supplies shader code to an executing shader. Each request is 64 bytes in size."
+    "InstCacheMissCount", "Discrete, Streaming", "Items", "The number of read requests which result in a cache miss from the Instruction cache. The Instruction cache supplies shader code to an executing shader. Each request is 64 bytes in size."
 
 GlobalMemory Group
 %%%%%%%%%%%%%%%%%%

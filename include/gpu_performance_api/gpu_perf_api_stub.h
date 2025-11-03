@@ -76,6 +76,11 @@ static inline GpaStatus GpaGetDeviceMaxWaveSlots(GpaContextId gpa_context_id, Gp
     RETURN_GPA_SUCCESS;
 }
 
+static inline GpaStatus GpaGetDeviceMaxVgprs(GpaContextId gpa_context_id, GpaUInt32* max_vgprs)
+{
+    RETURN_GPA_SUCCESS;
+}
+
 static inline GpaStatus GpaGetNumCounters(GpaSessionId gpa_session_id, GpaUInt32* number_of_counters)
 {
     RETURN_GPA_SUCCESS;
@@ -412,4 +417,4 @@ static inline GpaStatus GpaGetFuncTable(void* gpa_func_table)
 #pragma warning(pop)
 #endif
 
-#endif  // GPU_PERFORMANCE_API_GPU_PERF_API_STUB_H_
+#endif

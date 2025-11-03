@@ -158,11 +158,11 @@
 #define DISCRETE_LOCALVIDMEMBYTES_PUBLIC_VK_GFX10 141
 #define DISCRETE_PCIEBYTES_PUBLIC_VK_GFX10 142
 
-/// Number of public counters for VK GFX10 
+/// Number of public counters for VK GFX10
 const size_t kVkGfx10PublicCounterCount = 143;
 
-/// Array of public counters for VK GFX10 
+/// Array of public counters for VK GFX10
 extern const GpaCounterDesc kVkGfx10PublicCounters[kVkGfx10PublicCounterCount];
 
 // clang-format on
-#endif  // GPA_AUTO_GEN_UNIT_TESTS_COUNTERS_PUBLIC_VK_GFX10
+#endif

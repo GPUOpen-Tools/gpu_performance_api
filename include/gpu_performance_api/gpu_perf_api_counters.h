@@ -123,13 +123,13 @@ typedef enum
     kGpaHardwareAttributeNumShaderArrays,         ///< Number of shader arrays.
     kGpaHardwareAttributeNumSimds,                ///< Number of simds.
     kGpaHardwareAttributeNumComputeUnits,         ///< Number of compute units.
-    kGpaHardwareAttributeNumRenderBackends,       ///< Number of render backends.
-    kGpaHardwareAttributeClocksPerPrimitive,      ///< Clocks per primitive.
-    kGpaHardwareAttributeNumPrimitivePipes,       ///< Number of primitive pipes.
+    kGpaHardwareAttributeNumRenderBackends,       ///< (unused) Number of render backends.
+    kGpaHardwareAttributeClocksPerPrimitive,      ///< (unused) Clocks per primitive.
+    kGpaHardwareAttributeNumPrimitivePipes,       ///< (unused) Number of primitive pipes.
     kGpaHardwareAttributeTimestampFrequency,      ///< Timestamp frequency.
-    kGpaHardwareAttributePeakVerticesPerClock,    ///< Peak vertices per clock.
-    kGpaHardwareAttributePeakPrimitivesPerClock,  ///< Peak primitives per clock.
-    kGpaHardwareAttributePeakPixelsPerClock,      ///< Peak pixels per clocks.
+    kGpaHardwareAttributePeakVerticesPerClock,    ///< (unused) Peak vertices per clock.
+    kGpaHardwareAttributePeakPrimitivesPerClock,  ///< (unused) Peak primitives per clock.
+    kGpaHardwareAttributePeakPixelsPerClock,      ///< (unused) Peak pixels per clocks.
     kGpaHardwareAttributeNumWavesPerSimd          ///< Number of waves per SIMD
 } GpaHardwareAttributeType;
 
@@ -217,6 +217,33 @@ typedef struct _GpaPassCounter
     GpaUInt32  counter_count;    ///< Number of counters.
     GpaUInt32* counter_indices;  ///< Indices of the counters.
 } GpaPassCounter;
+
+/// Set of driver types that are understood by GPA.
+///
+/// Used to identify how to interpret driver version numbers.
+typedef enum
+{
+    kIgnoreDriver         = 0,  ///< Use this to skip driver version checking.
+    kAmdProprietaryDriver = 1   ///< Adrenalin Release (ie: 25.5.1).
+} GpaDriverType;
+
+/// A set of information about the driver to determine HW support offline.
+typedef struct _GpaDriverInfo
+{
+    GpaDriverType driver_type;  ///< Driver Type to help identify how to interpret the driver version number.
+    GpaUInt32     major;        ///< Driver major version.
+    GpaUInt32     minor;        ///< Driver minor version.
+    GpaUInt32     update;       ///< Driver update version.
+} GpaDriverInfo;
+
+/// A set of information about the GPU / driver to determine offline if a sample type is supported.
+typedef struct _GpaSupportedSampleTypeInfo
+{
+    GpaUInt32     vendor_id;    ///< Vendor Id.
+    GpaUInt32     device_id;    ///< Device Id.
+    GpaUInt32     revision_id;  ///< Revision Id.
+    GpaDriverInfo driver_info;  ///< The type / version of the driver
+} GpaSupportedSampleTypeInfo;
 
 /// @brief Gets the GPA Counter lib version.
 ///
@@ -475,6 +502,43 @@ GPU_PERF_API_COUNTERS_DECL GpaStatus GpaCounterLibGetCountersByPass(const GpaCou
 /// Typedef for GpaCounterLibGetPassCount function pointer.
 typedef GpaStatus (*GpaCounterLibGetCountersByPassPtrType)(const GpaCounterContext, GpaUInt32, const GpaUInt32*, GpaUInt32*, GpaUInt32*, GpaPassCounter*);
 
+/// @brief Gets the supported context sample type(s) for the given API, hardware, and driver.
+///
+/// As an example some devices may not support SQTT, but will support SPM and Discrete Counters. This support
+/// can be further impacted by the driver version due to software issues.
+///
+/// This function is meant to be called before GpaCounterLibOpenCounterContext. Which can't check against the driver version.
+///
+/// @param [in]  api The GpaApiType of interest.
+/// @param [in]  info Struct containing the device / driver information.
+/// @param [out] supported_sample_types A bitfield of GpaContextSampleTypeBits that indicates which sample types are supported.
+///
+/// @return The GPA result status of the operation. kGpaStatusOk is returned if the operation is successful.
+GPU_PERF_API_COUNTERS_DECL GpaStatus GpaCounterLibGetSupportedSampleTypes(const GpaApiType                  api,
+                                                                          const GpaSupportedSampleTypeInfo* info,
+                                                                          GpaContextSampleTypeFlags*        supported_sample_types);
+
+/// Typedef for GpaCounterLibGetSupportedSampleTypes function pointer.
+typedef GpaStatus (*GpaCounterLibGetSupportedSampleTypesPtrType)(const GpaApiType, const GpaSupportedSampleTypeInfo*, GpaContextSampleTypeFlags*);
+
+/// @brief Calculate derived counters from collected SPM data.
+///
+/// @param [in] gpa_virtual_context Unique identifier of the opened virtual context.
+/// @param [in] spm_data Collected SPM data.
+/// @param [in] gpa_counter_indices Indices of the counters that were enabled when SPM data was gathered.
+/// @param [out] gpa_counter_results A valid pointer to an array of GpaFloat64 of gpa_counter_indices_count * spm_data->number_of_timestamps elements.
+///
+/// @return The GPA result status of the operation. kGpaStatusOk is returned if the operation is successful.
+GPU_PERF_API_COUNTERS_DECL GpaStatus GpaCounterlibComputeDerivedSpmCounterResults(const GpaCounterContext gpa_virtual_context,
+                                                                                  const GpaSpmData*       spm_data,
+                                                                                  const GpaUInt64         gpa_counter_indices_count,
+                                                                                  const GpaUInt32*        gpa_counter_indices,
+                                                                                  GpaFloat64*             gpa_counter_results);
+
+/// Typedef for GpaCounterlibComputeDerivedSpmCounterResults function pointer.
+typedef GpaStatus (
+    *GpaCounterlibComputeDerivedSpmCounterResultsPtrType)(const GpaCounterContext, const GpaSpmData*, const GpaUInt64, const GpaUInt32*, GpaFloat64*);
+
 #define GPA_COUNTER_LIB_FUNC(X)                 \
     X(GpaCounterLibGetVersion)                  \
     X(GpaCounterLibGetFuncTable)                \
@@ -492,7 +556,9 @@ typedef GpaStatus (*GpaCounterLibGetCountersByPassPtrType)(const GpaCounterConte
     X(GpaCounterLibGetCounterInfo)              \
     X(GpaCounterLibComputeDerivedCounterResult) \
     X(GpaCounterLibGetPassCount)                \
-    X(GpaCounterLibGetCountersByPass)
+    X(GpaCounterLibGetCountersByPass)           \
+    X(GpaCounterLibGetSupportedSampleTypes)     \
+    X(GpaCounterlibComputeDerivedSpmCounterResults)
 
 /// GPA counter library function table.
 typedef struct _GpaCounterLibFuncTable
@@ -529,4 +595,4 @@ typedef struct _GpaCounterLibFuncTable
 #pragma warning(pop)
 #endif
 
-#endif  // GPU_PERF_API_GPU_PERF_API_COUNTERS_H_
+#endif

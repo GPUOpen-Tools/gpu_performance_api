@@ -20,24 +20,24 @@ struct GpaSqCounterGroupDesc;
 
 namespace counter_oglp_gfx11
 {
-    extern std::vector<std::vector<GpaHardwareCounterDesc>*>          kOglpCounterGroupArrayGfx11; ///< Array of hardware counter groups for Oglp for Gfx11 family
-    extern std::vector<GpaCounterGroupDesc>                           kHwOglpGroupsGfx11; ///< Array of counter groups for Oglp for Gfx11 family
-    extern GpaCounterGroupExposedCounterDesc                          kHwOglpExposedCountersByGroupGfx11[]; ///< Array of exposed counter groups for Oglp for Gfx11 family
-    extern GpaPaddedCounterDesc                                       kOglpPaddedCounterByGroupGfx11[]; ///< Array of reserved counter for Oglp for Gfx11 family
-    extern GpaSqCounterGroupDesc                                      kHwOglpSqGroupsGfx11[]; ///< Array of SQ groups for Oglp for Gfx11 family
-    extern unsigned int                                               kHwOglpSqIsolatedGroupsGfx11[]; ///< Array of counter groups isolated from SQ counter groups for Oglp for Gfx11 family
-    extern const unsigned int                                         kHwOglpGpuTimeBottomToBottomDurationIndexGfx11; ///< Index of delta between the previous command reaching bottom of pipe and the current command reaching bottom of pipe, will not include latency of first data to travel through pipeline, best for large data sets. for Oglp for Gfx11 family
-    extern const unsigned int                                         kHwOglpGpuTimeBottomToBottomStartIndexGfx11; ///< Index of time of the previous command reaching bottom of pipe for Oglp for Gfx11 family
-    extern const unsigned int                                         kHwOglpGpuTimeBottomToBottomEndIndexGfx11; ///< Index of time of the current command reaching bottom of pipe for Oglp for Gfx11 family
-    extern const unsigned int                                         kHwOglpGpuTimeTopToBottomDurationIndexGfx11; ///< Index of execution duration of the current command from top of pipe to bottom of pipe, may include overhead of time in queue for Oglp for Gfx11 family
-    extern const unsigned int                                         kHwOglpGpuTimeTopToBottomStartIndexGfx11; ///< Index of time that the current command reaches the top of pipe for Oglp for Gfx11 family
-    extern const unsigned int                                         kHwOglpGpuTimeTopToBottomEndIndexGfx11; ///< Index of time that the current command reaches the bottom of pipe for Oglp for Gfx11 family
-    extern const std::set<unsigned int>                               kHwOglpTimestampBlockIdsGfx11; ///< Timestamp block id's for Oglp for Gfx11 family
-    extern const std::set<unsigned int>                               kHwOglpTimeCounterIndicesGfx11; ///< Timestamp counter indices for Oglp for Gfx11 family
-    extern const unsigned int                                         kHwOglpGroupCountGfx11; ///< Hardware Group Count for Oglp for Gfx11 family
-    extern const unsigned int                                         kOglpPaddedCounterGroupCountGfx11; ///< reserved counter group count for Oglp for Gfx11 family
-    extern const unsigned int                                         kHwOglpSqGroupCountGfx11; ///< Hardware SQ Group Count for Oglp for Gfx11 family
-    extern const unsigned int                                         kHwOglpSqIsolatedGroupCountGfx11; ///< Hardware Isolated Group Count for Oglp for Gfx11 family
+    extern const gpa_array_view<gpa_array_view<GpaHardwareCounterDesc>> kOglpCounterGroupArrayGfx11; ///< Array of hardware counter groups for Oglp for Gfx11 family
+    extern const gpa_array_view<GpaCounterGroupDesc>                    kHwOglpGroupsGfx11; ///< Array of counter groups for Oglp for Gfx11 family
+    extern GpaCounterGroupExposedCounterDesc                            kHwOglpExposedCountersByGroupGfx11[]; ///< Array of exposed counter groups for Oglp for Gfx11 family
+    extern GpaPaddedCounterDesc                                         kOglpPaddedCounterByGroupGfx11[]; ///< Array of reserved counter for Oglp for Gfx11 family
+    extern GpaSqCounterGroupDesc                                        kHwOglpSqGroupsGfx11[]; ///< Array of SQ groups for Oglp for Gfx11 family
+    extern unsigned int                                                 kHwOglpSqIsolatedGroupsGfx11[]; ///< Array of counter groups isolated from SQ counter groups for Oglp for Gfx11 family
+    extern const unsigned int                                           kHwOglpGpuTimeBottomToBottomDurationIndexGfx11; ///< Index of delta between the previous command reaching bottom of pipe and the current command reaching bottom of pipe, will not include latency of first data to travel through pipeline, best for large data sets. for Oglp for Gfx11 family
+    extern const unsigned int                                           kHwOglpGpuTimeBottomToBottomStartIndexGfx11; ///< Index of time of the previous command reaching bottom of pipe for Oglp for Gfx11 family
+    extern const unsigned int                                           kHwOglpGpuTimeBottomToBottomEndIndexGfx11; ///< Index of time of the current command reaching bottom of pipe for Oglp for Gfx11 family
+    extern const unsigned int                                           kHwOglpGpuTimeTopToBottomDurationIndexGfx11; ///< Index of execution duration of the current command from top of pipe to bottom of pipe, may include overhead of time in queue for Oglp for Gfx11 family
+    extern const unsigned int                                           kHwOglpGpuTimeTopToBottomStartIndexGfx11; ///< Index of time that the current command reaches the top of pipe for Oglp for Gfx11 family
+    extern const unsigned int                                           kHwOglpGpuTimeTopToBottomEndIndexGfx11; ///< Index of time that the current command reaches the bottom of pipe for Oglp for Gfx11 family
+    extern const std::set<unsigned int>                                 kHwOglpTimestampBlockIdsGfx11; ///< Timestamp block id's for Oglp for Gfx11 family
+    extern const std::set<unsigned int>                                 kHwOglpTimeCounterIndicesGfx11; ///< Timestamp counter indices for Oglp for Gfx11 family
+    extern const unsigned int                                           kHwOglpGroupCountGfx11; ///< Hardware Group Count for Oglp for Gfx11 family
+    extern const unsigned int                                           kOglpPaddedCounterGroupCountGfx11; ///< reserved counter group count for Oglp for Gfx11 family
+    extern const unsigned int                                           kHwOglpSqGroupCountGfx11; ///< Hardware SQ Group Count for Oglp for Gfx11 family
+    extern const unsigned int                                           kHwOglpSqIsolatedGroupCountGfx11; ///< Hardware Isolated Group Count for Oglp for Gfx11 family
 
 /// @brief If the requested ASIC type is supported, then the global GPU generation block instance counters are updated.
 ///
@@ -48,11 +48,10 @@ inline bool OverrideMaxBlockEvents(GDT_HW_ASIC_TYPE asic_type)
 {
     UNREFERENCED_PARAMETER(asic_type);
 
-
     return true;
 }
 } //  namespace counter_oglp_gfx11
 
 // clang-format on
 
-#endif  // GPA_AUTO_GENERATED_GPU_PERF_API_COUNTER_GENERATOR_GPA_HW_COUNTER_OGLP_GFX11_H_
+#endif

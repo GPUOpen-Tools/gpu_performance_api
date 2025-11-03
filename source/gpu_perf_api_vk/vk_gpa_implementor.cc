@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2015-2024 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2015-2025 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  GPA Vk API implementation
@@ -154,7 +154,7 @@ bool VkGpaImplementor::GetHwInfoFromApi(const GpaContextInfoPtr context_info, Gp
 
                                     is_succeeded = true;
 
-                                    const size_t num_shader_engines = static_cast<size_t>(shader_core_properties_amd.shaderEngineCount);
+                                    const uint32_t num_shader_engines = shader_core_properties_amd.shaderEngineCount;
                                     hw_info.SetNumberShaderEngines(num_shader_engines);
                                     if (num_shader_engines == 0)
                                     {
@@ -162,8 +162,7 @@ bool VkGpaImplementor::GetHwInfoFromApi(const GpaContextInfoPtr context_info, Gp
                                         is_succeeded = false;
                                     }
 
-                                    const size_t num_total_shader_arrays =
-                                        static_cast<size_t>(shader_core_properties_amd.shaderArraysPerEngineCount * num_shader_engines);
+                                    const uint32_t num_total_shader_arrays = shader_core_properties_amd.shaderArraysPerEngineCount * num_shader_engines;
                                     hw_info.SetNumberShaderArrays(num_total_shader_arrays);
                                     if (num_total_shader_arrays == 0)
                                     {
@@ -171,7 +170,7 @@ bool VkGpaImplementor::GetHwInfoFromApi(const GpaContextInfoPtr context_info, Gp
                                         is_succeeded = false;
                                     }
 
-                                    const size_t num_total_compute_units = static_cast<size_t>(shader_core_properties_2_amd.activeComputeUnitCount);
+                                    const uint32_t num_total_compute_units = shader_core_properties_2_amd.activeComputeUnitCount;
                                     hw_info.SetNumberCus(num_total_compute_units);
                                     if (num_total_compute_units == 0)
                                     {
@@ -179,11 +178,21 @@ bool VkGpaImplementor::GetHwInfoFromApi(const GpaContextInfoPtr context_info, Gp
                                         is_succeeded = false;
                                     }
 
-                                    const size_t num_total_simds = static_cast<size_t>(shader_core_properties_amd.simdPerComputeUnit * num_total_compute_units);
+                                    const uint32_t num_total_simds = shader_core_properties_amd.simdPerComputeUnit * num_total_compute_units;
                                     hw_info.SetNumberSimds(num_total_simds);
                                     if (num_total_simds == 0)
                                     {
                                         GPA_LOG_ERROR("Vulkan returned invalid number of SIMDs.");
+                                        is_succeeded = false;
+                                    }
+
+                                    // NOTE: Vulkan is the only driver that allows us to query vgprsPerSimd from the driver itself.
+                                    // All other APIs utilize device_info as the source of truth.
+                                    const uint32_t num_total_vgprs = shader_core_properties_amd.vgprsPerSimd * num_total_simds;
+                                    hw_info.SetNumberVgprs(num_total_vgprs);
+                                    if (num_total_vgprs == 0)
+                                    {
+                                        GPA_LOG_ERROR("Vulkan returned invalid number of VGPRs.");
                                         is_succeeded = false;
                                     }
                                 }
@@ -285,7 +294,7 @@ bool VkGpaImplementor::IsCopySecondarySampleSupported() const
     return true;
 }
 
-IGpaContext* VkGpaImplementor::OpenApiContext(GpaContextInfoPtr context_info, GpaHwInfo& hardware_info, GpaOpenContextFlags flags)
+IGpaContext* VkGpaImplementor::OpenApiContext(GpaContextInfoPtr context_info, const GpaHwInfo& hardware_info, GpaOpenContextFlags flags)
 {
     IGpaContext*          gpa_context     = nullptr;
     GpaVkContextOpenInfo* vk_context_info = static_cast<GpaVkContextOpenInfo*>(context_info);
@@ -330,18 +339,25 @@ IGpaContext* VkGpaImplementor::OpenApiContext(GpaContextInfoPtr context_info, Gp
     return gpa_context;
 }
 
-bool VkGpaImplementor::CloseApiContext(GpaDeviceIdentifier device_identifier, IGpaContext* context)
+bool VkGpaImplementor::CloseApiContext(IGpaContext* context)
 {
-    UNREFERENCED_PARAMETER(device_identifier);
     assert(nullptr != context);
+
+    GpaStatus set_default_clocks_result = kGpaStatusOk;
 
     if (nullptr != context)
     {
-        delete reinterpret_cast<VkGpaContext*>(context);
-        context = nullptr;
+        VkGpaContext* vk_gpa_context = reinterpret_cast<VkGpaContext*>(context);
+        set_default_clocks_result    = vk_gpa_context->SetStableClocks(false);
+        if (set_default_clocks_result != kGpaStatusOk)
+        {
+            assert(!"Unable to set clocks back to default");
+            GPA_LOG_ERROR("Unable to set clocks back to default");
+        }
+        delete vk_gpa_context;
     }
 
-    return (nullptr == context);
+    return set_default_clocks_result == kGpaStatusOk;
 }
 
 GpaDeviceIdentifier VkGpaImplementor::GetDeviceIdentifierFromContextInfo(GpaContextInfoPtr context_info) const

@@ -270,4 +270,4 @@ private:
     }
 };
 
-#endif // GPU_PERF_API_COUNTER_GENERATOR_COMMON_GPA_SPLIT_COUNTERS_ONE_PER_PASS_H_
+#endif

@@ -51,13 +51,13 @@
 #undef TRACE_PRIVATE_FUNCTION
 #define TRACE_PRIVATE_FUNCTION(func)                 ///< Macro used for tracing private functions.
 #define TRACE_PRIVATE_FUNCTION_WITH_ARGS(func, ...)  ///< Macro used for tracing private function with parameters.
-#endif                                               // trace functions.
+#endif
 
 #ifdef __GNUC__
 #define GPA_ATTRIBUTE_PRINTF(msg, args) __attribute__((format(printf, msg, args)))
 #else
 #define GPA_ATTRIBUTE_PRINTF(msg, args)
-#endif  // !__GNUC__
+#endif
 
 /// @brief Internal GPA logger function.
 ///
@@ -349,4 +349,4 @@ protected:
     std::string trace_function_;
 };
 
-#endif  // GPU_PERF_API_COMMON_LOGGING_H_
+#endif

@@ -159,4 +159,4 @@ private:
     mutable std::vector<GlCounter>           gl_counter_list_;            ///< List of counters in the pass.
 };
 
-#endif  // GPU_PERF_API_GL_GL_GPA_PASS_H_
+#endif

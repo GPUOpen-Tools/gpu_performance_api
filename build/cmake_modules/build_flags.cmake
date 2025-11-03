@@ -1,4 +1,4 @@
-## Copyright (c) 2018-2025 Advanced Micro Devices, Inc. All rights reserved.
+## Copyright (C) 2018-2025 Advanced Micro Devices, Inc. All rights reserved. ##
 
 ## GPA has only Debug and Release
 set(CMAKE_CONFIGURATION_TYPES Debug Release)
@@ -30,7 +30,6 @@ if(ANDROID)
     set(OUTPUT_SUFFIX ${OUTPUT_SUFFIX}_android)
 endif()
 
-
 # DX11 variable
 if(NOT DEFINED skipdx11)
     set(skipdx11 OFF CACHE BOOL "Turn on to skip DX11 in the build" FORCE)
@@ -55,7 +54,6 @@ endif()
 if(NOT DEFINED skiptests)
     set(skiptests OFF CACHE BOOL "Turn on to skip Tests in the build" FORCE)
 endif()
-
 
 # Sphinx documentation
 if(NOT DEFINED skipdocs)

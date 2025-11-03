@@ -44,4 +44,4 @@ private:
     bool CloseLastSampleRequest() override final;
 };
 
-#endif  // GPU_PERF_API_DX11_DX11_GPA_COMMAND_LIST_H_
+#endif

@@ -90,4 +90,4 @@ namespace vk_utils
                                  PFN_vkGetDeviceProcAddr   get_device_proc_addr);
 }  // namespace vk_utils
 
-#endif  // GPU_PERF_API_VK_VK_ENTRYPOINTS_H_
+#endif

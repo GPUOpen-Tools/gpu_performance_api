@@ -1,4 +1,5 @@
-## Copyright (c) 2018-2025 Advanced Micro Devices, Inc. All rights reserved.
+## Copyright (C) 2018-2025 Advanced Micro Devices, Inc. All rights reserved. ##
+
 block()
     # Updates gpa_version.h with CMake variables only when neccessary
     string(TIMESTAMP GPA_CURRENT_YEAR %Y)
@@ -12,16 +13,11 @@ include(${GPA_CMAKE_MODULES_DIR}/common.cmake)
 if(NOT ${skipvulkan})
 include(${GPA_CMAKE_MODULES_DIR}/gpa_vulkan.cmake)
 endif()
-include(${CMAKE_COMMON_SRC_GLOBAL_DEVICE_INFO})
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 include_directories(${ADDITIONAL_INCLUDE_DIRECTORIES}
                     ${GPA_PUBLIC_HEADER}
                     ${GPA_SRC})
-
-set(ADDITIONAL_SOURCE ${DEVICE_INFO_SRC})
-
-set(ADDITIONAL_SOURCE_HEADERS ${DEVICE_INFO_HEADERS})
 
 set(PUBLIC_HEADERS  ${GPA_PUBLIC_HEADER}/gpu_performance_api/gpu_perf_api.h
                     ${GPA_PUBLIC_HEADER}/gpu_performance_api/gpu_perf_api_counters.h
@@ -35,7 +31,6 @@ set(PUBLIC_HEADERS  ${GPA_PUBLIC_HEADER}/gpu_performance_api/gpu_perf_api.h
 set(HEADER_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/adapter.h
     ${CMAKE_CURRENT_SOURCE_DIR}/api_rt_module_loader.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/dx_get_amd_device_info.h
     ${CMAKE_CURRENT_SOURCE_DIR}/gpa_command_list.h
     ${CMAKE_CURRENT_SOURCE_DIR}/gpa_command_list_interface.h
     ${CMAKE_CURRENT_SOURCE_DIR}/gpa_common_defs.h
@@ -43,8 +38,8 @@ set(HEADER_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/gpa_context_counter_mediator.h
     ${CMAKE_CURRENT_SOURCE_DIR}/gpa_context_interface.h
     ${CMAKE_CURRENT_SOURCE_DIR}/gpa_counter_data_request_manager.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/gpa_custom_hw_validation_manager.h
     ${CMAKE_CURRENT_SOURCE_DIR}/gpa_hw_info.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/gpa_hw_support.h
     ${CMAKE_CURRENT_SOURCE_DIR}/gpa_implementor.h
     ${CMAKE_CURRENT_SOURCE_DIR}/gpa_implementor_interface.h
     ${CMAKE_CURRENT_SOURCE_DIR}/gpa_interface_trait_interface.h
@@ -62,8 +57,8 @@ set(SOURCE_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/gpa_command_list.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/gpa_context.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/gpa_context_counter_mediator.cc
-    ${CMAKE_CURRENT_SOURCE_DIR}/gpa_custom_hw_validation_manager.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/gpa_hw_info.cc
+    ${CMAKE_CURRENT_SOURCE_DIR}/gpa_hw_support.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/gpa_implementor.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/gpa_pass.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/gpa_profiler.cc
@@ -83,16 +78,15 @@ endif()
 set(SOURCES
     ${SOURCE_FILES}
     ${HEADER_FILES}
-    ${ADDITIONAL_SOURCE}
-    ${ADDITIONAL_SOURCE_HEADERS}
     ${PUBLIC_HEADERS})
 
 ADD_STATIC_LIBRARY(${GPA_PROJECT_NAME} ${SOURCES})
 target_link_libraries(${GPA_PROJECT_NAME}
                       ${LINK_LIBS}
                       $<$<PLATFORM_ID:Linux>:pthread>
-                      AMD::adl_util
-                      AMD::dynamic_library_module)
+                      $<$<PLATFORM_ID:Windows>:AMD::adl_util>
+                      AMD::device_info
+                      AMD::tsingleton)
 
 ADD_LINKER_FLAGS()
 

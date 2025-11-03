@@ -104,35 +104,22 @@ void Dx11GpaPass::InitializeCounterInfo()
             if (counter_accessor == nullptr)
             {
                 GPA_LOG_ERROR("Invalid counter accessor. Disabling all counters in pass.");
-                for (size_t i = 0; i < counter_list_->size(); ++i)
+                for (const CounterIndex counter_index : *counter_list_)
                 {
-                    CounterIndex counter_index = counter_list_->at(i);
                     DisableCounterForPass(counter_index);
                 }
 
                 return;
             }
 
-            const GpaHardwareCounters* hardware_counters = counter_accessor->GetHardwareCounters();
-            assert(hardware_counters != nullptr);
-            if (hardware_counters == nullptr)
-            {
-                GPA_LOG_ERROR("Invalid hardware counters. Disabling all counters in pass.");
-                for (size_t i = 0; i < counter_list_->size(); ++i)
-                {
-                    CounterIndex counter_index = counter_list_->at(i);
-                    DisableCounterForPass(counter_index);
-                }
+            const GpaHardwareCounters& hardware_counters = counter_accessor->GetHardwareCounters();
 
-                return;
-            }
-
-            for (CounterIndex counter_iter = 0; counter_iter < counter_list_->size(); counter_iter++)
+            for (const CounterIndex counter_index : *counter_list_)
             {
-                const GpaHardwareCounterDescExt* counter  = &hardware_counters->hardware_counters_.at(counter_list_->at(counter_iter));
-                PE_BLOCK_ID                      block_id = static_cast<PE_BLOCK_ID>(counter->group_id_driver);
-                UINT32 instance = static_cast<UINT32>(hardware_counters->internal_counter_groups_[counter->group_index].block_instance);
-                UINT32 event_id = static_cast<UINT32>(counter->hardware_counters->counter_index_in_group);
+                const GpaHardwareCounterDescExt* counter  = &hardware_counters.hardware_counters_.at(counter_index);
+                const PE_BLOCK_ID                block_id = static_cast<PE_BLOCK_ID>(counter->group_id_driver);
+                const UINT32 instance = static_cast<UINT32>(hardware_counters.internal_counter_groups_[counter->group_index].block_instance);
+                const UINT32 event_id = static_cast<UINT32>(counter->hardware_counters->counter_index_in_group);
 
                 if (PE_BLOCK_RLC == block_id)
                 {
@@ -148,11 +135,11 @@ void Dx11GpaPass::InitializeCounterInfo()
                 {
                     // Don't try to enable this counter. When the results are collected, this will be given
                     // a result of 0, so that it has no contribution.
-                    DisableCounterForPass(counter_list_->at(counter_iter));
+                    DisableCounterForPass(counter_index);
                 }
                 else
                 {
-                    EnableCounterForPass(counter_list_->at(counter_iter));
+                    EnableCounterForPass(counter_index);
                 }
             }
 
@@ -167,10 +154,10 @@ void Dx11GpaPass::InitializeCounterInfo()
 void Dx11GpaPass::InitializeCounterExperimentParameters()
 {
     IGpaCounterAccessor*       counter_accessor  = GpaContextCounterMediator::Instance()->GetCounterAccessor(GetGpaSession());
-    const GpaHardwareCounters* hardware_counters = counter_accessor->GetHardwareCounters();
+    const GpaHardwareCounters& hardware_counters = counter_accessor->GetHardwareCounters();
 
     auto PopulateExperimentParams = [&](const CounterIndex& counter_index) -> bool {
-        const GpaHardwareCounterDescExt* counter = &hardware_counters->hardware_counters_.at(counter_index);
+        const GpaHardwareCounterDescExt* counter = &hardware_counters.hardware_counters_.at(counter_index);
 
         if (counter->group_id_driver == PE_BLOCK_SQ ||
             counter->group_id_driver == PE_BLOCK_SQWGP)
@@ -181,11 +168,11 @@ void Dx11GpaPass::InitializeCounterExperimentParameters()
 
             GpaSqShaderStage stage = kSqAll;
 
-            for (unsigned int j = 0; j < hardware_counters->sq_group_count_ - 1; j++)
+            for (unsigned int j = 0; j < hardware_counters.sq_group_count_ - 1; j++)
             {
-                if (hardware_counters->sq_counter_groups_[j].group_index == counter->group_index)
+                if (hardware_counters.sq_counter_groups_[j].group_index == counter->group_index)
                 {
-                    stage = hardware_counters->sq_counter_groups_[j].sq_shader_stage;
+                    stage = hardware_counters.sq_counter_groups_[j].sq_shader_stage;
                     break;
                 }
             }

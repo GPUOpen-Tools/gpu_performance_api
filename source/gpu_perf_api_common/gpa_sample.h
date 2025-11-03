@@ -369,4 +369,4 @@ private:
     bool                 is_copied_sample_;        ///< Flag indicating that sample has been copied to primary command list.
 };
 
-#endif  // GPU_PERF_API_COMMON_GPA_SAMPLE_H_
+#endif

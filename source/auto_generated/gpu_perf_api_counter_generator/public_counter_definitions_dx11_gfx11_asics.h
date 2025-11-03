@@ -42,4 +42,4 @@ namespace dx11_gfx11_asics
 
 }  // namespace dx11_gfx11asics
 
-#endif  // GPA_AUTO_GEN_COUNTER_GEN_PUBLIC_COUNTER_DEFINITIONS_DX11_GFX11_ASICS_H_
+#endif

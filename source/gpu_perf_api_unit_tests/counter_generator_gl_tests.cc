@@ -31,7 +31,7 @@ static void GetExpectedCountersForGeneration(GpaHwGeneration           generatio
     const GpaCounterDesc* public_counters      = nullptr;
     size_t                public_counter_count = 0;
 
-    std::vector<std::vector<GpaHardwareCounterDesc>*> hardware_counter_groups;
+    gpa_array_view<gpa_array_view<GpaHardwareCounterDesc>> hardware_counter_groups;
 
     switch (generation)
     {
@@ -78,19 +78,18 @@ static void GetExpectedCountersForGeneration(GpaHwGeneration           generatio
     const size_t num_hardware_counter_groups = hardware_counter_groups.size();
     for (size_t i = 0; i < num_hardware_counter_groups; ++i)
     {
-        const size_t num_counters_in_group = hardware_counter_groups[i]->size();
+        const size_t num_counters_in_group = hardware_counter_groups[i].size();
         for (size_t j = 0; j < num_counters_in_group; ++j)
         {
-            hardware_counter_names.push_back(hardware_counter_groups[i]->at(j).name);
+            hardware_counter_names.push_back(hardware_counter_groups[i][j].name);
         }
     }
 }
 
-static std::vector<GpaCounterDesc> GetExpectedPublicCounters(GpaHwGeneration generation)
+static gpa_array_view<GpaCounterDesc> GetExpectedPublicCounters(GpaHwGeneration generation)
 {
     const GpaCounterDesc*       public_counters      = nullptr;
     size_t                      public_counter_count = 0;
-    std::vector<GpaCounterDesc> public_counter_list;
 
     switch (generation)
     {
@@ -119,19 +118,7 @@ static std::vector<GpaCounterDesc> GetExpectedPublicCounters(GpaHwGeneration gen
         break;
     }
 
-    if (public_counters == nullptr || public_counter_count == 0)
-    {
-        assert(!"Failed to set public counters for unit tests.");
-        return public_counter_list;
-    }
-
-    public_counter_list.reserve(public_counter_count);
-    for (size_t i = 0; i < public_counter_count; i++)
-    {
-        public_counter_list.push_back(public_counters[i]);
-    }
-
-    return public_counter_list;
+    return gpa_array_view<GpaCounterDesc>(public_counters, public_counter_count);
 }
 
 TEST(CounterDllTests, OpenGlUnsupportedHardwareGeneration)
@@ -180,20 +167,10 @@ TEST(CounterDllTests, OpenGlDerivedCounterBlocksGfx12)
 TEST(CounterDllTests, OpenGlUnsupportedDeviceId)
 {
     // Verify that any unsupported Device IDs properly report that the hardware is not supported.
-    VerifyHardwareNotSupported(kGpaApiOpengl, kDevIdUnknown);
-    VerifyHardwareNotSupported(kGpaApiOpengl, kDevIdSI);
-    VerifyHardwareNotSupported(kGpaApiOpengl, kDevIdCI);
-    VerifyHardwareNotSupported(kGpaApiOpengl, kDevIdCIHawaii);
-    VerifyHardwareNotSupported(kGpaApiOpengl, kDevIdMi250X);
-    VerifyHardwareNotSupported(kGpaApiOpengl, kDevIdMi210);
-    VerifyHardwareNotSupported(kGpaApiOpengl, kDevIdUnsupported1);
-    VerifyHardwareNotSupported(kGpaApiOpengl, kDevIdUnsupported2);
-    VerifyHardwareNotSupported(kGpaApiOpengl, kDevIdVI);
-    VerifyHardwareNotSupported(kGpaApiOpengl, kDevIdGfx8);
-    VerifyHardwareNotSupported(kGpaApiOpengl, kDevIdGfx8Ellesmere);
-    VerifyHardwareNotSupported(kGpaApiOpengl, kDevIdGfx8Tonga);
-    VerifyHardwareNotSupported(kGpaApiOpengl, kDevIdGfx8Iceland);
-    VerifyHardwareNotSupported(kGpaApiOpengl, kDevIdGfx9);
+    for (auto const& device_id : kUnsupportedDeviceIds)
+    {
+        VerifyHardwareNotSupported(kGpaApiOpengl, device_id);
+    }
 }
 
 TEST(CounterDllTests, OpenGlCounterNamesDeviceIdUnknown)
@@ -231,6 +208,7 @@ TEST(CounterDllTests, OpenGlCounterNamesDeviceIdGfx11)
     VerifyCounterNames(kGpaApiOpengl, kDevIdGfx11_0_3, derived_counter_names, empty_list_to_skip_tests);
     VerifyCounterNames(kGpaApiOpengl, kDevIdGfx11_0_3B, derived_counter_names, empty_list_to_skip_tests);
     VerifyCounterNames(kGpaApiOpengl, kDevIdGfx11_5_0, derived_counter_names, empty_list_to_skip_tests);
+    VerifyCounterNames(kGpaApiOpengl, kDevIdGfx11_5_3, derived_counter_names, empty_list_to_skip_tests);
 }
 
 TEST(CounterDllTests, OpenGlCounterNamesDeviceIdGfx12)
@@ -333,6 +311,12 @@ TEST(CounterDllTests, GlCounterLibTestGfx1150)
     VerifyCounterByPassCounterLibEntry(kGpaApiOpengl, kDevIdGfx11_5_0, REVISION_ID_ANY);
 }
 
+TEST(CounterDllTests, GlCounterLibTestGfx1153)
+{
+    VerifyCounterLibInterface(kGpaApiOpengl, kDevIdGfx11_5_3, REVISION_ID_ANY);
+    VerifyCounterByPassCounterLibEntry(kGpaApiOpengl, kDevIdGfx11_5_3, REVISION_ID_ANY);
+}
+
 #endif
 
 TEST(CounterDllTests, GLCounterFormulaTest)
@@ -341,4 +325,9 @@ TEST(CounterDllTests, GLCounterFormulaTest)
     VerifyCounterFormula(GetExpectedPublicCounters(kGpaHwGenerationGfx103));
     VerifyCounterFormula(GetExpectedPublicCounters(kGpaHwGenerationGfx11));
     VerifyCounterFormula(GetExpectedPublicCounters(kGpaHwGenerationGfx12));
+}
+
+TEST(GpaCounterLibGetSupportedSampleTypes, Opengl)
+{
+    VerifySupportedSampleTypes(kGpaApiOpengl);
 }

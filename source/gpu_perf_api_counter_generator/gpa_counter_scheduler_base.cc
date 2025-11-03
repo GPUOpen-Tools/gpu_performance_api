@@ -196,7 +196,7 @@ GpaStatus GpaCounterSchedulerBase::GetNumRequiredPasses(GpaUInt32* num_required_
         return kGpaStatusErrorFailed;
     }
 
-    const GpaHardwareCounters* hw_counters = counter_generator_base->GetHardwareCounters();
+    const GpaHardwareCounters& hw_counters = counter_generator_base->GetHardwareCounters();
 
     unsigned int num_sq_max_counters = 0;
 
@@ -210,14 +210,14 @@ GpaStatus GpaCounterSchedulerBase::GetNumRequiredPasses(GpaUInt32* num_required_
     AMDTDeviceInfoUtils::DeleteInstance();
 
     IGpaSplitCounters* splitter = GpaSplitCounterFactory::GetNewCounterSplitter(GetPreferredSplittingAlgorithm(),
-                                                                                hw_counters->timestamp_block_ids_,
-                                                                                hw_counters->eop_time_counter_indices_,
-                                                                                hw_counters->top_time_counter_indices_,
+                                                                                hw_counters.timestamp_block_ids_,
+                                                                                hw_counters.eop_time_counter_indices_,
+                                                                                hw_counters.top_time_counter_indices_,
                                                                                 num_sq_max_counters,
-                                                                                hw_counters->sq_group_count_,
-                                                                                hw_counters->sq_counter_groups_,
-                                                                                hw_counters->isolated_group_count_,
-                                                                                hw_counters->isolated_groups_);
+                                                                                hw_counters.sq_group_count_,
+                                                                                hw_counters.sq_counter_groups_,
+                                                                                hw_counters.isolated_group_count_,
+                                                                                hw_counters.isolated_groups_);
 
     if (nullptr == splitter)
     {
@@ -269,31 +269,31 @@ GpaStatus GpaCounterSchedulerBase::GetNumRequiredPasses(GpaUInt32* num_required_
     std::vector<unsigned int> max_counters_per_group;
 
     // Create space for the number of HW groups.
-    max_counters_per_group.reserve(hw_counters->internal_counter_groups_.size() + hw_counters->additional_group_count_);
+    max_counters_per_group.reserve(hw_counters.internal_counter_groups_.size() + hw_counters.additional_group_count_);
 
     // Set max events
     if (kGpaSessionSampleTypeDiscreteCounter == sample_type_)
     {
         // Add the HW groups maxes.
-        const unsigned int num_groups = static_cast<unsigned int>(hw_counters->internal_counter_groups_.size());
+        const unsigned int num_groups = static_cast<unsigned int>(hw_counters.internal_counter_groups_.size());
         for (unsigned int i = 0; i < num_groups; ++i)
         {
-            auto count = hw_counters->internal_counter_groups_[i].max_active_discrete_counters;
+            auto count = hw_counters.internal_counter_groups_[i].max_active_discrete_counters;
             if (count == 0)
             {
-                GPA_LOG_DEBUG_ERROR("Hardware counter group '%s' has zero for max-counters-per-group.", hw_counters->internal_counter_groups_[i].name);
+                GPA_LOG_DEBUG_ERROR("Hardware counter group '%s' has zero for max-counters-per-group.", hw_counters.internal_counter_groups_[i].name);
                 return kGpaStatusErrorInvalidCounterGroupData;
             }
             max_counters_per_group.push_back(count);
         }
 
         // Add the additional groups maxes.
-        for (unsigned int i = 0; i < hw_counters->additional_group_count_; ++i)
+        for (unsigned int i = 0; i < hw_counters.additional_group_count_; ++i)
         {
-            auto count = hw_counters->additional_groups_[i].max_active_discrete_counters;
+            auto count = hw_counters.additional_groups_[i].max_active_discrete_counters;
             if (count == 0)
             {
-                GPA_LOG_DEBUG_ERROR("Hardware counter additional group '%s' has zero for max-counters-per-group.", hw_counters->additional_groups_[i].name);
+                GPA_LOG_DEBUG_ERROR("Hardware counter additional group '%s' has zero for max-counters-per-group.", hw_counters.additional_groups_[i].name);
                 return kGpaStatusErrorInvalidCounterGroupData;
             }
             max_counters_per_group.push_back(count);
@@ -302,17 +302,17 @@ GpaStatus GpaCounterSchedulerBase::GetNumRequiredPasses(GpaUInt32* num_required_
     else if (kGpaSessionSampleTypeStreamingCounter == sample_type_)
     {
         // Add the HW groups max's.
-        const unsigned int num_groups = static_cast<unsigned int>(hw_counters->internal_counter_groups_.size());
+        const unsigned int num_groups = static_cast<unsigned int>(hw_counters.internal_counter_groups_.size());
         for (unsigned int i = 0; i < num_groups; ++i)
         {
-            auto count = hw_counters->internal_counter_groups_[i].max_active_spm_counters;
+            auto count = hw_counters.internal_counter_groups_[i].max_active_spm_counters;
             max_counters_per_group.push_back(count);
         }
 
         // Add the Additional groups max's.
-        for (unsigned int i = 0; i < hw_counters->additional_group_count_; ++i)
+        for (unsigned int i = 0; i < hw_counters.additional_group_count_; ++i)
         {
-            auto count = hw_counters->additional_groups_[i].max_active_spm_counters;
+            auto count = hw_counters.additional_groups_[i].max_active_spm_counters;
             max_counters_per_group.push_back(count);
         }
     }
@@ -322,10 +322,10 @@ GpaStatus GpaCounterSchedulerBase::GetNumRequiredPasses(GpaUInt32* num_required_
         return kGpaStatusErrorFailed;
     }
 
-    GpaCounterGroupAccessor accessor(hw_counters->internal_counter_groups_,
-                                     static_cast<GpaUInt32>(hw_counters->internal_counter_groups_.size()),
-                                     hw_counters->additional_groups_,
-                                     hw_counters->additional_group_count_);
+    GpaCounterGroupAccessor accessor(hw_counters.internal_counter_groups_,
+                                     static_cast<GpaUInt32>(hw_counters.internal_counter_groups_.size()),
+                                     hw_counters.additional_groups_,
+                                     hw_counters.additional_group_count_);
 
     unsigned int num_internal_counters_scheduled = 0;
 

@@ -32,4 +32,4 @@ namespace vk_gfx10_asics
 
 }  // namespace vk_gfx10asics
 
-#endif  // GPA_AUTO_GEN_COUNTER_GEN_PUBLIC_COUNTER_DEFINITIONS_VK_GFX10_ASICS_H_
+#endif

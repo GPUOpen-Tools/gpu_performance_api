@@ -27,4 +27,4 @@ struct GpaCounterDesc
     GpaUuid      uuid;                   ///< Counter UUID.
 };
 
-#endif  // GPA_PERF_API_UNIT_TESTS_COUNTERS_GPA_COUNTER_DESCRIPTION_H_
+#endif

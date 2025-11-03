@@ -70,7 +70,6 @@ void DestroyImplementor(IGpaImplementor* impl)
 GpaStatus Dx12GpaImplementor::Initialize(GpaInitializeFlags flags)
 {
     GpaStatus status = GpaImplementor::Initialize(flags);
-
     return status;
 }
 
@@ -99,7 +98,7 @@ GpaApiType Dx12GpaImplementor::GetApiType() const
 bool Dx12GpaImplementor::GetHwInfoFromApi(const GpaContextInfoPtr context_info, GpaOpenContextFlags flags, GpaHwInfo& hw_info) const
 {
     UNREFERENCED_PARAMETER(flags);
-    
+
     bool success = false;
 
     IUnknown*     unknown_ptr = static_cast<IUnknown*>(context_info);
@@ -175,8 +174,8 @@ bool Dx12GpaImplementor::GetHwInfoFromApi(const GpaContextInfoPtr context_info, 
 
 bool Dx12GpaImplementor::VerifyApiHwSupport(const GpaContextInfoPtr context_info, GpaOpenContextFlags flags, const GpaHwInfo& hw_info) const
 {
-    UNREFERENCED_PARAMETER(hw_info);
     UNREFERENCED_PARAMETER(flags);
+    UNREFERENCED_PARAMETER(hw_info);
 
     bool success = false;
 
@@ -186,29 +185,6 @@ bool Dx12GpaImplementor::VerifyApiHwSupport(const GpaContextInfoPtr context_info
     if (dx12_utils::GetD3D12Device(unknown_ptr, &d3d12_device) && dx12_utils::IsFeatureLevelSupported(d3d12_device))
     {
         success = true;
-
-        if (hw_info.IsAmd())
-        {
-            unsigned int   major_ver     = 0;
-            unsigned int   minor_ver     = 0;
-            unsigned int   sub_minor_ver = 0;
-            ADLUtil_Result adl_result    = AMDTADLUtils::Instance()->GetDriverVersion(major_ver, minor_ver, sub_minor_ver);
-            AMDTADLUtils::DeleteInstance();
-
-            if ((ADL_SUCCESS == adl_result || ADL_WARNING == adl_result))
-            {
-                GpaUInt32 device_id = 0;
-                if (hw_info.GetDeviceId(device_id) && (device_id == 0x15BF || device_id == 0x15C8))
-                {
-                    // The 22.40 driver does not properly support GPA on these devices.
-                    if ((major_ver < 22 || (major_ver == 22 && minor_ver <= 40)) && (0 != major_ver || 0 != minor_ver || 0 != sub_minor_ver))
-                    {
-                        success = false;
-                        GPA_LOG_ERROR("The current DX12 driver does not support GPUPerfAPI on this hardware, please update to a newer driver.");
-                    }
-                }
-            }
-        }
     }
 
     return success;
@@ -216,7 +192,6 @@ bool Dx12GpaImplementor::VerifyApiHwSupport(const GpaContextInfoPtr context_info
 
 GpaStatus Dx12GpaImplementor::Destroy()
 {
-    DeleteContexts();
     return GpaImplementor::Destroy();
 }
 
@@ -235,7 +210,7 @@ bool Dx12GpaImplementor::IsCopySecondarySampleSupported() const
     return true;
 }
 
-IGpaContext* Dx12GpaImplementor::OpenApiContext(GpaContextInfoPtr context_info, GpaHwInfo& hw_info, GpaOpenContextFlags flags)
+IGpaContext* Dx12GpaImplementor::OpenApiContext(GpaContextInfoPtr context_info, const GpaHwInfo& hw_info, GpaOpenContextFlags flags)
 {
     IUnknown*     unknown_ptr = static_cast<IUnknown*>(context_info);
     ID3D12Device* d3d12_device;
@@ -266,39 +241,29 @@ IGpaContext* Dx12GpaImplementor::OpenApiContext(GpaContextInfoPtr context_info, 
     return ret_gpa_context;
 }
 
-bool Dx12GpaImplementor::CloseApiContext(GpaDeviceIdentifier device_identifier, IGpaContext* context)
+bool Dx12GpaImplementor::CloseApiContext(IGpaContext* context)
 {
-    assert(device_identifier);
-    assert(context);
+    assert(nullptr != context);
 
-    UNREFERENCED_PARAMETER(device_identifier);
-    UNREFERENCED_PARAMETER(context);
+    GpaStatus set_default_clocks_result = kGpaStatusOk;
 
     if (nullptr != context)
     {
         Dx12GpaContext* dx12_gpa_context = reinterpret_cast<Dx12GpaContext*>(context);
+        set_default_clocks_result        = dx12_gpa_context->SetStableClocks(false);
+        if (set_default_clocks_result != kGpaStatusOk)
+        {
+            assert(!"Unable to set clocks back to default");
+            GPA_LOG_ERROR("Unable to set clocks back to default");
+        }
 
-        // Deleting the context resources at this point is causing
-        // some issue in driver as some of the resources are still in use on factory object
-        // We will defer the release of driver extension resources at time of destroying the GPA
-        dx12_gpa_context->SetStableClocks(false);
-        dx12_gpa_context_list_.push_back(dx12_gpa_context);
+        delete dx12_gpa_context;
     }
 
-    return true;
+    return set_default_clocks_result == kGpaStatusOk;
 }
 
 GpaDeviceIdentifier Dx12GpaImplementor::GetDeviceIdentifierFromContextInfo(GpaContextInfoPtr context_info) const
 {
     return static_cast<IUnknown*>(context_info);
-}
-
-void Dx12GpaImplementor::DeleteContexts()
-{
-    for (Dx12GpaContext* temp_context : dx12_gpa_context_list_)
-    {
-        delete temp_context;
-    }
-
-    dx12_gpa_context_list_.clear();
 }

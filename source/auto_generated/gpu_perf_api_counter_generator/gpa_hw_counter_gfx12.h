@@ -12,573 +12,572 @@
 
 // clang-format off
 
-#include <vector>
+#include "gpu_perf_api_common/gpa_array_view.hpp"
 
 struct GpaHardwareCounterDesc;
 
-
 namespace counter_gfx12
 {
-    extern std::vector<GpaHardwareCounterDesc> kCpfCountersGfx12; ///< Array of internal counters for Cpf block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGrbmCountersGfx12; ///< Array of internal counters for Grbm block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGe1CountersGfx12; ///< Array of internal counters for Ge1 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGl2c0CountersGfx12; ///< Array of internal counters for Gl2c0 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGl2c1CountersGfx12; ///< Array of internal counters for Gl2c1 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGl2c2CountersGfx12; ///< Array of internal counters for Gl2c2 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGl2c3CountersGfx12; ///< Array of internal counters for Gl2c3 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGl2c4CountersGfx12; ///< Array of internal counters for Gl2c4 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGl2c5CountersGfx12; ///< Array of internal counters for Gl2c5 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGl2c6CountersGfx12; ///< Array of internal counters for Gl2c6 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGl2c7CountersGfx12; ///< Array of internal counters for Gl2c7 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGl2c8CountersGfx12; ///< Array of internal counters for Gl2c8 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGl2c9CountersGfx12; ///< Array of internal counters for Gl2c9 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGl2c10CountersGfx12; ///< Array of internal counters for Gl2c10 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGl2c11CountersGfx12; ///< Array of internal counters for Gl2c11 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGl2c12CountersGfx12; ///< Array of internal counters for Gl2c12 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGl2c13CountersGfx12; ///< Array of internal counters for Gl2c13 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGl2c14CountersGfx12; ///< Array of internal counters for Gl2c14 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGl2c15CountersGfx12; ///< Array of internal counters for Gl2c15 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGl2c16CountersGfx12; ///< Array of internal counters for Gl2c16 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGl2c17CountersGfx12; ///< Array of internal counters for Gl2c17 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGl2c18CountersGfx12; ///< Array of internal counters for Gl2c18 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGl2c19CountersGfx12; ///< Array of internal counters for Gl2c19 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGl2c20CountersGfx12; ///< Array of internal counters for Gl2c20 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGl2c21CountersGfx12; ///< Array of internal counters for Gl2c21 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGl2c22CountersGfx12; ///< Array of internal counters for Gl2c22 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGl2c23CountersGfx12; ///< Array of internal counters for Gl2c23 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGl2c24CountersGfx12; ///< Array of internal counters for Gl2c24 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGl2c25CountersGfx12; ///< Array of internal counters for Gl2c25 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGl2c26CountersGfx12; ///< Array of internal counters for Gl2c26 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGl2c27CountersGfx12; ///< Array of internal counters for Gl2c27 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGl2c28CountersGfx12; ///< Array of internal counters for Gl2c28 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGl2c29CountersGfx12; ///< Array of internal counters for Gl2c29 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGl2c30CountersGfx12; ///< Array of internal counters for Gl2c30 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGl2c31CountersGfx12; ///< Array of internal counters for Gl2c31 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGcEaCpwdCountersGfx12; ///< Array of internal counters for GcEaCpwd block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGe2Se0CountersGfx12; ///< Array of internal counters for Ge2Se0 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGe2Se1CountersGfx12; ///< Array of internal counters for Ge2Se1 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGe2Se2CountersGfx12; ///< Array of internal counters for Ge2Se2 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGe2Se3CountersGfx12; ///< Array of internal counters for Ge2Se3 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGe2DistCountersGfx12; ///< Array of internal counters for Ge2Dist block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kCb0CountersGfx12; ///< Array of internal counters for Cb0 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kCb1CountersGfx12; ///< Array of internal counters for Cb1 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kCb2CountersGfx12; ///< Array of internal counters for Cb2 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kCb3CountersGfx12; ///< Array of internal counters for Cb3 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kCb4CountersGfx12; ///< Array of internal counters for Cb4 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kCb5CountersGfx12; ///< Array of internal counters for Cb5 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kCb6CountersGfx12; ///< Array of internal counters for Cb6 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kCb7CountersGfx12; ///< Array of internal counters for Cb7 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kCb8CountersGfx12; ///< Array of internal counters for Cb8 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kCb9CountersGfx12; ///< Array of internal counters for Cb9 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kCb10CountersGfx12; ///< Array of internal counters for Cb10 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kCb11CountersGfx12; ///< Array of internal counters for Cb11 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kCb12CountersGfx12; ///< Array of internal counters for Cb12 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kCb13CountersGfx12; ///< Array of internal counters for Cb13 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kCb14CountersGfx12; ///< Array of internal counters for Cb14 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kCb15CountersGfx12; ///< Array of internal counters for Cb15 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kDb0CountersGfx12; ///< Array of internal counters for Db0 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kDb1CountersGfx12; ///< Array of internal counters for Db1 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kDb2CountersGfx12; ///< Array of internal counters for Db2 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kDb3CountersGfx12; ///< Array of internal counters for Db3 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kDb4CountersGfx12; ///< Array of internal counters for Db4 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kDb5CountersGfx12; ///< Array of internal counters for Db5 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kDb6CountersGfx12; ///< Array of internal counters for Db6 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kDb7CountersGfx12; ///< Array of internal counters for Db7 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kDb8CountersGfx12; ///< Array of internal counters for Db8 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kDb9CountersGfx12; ///< Array of internal counters for Db9 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kDb10CountersGfx12; ///< Array of internal counters for Db10 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kDb11CountersGfx12; ///< Array of internal counters for Db11 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kDb12CountersGfx12; ///< Array of internal counters for Db12 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kDb13CountersGfx12; ///< Array of internal counters for Db13 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kDb14CountersGfx12; ///< Array of internal counters for Db14 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kDb15CountersGfx12; ///< Array of internal counters for Db15 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kPaSu0CountersGfx12; ///< Array of internal counters for PaSu0 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kPaSu1CountersGfx12; ///< Array of internal counters for PaSu1 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kPaSu2CountersGfx12; ///< Array of internal counters for PaSu2 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kPaSu3CountersGfx12; ///< Array of internal counters for PaSu3 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSx0CountersGfx12; ///< Array of internal counters for Sx0 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSx1CountersGfx12; ///< Array of internal counters for Sx1 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSx2CountersGfx12; ///< Array of internal counters for Sx2 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSx3CountersGfx12; ///< Array of internal counters for Sx3 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSx4CountersGfx12; ///< Array of internal counters for Sx4 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSx5CountersGfx12; ///< Array of internal counters for Sx5 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSx6CountersGfx12; ///< Array of internal counters for Sx6 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSx7CountersGfx12; ///< Array of internal counters for Sx7 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kPaSc0CountersGfx12; ///< Array of internal counters for PaSc0 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kPaSc1CountersGfx12; ///< Array of internal counters for PaSc1 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kPaSc2CountersGfx12; ///< Array of internal counters for PaSc2 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kPaSc3CountersGfx12; ///< Array of internal counters for PaSc3 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kPaSc4CountersGfx12; ///< Array of internal counters for PaSc4 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kPaSc5CountersGfx12; ///< Array of internal counters for PaSc5 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kPaSc6CountersGfx12; ///< Array of internal counters for PaSc6 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kPaSc7CountersGfx12; ///< Array of internal counters for PaSc7 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kPaSc8CountersGfx12; ///< Array of internal counters for PaSc8 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kPaSc9CountersGfx12; ///< Array of internal counters for PaSc9 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kPaSc10CountersGfx12; ///< Array of internal counters for PaSc10 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kPaSc11CountersGfx12; ///< Array of internal counters for PaSc11 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kPaSc12CountersGfx12; ///< Array of internal counters for PaSc12 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kPaSc13CountersGfx12; ///< Array of internal counters for PaSc13 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kPaSc14CountersGfx12; ///< Array of internal counters for PaSc14 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kPaSc15CountersGfx12; ///< Array of internal counters for PaSc15 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kPaSc16CountersGfx12; ///< Array of internal counters for PaSc16 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kPaSc17CountersGfx12; ///< Array of internal counters for PaSc17 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kPaSc18CountersGfx12; ///< Array of internal counters for PaSc18 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kPaSc19CountersGfx12; ///< Array of internal counters for PaSc19 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kPaSc20CountersGfx12; ///< Array of internal counters for PaSc20 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kPaSc21CountersGfx12; ///< Array of internal counters for PaSc21 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kPaSc22CountersGfx12; ///< Array of internal counters for PaSc22 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kPaSc23CountersGfx12; ///< Array of internal counters for PaSc23 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kPaSc24CountersGfx12; ///< Array of internal counters for PaSc24 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kPaSc25CountersGfx12; ///< Array of internal counters for PaSc25 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kPaSc26CountersGfx12; ///< Array of internal counters for PaSc26 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kPaSc27CountersGfx12; ///< Array of internal counters for PaSc27 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kPaSc28CountersGfx12; ///< Array of internal counters for PaSc28 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kPaSc29CountersGfx12; ///< Array of internal counters for PaSc29 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kPaSc30CountersGfx12; ///< Array of internal counters for PaSc30 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kPaSc31CountersGfx12; ///< Array of internal counters for PaSc31 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTa0CountersGfx12; ///< Array of internal counters for Ta0 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTa1CountersGfx12; ///< Array of internal counters for Ta1 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTa2CountersGfx12; ///< Array of internal counters for Ta2 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTa3CountersGfx12; ///< Array of internal counters for Ta3 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTa4CountersGfx12; ///< Array of internal counters for Ta4 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTa5CountersGfx12; ///< Array of internal counters for Ta5 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTa6CountersGfx12; ///< Array of internal counters for Ta6 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTa7CountersGfx12; ///< Array of internal counters for Ta7 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTa8CountersGfx12; ///< Array of internal counters for Ta8 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTa9CountersGfx12; ///< Array of internal counters for Ta9 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTa10CountersGfx12; ///< Array of internal counters for Ta10 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTa11CountersGfx12; ///< Array of internal counters for Ta11 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTa12CountersGfx12; ///< Array of internal counters for Ta12 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTa13CountersGfx12; ///< Array of internal counters for Ta13 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTa14CountersGfx12; ///< Array of internal counters for Ta14 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTa15CountersGfx12; ///< Array of internal counters for Ta15 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTa16CountersGfx12; ///< Array of internal counters for Ta16 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTa17CountersGfx12; ///< Array of internal counters for Ta17 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTa18CountersGfx12; ///< Array of internal counters for Ta18 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTa19CountersGfx12; ///< Array of internal counters for Ta19 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTa20CountersGfx12; ///< Array of internal counters for Ta20 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTa21CountersGfx12; ///< Array of internal counters for Ta21 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTa22CountersGfx12; ///< Array of internal counters for Ta22 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTa23CountersGfx12; ///< Array of internal counters for Ta23 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTa24CountersGfx12; ///< Array of internal counters for Ta24 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTa25CountersGfx12; ///< Array of internal counters for Ta25 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTa26CountersGfx12; ///< Array of internal counters for Ta26 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTa27CountersGfx12; ///< Array of internal counters for Ta27 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTa28CountersGfx12; ///< Array of internal counters for Ta28 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTa29CountersGfx12; ///< Array of internal counters for Ta29 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTa30CountersGfx12; ///< Array of internal counters for Ta30 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTa31CountersGfx12; ///< Array of internal counters for Ta31 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTa32CountersGfx12; ///< Array of internal counters for Ta32 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTa33CountersGfx12; ///< Array of internal counters for Ta33 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTa34CountersGfx12; ///< Array of internal counters for Ta34 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTa35CountersGfx12; ///< Array of internal counters for Ta35 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTa36CountersGfx12; ///< Array of internal counters for Ta36 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTa37CountersGfx12; ///< Array of internal counters for Ta37 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTa38CountersGfx12; ///< Array of internal counters for Ta38 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTa39CountersGfx12; ///< Array of internal counters for Ta39 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTa40CountersGfx12; ///< Array of internal counters for Ta40 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTa41CountersGfx12; ///< Array of internal counters for Ta41 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTa42CountersGfx12; ///< Array of internal counters for Ta42 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTa43CountersGfx12; ///< Array of internal counters for Ta43 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTa44CountersGfx12; ///< Array of internal counters for Ta44 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTa45CountersGfx12; ///< Array of internal counters for Ta45 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTa46CountersGfx12; ///< Array of internal counters for Ta46 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTa47CountersGfx12; ///< Array of internal counters for Ta47 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTa48CountersGfx12; ///< Array of internal counters for Ta48 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTa49CountersGfx12; ///< Array of internal counters for Ta49 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTa50CountersGfx12; ///< Array of internal counters for Ta50 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTa51CountersGfx12; ///< Array of internal counters for Ta51 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTa52CountersGfx12; ///< Array of internal counters for Ta52 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTa53CountersGfx12; ///< Array of internal counters for Ta53 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTa54CountersGfx12; ///< Array of internal counters for Ta54 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTa55CountersGfx12; ///< Array of internal counters for Ta55 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTa56CountersGfx12; ///< Array of internal counters for Ta56 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTa57CountersGfx12; ///< Array of internal counters for Ta57 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTa58CountersGfx12; ///< Array of internal counters for Ta58 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTa59CountersGfx12; ///< Array of internal counters for Ta59 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTa60CountersGfx12; ///< Array of internal counters for Ta60 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTa61CountersGfx12; ///< Array of internal counters for Ta61 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTa62CountersGfx12; ///< Array of internal counters for Ta62 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTa63CountersGfx12; ///< Array of internal counters for Ta63 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTd0CountersGfx12; ///< Array of internal counters for Td0 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTd1CountersGfx12; ///< Array of internal counters for Td1 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTd2CountersGfx12; ///< Array of internal counters for Td2 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTd3CountersGfx12; ///< Array of internal counters for Td3 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTd4CountersGfx12; ///< Array of internal counters for Td4 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTd5CountersGfx12; ///< Array of internal counters for Td5 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTd6CountersGfx12; ///< Array of internal counters for Td6 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTd7CountersGfx12; ///< Array of internal counters for Td7 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTd8CountersGfx12; ///< Array of internal counters for Td8 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTd9CountersGfx12; ///< Array of internal counters for Td9 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTd10CountersGfx12; ///< Array of internal counters for Td10 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTd11CountersGfx12; ///< Array of internal counters for Td11 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTd12CountersGfx12; ///< Array of internal counters for Td12 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTd13CountersGfx12; ///< Array of internal counters for Td13 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTd14CountersGfx12; ///< Array of internal counters for Td14 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTd15CountersGfx12; ///< Array of internal counters for Td15 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTd16CountersGfx12; ///< Array of internal counters for Td16 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTd17CountersGfx12; ///< Array of internal counters for Td17 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTd18CountersGfx12; ///< Array of internal counters for Td18 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTd19CountersGfx12; ///< Array of internal counters for Td19 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTd20CountersGfx12; ///< Array of internal counters for Td20 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTd21CountersGfx12; ///< Array of internal counters for Td21 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTd22CountersGfx12; ///< Array of internal counters for Td22 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTd23CountersGfx12; ///< Array of internal counters for Td23 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTd24CountersGfx12; ///< Array of internal counters for Td24 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTd25CountersGfx12; ///< Array of internal counters for Td25 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTd26CountersGfx12; ///< Array of internal counters for Td26 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTd27CountersGfx12; ///< Array of internal counters for Td27 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTd28CountersGfx12; ///< Array of internal counters for Td28 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTd29CountersGfx12; ///< Array of internal counters for Td29 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTd30CountersGfx12; ///< Array of internal counters for Td30 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTd31CountersGfx12; ///< Array of internal counters for Td31 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTd32CountersGfx12; ///< Array of internal counters for Td32 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTd33CountersGfx12; ///< Array of internal counters for Td33 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTd34CountersGfx12; ///< Array of internal counters for Td34 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTd35CountersGfx12; ///< Array of internal counters for Td35 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTd36CountersGfx12; ///< Array of internal counters for Td36 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTd37CountersGfx12; ///< Array of internal counters for Td37 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTd38CountersGfx12; ///< Array of internal counters for Td38 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTd39CountersGfx12; ///< Array of internal counters for Td39 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTd40CountersGfx12; ///< Array of internal counters for Td40 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTd41CountersGfx12; ///< Array of internal counters for Td41 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTd42CountersGfx12; ///< Array of internal counters for Td42 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTd43CountersGfx12; ///< Array of internal counters for Td43 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTd44CountersGfx12; ///< Array of internal counters for Td44 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTd45CountersGfx12; ///< Array of internal counters for Td45 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTd46CountersGfx12; ///< Array of internal counters for Td46 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTd47CountersGfx12; ///< Array of internal counters for Td47 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTd48CountersGfx12; ///< Array of internal counters for Td48 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTd49CountersGfx12; ///< Array of internal counters for Td49 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTd50CountersGfx12; ///< Array of internal counters for Td50 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTd51CountersGfx12; ///< Array of internal counters for Td51 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTd52CountersGfx12; ///< Array of internal counters for Td52 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTd53CountersGfx12; ///< Array of internal counters for Td53 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTd54CountersGfx12; ///< Array of internal counters for Td54 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTd55CountersGfx12; ///< Array of internal counters for Td55 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTd56CountersGfx12; ///< Array of internal counters for Td56 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTd57CountersGfx12; ///< Array of internal counters for Td57 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTd58CountersGfx12; ///< Array of internal counters for Td58 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTd59CountersGfx12; ///< Array of internal counters for Td59 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTd60CountersGfx12; ///< Array of internal counters for Td60 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTd61CountersGfx12; ///< Array of internal counters for Td61 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTd62CountersGfx12; ///< Array of internal counters for Td62 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTd63CountersGfx12; ///< Array of internal counters for Td63 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTcp0CountersGfx12; ///< Array of internal counters for Tcp0 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTcp1CountersGfx12; ///< Array of internal counters for Tcp1 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTcp2CountersGfx12; ///< Array of internal counters for Tcp2 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTcp3CountersGfx12; ///< Array of internal counters for Tcp3 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTcp4CountersGfx12; ///< Array of internal counters for Tcp4 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTcp5CountersGfx12; ///< Array of internal counters for Tcp5 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTcp6CountersGfx12; ///< Array of internal counters for Tcp6 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTcp7CountersGfx12; ///< Array of internal counters for Tcp7 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTcp8CountersGfx12; ///< Array of internal counters for Tcp8 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTcp9CountersGfx12; ///< Array of internal counters for Tcp9 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTcp10CountersGfx12; ///< Array of internal counters for Tcp10 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTcp11CountersGfx12; ///< Array of internal counters for Tcp11 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTcp12CountersGfx12; ///< Array of internal counters for Tcp12 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTcp13CountersGfx12; ///< Array of internal counters for Tcp13 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTcp14CountersGfx12; ///< Array of internal counters for Tcp14 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTcp15CountersGfx12; ///< Array of internal counters for Tcp15 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTcp16CountersGfx12; ///< Array of internal counters for Tcp16 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTcp17CountersGfx12; ///< Array of internal counters for Tcp17 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTcp18CountersGfx12; ///< Array of internal counters for Tcp18 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTcp19CountersGfx12; ///< Array of internal counters for Tcp19 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTcp20CountersGfx12; ///< Array of internal counters for Tcp20 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTcp21CountersGfx12; ///< Array of internal counters for Tcp21 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTcp22CountersGfx12; ///< Array of internal counters for Tcp22 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTcp23CountersGfx12; ///< Array of internal counters for Tcp23 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTcp24CountersGfx12; ///< Array of internal counters for Tcp24 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTcp25CountersGfx12; ///< Array of internal counters for Tcp25 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTcp26CountersGfx12; ///< Array of internal counters for Tcp26 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTcp27CountersGfx12; ///< Array of internal counters for Tcp27 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTcp28CountersGfx12; ///< Array of internal counters for Tcp28 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTcp29CountersGfx12; ///< Array of internal counters for Tcp29 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTcp30CountersGfx12; ///< Array of internal counters for Tcp30 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTcp31CountersGfx12; ///< Array of internal counters for Tcp31 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTcp32CountersGfx12; ///< Array of internal counters for Tcp32 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTcp33CountersGfx12; ///< Array of internal counters for Tcp33 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTcp34CountersGfx12; ///< Array of internal counters for Tcp34 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTcp35CountersGfx12; ///< Array of internal counters for Tcp35 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTcp36CountersGfx12; ///< Array of internal counters for Tcp36 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTcp37CountersGfx12; ///< Array of internal counters for Tcp37 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTcp38CountersGfx12; ///< Array of internal counters for Tcp38 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTcp39CountersGfx12; ///< Array of internal counters for Tcp39 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTcp40CountersGfx12; ///< Array of internal counters for Tcp40 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTcp41CountersGfx12; ///< Array of internal counters for Tcp41 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTcp42CountersGfx12; ///< Array of internal counters for Tcp42 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTcp43CountersGfx12; ///< Array of internal counters for Tcp43 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTcp44CountersGfx12; ///< Array of internal counters for Tcp44 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTcp45CountersGfx12; ///< Array of internal counters for Tcp45 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTcp46CountersGfx12; ///< Array of internal counters for Tcp46 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTcp47CountersGfx12; ///< Array of internal counters for Tcp47 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTcp48CountersGfx12; ///< Array of internal counters for Tcp48 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTcp49CountersGfx12; ///< Array of internal counters for Tcp49 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTcp50CountersGfx12; ///< Array of internal counters for Tcp50 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTcp51CountersGfx12; ///< Array of internal counters for Tcp51 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTcp52CountersGfx12; ///< Array of internal counters for Tcp52 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTcp53CountersGfx12; ///< Array of internal counters for Tcp53 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTcp54CountersGfx12; ///< Array of internal counters for Tcp54 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTcp55CountersGfx12; ///< Array of internal counters for Tcp55 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTcp56CountersGfx12; ///< Array of internal counters for Tcp56 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTcp57CountersGfx12; ///< Array of internal counters for Tcp57 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTcp58CountersGfx12; ///< Array of internal counters for Tcp58 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTcp59CountersGfx12; ///< Array of internal counters for Tcp59 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTcp60CountersGfx12; ///< Array of internal counters for Tcp60 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTcp61CountersGfx12; ///< Array of internal counters for Tcp61 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTcp62CountersGfx12; ///< Array of internal counters for Tcp62 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kTcp63CountersGfx12; ///< Array of internal counters for Tcp63 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSpi0CountersGfx12; ///< Array of internal counters for Spi0 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSpi1CountersGfx12; ///< Array of internal counters for Spi1 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSpi2CountersGfx12; ///< Array of internal counters for Spi2 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSpi3CountersGfx12; ///< Array of internal counters for Spi3 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqg0CountersGfx12; ///< Array of internal counters for Sqg0 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqg1CountersGfx12; ///< Array of internal counters for Sqg1 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqg2CountersGfx12; ///< Array of internal counters for Sqg2 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqg3CountersGfx12; ///< Array of internal counters for Sqg3 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqgGs0CountersGfx12; ///< Array of internal counters for SqgGs0 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqgGs1CountersGfx12; ///< Array of internal counters for SqgGs1 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqgGs2CountersGfx12; ///< Array of internal counters for SqgGs2 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqgGs3CountersGfx12; ///< Array of internal counters for SqgGs3 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqgPs0CountersGfx12; ///< Array of internal counters for SqgPs0 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqgPs1CountersGfx12; ///< Array of internal counters for SqgPs1 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqgPs2CountersGfx12; ///< Array of internal counters for SqgPs2 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqgPs3CountersGfx12; ///< Array of internal counters for SqgPs3 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqgHs0CountersGfx12; ///< Array of internal counters for SqgHs0 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqgHs1CountersGfx12; ///< Array of internal counters for SqgHs1 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqgHs2CountersGfx12; ///< Array of internal counters for SqgHs2 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqgHs3CountersGfx12; ///< Array of internal counters for SqgHs3 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqgCs0CountersGfx12; ///< Array of internal counters for SqgCs0 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqgCs1CountersGfx12; ///< Array of internal counters for SqgCs1 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqgCs2CountersGfx12; ///< Array of internal counters for SqgCs2 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqgCs3CountersGfx12; ///< Array of internal counters for SqgCs3 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgp0CountersGfx12; ///< Array of internal counters for Sqwgp0 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgp1CountersGfx12; ///< Array of internal counters for Sqwgp1 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgp2CountersGfx12; ///< Array of internal counters for Sqwgp2 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgp3CountersGfx12; ///< Array of internal counters for Sqwgp3 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgp4CountersGfx12; ///< Array of internal counters for Sqwgp4 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgp5CountersGfx12; ///< Array of internal counters for Sqwgp5 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgp6CountersGfx12; ///< Array of internal counters for Sqwgp6 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgp7CountersGfx12; ///< Array of internal counters for Sqwgp7 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgp8CountersGfx12; ///< Array of internal counters for Sqwgp8 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgp9CountersGfx12; ///< Array of internal counters for Sqwgp9 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgp10CountersGfx12; ///< Array of internal counters for Sqwgp10 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgp11CountersGfx12; ///< Array of internal counters for Sqwgp11 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgp12CountersGfx12; ///< Array of internal counters for Sqwgp12 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgp13CountersGfx12; ///< Array of internal counters for Sqwgp13 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgp14CountersGfx12; ///< Array of internal counters for Sqwgp14 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgp15CountersGfx12; ///< Array of internal counters for Sqwgp15 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgp16CountersGfx12; ///< Array of internal counters for Sqwgp16 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgp17CountersGfx12; ///< Array of internal counters for Sqwgp17 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgp18CountersGfx12; ///< Array of internal counters for Sqwgp18 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgp19CountersGfx12; ///< Array of internal counters for Sqwgp19 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgp20CountersGfx12; ///< Array of internal counters for Sqwgp20 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgp21CountersGfx12; ///< Array of internal counters for Sqwgp21 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgp22CountersGfx12; ///< Array of internal counters for Sqwgp22 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgp23CountersGfx12; ///< Array of internal counters for Sqwgp23 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgp24CountersGfx12; ///< Array of internal counters for Sqwgp24 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgp25CountersGfx12; ///< Array of internal counters for Sqwgp25 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgp26CountersGfx12; ///< Array of internal counters for Sqwgp26 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgp27CountersGfx12; ///< Array of internal counters for Sqwgp27 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgp28CountersGfx12; ///< Array of internal counters for Sqwgp28 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgp29CountersGfx12; ///< Array of internal counters for Sqwgp29 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgp30CountersGfx12; ///< Array of internal counters for Sqwgp30 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgp31CountersGfx12; ///< Array of internal counters for Sqwgp31 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpGs0CountersGfx12; ///< Array of internal counters for SqwgpGs0 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpGs1CountersGfx12; ///< Array of internal counters for SqwgpGs1 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpGs2CountersGfx12; ///< Array of internal counters for SqwgpGs2 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpGs3CountersGfx12; ///< Array of internal counters for SqwgpGs3 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpGs4CountersGfx12; ///< Array of internal counters for SqwgpGs4 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpGs5CountersGfx12; ///< Array of internal counters for SqwgpGs5 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpGs6CountersGfx12; ///< Array of internal counters for SqwgpGs6 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpGs7CountersGfx12; ///< Array of internal counters for SqwgpGs7 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpGs8CountersGfx12; ///< Array of internal counters for SqwgpGs8 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpGs9CountersGfx12; ///< Array of internal counters for SqwgpGs9 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpGs10CountersGfx12; ///< Array of internal counters for SqwgpGs10 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpGs11CountersGfx12; ///< Array of internal counters for SqwgpGs11 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpGs12CountersGfx12; ///< Array of internal counters for SqwgpGs12 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpGs13CountersGfx12; ///< Array of internal counters for SqwgpGs13 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpGs14CountersGfx12; ///< Array of internal counters for SqwgpGs14 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpGs15CountersGfx12; ///< Array of internal counters for SqwgpGs15 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpGs16CountersGfx12; ///< Array of internal counters for SqwgpGs16 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpGs17CountersGfx12; ///< Array of internal counters for SqwgpGs17 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpGs18CountersGfx12; ///< Array of internal counters for SqwgpGs18 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpGs19CountersGfx12; ///< Array of internal counters for SqwgpGs19 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpGs20CountersGfx12; ///< Array of internal counters for SqwgpGs20 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpGs21CountersGfx12; ///< Array of internal counters for SqwgpGs21 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpGs22CountersGfx12; ///< Array of internal counters for SqwgpGs22 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpGs23CountersGfx12; ///< Array of internal counters for SqwgpGs23 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpGs24CountersGfx12; ///< Array of internal counters for SqwgpGs24 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpGs25CountersGfx12; ///< Array of internal counters for SqwgpGs25 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpGs26CountersGfx12; ///< Array of internal counters for SqwgpGs26 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpGs27CountersGfx12; ///< Array of internal counters for SqwgpGs27 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpGs28CountersGfx12; ///< Array of internal counters for SqwgpGs28 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpGs29CountersGfx12; ///< Array of internal counters for SqwgpGs29 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpGs30CountersGfx12; ///< Array of internal counters for SqwgpGs30 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpGs31CountersGfx12; ///< Array of internal counters for SqwgpGs31 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpPs0CountersGfx12; ///< Array of internal counters for SqwgpPs0 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpPs1CountersGfx12; ///< Array of internal counters for SqwgpPs1 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpPs2CountersGfx12; ///< Array of internal counters for SqwgpPs2 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpPs3CountersGfx12; ///< Array of internal counters for SqwgpPs3 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpPs4CountersGfx12; ///< Array of internal counters for SqwgpPs4 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpPs5CountersGfx12; ///< Array of internal counters for SqwgpPs5 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpPs6CountersGfx12; ///< Array of internal counters for SqwgpPs6 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpPs7CountersGfx12; ///< Array of internal counters for SqwgpPs7 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpPs8CountersGfx12; ///< Array of internal counters for SqwgpPs8 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpPs9CountersGfx12; ///< Array of internal counters for SqwgpPs9 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpPs10CountersGfx12; ///< Array of internal counters for SqwgpPs10 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpPs11CountersGfx12; ///< Array of internal counters for SqwgpPs11 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpPs12CountersGfx12; ///< Array of internal counters for SqwgpPs12 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpPs13CountersGfx12; ///< Array of internal counters for SqwgpPs13 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpPs14CountersGfx12; ///< Array of internal counters for SqwgpPs14 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpPs15CountersGfx12; ///< Array of internal counters for SqwgpPs15 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpPs16CountersGfx12; ///< Array of internal counters for SqwgpPs16 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpPs17CountersGfx12; ///< Array of internal counters for SqwgpPs17 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpPs18CountersGfx12; ///< Array of internal counters for SqwgpPs18 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpPs19CountersGfx12; ///< Array of internal counters for SqwgpPs19 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpPs20CountersGfx12; ///< Array of internal counters for SqwgpPs20 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpPs21CountersGfx12; ///< Array of internal counters for SqwgpPs21 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpPs22CountersGfx12; ///< Array of internal counters for SqwgpPs22 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpPs23CountersGfx12; ///< Array of internal counters for SqwgpPs23 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpPs24CountersGfx12; ///< Array of internal counters for SqwgpPs24 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpPs25CountersGfx12; ///< Array of internal counters for SqwgpPs25 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpPs26CountersGfx12; ///< Array of internal counters for SqwgpPs26 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpPs27CountersGfx12; ///< Array of internal counters for SqwgpPs27 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpPs28CountersGfx12; ///< Array of internal counters for SqwgpPs28 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpPs29CountersGfx12; ///< Array of internal counters for SqwgpPs29 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpPs30CountersGfx12; ///< Array of internal counters for SqwgpPs30 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpPs31CountersGfx12; ///< Array of internal counters for SqwgpPs31 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpHs0CountersGfx12; ///< Array of internal counters for SqwgpHs0 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpHs1CountersGfx12; ///< Array of internal counters for SqwgpHs1 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpHs2CountersGfx12; ///< Array of internal counters for SqwgpHs2 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpHs3CountersGfx12; ///< Array of internal counters for SqwgpHs3 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpHs4CountersGfx12; ///< Array of internal counters for SqwgpHs4 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpHs5CountersGfx12; ///< Array of internal counters for SqwgpHs5 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpHs6CountersGfx12; ///< Array of internal counters for SqwgpHs6 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpHs7CountersGfx12; ///< Array of internal counters for SqwgpHs7 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpHs8CountersGfx12; ///< Array of internal counters for SqwgpHs8 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpHs9CountersGfx12; ///< Array of internal counters for SqwgpHs9 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpHs10CountersGfx12; ///< Array of internal counters for SqwgpHs10 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpHs11CountersGfx12; ///< Array of internal counters for SqwgpHs11 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpHs12CountersGfx12; ///< Array of internal counters for SqwgpHs12 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpHs13CountersGfx12; ///< Array of internal counters for SqwgpHs13 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpHs14CountersGfx12; ///< Array of internal counters for SqwgpHs14 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpHs15CountersGfx12; ///< Array of internal counters for SqwgpHs15 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpHs16CountersGfx12; ///< Array of internal counters for SqwgpHs16 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpHs17CountersGfx12; ///< Array of internal counters for SqwgpHs17 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpHs18CountersGfx12; ///< Array of internal counters for SqwgpHs18 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpHs19CountersGfx12; ///< Array of internal counters for SqwgpHs19 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpHs20CountersGfx12; ///< Array of internal counters for SqwgpHs20 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpHs21CountersGfx12; ///< Array of internal counters for SqwgpHs21 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpHs22CountersGfx12; ///< Array of internal counters for SqwgpHs22 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpHs23CountersGfx12; ///< Array of internal counters for SqwgpHs23 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpHs24CountersGfx12; ///< Array of internal counters for SqwgpHs24 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpHs25CountersGfx12; ///< Array of internal counters for SqwgpHs25 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpHs26CountersGfx12; ///< Array of internal counters for SqwgpHs26 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpHs27CountersGfx12; ///< Array of internal counters for SqwgpHs27 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpHs28CountersGfx12; ///< Array of internal counters for SqwgpHs28 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpHs29CountersGfx12; ///< Array of internal counters for SqwgpHs29 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpHs30CountersGfx12; ///< Array of internal counters for SqwgpHs30 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpHs31CountersGfx12; ///< Array of internal counters for SqwgpHs31 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpCs0CountersGfx12; ///< Array of internal counters for SqwgpCs0 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpCs1CountersGfx12; ///< Array of internal counters for SqwgpCs1 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpCs2CountersGfx12; ///< Array of internal counters for SqwgpCs2 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpCs3CountersGfx12; ///< Array of internal counters for SqwgpCs3 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpCs4CountersGfx12; ///< Array of internal counters for SqwgpCs4 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpCs5CountersGfx12; ///< Array of internal counters for SqwgpCs5 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpCs6CountersGfx12; ///< Array of internal counters for SqwgpCs6 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpCs7CountersGfx12; ///< Array of internal counters for SqwgpCs7 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpCs8CountersGfx12; ///< Array of internal counters for SqwgpCs8 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpCs9CountersGfx12; ///< Array of internal counters for SqwgpCs9 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpCs10CountersGfx12; ///< Array of internal counters for SqwgpCs10 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpCs11CountersGfx12; ///< Array of internal counters for SqwgpCs11 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpCs12CountersGfx12; ///< Array of internal counters for SqwgpCs12 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpCs13CountersGfx12; ///< Array of internal counters for SqwgpCs13 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpCs14CountersGfx12; ///< Array of internal counters for SqwgpCs14 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpCs15CountersGfx12; ///< Array of internal counters for SqwgpCs15 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpCs16CountersGfx12; ///< Array of internal counters for SqwgpCs16 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpCs17CountersGfx12; ///< Array of internal counters for SqwgpCs17 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpCs18CountersGfx12; ///< Array of internal counters for SqwgpCs18 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpCs19CountersGfx12; ///< Array of internal counters for SqwgpCs19 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpCs20CountersGfx12; ///< Array of internal counters for SqwgpCs20 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpCs21CountersGfx12; ///< Array of internal counters for SqwgpCs21 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpCs22CountersGfx12; ///< Array of internal counters for SqwgpCs22 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpCs23CountersGfx12; ///< Array of internal counters for SqwgpCs23 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpCs24CountersGfx12; ///< Array of internal counters for SqwgpCs24 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpCs25CountersGfx12; ///< Array of internal counters for SqwgpCs25 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpCs26CountersGfx12; ///< Array of internal counters for SqwgpCs26 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpCs27CountersGfx12; ///< Array of internal counters for SqwgpCs27 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpCs28CountersGfx12; ///< Array of internal counters for SqwgpCs28 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpCs29CountersGfx12; ///< Array of internal counters for SqwgpCs29 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpCs30CountersGfx12; ///< Array of internal counters for SqwgpCs30 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kSqwgpCs31CountersGfx12; ///< Array of internal counters for SqwgpCs31 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGl1c0CountersGfx12; ///< Array of internal counters for Gl1c0 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGl1c1CountersGfx12; ///< Array of internal counters for Gl1c1 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGl1c2CountersGfx12; ///< Array of internal counters for Gl1c2 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGl1c3CountersGfx12; ///< Array of internal counters for Gl1c3 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGl1c4CountersGfx12; ///< Array of internal counters for Gl1c4 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGl1c5CountersGfx12; ///< Array of internal counters for Gl1c5 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGl1c6CountersGfx12; ///< Array of internal counters for Gl1c6 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGl1c7CountersGfx12; ///< Array of internal counters for Gl1c7 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGl1c8CountersGfx12; ///< Array of internal counters for Gl1c8 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGl1c9CountersGfx12; ///< Array of internal counters for Gl1c9 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGl1c10CountersGfx12; ///< Array of internal counters for Gl1c10 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGl1c11CountersGfx12; ///< Array of internal counters for Gl1c11 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGl1c12CountersGfx12; ///< Array of internal counters for Gl1c12 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGl1c13CountersGfx12; ///< Array of internal counters for Gl1c13 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGl1c14CountersGfx12; ///< Array of internal counters for Gl1c14 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGl1c15CountersGfx12; ///< Array of internal counters for Gl1c15 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGl1c16CountersGfx12; ///< Array of internal counters for Gl1c16 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGl1c17CountersGfx12; ///< Array of internal counters for Gl1c17 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGl1c18CountersGfx12; ///< Array of internal counters for Gl1c18 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGl1c19CountersGfx12; ///< Array of internal counters for Gl1c19 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGl1c20CountersGfx12; ///< Array of internal counters for Gl1c20 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGl1c21CountersGfx12; ///< Array of internal counters for Gl1c21 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGl1c22CountersGfx12; ///< Array of internal counters for Gl1c22 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGl1c23CountersGfx12; ///< Array of internal counters for Gl1c23 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGl1c24CountersGfx12; ///< Array of internal counters for Gl1c24 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGl1c25CountersGfx12; ///< Array of internal counters for Gl1c25 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGl1c26CountersGfx12; ///< Array of internal counters for Gl1c26 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGl1c27CountersGfx12; ///< Array of internal counters for Gl1c27 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGl1c28CountersGfx12; ///< Array of internal counters for Gl1c28 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGl1c29CountersGfx12; ///< Array of internal counters for Gl1c29 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGl1c30CountersGfx12; ///< Array of internal counters for Gl1c30 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGl1c31CountersGfx12; ///< Array of internal counters for Gl1c31 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGcEaSe0CountersGfx12; ///< Array of internal counters for GcEaSe0 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGcEaSe1CountersGfx12; ///< Array of internal counters for GcEaSe1 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGcEaSe2CountersGfx12; ///< Array of internal counters for GcEaSe2 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGcEaSe3CountersGfx12; ///< Array of internal counters for GcEaSe3 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGcEaSe4CountersGfx12; ///< Array of internal counters for GcEaSe4 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGcEaSe5CountersGfx12; ///< Array of internal counters for GcEaSe5 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGcEaSe6CountersGfx12; ///< Array of internal counters for GcEaSe6 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGcEaSe7CountersGfx12; ///< Array of internal counters for GcEaSe7 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGcEaSe8CountersGfx12; ///< Array of internal counters for GcEaSe8 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGcEaSe9CountersGfx12; ///< Array of internal counters for GcEaSe9 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGcEaSe10CountersGfx12; ///< Array of internal counters for GcEaSe10 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGcEaSe11CountersGfx12; ///< Array of internal counters for GcEaSe11 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGcEaSe12CountersGfx12; ///< Array of internal counters for GcEaSe12 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGcEaSe13CountersGfx12; ///< Array of internal counters for GcEaSe13 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGcEaSe14CountersGfx12; ///< Array of internal counters for GcEaSe14 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGcEaSe15CountersGfx12; ///< Array of internal counters for GcEaSe15 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGcEaSe16CountersGfx12; ///< Array of internal counters for GcEaSe16 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGcEaSe17CountersGfx12; ///< Array of internal counters for GcEaSe17 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGcEaSe18CountersGfx12; ///< Array of internal counters for GcEaSe18 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGcEaSe19CountersGfx12; ///< Array of internal counters for GcEaSe19 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGcEaSe20CountersGfx12; ///< Array of internal counters for GcEaSe20 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGcEaSe21CountersGfx12; ///< Array of internal counters for GcEaSe21 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGcEaSe22CountersGfx12; ///< Array of internal counters for GcEaSe22 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGcEaSe23CountersGfx12; ///< Array of internal counters for GcEaSe23 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGcEaSe24CountersGfx12; ///< Array of internal counters for GcEaSe24 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGcEaSe25CountersGfx12; ///< Array of internal counters for GcEaSe25 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGcEaSe26CountersGfx12; ///< Array of internal counters for GcEaSe26 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGcEaSe27CountersGfx12; ///< Array of internal counters for GcEaSe27 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGcEaSe28CountersGfx12; ///< Array of internal counters for GcEaSe28 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGcEaSe29CountersGfx12; ///< Array of internal counters for GcEaSe29 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGcEaSe30CountersGfx12; ///< Array of internal counters for GcEaSe30 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGcEaSe31CountersGfx12; ///< Array of internal counters for GcEaSe31 block for Gfx12 family
-    extern std::vector<GpaHardwareCounterDesc> kGpuTimeCountersGfx12; ///< Array of internal counters for GpuTime block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kCpfCountersGfx12; ///< Array view of internal counters for Cpf block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGrbmCountersGfx12; ///< Array view of internal counters for Grbm block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGe1CountersGfx12; ///< Array view of internal counters for Ge1 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGl2c0CountersGfx12; ///< Array view of internal counters for Gl2c0 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGl2c1CountersGfx12; ///< Array view of internal counters for Gl2c1 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGl2c2CountersGfx12; ///< Array view of internal counters for Gl2c2 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGl2c3CountersGfx12; ///< Array view of internal counters for Gl2c3 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGl2c4CountersGfx12; ///< Array view of internal counters for Gl2c4 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGl2c5CountersGfx12; ///< Array view of internal counters for Gl2c5 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGl2c6CountersGfx12; ///< Array view of internal counters for Gl2c6 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGl2c7CountersGfx12; ///< Array view of internal counters for Gl2c7 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGl2c8CountersGfx12; ///< Array view of internal counters for Gl2c8 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGl2c9CountersGfx12; ///< Array view of internal counters for Gl2c9 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGl2c10CountersGfx12; ///< Array view of internal counters for Gl2c10 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGl2c11CountersGfx12; ///< Array view of internal counters for Gl2c11 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGl2c12CountersGfx12; ///< Array view of internal counters for Gl2c12 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGl2c13CountersGfx12; ///< Array view of internal counters for Gl2c13 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGl2c14CountersGfx12; ///< Array view of internal counters for Gl2c14 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGl2c15CountersGfx12; ///< Array view of internal counters for Gl2c15 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGl2c16CountersGfx12; ///< Array view of internal counters for Gl2c16 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGl2c17CountersGfx12; ///< Array view of internal counters for Gl2c17 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGl2c18CountersGfx12; ///< Array view of internal counters for Gl2c18 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGl2c19CountersGfx12; ///< Array view of internal counters for Gl2c19 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGl2c20CountersGfx12; ///< Array view of internal counters for Gl2c20 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGl2c21CountersGfx12; ///< Array view of internal counters for Gl2c21 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGl2c22CountersGfx12; ///< Array view of internal counters for Gl2c22 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGl2c23CountersGfx12; ///< Array view of internal counters for Gl2c23 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGl2c24CountersGfx12; ///< Array view of internal counters for Gl2c24 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGl2c25CountersGfx12; ///< Array view of internal counters for Gl2c25 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGl2c26CountersGfx12; ///< Array view of internal counters for Gl2c26 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGl2c27CountersGfx12; ///< Array view of internal counters for Gl2c27 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGl2c28CountersGfx12; ///< Array view of internal counters for Gl2c28 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGl2c29CountersGfx12; ///< Array view of internal counters for Gl2c29 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGl2c30CountersGfx12; ///< Array view of internal counters for Gl2c30 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGl2c31CountersGfx12; ///< Array view of internal counters for Gl2c31 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGcEaCpwdCountersGfx12; ///< Array view of internal counters for GcEaCpwd block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGe2Se0CountersGfx12; ///< Array view of internal counters for Ge2Se0 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGe2Se1CountersGfx12; ///< Array view of internal counters for Ge2Se1 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGe2Se2CountersGfx12; ///< Array view of internal counters for Ge2Se2 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGe2Se3CountersGfx12; ///< Array view of internal counters for Ge2Se3 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGe2DistCountersGfx12; ///< Array view of internal counters for Ge2Dist block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kCb0CountersGfx12; ///< Array view of internal counters for Cb0 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kCb1CountersGfx12; ///< Array view of internal counters for Cb1 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kCb2CountersGfx12; ///< Array view of internal counters for Cb2 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kCb3CountersGfx12; ///< Array view of internal counters for Cb3 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kCb4CountersGfx12; ///< Array view of internal counters for Cb4 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kCb5CountersGfx12; ///< Array view of internal counters for Cb5 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kCb6CountersGfx12; ///< Array view of internal counters for Cb6 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kCb7CountersGfx12; ///< Array view of internal counters for Cb7 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kCb8CountersGfx12; ///< Array view of internal counters for Cb8 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kCb9CountersGfx12; ///< Array view of internal counters for Cb9 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kCb10CountersGfx12; ///< Array view of internal counters for Cb10 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kCb11CountersGfx12; ///< Array view of internal counters for Cb11 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kCb12CountersGfx12; ///< Array view of internal counters for Cb12 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kCb13CountersGfx12; ///< Array view of internal counters for Cb13 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kCb14CountersGfx12; ///< Array view of internal counters for Cb14 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kCb15CountersGfx12; ///< Array view of internal counters for Cb15 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kDb0CountersGfx12; ///< Array view of internal counters for Db0 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kDb1CountersGfx12; ///< Array view of internal counters for Db1 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kDb2CountersGfx12; ///< Array view of internal counters for Db2 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kDb3CountersGfx12; ///< Array view of internal counters for Db3 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kDb4CountersGfx12; ///< Array view of internal counters for Db4 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kDb5CountersGfx12; ///< Array view of internal counters for Db5 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kDb6CountersGfx12; ///< Array view of internal counters for Db6 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kDb7CountersGfx12; ///< Array view of internal counters for Db7 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kDb8CountersGfx12; ///< Array view of internal counters for Db8 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kDb9CountersGfx12; ///< Array view of internal counters for Db9 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kDb10CountersGfx12; ///< Array view of internal counters for Db10 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kDb11CountersGfx12; ///< Array view of internal counters for Db11 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kDb12CountersGfx12; ///< Array view of internal counters for Db12 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kDb13CountersGfx12; ///< Array view of internal counters for Db13 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kDb14CountersGfx12; ///< Array view of internal counters for Db14 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kDb15CountersGfx12; ///< Array view of internal counters for Db15 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kPaSu0CountersGfx12; ///< Array view of internal counters for PaSu0 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kPaSu1CountersGfx12; ///< Array view of internal counters for PaSu1 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kPaSu2CountersGfx12; ///< Array view of internal counters for PaSu2 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kPaSu3CountersGfx12; ///< Array view of internal counters for PaSu3 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSx0CountersGfx12; ///< Array view of internal counters for Sx0 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSx1CountersGfx12; ///< Array view of internal counters for Sx1 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSx2CountersGfx12; ///< Array view of internal counters for Sx2 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSx3CountersGfx12; ///< Array view of internal counters for Sx3 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSx4CountersGfx12; ///< Array view of internal counters for Sx4 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSx5CountersGfx12; ///< Array view of internal counters for Sx5 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSx6CountersGfx12; ///< Array view of internal counters for Sx6 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSx7CountersGfx12; ///< Array view of internal counters for Sx7 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kPaSc0CountersGfx12; ///< Array view of internal counters for PaSc0 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kPaSc1CountersGfx12; ///< Array view of internal counters for PaSc1 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kPaSc2CountersGfx12; ///< Array view of internal counters for PaSc2 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kPaSc3CountersGfx12; ///< Array view of internal counters for PaSc3 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kPaSc4CountersGfx12; ///< Array view of internal counters for PaSc4 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kPaSc5CountersGfx12; ///< Array view of internal counters for PaSc5 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kPaSc6CountersGfx12; ///< Array view of internal counters for PaSc6 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kPaSc7CountersGfx12; ///< Array view of internal counters for PaSc7 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kPaSc8CountersGfx12; ///< Array view of internal counters for PaSc8 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kPaSc9CountersGfx12; ///< Array view of internal counters for PaSc9 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kPaSc10CountersGfx12; ///< Array view of internal counters for PaSc10 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kPaSc11CountersGfx12; ///< Array view of internal counters for PaSc11 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kPaSc12CountersGfx12; ///< Array view of internal counters for PaSc12 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kPaSc13CountersGfx12; ///< Array view of internal counters for PaSc13 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kPaSc14CountersGfx12; ///< Array view of internal counters for PaSc14 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kPaSc15CountersGfx12; ///< Array view of internal counters for PaSc15 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kPaSc16CountersGfx12; ///< Array view of internal counters for PaSc16 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kPaSc17CountersGfx12; ///< Array view of internal counters for PaSc17 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kPaSc18CountersGfx12; ///< Array view of internal counters for PaSc18 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kPaSc19CountersGfx12; ///< Array view of internal counters for PaSc19 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kPaSc20CountersGfx12; ///< Array view of internal counters for PaSc20 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kPaSc21CountersGfx12; ///< Array view of internal counters for PaSc21 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kPaSc22CountersGfx12; ///< Array view of internal counters for PaSc22 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kPaSc23CountersGfx12; ///< Array view of internal counters for PaSc23 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kPaSc24CountersGfx12; ///< Array view of internal counters for PaSc24 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kPaSc25CountersGfx12; ///< Array view of internal counters for PaSc25 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kPaSc26CountersGfx12; ///< Array view of internal counters for PaSc26 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kPaSc27CountersGfx12; ///< Array view of internal counters for PaSc27 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kPaSc28CountersGfx12; ///< Array view of internal counters for PaSc28 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kPaSc29CountersGfx12; ///< Array view of internal counters for PaSc29 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kPaSc30CountersGfx12; ///< Array view of internal counters for PaSc30 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kPaSc31CountersGfx12; ///< Array view of internal counters for PaSc31 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTa0CountersGfx12; ///< Array view of internal counters for Ta0 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTa1CountersGfx12; ///< Array view of internal counters for Ta1 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTa2CountersGfx12; ///< Array view of internal counters for Ta2 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTa3CountersGfx12; ///< Array view of internal counters for Ta3 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTa4CountersGfx12; ///< Array view of internal counters for Ta4 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTa5CountersGfx12; ///< Array view of internal counters for Ta5 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTa6CountersGfx12; ///< Array view of internal counters for Ta6 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTa7CountersGfx12; ///< Array view of internal counters for Ta7 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTa8CountersGfx12; ///< Array view of internal counters for Ta8 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTa9CountersGfx12; ///< Array view of internal counters for Ta9 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTa10CountersGfx12; ///< Array view of internal counters for Ta10 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTa11CountersGfx12; ///< Array view of internal counters for Ta11 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTa12CountersGfx12; ///< Array view of internal counters for Ta12 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTa13CountersGfx12; ///< Array view of internal counters for Ta13 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTa14CountersGfx12; ///< Array view of internal counters for Ta14 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTa15CountersGfx12; ///< Array view of internal counters for Ta15 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTa16CountersGfx12; ///< Array view of internal counters for Ta16 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTa17CountersGfx12; ///< Array view of internal counters for Ta17 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTa18CountersGfx12; ///< Array view of internal counters for Ta18 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTa19CountersGfx12; ///< Array view of internal counters for Ta19 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTa20CountersGfx12; ///< Array view of internal counters for Ta20 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTa21CountersGfx12; ///< Array view of internal counters for Ta21 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTa22CountersGfx12; ///< Array view of internal counters for Ta22 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTa23CountersGfx12; ///< Array view of internal counters for Ta23 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTa24CountersGfx12; ///< Array view of internal counters for Ta24 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTa25CountersGfx12; ///< Array view of internal counters for Ta25 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTa26CountersGfx12; ///< Array view of internal counters for Ta26 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTa27CountersGfx12; ///< Array view of internal counters for Ta27 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTa28CountersGfx12; ///< Array view of internal counters for Ta28 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTa29CountersGfx12; ///< Array view of internal counters for Ta29 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTa30CountersGfx12; ///< Array view of internal counters for Ta30 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTa31CountersGfx12; ///< Array view of internal counters for Ta31 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTa32CountersGfx12; ///< Array view of internal counters for Ta32 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTa33CountersGfx12; ///< Array view of internal counters for Ta33 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTa34CountersGfx12; ///< Array view of internal counters for Ta34 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTa35CountersGfx12; ///< Array view of internal counters for Ta35 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTa36CountersGfx12; ///< Array view of internal counters for Ta36 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTa37CountersGfx12; ///< Array view of internal counters for Ta37 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTa38CountersGfx12; ///< Array view of internal counters for Ta38 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTa39CountersGfx12; ///< Array view of internal counters for Ta39 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTa40CountersGfx12; ///< Array view of internal counters for Ta40 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTa41CountersGfx12; ///< Array view of internal counters for Ta41 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTa42CountersGfx12; ///< Array view of internal counters for Ta42 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTa43CountersGfx12; ///< Array view of internal counters for Ta43 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTa44CountersGfx12; ///< Array view of internal counters for Ta44 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTa45CountersGfx12; ///< Array view of internal counters for Ta45 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTa46CountersGfx12; ///< Array view of internal counters for Ta46 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTa47CountersGfx12; ///< Array view of internal counters for Ta47 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTa48CountersGfx12; ///< Array view of internal counters for Ta48 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTa49CountersGfx12; ///< Array view of internal counters for Ta49 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTa50CountersGfx12; ///< Array view of internal counters for Ta50 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTa51CountersGfx12; ///< Array view of internal counters for Ta51 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTa52CountersGfx12; ///< Array view of internal counters for Ta52 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTa53CountersGfx12; ///< Array view of internal counters for Ta53 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTa54CountersGfx12; ///< Array view of internal counters for Ta54 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTa55CountersGfx12; ///< Array view of internal counters for Ta55 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTa56CountersGfx12; ///< Array view of internal counters for Ta56 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTa57CountersGfx12; ///< Array view of internal counters for Ta57 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTa58CountersGfx12; ///< Array view of internal counters for Ta58 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTa59CountersGfx12; ///< Array view of internal counters for Ta59 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTa60CountersGfx12; ///< Array view of internal counters for Ta60 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTa61CountersGfx12; ///< Array view of internal counters for Ta61 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTa62CountersGfx12; ///< Array view of internal counters for Ta62 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTa63CountersGfx12; ///< Array view of internal counters for Ta63 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTd0CountersGfx12; ///< Array view of internal counters for Td0 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTd1CountersGfx12; ///< Array view of internal counters for Td1 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTd2CountersGfx12; ///< Array view of internal counters for Td2 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTd3CountersGfx12; ///< Array view of internal counters for Td3 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTd4CountersGfx12; ///< Array view of internal counters for Td4 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTd5CountersGfx12; ///< Array view of internal counters for Td5 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTd6CountersGfx12; ///< Array view of internal counters for Td6 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTd7CountersGfx12; ///< Array view of internal counters for Td7 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTd8CountersGfx12; ///< Array view of internal counters for Td8 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTd9CountersGfx12; ///< Array view of internal counters for Td9 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTd10CountersGfx12; ///< Array view of internal counters for Td10 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTd11CountersGfx12; ///< Array view of internal counters for Td11 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTd12CountersGfx12; ///< Array view of internal counters for Td12 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTd13CountersGfx12; ///< Array view of internal counters for Td13 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTd14CountersGfx12; ///< Array view of internal counters for Td14 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTd15CountersGfx12; ///< Array view of internal counters for Td15 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTd16CountersGfx12; ///< Array view of internal counters for Td16 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTd17CountersGfx12; ///< Array view of internal counters for Td17 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTd18CountersGfx12; ///< Array view of internal counters for Td18 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTd19CountersGfx12; ///< Array view of internal counters for Td19 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTd20CountersGfx12; ///< Array view of internal counters for Td20 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTd21CountersGfx12; ///< Array view of internal counters for Td21 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTd22CountersGfx12; ///< Array view of internal counters for Td22 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTd23CountersGfx12; ///< Array view of internal counters for Td23 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTd24CountersGfx12; ///< Array view of internal counters for Td24 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTd25CountersGfx12; ///< Array view of internal counters for Td25 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTd26CountersGfx12; ///< Array view of internal counters for Td26 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTd27CountersGfx12; ///< Array view of internal counters for Td27 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTd28CountersGfx12; ///< Array view of internal counters for Td28 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTd29CountersGfx12; ///< Array view of internal counters for Td29 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTd30CountersGfx12; ///< Array view of internal counters for Td30 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTd31CountersGfx12; ///< Array view of internal counters for Td31 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTd32CountersGfx12; ///< Array view of internal counters for Td32 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTd33CountersGfx12; ///< Array view of internal counters for Td33 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTd34CountersGfx12; ///< Array view of internal counters for Td34 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTd35CountersGfx12; ///< Array view of internal counters for Td35 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTd36CountersGfx12; ///< Array view of internal counters for Td36 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTd37CountersGfx12; ///< Array view of internal counters for Td37 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTd38CountersGfx12; ///< Array view of internal counters for Td38 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTd39CountersGfx12; ///< Array view of internal counters for Td39 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTd40CountersGfx12; ///< Array view of internal counters for Td40 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTd41CountersGfx12; ///< Array view of internal counters for Td41 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTd42CountersGfx12; ///< Array view of internal counters for Td42 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTd43CountersGfx12; ///< Array view of internal counters for Td43 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTd44CountersGfx12; ///< Array view of internal counters for Td44 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTd45CountersGfx12; ///< Array view of internal counters for Td45 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTd46CountersGfx12; ///< Array view of internal counters for Td46 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTd47CountersGfx12; ///< Array view of internal counters for Td47 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTd48CountersGfx12; ///< Array view of internal counters for Td48 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTd49CountersGfx12; ///< Array view of internal counters for Td49 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTd50CountersGfx12; ///< Array view of internal counters for Td50 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTd51CountersGfx12; ///< Array view of internal counters for Td51 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTd52CountersGfx12; ///< Array view of internal counters for Td52 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTd53CountersGfx12; ///< Array view of internal counters for Td53 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTd54CountersGfx12; ///< Array view of internal counters for Td54 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTd55CountersGfx12; ///< Array view of internal counters for Td55 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTd56CountersGfx12; ///< Array view of internal counters for Td56 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTd57CountersGfx12; ///< Array view of internal counters for Td57 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTd58CountersGfx12; ///< Array view of internal counters for Td58 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTd59CountersGfx12; ///< Array view of internal counters for Td59 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTd60CountersGfx12; ///< Array view of internal counters for Td60 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTd61CountersGfx12; ///< Array view of internal counters for Td61 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTd62CountersGfx12; ///< Array view of internal counters for Td62 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTd63CountersGfx12; ///< Array view of internal counters for Td63 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTcp0CountersGfx12; ///< Array view of internal counters for Tcp0 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTcp1CountersGfx12; ///< Array view of internal counters for Tcp1 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTcp2CountersGfx12; ///< Array view of internal counters for Tcp2 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTcp3CountersGfx12; ///< Array view of internal counters for Tcp3 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTcp4CountersGfx12; ///< Array view of internal counters for Tcp4 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTcp5CountersGfx12; ///< Array view of internal counters for Tcp5 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTcp6CountersGfx12; ///< Array view of internal counters for Tcp6 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTcp7CountersGfx12; ///< Array view of internal counters for Tcp7 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTcp8CountersGfx12; ///< Array view of internal counters for Tcp8 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTcp9CountersGfx12; ///< Array view of internal counters for Tcp9 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTcp10CountersGfx12; ///< Array view of internal counters for Tcp10 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTcp11CountersGfx12; ///< Array view of internal counters for Tcp11 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTcp12CountersGfx12; ///< Array view of internal counters for Tcp12 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTcp13CountersGfx12; ///< Array view of internal counters for Tcp13 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTcp14CountersGfx12; ///< Array view of internal counters for Tcp14 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTcp15CountersGfx12; ///< Array view of internal counters for Tcp15 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTcp16CountersGfx12; ///< Array view of internal counters for Tcp16 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTcp17CountersGfx12; ///< Array view of internal counters for Tcp17 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTcp18CountersGfx12; ///< Array view of internal counters for Tcp18 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTcp19CountersGfx12; ///< Array view of internal counters for Tcp19 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTcp20CountersGfx12; ///< Array view of internal counters for Tcp20 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTcp21CountersGfx12; ///< Array view of internal counters for Tcp21 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTcp22CountersGfx12; ///< Array view of internal counters for Tcp22 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTcp23CountersGfx12; ///< Array view of internal counters for Tcp23 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTcp24CountersGfx12; ///< Array view of internal counters for Tcp24 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTcp25CountersGfx12; ///< Array view of internal counters for Tcp25 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTcp26CountersGfx12; ///< Array view of internal counters for Tcp26 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTcp27CountersGfx12; ///< Array view of internal counters for Tcp27 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTcp28CountersGfx12; ///< Array view of internal counters for Tcp28 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTcp29CountersGfx12; ///< Array view of internal counters for Tcp29 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTcp30CountersGfx12; ///< Array view of internal counters for Tcp30 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTcp31CountersGfx12; ///< Array view of internal counters for Tcp31 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTcp32CountersGfx12; ///< Array view of internal counters for Tcp32 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTcp33CountersGfx12; ///< Array view of internal counters for Tcp33 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTcp34CountersGfx12; ///< Array view of internal counters for Tcp34 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTcp35CountersGfx12; ///< Array view of internal counters for Tcp35 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTcp36CountersGfx12; ///< Array view of internal counters for Tcp36 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTcp37CountersGfx12; ///< Array view of internal counters for Tcp37 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTcp38CountersGfx12; ///< Array view of internal counters for Tcp38 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTcp39CountersGfx12; ///< Array view of internal counters for Tcp39 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTcp40CountersGfx12; ///< Array view of internal counters for Tcp40 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTcp41CountersGfx12; ///< Array view of internal counters for Tcp41 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTcp42CountersGfx12; ///< Array view of internal counters for Tcp42 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTcp43CountersGfx12; ///< Array view of internal counters for Tcp43 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTcp44CountersGfx12; ///< Array view of internal counters for Tcp44 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTcp45CountersGfx12; ///< Array view of internal counters for Tcp45 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTcp46CountersGfx12; ///< Array view of internal counters for Tcp46 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTcp47CountersGfx12; ///< Array view of internal counters for Tcp47 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTcp48CountersGfx12; ///< Array view of internal counters for Tcp48 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTcp49CountersGfx12; ///< Array view of internal counters for Tcp49 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTcp50CountersGfx12; ///< Array view of internal counters for Tcp50 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTcp51CountersGfx12; ///< Array view of internal counters for Tcp51 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTcp52CountersGfx12; ///< Array view of internal counters for Tcp52 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTcp53CountersGfx12; ///< Array view of internal counters for Tcp53 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTcp54CountersGfx12; ///< Array view of internal counters for Tcp54 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTcp55CountersGfx12; ///< Array view of internal counters for Tcp55 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTcp56CountersGfx12; ///< Array view of internal counters for Tcp56 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTcp57CountersGfx12; ///< Array view of internal counters for Tcp57 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTcp58CountersGfx12; ///< Array view of internal counters for Tcp58 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTcp59CountersGfx12; ///< Array view of internal counters for Tcp59 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTcp60CountersGfx12; ///< Array view of internal counters for Tcp60 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTcp61CountersGfx12; ///< Array view of internal counters for Tcp61 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTcp62CountersGfx12; ///< Array view of internal counters for Tcp62 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kTcp63CountersGfx12; ///< Array view of internal counters for Tcp63 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSpi0CountersGfx12; ///< Array view of internal counters for Spi0 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSpi1CountersGfx12; ///< Array view of internal counters for Spi1 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSpi2CountersGfx12; ///< Array view of internal counters for Spi2 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSpi3CountersGfx12; ///< Array view of internal counters for Spi3 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqg0CountersGfx12; ///< Array view of internal counters for Sqg0 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqg1CountersGfx12; ///< Array view of internal counters for Sqg1 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqg2CountersGfx12; ///< Array view of internal counters for Sqg2 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqg3CountersGfx12; ///< Array view of internal counters for Sqg3 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqgGs0CountersGfx12; ///< Array view of internal counters for SqgGs0 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqgGs1CountersGfx12; ///< Array view of internal counters for SqgGs1 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqgGs2CountersGfx12; ///< Array view of internal counters for SqgGs2 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqgGs3CountersGfx12; ///< Array view of internal counters for SqgGs3 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqgPs0CountersGfx12; ///< Array view of internal counters for SqgPs0 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqgPs1CountersGfx12; ///< Array view of internal counters for SqgPs1 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqgPs2CountersGfx12; ///< Array view of internal counters for SqgPs2 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqgPs3CountersGfx12; ///< Array view of internal counters for SqgPs3 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqgHs0CountersGfx12; ///< Array view of internal counters for SqgHs0 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqgHs1CountersGfx12; ///< Array view of internal counters for SqgHs1 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqgHs2CountersGfx12; ///< Array view of internal counters for SqgHs2 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqgHs3CountersGfx12; ///< Array view of internal counters for SqgHs3 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqgCs0CountersGfx12; ///< Array view of internal counters for SqgCs0 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqgCs1CountersGfx12; ///< Array view of internal counters for SqgCs1 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqgCs2CountersGfx12; ///< Array view of internal counters for SqgCs2 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqgCs3CountersGfx12; ///< Array view of internal counters for SqgCs3 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgp0CountersGfx12; ///< Array view of internal counters for Sqwgp0 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgp1CountersGfx12; ///< Array view of internal counters for Sqwgp1 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgp2CountersGfx12; ///< Array view of internal counters for Sqwgp2 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgp3CountersGfx12; ///< Array view of internal counters for Sqwgp3 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgp4CountersGfx12; ///< Array view of internal counters for Sqwgp4 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgp5CountersGfx12; ///< Array view of internal counters for Sqwgp5 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgp6CountersGfx12; ///< Array view of internal counters for Sqwgp6 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgp7CountersGfx12; ///< Array view of internal counters for Sqwgp7 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgp8CountersGfx12; ///< Array view of internal counters for Sqwgp8 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgp9CountersGfx12; ///< Array view of internal counters for Sqwgp9 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgp10CountersGfx12; ///< Array view of internal counters for Sqwgp10 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgp11CountersGfx12; ///< Array view of internal counters for Sqwgp11 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgp12CountersGfx12; ///< Array view of internal counters for Sqwgp12 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgp13CountersGfx12; ///< Array view of internal counters for Sqwgp13 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgp14CountersGfx12; ///< Array view of internal counters for Sqwgp14 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgp15CountersGfx12; ///< Array view of internal counters for Sqwgp15 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgp16CountersGfx12; ///< Array view of internal counters for Sqwgp16 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgp17CountersGfx12; ///< Array view of internal counters for Sqwgp17 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgp18CountersGfx12; ///< Array view of internal counters for Sqwgp18 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgp19CountersGfx12; ///< Array view of internal counters for Sqwgp19 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgp20CountersGfx12; ///< Array view of internal counters for Sqwgp20 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgp21CountersGfx12; ///< Array view of internal counters for Sqwgp21 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgp22CountersGfx12; ///< Array view of internal counters for Sqwgp22 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgp23CountersGfx12; ///< Array view of internal counters for Sqwgp23 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgp24CountersGfx12; ///< Array view of internal counters for Sqwgp24 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgp25CountersGfx12; ///< Array view of internal counters for Sqwgp25 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgp26CountersGfx12; ///< Array view of internal counters for Sqwgp26 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgp27CountersGfx12; ///< Array view of internal counters for Sqwgp27 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgp28CountersGfx12; ///< Array view of internal counters for Sqwgp28 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgp29CountersGfx12; ///< Array view of internal counters for Sqwgp29 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgp30CountersGfx12; ///< Array view of internal counters for Sqwgp30 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgp31CountersGfx12; ///< Array view of internal counters for Sqwgp31 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpGs0CountersGfx12; ///< Array view of internal counters for SqwgpGs0 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpGs1CountersGfx12; ///< Array view of internal counters for SqwgpGs1 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpGs2CountersGfx12; ///< Array view of internal counters for SqwgpGs2 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpGs3CountersGfx12; ///< Array view of internal counters for SqwgpGs3 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpGs4CountersGfx12; ///< Array view of internal counters for SqwgpGs4 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpGs5CountersGfx12; ///< Array view of internal counters for SqwgpGs5 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpGs6CountersGfx12; ///< Array view of internal counters for SqwgpGs6 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpGs7CountersGfx12; ///< Array view of internal counters for SqwgpGs7 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpGs8CountersGfx12; ///< Array view of internal counters for SqwgpGs8 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpGs9CountersGfx12; ///< Array view of internal counters for SqwgpGs9 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpGs10CountersGfx12; ///< Array view of internal counters for SqwgpGs10 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpGs11CountersGfx12; ///< Array view of internal counters for SqwgpGs11 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpGs12CountersGfx12; ///< Array view of internal counters for SqwgpGs12 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpGs13CountersGfx12; ///< Array view of internal counters for SqwgpGs13 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpGs14CountersGfx12; ///< Array view of internal counters for SqwgpGs14 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpGs15CountersGfx12; ///< Array view of internal counters for SqwgpGs15 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpGs16CountersGfx12; ///< Array view of internal counters for SqwgpGs16 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpGs17CountersGfx12; ///< Array view of internal counters for SqwgpGs17 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpGs18CountersGfx12; ///< Array view of internal counters for SqwgpGs18 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpGs19CountersGfx12; ///< Array view of internal counters for SqwgpGs19 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpGs20CountersGfx12; ///< Array view of internal counters for SqwgpGs20 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpGs21CountersGfx12; ///< Array view of internal counters for SqwgpGs21 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpGs22CountersGfx12; ///< Array view of internal counters for SqwgpGs22 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpGs23CountersGfx12; ///< Array view of internal counters for SqwgpGs23 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpGs24CountersGfx12; ///< Array view of internal counters for SqwgpGs24 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpGs25CountersGfx12; ///< Array view of internal counters for SqwgpGs25 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpGs26CountersGfx12; ///< Array view of internal counters for SqwgpGs26 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpGs27CountersGfx12; ///< Array view of internal counters for SqwgpGs27 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpGs28CountersGfx12; ///< Array view of internal counters for SqwgpGs28 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpGs29CountersGfx12; ///< Array view of internal counters for SqwgpGs29 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpGs30CountersGfx12; ///< Array view of internal counters for SqwgpGs30 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpGs31CountersGfx12; ///< Array view of internal counters for SqwgpGs31 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpPs0CountersGfx12; ///< Array view of internal counters for SqwgpPs0 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpPs1CountersGfx12; ///< Array view of internal counters for SqwgpPs1 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpPs2CountersGfx12; ///< Array view of internal counters for SqwgpPs2 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpPs3CountersGfx12; ///< Array view of internal counters for SqwgpPs3 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpPs4CountersGfx12; ///< Array view of internal counters for SqwgpPs4 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpPs5CountersGfx12; ///< Array view of internal counters for SqwgpPs5 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpPs6CountersGfx12; ///< Array view of internal counters for SqwgpPs6 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpPs7CountersGfx12; ///< Array view of internal counters for SqwgpPs7 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpPs8CountersGfx12; ///< Array view of internal counters for SqwgpPs8 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpPs9CountersGfx12; ///< Array view of internal counters for SqwgpPs9 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpPs10CountersGfx12; ///< Array view of internal counters for SqwgpPs10 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpPs11CountersGfx12; ///< Array view of internal counters for SqwgpPs11 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpPs12CountersGfx12; ///< Array view of internal counters for SqwgpPs12 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpPs13CountersGfx12; ///< Array view of internal counters for SqwgpPs13 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpPs14CountersGfx12; ///< Array view of internal counters for SqwgpPs14 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpPs15CountersGfx12; ///< Array view of internal counters for SqwgpPs15 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpPs16CountersGfx12; ///< Array view of internal counters for SqwgpPs16 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpPs17CountersGfx12; ///< Array view of internal counters for SqwgpPs17 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpPs18CountersGfx12; ///< Array view of internal counters for SqwgpPs18 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpPs19CountersGfx12; ///< Array view of internal counters for SqwgpPs19 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpPs20CountersGfx12; ///< Array view of internal counters for SqwgpPs20 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpPs21CountersGfx12; ///< Array view of internal counters for SqwgpPs21 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpPs22CountersGfx12; ///< Array view of internal counters for SqwgpPs22 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpPs23CountersGfx12; ///< Array view of internal counters for SqwgpPs23 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpPs24CountersGfx12; ///< Array view of internal counters for SqwgpPs24 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpPs25CountersGfx12; ///< Array view of internal counters for SqwgpPs25 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpPs26CountersGfx12; ///< Array view of internal counters for SqwgpPs26 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpPs27CountersGfx12; ///< Array view of internal counters for SqwgpPs27 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpPs28CountersGfx12; ///< Array view of internal counters for SqwgpPs28 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpPs29CountersGfx12; ///< Array view of internal counters for SqwgpPs29 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpPs30CountersGfx12; ///< Array view of internal counters for SqwgpPs30 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpPs31CountersGfx12; ///< Array view of internal counters for SqwgpPs31 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpHs0CountersGfx12; ///< Array view of internal counters for SqwgpHs0 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpHs1CountersGfx12; ///< Array view of internal counters for SqwgpHs1 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpHs2CountersGfx12; ///< Array view of internal counters for SqwgpHs2 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpHs3CountersGfx12; ///< Array view of internal counters for SqwgpHs3 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpHs4CountersGfx12; ///< Array view of internal counters for SqwgpHs4 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpHs5CountersGfx12; ///< Array view of internal counters for SqwgpHs5 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpHs6CountersGfx12; ///< Array view of internal counters for SqwgpHs6 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpHs7CountersGfx12; ///< Array view of internal counters for SqwgpHs7 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpHs8CountersGfx12; ///< Array view of internal counters for SqwgpHs8 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpHs9CountersGfx12; ///< Array view of internal counters for SqwgpHs9 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpHs10CountersGfx12; ///< Array view of internal counters for SqwgpHs10 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpHs11CountersGfx12; ///< Array view of internal counters for SqwgpHs11 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpHs12CountersGfx12; ///< Array view of internal counters for SqwgpHs12 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpHs13CountersGfx12; ///< Array view of internal counters for SqwgpHs13 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpHs14CountersGfx12; ///< Array view of internal counters for SqwgpHs14 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpHs15CountersGfx12; ///< Array view of internal counters for SqwgpHs15 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpHs16CountersGfx12; ///< Array view of internal counters for SqwgpHs16 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpHs17CountersGfx12; ///< Array view of internal counters for SqwgpHs17 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpHs18CountersGfx12; ///< Array view of internal counters for SqwgpHs18 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpHs19CountersGfx12; ///< Array view of internal counters for SqwgpHs19 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpHs20CountersGfx12; ///< Array view of internal counters for SqwgpHs20 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpHs21CountersGfx12; ///< Array view of internal counters for SqwgpHs21 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpHs22CountersGfx12; ///< Array view of internal counters for SqwgpHs22 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpHs23CountersGfx12; ///< Array view of internal counters for SqwgpHs23 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpHs24CountersGfx12; ///< Array view of internal counters for SqwgpHs24 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpHs25CountersGfx12; ///< Array view of internal counters for SqwgpHs25 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpHs26CountersGfx12; ///< Array view of internal counters for SqwgpHs26 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpHs27CountersGfx12; ///< Array view of internal counters for SqwgpHs27 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpHs28CountersGfx12; ///< Array view of internal counters for SqwgpHs28 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpHs29CountersGfx12; ///< Array view of internal counters for SqwgpHs29 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpHs30CountersGfx12; ///< Array view of internal counters for SqwgpHs30 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpHs31CountersGfx12; ///< Array view of internal counters for SqwgpHs31 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpCs0CountersGfx12; ///< Array view of internal counters for SqwgpCs0 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpCs1CountersGfx12; ///< Array view of internal counters for SqwgpCs1 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpCs2CountersGfx12; ///< Array view of internal counters for SqwgpCs2 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpCs3CountersGfx12; ///< Array view of internal counters for SqwgpCs3 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpCs4CountersGfx12; ///< Array view of internal counters for SqwgpCs4 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpCs5CountersGfx12; ///< Array view of internal counters for SqwgpCs5 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpCs6CountersGfx12; ///< Array view of internal counters for SqwgpCs6 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpCs7CountersGfx12; ///< Array view of internal counters for SqwgpCs7 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpCs8CountersGfx12; ///< Array view of internal counters for SqwgpCs8 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpCs9CountersGfx12; ///< Array view of internal counters for SqwgpCs9 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpCs10CountersGfx12; ///< Array view of internal counters for SqwgpCs10 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpCs11CountersGfx12; ///< Array view of internal counters for SqwgpCs11 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpCs12CountersGfx12; ///< Array view of internal counters for SqwgpCs12 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpCs13CountersGfx12; ///< Array view of internal counters for SqwgpCs13 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpCs14CountersGfx12; ///< Array view of internal counters for SqwgpCs14 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpCs15CountersGfx12; ///< Array view of internal counters for SqwgpCs15 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpCs16CountersGfx12; ///< Array view of internal counters for SqwgpCs16 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpCs17CountersGfx12; ///< Array view of internal counters for SqwgpCs17 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpCs18CountersGfx12; ///< Array view of internal counters for SqwgpCs18 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpCs19CountersGfx12; ///< Array view of internal counters for SqwgpCs19 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpCs20CountersGfx12; ///< Array view of internal counters for SqwgpCs20 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpCs21CountersGfx12; ///< Array view of internal counters for SqwgpCs21 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpCs22CountersGfx12; ///< Array view of internal counters for SqwgpCs22 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpCs23CountersGfx12; ///< Array view of internal counters for SqwgpCs23 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpCs24CountersGfx12; ///< Array view of internal counters for SqwgpCs24 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpCs25CountersGfx12; ///< Array view of internal counters for SqwgpCs25 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpCs26CountersGfx12; ///< Array view of internal counters for SqwgpCs26 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpCs27CountersGfx12; ///< Array view of internal counters for SqwgpCs27 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpCs28CountersGfx12; ///< Array view of internal counters for SqwgpCs28 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpCs29CountersGfx12; ///< Array view of internal counters for SqwgpCs29 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpCs30CountersGfx12; ///< Array view of internal counters for SqwgpCs30 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kSqwgpCs31CountersGfx12; ///< Array view of internal counters for SqwgpCs31 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGl1c0CountersGfx12; ///< Array view of internal counters for Gl1c0 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGl1c1CountersGfx12; ///< Array view of internal counters for Gl1c1 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGl1c2CountersGfx12; ///< Array view of internal counters for Gl1c2 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGl1c3CountersGfx12; ///< Array view of internal counters for Gl1c3 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGl1c4CountersGfx12; ///< Array view of internal counters for Gl1c4 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGl1c5CountersGfx12; ///< Array view of internal counters for Gl1c5 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGl1c6CountersGfx12; ///< Array view of internal counters for Gl1c6 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGl1c7CountersGfx12; ///< Array view of internal counters for Gl1c7 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGl1c8CountersGfx12; ///< Array view of internal counters for Gl1c8 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGl1c9CountersGfx12; ///< Array view of internal counters for Gl1c9 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGl1c10CountersGfx12; ///< Array view of internal counters for Gl1c10 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGl1c11CountersGfx12; ///< Array view of internal counters for Gl1c11 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGl1c12CountersGfx12; ///< Array view of internal counters for Gl1c12 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGl1c13CountersGfx12; ///< Array view of internal counters for Gl1c13 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGl1c14CountersGfx12; ///< Array view of internal counters for Gl1c14 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGl1c15CountersGfx12; ///< Array view of internal counters for Gl1c15 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGl1c16CountersGfx12; ///< Array view of internal counters for Gl1c16 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGl1c17CountersGfx12; ///< Array view of internal counters for Gl1c17 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGl1c18CountersGfx12; ///< Array view of internal counters for Gl1c18 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGl1c19CountersGfx12; ///< Array view of internal counters for Gl1c19 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGl1c20CountersGfx12; ///< Array view of internal counters for Gl1c20 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGl1c21CountersGfx12; ///< Array view of internal counters for Gl1c21 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGl1c22CountersGfx12; ///< Array view of internal counters for Gl1c22 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGl1c23CountersGfx12; ///< Array view of internal counters for Gl1c23 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGl1c24CountersGfx12; ///< Array view of internal counters for Gl1c24 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGl1c25CountersGfx12; ///< Array view of internal counters for Gl1c25 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGl1c26CountersGfx12; ///< Array view of internal counters for Gl1c26 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGl1c27CountersGfx12; ///< Array view of internal counters for Gl1c27 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGl1c28CountersGfx12; ///< Array view of internal counters for Gl1c28 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGl1c29CountersGfx12; ///< Array view of internal counters for Gl1c29 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGl1c30CountersGfx12; ///< Array view of internal counters for Gl1c30 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGl1c31CountersGfx12; ///< Array view of internal counters for Gl1c31 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGcEaSe0CountersGfx12; ///< Array view of internal counters for GcEaSe0 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGcEaSe1CountersGfx12; ///< Array view of internal counters for GcEaSe1 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGcEaSe2CountersGfx12; ///< Array view of internal counters for GcEaSe2 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGcEaSe3CountersGfx12; ///< Array view of internal counters for GcEaSe3 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGcEaSe4CountersGfx12; ///< Array view of internal counters for GcEaSe4 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGcEaSe5CountersGfx12; ///< Array view of internal counters for GcEaSe5 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGcEaSe6CountersGfx12; ///< Array view of internal counters for GcEaSe6 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGcEaSe7CountersGfx12; ///< Array view of internal counters for GcEaSe7 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGcEaSe8CountersGfx12; ///< Array view of internal counters for GcEaSe8 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGcEaSe9CountersGfx12; ///< Array view of internal counters for GcEaSe9 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGcEaSe10CountersGfx12; ///< Array view of internal counters for GcEaSe10 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGcEaSe11CountersGfx12; ///< Array view of internal counters for GcEaSe11 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGcEaSe12CountersGfx12; ///< Array view of internal counters for GcEaSe12 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGcEaSe13CountersGfx12; ///< Array view of internal counters for GcEaSe13 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGcEaSe14CountersGfx12; ///< Array view of internal counters for GcEaSe14 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGcEaSe15CountersGfx12; ///< Array view of internal counters for GcEaSe15 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGcEaSe16CountersGfx12; ///< Array view of internal counters for GcEaSe16 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGcEaSe17CountersGfx12; ///< Array view of internal counters for GcEaSe17 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGcEaSe18CountersGfx12; ///< Array view of internal counters for GcEaSe18 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGcEaSe19CountersGfx12; ///< Array view of internal counters for GcEaSe19 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGcEaSe20CountersGfx12; ///< Array view of internal counters for GcEaSe20 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGcEaSe21CountersGfx12; ///< Array view of internal counters for GcEaSe21 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGcEaSe22CountersGfx12; ///< Array view of internal counters for GcEaSe22 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGcEaSe23CountersGfx12; ///< Array view of internal counters for GcEaSe23 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGcEaSe24CountersGfx12; ///< Array view of internal counters for GcEaSe24 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGcEaSe25CountersGfx12; ///< Array view of internal counters for GcEaSe25 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGcEaSe26CountersGfx12; ///< Array view of internal counters for GcEaSe26 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGcEaSe27CountersGfx12; ///< Array view of internal counters for GcEaSe27 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGcEaSe28CountersGfx12; ///< Array view of internal counters for GcEaSe28 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGcEaSe29CountersGfx12; ///< Array view of internal counters for GcEaSe29 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGcEaSe30CountersGfx12; ///< Array view of internal counters for GcEaSe30 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGcEaSe31CountersGfx12; ///< Array view of internal counters for GcEaSe31 block for Gfx12 family
+    extern gpa_array_view<GpaHardwareCounterDesc> kGpuTimeCountersGfx12; ///< Array view of internal counters for GpuTime block for Gfx12 family
 } // counter_gfx12
 
 // clang-format on
 
-#endif  // GPA_AUTO_GENERATED_GPU_PERF_API_COUNTER_GENERATOR_GPA_HW_COUNTER_GFX12_H_
+#endif

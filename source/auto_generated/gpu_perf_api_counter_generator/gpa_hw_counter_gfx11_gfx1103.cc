@@ -9,8 +9,10 @@
 
 // clang-format off
 
-#include <set>
+#include <array>
+#include <cassert>
 
+#include "DeviceInfo.h"
 #include "gpu_perf_api_counter_generator/gpa_counter.h"
 #include "auto_generated/gpu_perf_api_counter_generator/gpa_hw_counter_gfx11_gfx1103.h"
 #include "gpu_performance_api/gpu_perf_api_types.h"

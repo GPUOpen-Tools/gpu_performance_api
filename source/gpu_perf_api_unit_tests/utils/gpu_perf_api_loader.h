@@ -77,4 +77,4 @@ private:
     std::string GetGPADllName(const std::string& dll_path, GpaApiType api);
 };
 
-#endif  // GPU_PERF_API_UNIT_TESTS_UTILS_GPU_PERF_API_LOADER_H_
+#endif

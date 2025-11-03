@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2025 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  DX12 GPA Implementation declarations
@@ -58,18 +58,13 @@ private:
     void operator=(const Dx12GpaImplementor&) = delete;
 
     /// @copydoc GpaImplementor::OpenApiContext()
-    IGpaContext* OpenApiContext(GpaContextInfoPtr context_info, GpaHwInfo& hw_info, GpaOpenContextFlags flags) override final;
+    IGpaContext* OpenApiContext(GpaContextInfoPtr context_info, const GpaHwInfo& hw_info, GpaOpenContextFlags flags) override final;
 
     /// @copydoc GpaImplementor::CloseApiContext()
-    bool CloseApiContext(GpaDeviceIdentifier device_identifier, IGpaContext* context) override final;
+    [[nodiscard]] bool CloseApiContext(IGpaContext* context) override final;
 
     /// @copydoc GpaImplementor::GetDeviceIdentifierFromContextInfo()
     GpaDeviceIdentifier GetDeviceIdentifierFromContextInfo(GpaContextInfoPtr context_info) const override final;
-
-    /// @brief Deletes the GPA contexts.
-    void DeleteContexts();
-
-    std::vector<Dx12GpaContext*> dx12_gpa_context_list_;  ///< DX12 GPA context list for housekeeping.
 };
 
-#endif  // GPU_PERF_API_DX12_DX12_GPA_IMPLEMENTOR_H_
+#endif

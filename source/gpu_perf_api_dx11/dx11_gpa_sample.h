@@ -68,4 +68,4 @@ private:
     ID3D11Counter* gpu_time_counter_;
 };
 
-#endif  // GPU_PERF_API_DX11_DX11_GPA_SAMPLE_H_
+#endif

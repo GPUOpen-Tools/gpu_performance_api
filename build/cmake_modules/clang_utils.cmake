@@ -1,4 +1,5 @@
-## Copyright (c) 2023 Advanced Micro Devices, Inc. All rights reserved.
+## Copyright (C) 2023-2025 Advanced Micro Devices, Inc. All rights reserved. ##
+
 cmake_minimum_required(VERSION 3.10)
 
 find_program(CLANG_FORMAT clang-format DOC "Clang format executable")

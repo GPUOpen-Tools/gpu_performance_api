@@ -66,4 +66,4 @@ private:
     VkGpaSample& operator=(VkGpaSample&&) = delete;
 };
 
-#endif  // GPU_PERF_API_VK_VK_GPA_SAMPLE_H_
+#endif

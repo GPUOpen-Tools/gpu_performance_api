@@ -50,8 +50,8 @@ public:
 
     /// @brief Default Constructor.
     ///
-    /// Temporary addition of a default constructor to allow vector to build and execute.
-    GpaDerivedCounterInfoClass();
+    /// Delete the default constructor. This helps ensure the members have valid information.
+    GpaDerivedCounterInfoClass() = delete;
 
     /// @brief Destructor.
     ~GpaDerivedCounterInfoClass();
@@ -63,17 +63,17 @@ public:
     /// @return Pointer to derived counter info.
     GpaCounterInfo* GetCounterInfo(const IGpaCounterAccessor* gpa_counter_accessor);
 
-    unsigned int              counter_index_;               ///< Index of this counter.
-    const char*               counter_name_;                ///< The name of the counter.
-    const char*               counter_group_;               ///< A group to which the counter is related.
-    const char*               counter_description_;         ///< A description of what the counter means.
-    GpaDataType               data_type_;                   ///< Data type.
-    GpaUsageType              usage_type_;                  ///< How the counter should be interpreted (percentage, ratio, bytes, etc).
-    bool                      discrete_counter_;            ///< Counter is a discrete sample counter.
-    bool                      spm_counter_;                 ///< Counter is an SPM counter.
-    gpa_array_view<GpaUInt32> internal_counters_required_;  ///< List of internal counters that are needed to calculate this derived counter.
-    const char*               compute_expression_;          ///< A string expression that shows how to calculate this counter.
-    GpaUuid                   uuid_ = {};                   ///< UUID that uniquely and consistently identifies a counter.
+    unsigned int              counter_index_       = {};                 ///< Index of this counter.
+    const char*               counter_name_        = {};                 ///< The name of the counter.
+    const char*               counter_group_       = {};                 ///< A group to which the counter is related.
+    const char*               counter_description_ = {};                 ///< A description of what the counter means.
+    GpaDataType               data_type_           = kGpaDataTypeLast;   ///< Data type.
+    GpaUsageType              usage_type_          = kGpaUsageTypeLast;  ///< How the counter should be interpreted (percentage, ratio, bytes, etc).
+    bool                      discrete_counter_    = {};                 ///< Counter is a discrete sample counter.
+    bool                      spm_counter_         = {};                 ///< Counter is an SPM counter.
+    gpa_array_view<GpaUInt32> internal_counters_required_;               ///< List of internal counters that are needed to calculate this derived counter.
+    const char*               compute_expression_ = {};                  ///< A string expression that shows how to calculate this counter.
+    GpaUuid                   uuid_               = {};                  ///< UUID that uniquely and consistently identifies a counter.
 
 private:
     /// @brief Initializes the derived counter info.
@@ -83,9 +83,9 @@ private:
     /// @return True upon success otherwise false.
     bool InitializeDerivedCounterHardwareInfo(const IGpaCounterAccessor* gpa_counter_accessor);
 
-    GpaCounterInfo*           counter_info_;               ///< Derived counter info for the counter.
-    bool                      derived_counter_info_init_;  ///< Flag indicating derive counter is initialized.
-    std::vector<GpaHwCounter> hw_counter_info_list_;       ///< List of gpa hardware counter.
+    GpaCounterInfo*           counter_info_              = {};  ///< Derived counter info for the counter.
+    bool                      derived_counter_info_init_ = {};  ///< Flag indicating derive counter is initialized.
+    std::vector<GpaHwCounter> hw_counter_info_list_;            ///< List of gpa hardware counter.
 };
 
 /// @brief The set of available derived counters.
@@ -268,17 +268,12 @@ public:
     /// @brief Computes a counter's result.
     ///
     /// @param [in] counter_index The index of the counter.
-    /// @param [in] results The counter results buffer.
-    /// @param [in] internal_counter_types The list of internal counter types.
+    /// @param [in] results List of the hardware counter results.
     /// @param [in] result The result of the computation.
     /// @param [in] hw_info The hardware info for the current hardware.
     ///
     /// @return kGpaStatusOk on success, otherwise an error code.
-    virtual GpaStatus ComputeCounterValue(GpaUInt32                       counter_index,
-                                          const vector<const GpaUInt64*>& results,
-                                          vector<GpaDataType>&            internal_counter_types,
-                                          void*                           result,
-                                          const GpaHwInfo*                hw_info) const;
+    virtual GpaStatus ComputeCounterValue(GpaUInt32 counter_index, const gpa_array_view<GpaUInt64> results, void* result, const GpaHwInfo& hw_info) const;
 
     void SetSampleType(GpaSessionSampleType sample_type)
     {
@@ -301,4 +296,4 @@ protected:
     bool                               counters_generated_;    ///< Indicates that the derived counters have been generated.
 };
 
-#endif  // GPU_PERF_API_COUNTER_GENERATOR_COMMON_GPA_DERIVED_COUNTER_H_
+#endif

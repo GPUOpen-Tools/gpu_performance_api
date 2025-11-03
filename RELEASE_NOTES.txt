@@ -1,5 +1,21 @@
 ﻿# GPU Performance API Release Notes
 ---
+# Version 4.2 (11/3/2025)
+* Add support for additional AMD Radeon 800M Series APUs.
+* Add support for AMD Radeon RX 9060 GPUs.
+* DirectX 11: `GPUPerfAPIDXGetAMDDeviceInfo` has been removed in favor of Windows Graphics Settings to force select the GPU.
+* `GpaGetDeviceMaxWaveSlots` reliability issues have been fixed for DX12.
+* `GpaGetDeviceMaxVgprs` entry point has been added.
+* Fixed build/test issue preventing users from passing skipvulkan and skpopengl to the build on Windows.
+* Synchronized access to HW counters using an IPC Mutex when using Windows. To prevent multiple apps trying to access to the HW counters at the same time.
+* Fixed edge case in parsing SPM data for AMD Radeon RX 6000 and AMD Radeon RX 5000 series hardware.
+* Fixed bug where the DX12 GPA implementation held onto strong references of D3D objects.
+* Removed problematic counters from affecting AMD Radeon RX 6000 Series hardware (VsGsVALUBusy, VsGsVALUBusyCycles, VsGsSALUBusy, VsGsSALUBusyCycles)
+* `cacheFlushOnCounterCollection` was being inconsistently set by GPA affecting discrete counter output.
+* Fixed GL2C* counters issue affecting AMD Radeon RX 9000 Series hardware.
+* Fixed WriteSize/FetchSize counter on AMD Radeon RX 9000 Series hardware. It was not accounting for all sized reads/writes.
+* Fixed issue causing release builds taking far longer than they should during the linker step on Windows.
+
 # Version 4.1 (06/17/2025)
 * Added support for AMD Radeon RX 9060 XT.
 * Added support for AMD Radeon AI PRO R9700.

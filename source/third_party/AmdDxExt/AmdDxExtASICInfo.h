@@ -1,10 +1,4 @@
-/*
-***************************************************************************************************
-*
-*  Copyright (c) 2012-2016 Advanced Micro Devices, Inc. All rights reserved.
-*
-***************************************************************************************************
-*/
+/* Copyright (C) 2012-2025 Advanced Micro Devices, Inc. All rights reserved. */
 
 /**
 ***************************************************************************************************
@@ -90,4 +84,4 @@ struct AmdDxASICInfoParam
     AmdDxASICInfo*  pASICInfo;                  ///< Pointer to the info object
 };
 
-#endif //_AMDDXEXTASICINFO_H_
+#endif

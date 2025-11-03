@@ -266,20 +266,14 @@ void ScalarMulN(std::vector<T>& stack, int32_t vector_width)
 /// @param [in] hw_info The hardware info.
 ///
 /// @return kGpaStatusOk on success, otherwise an error code.
-template <class T, class InternalCounterType>
-static GpaStatus EvaluateExpression(const char*                          expression,
-                                    void*                                result,
-                                    const std::vector<const GpaUInt64*>& results,
-                                    GpaDataType                          result_type,
-                                    const GpaHwInfo*                     hw_info)
+template <class T>
+static GpaStatus EvaluateExpression(const char*                     expression,
+                                    void*                           result,
+                                    const gpa_array_view<GpaUInt64> results,
+                                    GpaDataType                     result_type,
+                                    const GpaHwInfo&                hw_info)
 {
     GpaStatus status = kGpaStatusOk;
-
-    if (!hw_info)
-    {
-        assert(nullptr != hw_info);
-        return kGpaStatusErrorInvalidParameter;
-    }
 
     size_t            expression_len = strlen(expression) + 1;
     std::vector<char> buffer(expression_len);
@@ -355,7 +349,7 @@ static GpaStatus EvaluateExpression(const char*                          express
                 scan_result = sscanf(pch, "(%lf)", reinterpret_cast<GpaFloat64*>(&constant));
 #else
                 scan_result = sscanf_s(pch, "(%lf)", reinterpret_cast<GpaFloat64*>(&constant));
-#endif  // _LINUX
+#endif
             }
             else if (result_type == kGpaDataTypeUint64)
             {
@@ -363,7 +357,7 @@ static GpaStatus EvaluateExpression(const char*                          express
                 scan_result = sscanf(pch, "(%llu)", reinterpret_cast<GpaUInt64*>(&constant));
 #else
                 scan_result = sscanf_s(pch, "(%I64u)", reinterpret_cast<GpaUInt64*>(&constant));
-#endif  // _LINUX
+#endif
             }
             else
             {
@@ -381,36 +375,36 @@ static GpaStatus EvaluateExpression(const char*                          express
         }
         else if (_strcmpi(pch, "num_shader_engines") == 0)
         {
-            stack.push_back(static_cast<T>(hw_info->GetNumberShaderEngines()));
+            stack.push_back(static_cast<T>(hw_info.GetNumberShaderEngines()));
         }
         else if (_strcmpi(pch, "num_shader_arrays") == 0)
         {
-            stack.push_back(static_cast<T>(hw_info->GetNumberShaderArrays()));
+            stack.push_back(static_cast<T>(hw_info.GetNumberShaderArrays()));
         }
         else if (_strcmpi(pch, "num_simds") == 0)
         {
-            stack.push_back(static_cast<T>(hw_info->GetNumberSimds()));
+            stack.push_back(static_cast<T>(hw_info.GetNumberSimds()));
         }
         else if (_strcmpi(pch, "su_clocks_prim") == 0)
         {
-            stack.push_back(static_cast<T>(hw_info->GetSuClocksPrim()));
+            stack.push_back(static_cast<T>(hw_info.GetSuClocksPrim()));
         }
         else if (_strcmpi(pch, "num_prim_pipes") == 0)
         {
-            stack.push_back(static_cast<T>(hw_info->GetNumberPrimPipes()));
+            stack.push_back(static_cast<T>(hw_info.GetNumberPrimPipes()));
         }
         else if (_strcmpi(pch, "num_cus") == 0)
         {
-            stack.push_back(static_cast<T>(hw_info->GetNumberCus()));
+            stack.push_back(static_cast<T>(hw_info.GetNumberCus()));
         }
         else if (_strcmpi(pch, "MAX_WAVES") == 0)
         {
-            stack.push_back(static_cast<T>(hw_info->GetNumberSimds() * hw_info->GetWavesPerSimd()));
+            stack.push_back(static_cast<T>(hw_info.GetMaxWaveSlots()));
         }
         else if (_strcmpi(pch, "TS_FREQ") == 0)
         {
             GpaUInt64 freq = 1u;
-            GPA_ASSERT(hw_info->GetTimeStampFrequency(freq));
+            GPA_ASSERT(hw_info.GetTimeStampFrequency(freq));
             stack.push_back(static_cast<T>(freq));
         }
         else if ((tolower(pch[0]) == 'm') && (tolower(pch[1]) == 'a') && (tolower(pch[2]) == 'x') && ((pch[3] == '\0') || isdigit(pch[3])))
@@ -742,8 +736,8 @@ static GpaStatus EvaluateExpression(const char*                          express
 
             if (index < results.size())
             {
-                const InternalCounterType internal_val       = *reinterpret_cast<const InternalCounterType*>(results[index]);
-                T                         internal_val_float = static_cast<T>(internal_val);
+                const GpaUInt64& internal_val       = results[index];
+                const T          internal_val_float = static_cast<T>(internal_val);
                 stack.push_back(internal_val_float);
             }
             else

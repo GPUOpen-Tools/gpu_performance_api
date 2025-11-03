@@ -75,7 +75,6 @@ namespace PublicCounterCompiler
         /// </summary>
         public DerivedCounterFileInput derivedCounterFileInput = null;
 
-
         /// <summary>
         /// A map of Counter Group to a map of counter name to documentation info for Graphics Counters
         /// </summary>
@@ -1369,9 +1368,9 @@ namespace PublicCounterCompiler
                     return false;
                 }
 
-                if (s.Trim().StartsWith(";"))
+                if (s.Trim().StartsWith("#"))
                 {
-                    // Lines that start with ';' are comments, skip it.
+                    // Lines that start with '#' are comments, skip it.
                     continue;
                 }
 
@@ -1496,7 +1495,7 @@ namespace PublicCounterCompiler
                 // Trim any comments, but not from a counter description
                 if (!s.StartsWith("desc="))
                 {
-                    int index = s.IndexOf(';');
+                    int index = s.IndexOf('#');
                     if (index > -1)
                     {
                         s = s.Substring(0, index);
@@ -2093,7 +2092,6 @@ namespace PublicCounterCompiler
 
             includeFile.WriteLine("// clang-format off");
 
-
             includeFile.WriteLine("//*** Note, this is an auto-generated file. Do not edit. Execute {0}CounterCompiler to rebuild.", derivedCounterFileInput.compiler_type_str);
             includeFile.WriteLine();
             includeFile.WriteLine("#include \"gpa_derived_counter.h\"");
@@ -2123,7 +2121,6 @@ namespace PublicCounterCompiler
             }
 
             includeFile.WriteLine();
-
 
             includeFile.WriteLine("// clang-format on");
             includeFile.WriteLine("#endif  // {0}_AUTO_GEN_COUNTER_GEN_{1}COUNTER_DEFINITIONS_{2}_{3}{4}_H_",
@@ -2158,7 +2155,6 @@ namespace PublicCounterCompiler
             cppFile.WriteLine("#include \"gpu_perf_api_common/gpa_array_view.hpp\"");
 
             cppFile.WriteLine("// clang-format off");
-
 
             cppFile.WriteLine("#include \"{0}\"", Gpa.gpaCounterHeaderFileStr);
             cppFile.WriteLine("#include \"auto_generated/gpu_perf_api_counter_generator/{0}counter_definitions_{1}_{2}{3}.h\"", rootFilename.ToLower(), api.ToLower(), generation.ToLower(), asic_prefix_str.ToLower());
@@ -2384,7 +2380,6 @@ namespace PublicCounterCompiler
             headerStream.WriteLine();
             headerStream.WriteLine("// *** Note, this is an auto-generated file. Do not edit. Execute {0}CounterCompiler to rebuild.", derivedCounterFileInput.compiler_type_str);
             headerStream.WriteLine();
-
 
             string asicStr = asic;
             if (!String.IsNullOrEmpty(asicStr))

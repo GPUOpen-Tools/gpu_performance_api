@@ -180,4 +180,4 @@ protected:
 
 #endif
 
-#endif  // GPU_PERF_API_COMMON_GPA_PROFILER_H_
+#endif

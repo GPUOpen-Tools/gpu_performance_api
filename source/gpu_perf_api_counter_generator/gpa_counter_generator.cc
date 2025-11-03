@@ -9,7 +9,9 @@
 
 #include <cctype>
 
+#ifdef _WIN32
 #include "ADLUtil.h"
+#endif
 #include "DeviceInfoUtils.h"
 
 #include "gpu_perf_api_common/gpa_hw_info.h"
@@ -146,12 +148,11 @@ GpaStatus GenerateCounters(GpaApiType             desired_api,
         return kGpaStatusErrorNullPointer;
     }
 
-    // SQTT doesn't support counters - not an error
-    if (kGpaSessionSampleTypeSqtt == sample_type)
-    {
-        return kGpaStatusOk;
-    }
-    else if (kGpaSessionSampleTypeStreamingCounterAndSqtt == sample_type)
+    assert(kGpaSessionSampleTypeSqtt != sample_type);
+
+    static_assert(kGpaSessionSampleTypeLast == 4);
+
+    if (kGpaSessionSampleTypeStreamingCounterAndSqtt == sample_type)
     {
         // To help find the right counter generator
         sample_type = kGpaSessionSampleTypeStreamingCounter;

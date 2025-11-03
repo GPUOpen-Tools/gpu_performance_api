@@ -31,4 +31,4 @@ private:
     GpaCounterSchedulerGl() = delete;
 };
 
-#endif  // GPU_PERF_API_COUNTER_GENERATOR_GL_GPA_COUNTER_SCHEDULER_GL_H_
+#endif

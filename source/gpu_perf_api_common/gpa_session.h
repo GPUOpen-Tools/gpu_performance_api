@@ -313,4 +313,4 @@ private:
     GpaOpenContextFlags     context_flags_;             ///< Flags used to open the context.
 };
 
-#endif  // GPU_PERF_API_COMMON_GPA_SESSION_H_
+#endif
