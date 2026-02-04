@@ -7,7 +7,6 @@
 
 #### Prerequisites
   * Python 3.6 or newer which can be installed from https://www.python.org/.
-  * Vulkan SDK (optional)
   * CMake 3.25 and newer which can be installed from https://cmake.org/download/ or your package manager.
     * On Windows, this can also be installed using:
       * `winget install cmake`
@@ -65,6 +64,7 @@ Additional switches that can be used with the pre_build.py script:
 --skipdocs: Does not generate build files for documentation
 --skipexamples: Does not generate build files for GPA examples
 --cmakecmd="CMD": Override the "cmake" command with "CMD"
+--runtests="all": Run all tests
 
 By default the project will not build the generated CMake project (Although you can with `--build`).
 

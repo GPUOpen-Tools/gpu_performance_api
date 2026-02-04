@@ -49,7 +49,7 @@ VkGpaContext::~VkGpaContext()
     auto delete_vk_session = [](IGpaSession* gpa_session) -> bool {
         if (nullptr != gpa_session)
         {
-            GpaUniqueObjectManager::Instance()->DeleteObject(gpa_session);
+            GpaUniqueObjectManager::Instance().DeleteObject(gpa_session);
             delete gpa_session;
         }
 
@@ -169,7 +169,7 @@ GpaSessionId VkGpaContext::CreateSession(GpaSessionSampleType sample_type)
     if (nullptr != session)
     {
         AddGpaSession(session);
-        session_id = reinterpret_cast<GpaSessionId>(GpaUniqueObjectManager::Instance()->CreateObject(session));
+        session_id = reinterpret_cast<GpaSessionId>(GpaUniqueObjectManager::Instance().CreateObject(session));
     }
 
     return session_id;
@@ -192,7 +192,7 @@ bool VkGpaContext::DeleteVkGpaSession(VkGpaSession* gpa_session)
     if (nullptr != gpa_session)
     {
         RemoveGpaSession(gpa_session);
-        GpaUniqueObjectManager::Instance()->DeleteObject(gpa_session);
+        GpaUniqueObjectManager::Instance().DeleteObject(gpa_session);
         delete gpa_session;
     }
 

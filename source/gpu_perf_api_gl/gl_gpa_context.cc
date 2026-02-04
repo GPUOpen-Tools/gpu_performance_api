@@ -19,6 +19,7 @@ GlGpaContext::GlGpaContext(GlContextPtr context, const GpaHwInfo& hw_info, GpaOp
     , gl_context_(context)
     , clock_mode_(ogl_utils::kAmdXDefaultMode)
     , driver_supports_GL1CG_(false)
+    , driver_supports_ATC_(false)
     , driver_supports_ATCL2_(false)
     , driver_supports_CHCG_(false)
     , driver_supports_GUS_(false)
@@ -58,7 +59,7 @@ GpaSessionId GlGpaContext::CreateSession(GpaSessionSampleType sample_type)
 
         if (nullptr != new_gpa_gl_gpa_session)
         {
-            ret_session_id = reinterpret_cast<GpaSessionId>(GpaUniqueObjectManager::Instance()->CreateObject(new_gpa_gl_gpa_session));
+            ret_session_id = reinterpret_cast<GpaSessionId>(GpaUniqueObjectManager::Instance().CreateObject(new_gpa_gl_gpa_session));
         }
     }
 
@@ -74,7 +75,7 @@ bool GlGpaContext::DeleteSession(GpaSessionId session_id)
     if (nullptr != gl_session)
     {
         RemoveGpaSession(gl_session);
-        GpaUniqueObjectManager::Instance()->DeleteObject(gl_session);
+        GpaUniqueObjectManager::Instance().DeleteObject(gl_session);
         delete gl_session;
         is_deleted = true;
     }
@@ -236,6 +237,10 @@ bool GlGpaContext::PopulateDriverCounterGroupInfo()
                 {
                     driver_supports_ATCL2_ = true;
                 }
+                else if (strncmp(group_data.group_name, "ATC", 3) == 0)
+                {
+                    driver_supports_ATC_ = true;
+                }
                 else if (strncmp(group_data.group_name, "CHCG", 4) == 0)
                 {
                     driver_supports_CHCG_ = true;
@@ -297,7 +302,8 @@ bool GlGpaContext::ValidateAndUpdateGlCounters(IGpaSession* session) const
         else
         {
             // Use const_cast to GpaHardwareCounters* here as a feasible and simple workaround. OpenGL is the only API in which we are changing the hardware counter info.
-            IGpaCounterAccessor* counter_accessor = GpaContextCounterMediator::Instance()->GetCounterAccessor(session);
+            IGpaCounterAccessor* counter_accessor = GpaContextCounterMediator::GetCounterAccessor(session);
+            assert(counter_accessor != nullptr);
             if (counter_accessor == nullptr)
             {
                 GPA_LOG_ERROR("Unable to get the counter accessor.");
@@ -334,13 +340,17 @@ bool GlGpaContext::ValidateAndUpdateGlCounters(IGpaSession* session) const
                 const GpaCounterGroupDesc& gpa_group = hardware_counters.internal_counter_groups_[gpa_group_index];
                 const std::string          gpa_group_name(gpa_group.name);
 
-                // These groups (GL1CG, ATCL2, CHCG, GUS, UMC, RPB, PC, GRBMSE) only exist (and are only exposed) on some hardware but GPA expects that they always exist.
+                // These groups (GL1CG, ATCL2, ATC, CHCG, GUS, UMC, RPB, PC, GRBMSE) only exist (and are only exposed) on some hardware but GPA expects that they always exist.
                 // If they don't exist then skip this GPA group and continue to the next group.
                 if (!driver_supports_GL1CG_ && gpa_group_name.find("GL1CG") == 0)
                 {
                     continue;
                 }
                 if (!driver_supports_ATCL2_ && gpa_group_name.find("ATCL2") == 0)
+                {
+                    continue;
+                }
+                if (!driver_supports_ATC_ && gpa_group_name.find("ATC") == 0)
                 {
                     continue;
                 }
@@ -485,6 +495,7 @@ bool GlGpaContext::ValidateAndUpdateGlCounters(IGpaSession* session) const
 
                 // Check if current gpa_group_name matches current driver_group_name and then validate and update if match is found.
                 // The first condition will occur if the groups are an exact match and the second condition will occur if GPA knows about multiple block instances but the current hardware only has one.
+                // BUG: The second half of this conditional will not behave properly with gpa_group_name of "ATC" and driver_group_name_extended of "ATCL2".
                 if (gpa_group_name == driver_group_name_extended || gpa_group_name.find(driver_group_name_extended) == 0)
                 {
                     // Make sure the GPA number of counters and maximum active counters match for this block (regardless of which block instance).

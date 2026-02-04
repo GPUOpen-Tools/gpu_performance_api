@@ -9,11 +9,7 @@
 #define GPU_PERF_API_DX12_DX12_GPA_CONTEXT_H_
 
 #include <mutex>
-
-#pragma warning(push)
-#pragma warning(disable : 4201)
 #include <AmdExtGpaInterfaceApi.h>
-#pragma warning(pop)
 #include <AmdExtD3D.h>
 
 #include "gpu_perf_api_common/gpa_common_defs.h"
@@ -83,13 +79,6 @@ public:
     /// @copydoc IGpaContext::SetStableClocks()
     [[nodiscard]] GpaStatus SetStableClocks(bool use_profiling_clocks) override;
 
-    /// @brief Returns the driver version according to ADLUtil.
-    ///
-    /// @param [out] major Driver major version number.
-    /// @param [out] minor Driver minor version number.
-    /// @param [out] sub_minor Driver sub_minor version number.
-    void GetDriverVersion(uint32_t& major, uint32_t& minor, uint32_t& sub_minor);
-
 private:
     /// @brief Initializes the AMD Driver extension objects for the context.
     ///
@@ -106,9 +95,6 @@ private:
     IAmdExtGpaInterface2*          gpa_interface2_;              ///< The GPA Interface2 from the driver.
     AmdExtPerfExperimentProperties amd_device_props_;            ///< Device properties reported by the driver.
     AmdExtDeviceClockMode          clock_mode_;                  ///< GPU Clock mode.
-    uint32_t                       driver_major_ver_;            ///< ADL driver major version.
-    uint32_t                       driver_minor_ver_;            ///< ADL driver minor version.
-    uint32_t                       driver_sub_minor_ver_;        ///< ADL driver sub_minor version.
 };
 
 #endif

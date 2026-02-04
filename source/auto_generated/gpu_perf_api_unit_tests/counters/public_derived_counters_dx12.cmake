@@ -1,8 +1,5 @@
-## Copyright (C) 2025 Advanced Micro Devices, Inc. All rights reserved. ##
+## Copyright (C) 2025-2026 Advanced Micro Devices, Inc. All rights reserved. ##
 
-cmake_minimum_required(VERSION 3.10)
-
-set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(PUBLIC_DERIVED_COUNTERS_API_HEADERS_DX12
 ${CMAKE_CURRENT_LIST_DIR}/public_derived_counters_dx12_gfx10.h
 ${CMAKE_CURRENT_LIST_DIR}/public_derived_counters_dx12_gfx103.h

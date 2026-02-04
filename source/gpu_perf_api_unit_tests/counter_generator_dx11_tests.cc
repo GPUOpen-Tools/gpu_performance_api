@@ -241,44 +241,44 @@ TEST(CounterDllTests, Dx11OpenCounterContext)
 
 TEST(CounterDllTests, Dx11CounterLibTestGfx10)
 {
-    VerifyCounterLibInterface(kGpaApiDirectx11, kDevIdGfx10, REVISION_ID_ANY);
-    VerifyCounterByPassCounterLibEntry(kGpaApiDirectx11, kDevIdGfx10, REVISION_ID_ANY);
+    VerifyCounterLibInterface(kGpaApiDirectx11, kDevIdGfx10, AMDTDeviceInfoUtils::kRevisionIdAny);
+    VerifyCounterByPassCounterLibEntry(kGpaApiDirectx11, kDevIdGfx10, AMDTDeviceInfoUtils::kRevisionIdAny);
 }
 
 TEST(CounterDllTests, Dx11CounterLibTestGfx103)
 {
-    VerifyCounterLibInterface(kGpaApiDirectx11, kDevIdGfx10_3, REVISION_ID_ANY);
-    VerifyCounterByPassCounterLibEntry(kGpaApiDirectx11, kDevIdGfx10_3, REVISION_ID_ANY);
+    VerifyCounterLibInterface(kGpaApiDirectx11, kDevIdGfx10_3, AMDTDeviceInfoUtils::kRevisionIdAny);
+    VerifyCounterByPassCounterLibEntry(kGpaApiDirectx11, kDevIdGfx10_3, AMDTDeviceInfoUtils::kRevisionIdAny);
 }
 
 TEST(CounterDllTests, Dx11CounterLibTestGfx11)
 {
-    VerifyCounterLibInterface(kGpaApiDirectx11, kDevIdGfx11, REVISION_ID_ANY);
-    VerifyCounterByPassCounterLibEntry(kGpaApiDirectx11, kDevIdGfx11, REVISION_ID_ANY);
+    VerifyCounterLibInterface(kGpaApiDirectx11, kDevIdGfx11, AMDTDeviceInfoUtils::kRevisionIdAny);
+    VerifyCounterByPassCounterLibEntry(kGpaApiDirectx11, kDevIdGfx11, AMDTDeviceInfoUtils::kRevisionIdAny);
 }
 
 TEST(CounterDllTests, Dx11CounterLibTestGfx1103)
 {
-    VerifyCounterLibInterface(kGpaApiDirectx11, kDevIdGfx11_0_3, REVISION_ID_ANY);
-    VerifyCounterByPassCounterLibEntry(kGpaApiDirectx11, kDevIdGfx11_0_3, REVISION_ID_ANY);
+    VerifyCounterLibInterface(kGpaApiDirectx11, kDevIdGfx11_0_3, AMDTDeviceInfoUtils::kRevisionIdAny);
+    VerifyCounterByPassCounterLibEntry(kGpaApiDirectx11, kDevIdGfx11_0_3, AMDTDeviceInfoUtils::kRevisionIdAny);
 }
 
 TEST(CounterDllTests, Dx11CounterLibTestGfx1103B)
 {
-    VerifyCounterLibInterface(kGpaApiDirectx11, kDevIdGfx11_0_3B, REVISION_ID_ANY);
-    VerifyCounterByPassCounterLibEntry(kGpaApiDirectx11, kDevIdGfx11_0_3B, REVISION_ID_ANY);
+    VerifyCounterLibInterface(kGpaApiDirectx11, kDevIdGfx11_0_3B, AMDTDeviceInfoUtils::kRevisionIdAny);
+    VerifyCounterByPassCounterLibEntry(kGpaApiDirectx11, kDevIdGfx11_0_3B, AMDTDeviceInfoUtils::kRevisionIdAny);
 }
 
 TEST(CounterDllTests, Dx11CounterLibTestGfx1150)
 {
-    VerifyCounterLibInterface(kGpaApiDirectx11, kDevIdGfx11_5_0, REVISION_ID_ANY);
-    VerifyCounterByPassCounterLibEntry(kGpaApiDirectx11, kDevIdGfx11_5_0, REVISION_ID_ANY);
+    VerifyCounterLibInterface(kGpaApiDirectx11, kDevIdGfx11_5_0, AMDTDeviceInfoUtils::kRevisionIdAny);
+    VerifyCounterByPassCounterLibEntry(kGpaApiDirectx11, kDevIdGfx11_5_0, AMDTDeviceInfoUtils::kRevisionIdAny);
 }
 
 TEST(CounterDllTests, Dx11CounterLibTestGfx1153)
 {
-    VerifyCounterLibInterface(kGpaApiDirectx11, kDevIdGfx11_5_3, REVISION_ID_ANY);
-    VerifyCounterByPassCounterLibEntry(kGpaApiDirectx11, kDevIdGfx11_5_3, REVISION_ID_ANY);
+    VerifyCounterLibInterface(kGpaApiDirectx11, kDevIdGfx11_5_3, AMDTDeviceInfoUtils::kRevisionIdAny);
+    VerifyCounterByPassCounterLibEntry(kGpaApiDirectx11, kDevIdGfx11_5_3, AMDTDeviceInfoUtils::kRevisionIdAny);
 }
 
 TEST(CounterDllTests, Dx11CounterFormulaTest)

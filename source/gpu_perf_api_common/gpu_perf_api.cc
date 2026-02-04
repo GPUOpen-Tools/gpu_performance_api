@@ -8,8 +8,18 @@
 /// Macro to mark a function for exporting.
 #ifdef _LINUX
 #define GPA_LIB_DECL extern "C" __attribute__((visibility("default")))
-#else
+#elif _WIN32
 #define GPA_LIB_DECL extern "C" __declspec(dllexport)
+
+// Using the static version of the runtime libraries simplifies installation and can help with performance.
+#ifndef _MT
+#error "Use the multithread, static version of the runtime library!"
+#endif
+
+#ifndef _CONTROL_FLOW_GUARD
+#error "Control flow guard is not enabled!"
+#endif
+
 #endif
 
 #include "gpu_performance_api/gpu_perf_api.h"
@@ -695,6 +705,44 @@ GPA_LIB_DECL GpaStatus GpaGetDeviceMaxVgprs(GpaContextId gpa_context_id, GpaUInt
         }
 
         GPA_INTERNAL_LOG(GpaGetDeviceMaxVgprs, MAKE_PARAM_STRING(gpa_context_id) << MAKE_PARAM_STRING(ret_status) << MAKE_PARAM_STRING(*max_vgprs));
+
+        return ret_status;
+    }
+    catch (...)
+    {
+        return kGpaStatusErrorException;
+    }
+}
+
+GPA_LIB_DECL GpaStatus GpaGetDeviceMaxLdsBytes(GpaContextId gpa_context_id, GpaUInt32* max_lds_bytes)
+{
+    try
+    {
+        PROFILE_FUNCTION(GpaGetDeviceMaxLdsBytes);
+        TRACE_FUNCTION(GpaGetDeviceMaxLdsBytes);
+
+        if (const GpaStatus status = CheckGPAContentIdExistsAndIsOpen(gpa_context_id); status != kGpaStatusOk)
+        {
+            return status;
+        }
+        CHECK_NULL_PARAM(max_lds_bytes);
+
+        GpaStatus ret_status = kGpaStatusOk;
+
+        const GpaHwInfo& hw_info = (*gpa_context_id)->GetHwInfo();
+
+        if (const std::optional<uint32_t> result = hw_info.GetTotalLdsBytes(); result.has_value())
+        {
+            *max_lds_bytes = result.value();
+        }
+        else
+        {
+            assert(!"All supported GPUs should have a non-0 value!");
+            *max_lds_bytes = 0;
+            ret_status     = kGpaStatusErrorHardwareNotSupported;
+        }
+
+        GPA_INTERNAL_LOG(GpaGetDeviceMaxLdsBytes, MAKE_PARAM_STRING(gpa_context_id) << MAKE_PARAM_STRING(ret_status) << MAKE_PARAM_STRING(*max_lds_bytes));
 
         return ret_status;
     }

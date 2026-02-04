@@ -1,15 +1,10 @@
-## Copyright (C) 2018-2025 Advanced Micro Devices, Inc. All rights reserved. ##
-
-cmake_minimum_required(VERSION 3.10)
-
-set(DEPTH "../../")
+## Copyright (C) 2018-2026 Advanced Micro Devices, Inc. All rights reserved. ##
 
 set(GPA_PROJECT_NAME GPUPerfAPICounterGenerator-DX11)
 set(ProjectName ${GPA_PROJECT_NAME})
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 include(${GPA_CMAKE_MODULES_DIR}/common.cmake)
-include(${CMAKE_COMMON_SRC_GLOBAL_AMD_DX_EXT})
 
 set(COUNTER_GENERATOR_HEADERS_DX11
     gpa_counter_generator_dx11.h
@@ -57,7 +52,7 @@ if(WIN32)
 
 ADD_STATIC_LIBRARY(${GPA_PROJECT_NAME} ${SOURCES})
 ADD_LINKER_FLAGS()
-target_link_libraries(${GPA_PROJECT_NAME} GPUPerfAPICounterGenerator-Common)
+target_link_libraries(${GPA_PROJECT_NAME} GPUPerfAPICounterGenerator-Common AMD::d3dExtensions)
 target_include_directories(${GPA_PROJECT_NAME} PUBLIC ${ADDITIONAL_INCLUDE_DIRECTORIES})
 
 if(WIN32)

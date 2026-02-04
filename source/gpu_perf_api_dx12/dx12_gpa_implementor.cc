@@ -10,7 +10,6 @@
 #include <locale>
 #include <codecvt>
 
-#include <ADLUtil.h>
 #include <DeviceInfoUtils.h>
 
 #include "gpu_perf_api_counter_generator/gpa_counter_generator_dx12.h"
@@ -114,8 +113,7 @@ bool Dx12GpaImplementor::GetHwInfoFromApi(const GpaContextInfoPtr context_info, 
             // For now it is assumed that DX12 MGPU support is exposed to the app
             // and the app always opens the device on the correct GPU.
             // In case where MGPU support hides the GPU from the app, then
-            // we will need to use DX12 MGPU extension (and possibly ADL util)
-            // to get the correct HW info
+            // we will need to use DX12 MGPU extension to get the correct HW info
             hw_info.SetVendorId(adapter_desc.VendorId);
             hw_info.SetDeviceId(adapter_desc.DeviceId);
             hw_info.SetRevisionId(adapter_desc.Revision);
@@ -138,7 +136,7 @@ bool Dx12GpaImplementor::GetHwInfoFromApi(const GpaContextInfoPtr context_info, 
             {
                 GDT_GfxCardInfo card_info;
 
-                if (AMDTDeviceInfoUtils::Instance()->GetDeviceInfo(adapter_desc.DeviceId, adapter_desc.Revision, card_info))
+                if (AMDTDeviceInfoUtils::GetDeviceInfo(adapter_desc.DeviceId, adapter_desc.Revision, card_info))
                 {
                     hw_gen = card_info.m_generation;
 
@@ -161,8 +159,6 @@ bool Dx12GpaImplementor::GetHwInfoFromApi(const GpaContextInfoPtr context_info, 
                         }
                     }
                 }
-
-                AMDTDeviceInfoUtils::DeleteInstance();
             }
 
             hw_info.SetHwGeneration(hw_gen);
@@ -243,7 +239,7 @@ IGpaContext* Dx12GpaImplementor::OpenApiContext(GpaContextInfoPtr context_info, 
 
 bool Dx12GpaImplementor::CloseApiContext(IGpaContext* context)
 {
-    assert(nullptr != context);
+    assert(context);
 
     GpaStatus set_default_clocks_result = kGpaStatusOk;
 

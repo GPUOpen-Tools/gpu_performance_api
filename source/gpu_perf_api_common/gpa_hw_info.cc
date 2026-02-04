@@ -10,6 +10,7 @@
 #include "gpu_perf_api_common/gpa_hw_support.h"
 
 #include <assert.h>
+#include <cinttypes>
 #include <DeviceInfoUtils.h>
 
 bool GpaHwInfo::GetDeviceId(GpaUInt32& id) const
@@ -163,11 +164,11 @@ bool GpaHwInfo::UpdateDeviceInfoBasedOnDeviceId(const GpaApiType api, GpaDriverI
 
     if (device_name_set_)
     {
-        if (AMDTDeviceInfoUtils::Instance()->GetAllCardsWithDeviceId(device_id_, card_list))
+        if (AMDTDeviceInfoUtils::GetAllCardsWithDeviceId(device_id_, card_list))
         {
             for (auto it = card_list.begin(); it != card_list.end(); ++it)
             {
-                if (revision_id_set_ && revision_id_ != REVISION_ID_ANY && it->m_revID != revision_id_)
+                if (revision_id_set_ && revision_id_ != AMDTDeviceInfoUtils::kRevisionIdAny && it->m_revID != revision_id_)
                 {
                     continue;
                 }
@@ -179,7 +180,7 @@ bool GpaHwInfo::UpdateDeviceInfoBasedOnDeviceId(const GpaApiType api, GpaDriverI
                 {
                     card_info = *it;
 
-                    if (AMDTDeviceInfoUtils::Instance()->GetDeviceInfo(it->m_szCALName, device_info))
+                    if (AMDTDeviceInfoUtils::GetDeviceInfo(it->m_szCALName, device_info))
                     {
                         device_info_found = true;
                         break;
@@ -193,7 +194,7 @@ bool GpaHwInfo::UpdateDeviceInfoBasedOnDeviceId(const GpaApiType api, GpaDriverI
                 {
                     card_info = *it;
 
-                    if (AMDTDeviceInfoUtils::Instance()->GetDeviceInfo(card_info.m_deviceID, card_info.m_revID, device_info))
+                    if (AMDTDeviceInfoUtils::GetDeviceInfo(card_info.m_deviceID, card_info.m_revID, device_info))
                     {
                         device_info_found = true;
                         break;
@@ -205,11 +206,11 @@ bool GpaHwInfo::UpdateDeviceInfoBasedOnDeviceId(const GpaApiType api, GpaDriverI
 
     if (!device_info_found)
     {
-        if (AMDTDeviceInfoUtils::Instance()->GetDeviceInfo(device_id_, revision_id_, card_info))
+        if (AMDTDeviceInfoUtils::GetDeviceInfo(device_id_, revision_id_, card_info))
         {
-            GPA_LOG_DEBUG_MESSAGE("Found device ID: %zX which is generation %d.", card_info.m_deviceID, card_info.m_generation);
+            GPA_LOG_DEBUG_MESSAGE("Found device ID: %" PRIu32 " which is generation %d.", card_info.m_deviceID, card_info.m_generation);
 
-            if (AMDTDeviceInfoUtils::Instance()->GetDeviceInfo(device_id_, revision_id_, device_info))
+            if (AMDTDeviceInfoUtils::GetDeviceInfo(device_id_, revision_id_, device_info))
             {
                 device_info_found = true;
             }
@@ -258,6 +259,11 @@ bool GpaHwInfo::UpdateDeviceInfoBasedOnDeviceId(const GpaApiType api, GpaDriverI
             SetNumberVgprs(static_cast<GpaUInt32>(device_info.numberVGPRs()));
         }
 
+        if (!num_lds_bytes_.has_value())
+        {
+            num_lds_bytes_ = AMDTDeviceInfoUtils::GetTotalLdsSizeInBytes(card_info.m_generation, device_info);
+        }
+
         asic_type_ = card_info.m_asicType;
         SetDeviceName(card_info.m_szMarketingName);
         SetHwGeneration(card_info.m_generation);
@@ -289,7 +295,7 @@ bool GpaHwInfo::UpdateRevisionIdBasedOnDeviceIdAndName()
 
     if (device_name_set_)
     {
-        if (AMDTDeviceInfoUtils::Instance()->GetAllCardsWithDeviceId(device_id_, card_list))
+        if (AMDTDeviceInfoUtils::GetAllCardsWithDeviceId(device_id_, card_list))
         {
             // First check for exact matches.
             for (auto it = card_list.begin(); it != card_list.end(); ++it)
@@ -317,7 +323,7 @@ bool GpaHwInfo::UpdateRevisionIdBasedOnDeviceIdAndName()
         }
     }
 
-    SetRevisionId(REVISION_ID_ANY);
+    SetRevisionId(AMDTDeviceInfoUtils::kRevisionIdAny);
     return false;
 }
 
@@ -327,7 +333,7 @@ bool GpaHwInfo::UpdateDeviceInfoBasedOnAsicTypeAndName(GDT_HW_ASIC_TYPE asic_typ
 
     if (device_name_set_)
     {
-        if (AMDTDeviceInfoUtils::Instance()->GetAllCardsWithAsicType(asic_type, card_list))
+        if (AMDTDeviceInfoUtils::GetAllCardsWithAsicType(asic_type, card_list))
         {
             // First check for exact matches.
             for (auto it = card_list.begin(); it != card_list.end(); ++it)
@@ -336,8 +342,8 @@ bool GpaHwInfo::UpdateDeviceInfoBasedOnAsicTypeAndName(GDT_HW_ASIC_TYPE asic_typ
 
                 if (0 == this_marketing_name.compare(device_name_))
                 {
-                    SetDeviceId(static_cast<GpaUInt32>(it->m_deviceID));
-                    SetRevisionId(static_cast<GpaUInt32>(it->m_revID));
+                    SetDeviceId(it->m_deviceID);
+                    SetRevisionId(it->m_revID);
                     return true;
                 }
             }
@@ -349,8 +355,8 @@ bool GpaHwInfo::UpdateDeviceInfoBasedOnAsicTypeAndName(GDT_HW_ASIC_TYPE asic_typ
 
                 if (0 == device_name_.find(this_marketing_name))
                 {
-                    SetDeviceId(static_cast<GpaUInt32>(it->m_deviceID));
-                    SetRevisionId(static_cast<GpaUInt32>(it->m_revID));
+                    SetDeviceId(it->m_deviceID);
+                    SetRevisionId(it->m_revID);
                     return true;
                 }
             }
@@ -385,7 +391,8 @@ bool GpaHwInfo::operator==(const GpaHwInfo& other_hw_info) const
     {
         GPA_LOG_DEBUG_ERROR("Device Id Mismatch.");
     }
-    else if (revision_id_ != REVISION_ID_ANY && other_hw_info.revision_id_ != REVISION_ID_ANY && revision_id_ != other_hw_info.revision_id_)
+    else if (revision_id_ != AMDTDeviceInfoUtils::kRevisionIdAny && other_hw_info.revision_id_ != AMDTDeviceInfoUtils::kRevisionIdAny &&
+             revision_id_ != other_hw_info.revision_id_)
     {
         GPA_LOG_DEBUG_ERROR("Revision Id Mismatch.");
     }

@@ -12,6 +12,7 @@
 
 #include "gpu_perf_api_common/gpa_context_interface.h"
 #include "gpu_perf_api_common/gpa_implementor_interface.h"
+#include "gpu_perf_api_common/gpa_context_counter_mediator.h"
 
 using GpaContextInfoPtr                 = void*;                                         ///< Type alias for context info pointer.
 using GpaDeviceIdentifier               = void*;                                         ///< Type alias for API-specific device identifier.
@@ -138,15 +139,9 @@ private:
     /// @return Device identifier for the passed context info.
     virtual GpaDeviceIdentifier GetDeviceIdentifierFromContextInfo(GpaContextInfoPtr context_info) const = 0;
 
-    /// @brief Returns whether the device generation is supported or not.
-    ///
-    /// @param [in] hw_info Hardware information.
-    ///
-    /// @return True if device generation is supported otherwise false.
-    bool IsDeviceGenerationSupported(const GpaHwInfo& hw_info) const;
-
     mutable std::mutex               device_gpa_context_map_mutex_;      ///< Mutex for context manager.
     GpaDeviceIdentifierGpaContextMap app_context_info_gpa_context_map_;  ///< Map of application context info and GPA context.
+    GpaContextCounterMediator::GpaCtxStatusInfoMap session_info_map_;    ///< Map of sessions to corresponding info.
     bool                             is_initialized_;                    ///< Flag indicating if GPA has been initialized or not.
     GpaInitializeFlags               init_flags_;                        ///< Flags specified when initializing GPA.
 };

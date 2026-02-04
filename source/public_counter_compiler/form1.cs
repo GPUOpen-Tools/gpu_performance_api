@@ -1,6 +1,6 @@
 ﻿// =============================================================================
 // <copyright file="form1.cs" company="Advanced Micro Devices, Inc.">
-//    Copyright (c) 2011-2024 Advanced Micro Devices, Inc. All rights reserved.
+//    Copyright (c) 2011-2025 Advanced Micro Devices, Inc. All rights reserved.
 // </copyright>
 // <author>
 //    AMD Developer Tools Team
@@ -13,6 +13,8 @@ namespace PublicCounterCompiler
 {
     using System;
     using System.ComponentModel;
+    using System.Diagnostics;
+    using System.Linq;
     using System.Threading;
     using System.Windows.Forms;
     using GpaTools;
@@ -191,6 +193,9 @@ namespace PublicCounterCompiler
         /// <param name="e">default event args</param>
         private void BatchCompile_Click(object sender, EventArgs e)
         {
+            Stopwatch timer = new Stopwatch();
+            timer.Start();
+
             richTextBoxOutput.Text = "";
 
             _counterCompiler.StartRSTDocumentation();
@@ -216,6 +221,10 @@ namespace PublicCounterCompiler
             }
 
             _counterCompiler.DoneRSTDocumentation(DisplayMessageHandler, ErrorHandler);
+
+            timer.Stop();
+
+            DisplayMessageHandler("\nCode generation completed in " + timer.ToString());
         }
 
         /// <summary>

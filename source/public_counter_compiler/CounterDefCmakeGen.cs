@@ -109,9 +109,6 @@ namespace GpaTools
                                                Gpa.counterDefinitionsStr + api.Key + ".cmake";
                         CMakeWriter = new StreamWriter(CMakeFileName);
                         CMakeWriter.WriteLine("## Copyright (c) {0} Advanced Micro Devices, Inc. All rights reserved.", DateTime.Today.Year);
-                        CMakeWriter.WriteLine("cmake_minimum_required(VERSION 3.10)");
-                        CMakeWriter.WriteLine();
-                        CMakeWriter.WriteLine("set(CMAKE_INCLUDE_CURRENT_DIR ON)");
                     }
 
                     if (Gpa.IsHeaderFile(fileName))
@@ -162,9 +159,6 @@ namespace GpaTools
                                                Gpa.derivedCounterOutFileName + api.Key + ".cmake";
                         CMakeWriter = new StreamWriter(CMakeFileName);
                         CMakeWriter.WriteLine("## Copyright (c) {0} Advanced Micro Devices, Inc. All rights reserved.", DateTime.Today.Year);
-                        CMakeWriter.WriteLine("cmake_minimum_required(VERSION 3.10)");
-                        CMakeWriter.WriteLine();
-                        CMakeWriter.WriteLine("set(CMAKE_INCLUDE_CURRENT_DIR ON)");
                     }
 
                     if (Gpa.IsHeaderFile(fileName))

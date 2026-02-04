@@ -1,4 +1,4 @@
-## Copyright (C) 2018-2025 Advanced Micro Devices, Inc. All rights reserved. ##
+## Copyright (C) 2018-2026 Advanced Micro Devices, Inc. All rights reserved. ##
 
 set(GPA_PROJECT_NAME GPUPerfAPICounters)
 set(ProjectName ${GPA_PROJECT_NAME})
@@ -52,7 +52,6 @@ target_link_libraries(GPUPerfAPICounters PRIVATE
     ${LIB_NAMES}
     ${GPA_COMMON_LINK_NO_ARCHIVE_FLAG}
     $<$<PLATFORM_ID:Linux>:X11>
-    $<$<PLATFORM_ID:Windows>:AMD::adl_util>
     AMD::device_info
     AMD::tsingleton
 )
@@ -60,3 +59,4 @@ target_link_libraries(GPUPerfAPICounters PRIVATE
 ADD_LINKER_FLAGS()
 
 install(TARGETS GPUPerfAPICounters DESTINATION ${GPA_INSTALL_BINDIR} COMPONENT GPUPerfAPI)
+install(TARGETS GPUPerfAPICounters DESTINATION ${GPA_INSTALL_TESTDIR} COMPONENT GPATestKit)

@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2025 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief GPA Opaque object definition.
@@ -9,6 +9,7 @@
 #define GPU_PERF_API_COMMON_GPA_UNIQUE_OBJECT_H_
 
 #include <vector>
+#include <memory>
 #include <mutex>
 
 #include "gpu_perf_api_common/gpa_command_list_interface.h"
@@ -125,13 +126,14 @@ struct _GpaCommandListId : GpaUniqueObject
 class GpaUniqueObjectManager
 {
 public:
-    /// @brief Destructor.
-    ~GpaUniqueObjectManager();
-
     /// @brief Returns the static instance of the UniqueObject manager.
     ///
     /// @return The static instance of the UniqueObject manager.
-    static GpaUniqueObjectManager* Instance();
+    static GpaUniqueObjectManager& Instance()
+    {
+        static GpaUniqueObjectManager manager;
+        return manager;
+    }
 
     /// Add the newly created GPA Unique object.
     ///
@@ -174,8 +176,8 @@ private:
     /// @param [in] gpa_interface_trait Interface trait.
     /// @param [out] index Index at which the object found otherwise -1.
     ///
-    /// @return True if interface is found otherwise false.
-    bool DoesExistNotThreadSafe(const IGpaInterfaceTrait* gpa_interface_trait, unsigned int* index = nullptr) const;
+    /// @return Returns the interface if it was found.
+    [[nodiscard]] GpaUniqueObject* FindObjectNotThreadSafe(const IGpaInterfaceTrait* gpa_interface_trait, unsigned int* index = nullptr) const;
 
     /// @brief Checks whether the object exists or not.
     ///
@@ -187,9 +189,8 @@ private:
     /// @return Index at which the object found otherwise -1.
     bool DoesExistNotThreadSafe(const GpaUniqueObject* unique_object, unsigned int* index = nullptr) const;
 
-    static GpaUniqueObjectManager* kGpaUniqueObjectManger;   ///< Static instance of the GPA object manager.
-    std::vector<GpaUniqueObject*>  gpa_unique_object_list_;  ///< List of unique object pointers.
-    mutable std::mutex             mutex_;                   ///< Mutex for unique object manager class.
+    std::vector<std::unique_ptr<GpaUniqueObject>> gpa_unique_object_list_;  ///< List of unique object pointers.
+    mutable std::mutex                            mutex_;                   ///< Mutex for unique object manager class.
 };
 
 #endif

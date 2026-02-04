@@ -1,4 +1,4 @@
-/* Copyright (C) 2011-2025 Advanced Micro Devices, Inc. All rights reserved. */
+/* Copyright (C) 2011-2026 Advanced Micro Devices, Inc. All rights reserved. */
 /**
 ***************************************************************************************************
 * @file  amddxextperfprofile.h

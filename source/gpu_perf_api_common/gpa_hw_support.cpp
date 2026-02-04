@@ -10,13 +10,11 @@
 #include "gpa_hw_info.h"
 #include "logging.h"
 
-#ifdef _WIN32
-#include "ADLUtil.h"
-#endif
 #include "DeviceInfoUtils.h"
 
 #include <array>
 #include <cassert>
+#include <regex>
 #include <string_view>
 #ifdef _WIN32
 #include <Windows.h>
@@ -40,24 +38,73 @@ namespace
         const std::wstring_view value(buffer.data(), result);
         return (value != L"0");
     }
+
+    GpaDriverInfo QueryRegistryForDriverVersion()
+    {
+        constexpr size_t                    version_length = 256;
+        std::array<wchar_t, version_length> value          = {};
+        DWORD                               value_length   = version_length;
+
+        constexpr const wchar_t* folder = L"SOFTWARE\\ATI Technologies\\Install";
+        constexpr const wchar_t* file   = L"ReleaseVersion";
+
+        GpaDriverInfo driver_info = {};
+
+        // Look for the registry variable with the version numbers.
+        const LSTATUS status = RegGetValueW(HKEY_LOCAL_MACHINE, folder, file, REG_SZ, nullptr, value.data(), &value_length);
+        if (status == ERROR_FILE_NOT_FOUND)
+        {
+            GPA_LOG_ERROR("Location of registry variable with GPU driver version was not found");
+            assert(driver_info.driver_type == kIgnoreDriver);
+            return driver_info;
+        }
+
+        // Make sure the registry string is null-terminated.
+        value.back() = L'\0';
+
+        // Driver version string changes depending on how the driver is installed.
+        // When you install the public drivers it looks like: 25.10.25.01-250724a-417878C-AMD-Software-Adrenalin-Edition
+        // When you install test drivers it looks like: 25.30-250926n-419617E-ATI
+        const std::wstring driver_ver_str(value.data());
+
+        // This regex only requires the major/minor version.
+        const std::wregex version_regex(LR"((\d+)\.(\d+)(?:\.(\d+))?)");
+
+        std::wsmatch match;
+
+        if (std::regex_search(driver_ver_str, match, version_regex))
+        {
+            driver_info.major = std::stoul(match[1].str());
+            driver_info.minor = std::stoul(match[2].str());
+
+            // Update version is optional.
+            if (match.size() > 3 && match[3].matched)
+            {
+                driver_info.update = std::stoul(match[3].str());
+            }
+
+            driver_info.driver_type = kAmdProprietaryDriver;
+        }
+        else
+        {
+            constexpr const char* err_message = "Registry variable value with GPU driver version is not in expected format!";
+            assert(!err_message);
+            assert(driver_info.driver_type == kIgnoreDriver);
+            GPA_LOG_ERROR(err_message);
+        }
+
+        return driver_info;
+    }
 #endif
 }  // namespace
 
-GpaDriverInfo QueryDriverInfo()
+GpaDriverInfo GpaQueryDriverInfo()
 {
-    GpaDriverInfo info = {};
 #ifdef _WIN32
-    if (AMDTADLUtils::Instance()->GetDriverVersion(info.major, info.minor, info.update) == ADL_SUCCESS)
-    {
-        info.driver_type = kAmdProprietaryDriver;
-    }
-    else
-    {
-        // If ADL fails just ignore the driver version.
-        assert(info.driver_type == kIgnoreDriver);
-    }
+    static const GpaDriverInfo info = QueryRegistryForDriverVersion();
 #else
-    assert(info.driver_type == kIgnoreDriver);
+    constexpr GpaDriverInfo info = {};
+    static_assert(info.driver_type == kIgnoreDriver);
 #endif
     return info;
 }
@@ -99,7 +146,7 @@ GpaContextSampleTypeFlags CalculateSupportedSampleTypes(const GpaUInt32      dev
     GDT_GfxCardInfo card_info = {};
 
     // The function call will validate the device_id, revision_id, and get the hw generation.
-    if (!AMDTDeviceInfoUtils::Instance()->GetDeviceInfo(device_id, revision_id, card_info))
+    if (!AMDTDeviceInfoUtils::GetDeviceInfo(device_id, revision_id, card_info))
     {
         return 0;
     }
@@ -117,14 +164,14 @@ GpaContextSampleTypeFlags CalculateSupportedSampleTypes(const GpaUInt32      dev
         }
     }
 
-    // Phoenix doesn't have Stable Power State functionality yet.
+    // Phoenix doesn't have Stable Power State functionality.
     const bool is_phoenix = (device_id == 0x15BF || device_id == 0x15C8);
     if (is_phoenix)
     {
-        // Do not enable SPM on Gfx11_0_3 (Phoenix)
+        // Do not enable SPM on Gfx11_0_3 (Phoenix/Phoenix2)
         // SPM data comes back, but the values do not appear to be correct. ie: this leads to incorrect WaveDistribution, L0CacheHit, and L1CacheHit graphs.
         flags &= ~kGpaContextSampleTypeStreamingCounter;
-        // Do not enable SQTT on Gfx11_0_3 (Phoenix/Phoenix2) it should work, but causes a TDR.
+        // Do not enable SQTT on Gfx11_0_3 (Phoenix/Phoenix2)
         flags &= ~kGpaContextSampleTypeSqtt;
     }
 

@@ -1,11 +1,9 @@
-## Copyright (C) 2018-2025 Advanced Micro Devices, Inc. All rights reserved. ##
+## Copyright (C) 2018-2026 Advanced Micro Devices, Inc. All rights reserved. ##
 
 set(GPA_PROJECT_NAME GPUPerfAPIDX12)
 set(ProjectName ${GPA_PROJECT_NAME})
 
 include (${GPA_CMAKE_MODULES_DIR}/common.cmake)
-
-include(${CMAKE_COMMON_SRC_GLOBAL_AMD_DX_EXT})
 
 INCLUDE_ADDITIONAL_MODULE()
 
@@ -43,11 +41,12 @@ target_link_libraries(GPUPerfAPIDX12 PRIVATE
     GPUPerfAPI-Common
     GPUPerfAPIDX
     GPUPerfAPICounterGenerator-DX12
-    $<$<PLATFORM_ID:Windows>:AMD::adl_util>
     AMD::device_info
     AMD::tsingleton
+    AMD::d3dExtensions
 )
 
 ADD_LINKER_FLAGS()
 
 install(TARGETS GPUPerfAPIDX12 DESTINATION ${GPA_INSTALL_BINDIR} COMPONENT GPUPerfAPI)
+install(TARGETS GPUPerfAPIDX12 DESTINATION ${GPA_INSTALL_TESTDIR} COMPONENT GPATestKit)

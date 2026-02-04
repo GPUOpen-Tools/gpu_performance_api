@@ -8,10 +8,7 @@
 #ifndef GPU_PERF_API_DX12_DX12_GPA_PASS_H_
 #define GPU_PERF_API_DX12_DX12_GPA_PASS_H_
 
-#pragma warning(push)
-#pragma warning(disable : 4201)
 #include <AmdExtGpaInterfaceApi.h>
-#pragma warning(pop)
 
 #include "gpu_perf_api_common/gpa_command_list_interface.h"
 #include "gpu_perf_api_common/gpa_pass.h"
@@ -57,7 +54,7 @@ public:
     /// @brief Returns the sample config for the set of counters in the pass.
     ///
     /// @return AMD extension sample config for the set of counters in the pass.
-    const Dx12GpaSampleConfig& Dx12GpaPass::GetAmdExtSampleConfig();
+    const Dx12GpaSampleConfig& GetAmdExtSampleConfig();
 
     /// @brief Destructor.
     virtual ~Dx12GpaPass();

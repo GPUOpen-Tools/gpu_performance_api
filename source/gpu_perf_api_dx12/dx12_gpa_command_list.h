@@ -13,10 +13,7 @@
 
 #include <d3d12.h>
 
-#pragma warning(push)
-#pragma warning(disable : 4201)
 #include <AmdExtGpaInterfaceApi.h>
-#pragma warning(pop)
 
 #include "gpu_perf_api_common/gpa_command_list.h"
 #include "gpu_perf_api_common/gpa_common_defs.h"

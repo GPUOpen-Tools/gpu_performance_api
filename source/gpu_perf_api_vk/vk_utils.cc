@@ -56,8 +56,7 @@ bool vk_utils::GetPhysicalDeviceGpaPropertiesAMD(VkPhysicalDevice physical_devic
             // For now it is assumed that Vk MGPU support is exposed to the app
             // and the app always opens the device on the correct GPU.
             // In case where MGPU support hides the GPU from the app, then
-            // we will need to use Vk MGPU extension (and possibly ADL util)
-            // to get the correct HW info.
+            // we will need to use Vk MGPU extension to get the correct HW info.
             *gpa_properties_amd       = {};
             gpa_properties_amd->sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_GPA_PROPERTIES_AMD;
 

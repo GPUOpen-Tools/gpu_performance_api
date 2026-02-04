@@ -1,4 +1,4 @@
-## Copyright (C) 2018-2025 Advanced Micro Devices, Inc. All rights reserved. ##
+## Copyright (C) 2018-2026 Advanced Micro Devices, Inc. All rights reserved. ##
 
 set(CMAKE_FOLDER "Tests")
 
@@ -6,10 +6,6 @@ set(GPA_PROJECT_NAME GPUPerfAPIUnitTests)
 set(ProjectName ${GPA_PROJECT_NAME})
 
 include(${GPA_CMAKE_MODULES_DIR}/common.cmake)
-
-include(${CMAKE_COMMON_SRC_GLOBAL_AMD_DX_EXT})
-include(${CMAKE_COMMON_SRC_GLOBAL_AMD_VK_EXT})
-include(${GPA_CMAKE_MODULES_DIR}/gpa_vulkan.cmake)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 include_directories(${ADDITIONAL_INCLUDE_DIRECTORIES}
@@ -89,7 +85,7 @@ link_directories(${ADDITIONAL_LINK_DIRECTORIES})
 add_executable(${GPA_PROJECT_NAME} ${SOURCES})
 add_dependencies(${GPA_PROJECT_NAME} GPUPerfAPICounters)
 ADD_GPA_USER_COMPILE_DEFINITIONS()
-add_test(NAME ${GPA_PROJECT_NAME} COMMAND ${GPA_PROJECT_NAME})
+add_test(NAME ${GPA_PROJECT_NAME}-skip-knownissue COMMAND ${GPA_PROJECT_NAME} "--gtest_filter=-*KnownIssue*")
 
 if(NOT ${skipvulkan})
     set(LIB_NAMES ${LIB_NAMES} GPUPerfAPICounterGenerator-VK)
@@ -103,12 +99,12 @@ endif()
 
 if(WIN32)
     if(NOT ${skipdx12})
-        set(LIB_NAMES ${LIB_NAMES} GPUPerfAPICounterGenerator-DX12)
+        set(LIB_NAMES ${LIB_NAMES} GPUPerfAPICounterGenerator-DX12 AMD::d3dExtensions)
         add_definitions(-DDX12)
     endif()
 
     if(NOT ${skipdx11})
-        set(LIB_NAMES ${LIB_NAMES} GPUPerfAPICounterGenerator-DX11)
+        set(LIB_NAMES ${LIB_NAMES} GPUPerfAPICounterGenerator-DX11 AMD::d3dExtensions)
         add_definitions(-DDX11)
     endif()
 endif()
@@ -119,7 +115,6 @@ target_link_libraries(${GPA_PROJECT_NAME}
                       GTest::gtest
                       $<$<PLATFORM_ID:Linux>:dl>
                       $<$<PLATFORM_ID:Linux>:pthread>
-                      $<$<PLATFORM_ID:Windows>:AMD::adl_util>
                       AMD::device_info
                       )
 

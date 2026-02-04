@@ -33,7 +33,7 @@ GlGpaPass::GlGpaPass(IGpaSession* gpa_session, PassIndex pass_index, GpaCounterS
             }
             else
             {
-                IGpaCounterAccessor* counter_accessor = GpaContextCounterMediator::Instance()->GetCounterAccessor(GetGpaSession());
+                IGpaCounterAccessor* counter_accessor = GpaContextCounterMediator::GetCounterAccessor(GetGpaSession());
                 assert(counter_accessor != nullptr);
                 if (counter_accessor == nullptr)
                 {
@@ -253,7 +253,14 @@ bool GlGpaPass::InitializeCounters(const GlPerfMonitorId& gl_perf_monitor_id)
         bool is_counter_enabled = false;
 
         // Need to Enable counters.
-        IGpaCounterAccessor*             counter_accessor  = GpaContextCounterMediator::Instance()->GetCounterAccessor(GetGpaSession());
+        IGpaCounterAccessor* counter_accessor = GpaContextCounterMediator::GetCounterAccessor(GetGpaSession());
+        assert(counter_accessor != nullptr);
+        if (counter_accessor == nullptr)
+        {
+            GPA_LOG_ERROR("Unable to get the counter accessor.");
+            return false;
+        }
+
         const GpaHardwareCounters&       hardware_counters = counter_accessor->GetHardwareCounters();
         const GpaHardwareCounterDescExt* counter           = counter_accessor->GetHardwareCounterExt(counter_index);
 

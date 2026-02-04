@@ -58,6 +58,9 @@ typedef GpaStatus (*GpaGetDeviceMaxWaveSlotsPtrType)(GpaContextId, GpaUInt32*);
 /// Typedef for a function pointer for GpaGetDeviceMaxVgprs.
 typedef GpaStatus (*GpaGetDeviceMaxVgprsPtrType)(GpaContextId, GpaUInt32*);
 
+/// Typedef for a function pointer for GpaGetDeviceMaxLdsBytes.
+typedef GpaStatus (*GpaGetDeviceMaxLdsBytesPtrType)(GpaContextId, GpaUInt32*);
+
 /// Typedef for a function pointer for GpaGetNumCounters.
 typedef GpaStatus (*GpaGetNumCountersPtrType)(GpaSessionId, GpaUInt32*);
 

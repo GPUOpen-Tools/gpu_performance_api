@@ -1,4 +1,4 @@
-## Copyright (C) 2018-2025 Advanced Micro Devices, Inc. All rights reserved. ##
+## Copyright (C) 2018-2026 Advanced Micro Devices, Inc. All rights reserved. ##
 
 ## GPA has only Debug and Release
 set(CMAKE_CONFIGURATION_TYPES Debug Release)
@@ -38,6 +38,11 @@ endif()
 # DX12 variable
 if(NOT DEFINED skipdx12)
     set(skipdx12 OFF CACHE BOOL "Turn on to skip DX12 in the build" FORCE)
+endif()
+
+if (NOT WIN32)
+    set(skipdx12 ON CACHE BOOL "DX12 is Windows only" FORCE)
+    set(skipdx11 ON CACHE BOOL "DX11 is Windows only" FORCE)
 endif()
 
 # Vulkan variable

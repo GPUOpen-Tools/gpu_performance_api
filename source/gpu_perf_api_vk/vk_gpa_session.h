@@ -42,7 +42,7 @@ public:
 
 private:
     /// @copydoc GpaSession::CreateApiPass(PassInex)
-    GpaPass* CreateApiPass(PassIndex pass_index) override;
+    std::unique_ptr<GpaPass> CreateApiPass(PassIndex pass_index) override;
 };
 
 #endif

@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2011-2024 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2011-2025 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  A class for managing hardware information.
@@ -9,6 +9,7 @@
 #define GPU_PERF_API_COMMON_GPA_HW_INFO_H_
 
 #include <algorithm>
+#include <optional>
 #include <string>
 #include <vector>
 
@@ -162,6 +163,14 @@ public:
         return num_vgpr_;
     }
 
+    /// @brief Gets the total size of LDS memory on the GPU
+    ///
+    /// @return The number of LDS bytes
+    std::optional<GpaUInt32> GetTotalLdsBytes() const
+    {
+        return num_lds_bytes_;
+    }
+
     /// @brief Gets the number of clocks per primitive.
     ///
     /// @return The number of clocks per primitive.
@@ -263,7 +272,7 @@ public:
 
     /// @brief Uses the asic type and name to assign a device and revision id.
     ///
-    /// Will leave device id alone and assign REVISION_ID_ANY if it cannot find a matching device.
+    /// Will leave device id alone and assign AMDTDeviceInfoUtils::kRevisionIdAny if it cannot find a matching device.
     ///
     /// @param [in] asic_type The asic Type.
     ///
@@ -348,6 +357,8 @@ private:
 
     GpaUInt32 num_vgpr_     = {};  ///< Maximum number of VGPRs.
     bool      num_vgpr_set_ = {};  ///< Indicates the number of VGPRs has been set.
+
+    std::optional<GpaUInt32> num_lds_bytes_ = {};  ///< Amount of LDS memory available
 };
 
 #endif

@@ -70,3 +70,4 @@ EXPORTS
     GpaSqttSpmBegin
     GpaSqttSpmEnd
     GpaGetDeviceMaxVgprs
+    GpaGetDeviceMaxLdsBytes

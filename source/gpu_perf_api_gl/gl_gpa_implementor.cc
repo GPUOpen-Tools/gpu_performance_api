@@ -131,13 +131,11 @@ bool GlGpaImplementor::GetHwInfoFromApi(const GpaContextInfoPtr context_info, Gp
                 hw_info.SetRevisionId(asic_info.device_rev);
 
                 GDT_GfxCardInfo card_info = {};
-                if (AMDTDeviceInfoUtils::Instance()->GetDeviceInfo(asic_info.device_id, asic_info.device_rev, card_info))
+                if (AMDTDeviceInfoUtils::GetDeviceInfo(asic_info.device_id, asic_info.device_rev, card_info))
                 {
                     hw_info.SetHwGeneration(card_info.m_generation);
                 }
             }
-
-            AMDTDeviceInfoUtils::DeleteInstance();
         }
 
         if (ogl_utils::AsicInfo::kUnassignedAsicInfo != asic_info.num_se)
@@ -214,7 +212,7 @@ IGpaContext* GlGpaImplementor::OpenApiContext(GpaContextInfoPtr context_info, co
 
 bool GlGpaImplementor::CloseApiContext(IGpaContext* context)
 {
-    assert(nullptr != context);
+    assert(context);
 
     GpaStatus set_default_clocks_result = kGpaStatusOk;
 

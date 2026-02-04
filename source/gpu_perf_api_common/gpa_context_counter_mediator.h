@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2018-2024 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2018-2025 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief GPA Context Counter Mediator Header.
@@ -8,7 +8,7 @@
 #ifndef GPU_PERF_API_COMMON_GPA_CONTEXT_COUNTER_MEDIATOR_H_
 #define GPU_PERF_API_COMMON_GPA_CONTEXT_COUNTER_MEDIATOR_H_
 
-#include <vector>
+#include <map>
 
 #include "gpu_perf_api_counter_generator/gpa_counter_scheduler_interface.h"
 
@@ -16,40 +16,44 @@
 #include "gpu_perf_api_common/gpa_session_interface.h"
 #include "gpu_perf_api_common/gpa_pass.h"
 
-/// @brief GpaContextCounterMediator class.
-class GpaContextCounterMediator
+namespace GpaContextCounterMediator
 {
-public:
-    /// @brief Returns the instance of the counter manager.
+    /// @brief Container to associate a counter accessor with a counter scheduler.
+    struct GpaContextStatus
+    {
+        IGpaCounterScheduler* counter_scheduler;  ///< Counter scheduler.
+        IGpaCounterAccessor*  counter_accessor;   ///< Counter accessor.
+    };
+
+    using GpaCtxStatusInfoMap = std::map<const IGpaSession*, GpaContextStatus>;  ///< Type alias for GPA session and its status info map.
+
+    /// @brief User must first provide backing memory for the map.
     ///
-    /// @return Instance of the GpaContextCounterMediator.
-    static GpaContextCounterMediator* Instance();
+    /// @param [in] map Map the user must provide the backing memory for.
+    [[nodiscard]] GpaStatus Initialize(GpaCtxStatusInfoMap* map);
 
-    /// @brief Deletes the static instance of the counter manager.
-    static void DeleteInstance();
-
-    /// @brief Destructor.
-    ~GpaContextCounterMediator();
+    /// @brief Clears the pointer to the map.
+    void Clear();
 
     /// @brief Generates the counter for the given context.
     ///
     /// @param [in] gpa_session GPA session.
     /// @param [in] flags Flags used to initialize the context. Should be a combination of GpaOpenContextBits.
-    GpaStatus GenerateCounters(const IGpaSession* gpa_session, GpaOpenContextFlags flags);
+    [[nodiscard]] GpaStatus GenerateCounters(const IGpaSession* gpa_session, GpaOpenContextFlags flags);
 
     /// @brief Checks whether the counter scheduling is supported or not for the given context.
     ///
     /// @param [in] gpa_session GPA Session.
     ///
     /// @return True upon successful execution.
-    bool IsCounterSchedulingSupported(const IGpaSession* gpa_session) const;
+    [[nodiscard]] bool IsCounterSchedulingSupported(const IGpaSession* gpa_session);
 
     /// @brief Returns the counter accessor for the given context.
     ///
     /// @param [in] gpa_session GPA Session.
     ///
     /// @return Pointer to the counter accessor.
-    IGpaCounterAccessor* GetCounterAccessor(const IGpaSession* gpa_session) const;
+    [[nodiscard]] IGpaCounterAccessor* GetCounterAccessor(const IGpaSession* gpa_session);
 
     /// @brief Schedules the given set of counters for the given context.
     ///
@@ -57,7 +61,7 @@ public:
     /// @param [in] counter_set Set of counter.
     ///
     /// @return kGpaStatusOk upon successful operation.
-    GpaStatus ScheduleCounters(const IGpaSession* gpa_session, const std::vector<GpaUInt32>& counter_set);
+    [[nodiscard]] GpaStatus ScheduleCounters(const IGpaSession* gpa_session, const std::vector<GpaUInt32>& counter_set);
 
     /// @brief Unchedules the given set of counters for the given context.
     ///
@@ -65,7 +69,7 @@ public:
     /// @param [in] counter_set Set of counter.
     ///
     /// @return kGpaStatusOk upon successful operation.
-    GpaStatus UnscheduleCounters(const IGpaSession* gpa_session, const std::vector<GpaUInt32>& counter_set);
+    [[nodiscard]] GpaStatus UnscheduleCounters(const IGpaSession* gpa_session, const std::vector<GpaUInt32>& counter_set);
 
     /// @brief Schedules and returns the number of pass required for the given set of counters.
     ///
@@ -74,7 +78,7 @@ public:
     /// @param [in] counter_set Set of counters.
     ///
     /// @return kGpaStatusOk upon successful operation.
-    GpaStatus GetRequiredPassCount(const IGpaSession* gpa_session, const std::vector<GpaUInt32>& counter_set, unsigned int& pass_required);
+    [[nodiscard]] GpaStatus GetRequiredPassCount(const IGpaSession* gpa_session, const std::vector<GpaUInt32>& counter_set, unsigned int& pass_required);
 
     /// @brief Returns the counter result location for the given public counter index.
     ///
@@ -82,7 +86,7 @@ public:
     /// @param [in] public_counter_index Index of the public counter.
     ///
     /// @return address to result location map otherwise nullptr.
-    CounterResultLocationMap* GetCounterResultLocations(const IGpaSession* gpa_session, const unsigned int& public_counter_index);
+    [[nodiscard]] CounterResultLocationMap* GetCounterResultLocations(const IGpaSession* gpa_session, const unsigned int& public_counter_index);
 
     /// @brief Releases the context from the mediator.
     ///
@@ -95,33 +99,7 @@ public:
     /// @param [in] pass_index Index of the pass.
     ///
     /// @return The list of the counters.
-    CounterList* GetCounterForPass(IGpaSession* gpa_session, PassIndex pass_index);
-
-private:
-    /// @brief Private Constructor.
-    GpaContextCounterMediator() = default;
-
-    /// @brief Checks whether the given session exists or not.
-    ///
-    /// @param [in] gpa_session GPA session.
-    ///
-    /// @return True if session exists otherwise false.
-    bool DoesSessionExist(const IGpaSession* gpa_session) const;
-
-    static GpaContextCounterMediator* kCounterManager;  ///< Static instance of the counter manager.
-
-    /// @brief Container to associate a counter accessor with a counter scheduler.
-    struct GpaContextStatus
-    {
-        IGpaCounterScheduler* counter_scheduler;  ///< Counter scheduler.
-        IGpaCounterAccessor*  counter_accessor;   ///< Counter accessor.
-    };
-
-    using GpaCtxStatusInfoPair = std::pair<const IGpaSession*, GpaContextStatus>;  ///< Type alias for GPA session and its status info pair.
-    using GpaCtxStatusInfoMap = std::map<const IGpaSession*, GpaContextStatus>;   ///< Type alias for GPA session and its status info map.
-
-    GpaCtxStatusInfoMap session_info_map_;        ///< Map of sessions to corresponding info.
-    mutable std::mutex  context_info_map_mutex_;  ///< Mutex for context info map.
-};
+    [[nodiscard]] CounterList* GetCounterForPass(IGpaSession* gpa_session, PassIndex pass_index);
+};  // namespace GpaContextCounterMediator
 
 #endif

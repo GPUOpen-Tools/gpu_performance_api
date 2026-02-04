@@ -14,6 +14,7 @@
 
 #include "auto_generated/gpu_perf_api_counter_generator/gpa_hw_counter_dx12_gfx11.h"
 
+#include "auto_generated/gpu_perf_api_counter_generator/public_counter_definitions_dx12_gfx11_gfx1102.h"
 #include "auto_generated/gpu_perf_api_counter_generator/public_counter_definitions_dx12_gfx11_gfx1103.h"
 #include "auto_generated/gpu_perf_api_counter_generator/public_counter_definitions_dx12_gfx11_gfx1150.h"
 
@@ -30,6 +31,11 @@ namespace dx12_gfx11_asics
     {
         // Override max block events first so we could chain these if we want
         counter_dx12_gfx11::OverrideMaxBlockEvents(asic_type);
+
+        if (dx12_gfx11_gfx1102::UpdatePublicAsicSpecificCounters(desired_generation, asic_type, c))
+        {
+            return;
+        }
 
         if (dx12_gfx11_gfx1103::UpdatePublicAsicSpecificCounters(desired_generation, asic_type, c))
         {

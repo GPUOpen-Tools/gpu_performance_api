@@ -1,4 +1,4 @@
-## Copyright (C) 2018-2025 Advanced Micro Devices, Inc. All rights reserved. ##
+## Copyright (C) 2018-2026 Advanced Micro Devices, Inc. All rights reserved. ##
 
 set(GPA_PROJECT_NAME GPUPerfAPIGL)
 set(ProjectName ${GPA_PROJECT_NAME})
@@ -43,7 +43,6 @@ target_link_libraries(GPUPerfAPIGL PRIVATE
     GPUPerfAPI-Common
     ${GPA_COMMON_LINK_NO_ARCHIVE_FLAG}
     GPUPerfAPICounterGenerator-GL
-    $<$<PLATFORM_ID:Windows>:AMD::adl_util>
     AMD::device_info
     AMD::tsingleton
 )
@@ -51,3 +50,4 @@ target_link_libraries(GPUPerfAPIGL PRIVATE
 ADD_LINKER_FLAGS()
 
 install(TARGETS GPUPerfAPIGL DESTINATION ${GPA_INSTALL_BINDIR} COMPONENT GPUPerfAPI)
+install(TARGETS GPUPerfAPIGL DESTINATION ${GPA_INSTALL_TESTDIR} COMPONENT GPATestKit)

@@ -1,12 +1,9 @@
-## Copyright (C) 2018-2025 Advanced Micro Devices, Inc. All rights reserved. ##
+## Copyright (C) 2018-2026 Advanced Micro Devices, Inc. All rights reserved. ##
 
 set(GPA_PROJECT_NAME GPUPerfAPIVK)
 set(ProjectName ${GPA_PROJECT_NAME})
 
 include (${GPA_CMAKE_MODULES_DIR}/common.cmake)
-
-include(${CMAKE_COMMON_SRC_GLOBAL_AMD_VK_EXT})
-include(${GPA_CMAKE_MODULES_DIR}/gpa_vulkan.cmake)
 
 INCLUDE_ADDITIONAL_MODULE()
 
@@ -54,7 +51,6 @@ target_link_libraries(GPUPerfAPIVK PRIVATE
     GPUPerfAPI-Common
     ${GPA_COMMON_LINK_NO_ARCHIVE_FLAG}
     GPUPerfAPICounterGenerator-VK
-    $<$<PLATFORM_ID:Windows>:AMD::adl_util>
     AMD::device_info
     AMD::tsingleton
 )
@@ -62,3 +58,4 @@ target_link_libraries(GPUPerfAPIVK PRIVATE
 ADD_LINKER_FLAGS()
 
 install(TARGETS GPUPerfAPIVK DESTINATION ${GPA_INSTALL_BINDIR} COMPONENT GPUPerfAPI)
+install(TARGETS GPUPerfAPIVK DESTINATION ${GPA_INSTALL_TESTDIR} COMPONENT GPATestKit)

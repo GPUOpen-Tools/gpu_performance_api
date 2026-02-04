@@ -11,6 +11,9 @@
 
 #include "gpu_perf_api_common/logging.h"
 
+// Need to link dxgi.lib due to CreateDXGIFactory usage
+#pragma comment(lib, "dxgi.lib")
+
 GpaStatus dx12_utils::Dx12GetAdapterDesc(IUnknown* device, DXGI_ADAPTER_DESC& adapter_desc)
 {
     GpaStatus status = kGpaStatusOk;

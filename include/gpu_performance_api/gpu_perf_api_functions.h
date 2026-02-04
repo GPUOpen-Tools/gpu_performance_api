@@ -125,6 +125,9 @@ GPA_FUNCTION_PREFIX(GpaSqttSpmEnd)
 // Get Max VGPRs for the Device; added in 4.2
 GPA_FUNCTION_PREFIX(GpaGetDeviceMaxVgprs)
 
+// Get Total LDS size in bytes for the Device; added in 4.3
+GPA_FUNCTION_PREFIX(GpaGetDeviceMaxLdsBytes)
+
 #ifdef NEED_TO_UNDEFINE_GPA_FUNCTION_PREFIX
 #undef GPA_FUNCTION_PREFIX
 #undef NEED_TO_UNDEFINE_GPA_FUNCTION_PREFIX

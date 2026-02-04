@@ -358,7 +358,7 @@ namespace PublicCounterCompiler
                     includeFile.WriteLine();
                 }
 
-                    for (int i = 0; i < asicSpecificFiles.Count; ++i)
+                for (int i = 0; i < asicSpecificFiles.Count; ++i)
                 {
                     includeFile.WriteLine("        if ({0}_{1}::Update{2}AsicSpecificCounters(desired_generation, asic_type, c))", section.ToLower(), asicSpecificFiles[i].ToLower(), derivedCounterFileInput.compiler_type_str);
                     includeFile.WriteLine("        {");
@@ -2542,7 +2542,6 @@ namespace PublicCounterCompiler
                             return;
                         }
 
-                        docStream.WriteLine(".. Copyright(c) 2018-{0} Advanced Micro Devices, Inc. All rights reserved.", DateTime.Now.Year.ToString());
                         docStream.WriteLine(".. Graphics Performance Counters for {0}", gfxGenerationDisplayName[counterGroupByGfxGen.Key]);
                         docStream.WriteLine();
                         docStream.WriteLine(".. *** Note, this is an auto-generated file. Do not edit. Execute PublicCounterCompiler to rebuild.");

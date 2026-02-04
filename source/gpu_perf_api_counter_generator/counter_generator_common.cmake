@@ -1,4 +1,4 @@
-## Copyright (C) 2019-2025 Advanced Micro Devices, Inc. All rights reserved. ##
+## Copyright (C) 2019-2026 Advanced Micro Devices, Inc. All rights reserved. ##
 
 set(GPA_PROJECT_NAME GPUPerfAPICounterGenerator-Common)
 set(ProjectName ${GPA_PROJECT_NAME})
@@ -114,7 +114,6 @@ if(WIN32)
 
 add_library(${GPA_PROJECT_NAME} ${SOURCES})
 target_link_libraries(${GPA_PROJECT_NAME} PUBLIC
-                      $<$<PLATFORM_ID:Windows>:AMD::adl_util>
                       AMD::device_info
                       AMD::tsingleton)
 target_include_directories(${GPA_PROJECT_NAME} PUBLIC ${ADDITIONAL_INCLUDE_DIRECTORIES})

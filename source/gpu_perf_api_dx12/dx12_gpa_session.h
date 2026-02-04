@@ -8,10 +8,7 @@
 #ifndef GPU_PERF_API_DX12_DX12_GPA_SESSION_H_
 #define GPU_PERF_API_DX12_DX12_GPA_SESSION_H_
 
-#pragma warning(push)
-#pragma warning(disable : 4201)
 #include <AmdExtGpaInterfaceApi.h>
-#pragma warning(pop)
 
 #include "gpu_perf_api_common/gpa_session.h"
 
@@ -102,18 +99,11 @@ public:
         return spm_duration_;
     }
 
-    /// @brief Returns the driver version.
-    ///
-    /// @param [out] major Driver major version number.
-    /// @param [out] minor Driver minor version number.
-    /// @param [out] sub_minor Driver sub_minor version number.
-    void GetDriverVersion(uint32_t& major, uint32_t& minor, uint32_t& sub_minor);
-
 private:
     bool FlushSession(IAmdExtGpaSession* pSession, uint32_t timeout);
 
     /// @copydoc GpaSession::CreateApiPass()
-    GpaPass* CreateApiPass(PassIndex pass_index) override;
+    std::unique_ptr<GpaPass> CreateApiPass(PassIndex pass_index) override;
 
     IAmdExtGpaSession* GetSpmSession();
 

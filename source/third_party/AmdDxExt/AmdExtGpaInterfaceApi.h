@@ -1,13 +1,7 @@
-/* Copyright (C) 2017-2025 Advanced Micro Devices, Inc. All rights reserved. */
+/* Copyright (C) 2016-2026 Advanced Micro Devices, Inc. All rights reserved. */
 
 /**
 ***********************************************************************************************************************
-* @file  AmdExtGpuPerfApiInterface.h
-* @brief
-*    AMD Gpu Perf Api Interface include file.
-*    This include file contains the functions that expose the perf counter
-*    interface in the driver for use by the AMD Gpu Perf Api (GPA).
-*
 *    // Example code for getting access to the GpaSession
 *    // note: This requires to link against the driver lib and to have a stub dll in the system32/syswow64 directory.
 *
@@ -66,29 +60,30 @@
 * @brief Gpu Perf API extension API object
 ***********************************************************************************************************************
 */
-interface __declspec(uuid("10D00E78-DCBF-4210-BE46-94BD222A332B"))
+MIDL_INTERFACE("10D00E78-DCBF-4210-BE46-94BD222A332B")
 IAmdExtGpaSession : public IUnknown
 {
 public:
     virtual HRESULT Begin(ID3D12GraphicsCommandList* pGfxCmdList) = 0;
     virtual HRESULT End(ID3D12GraphicsCommandList* pGfxCmdList) = 0;
     virtual UINT32 BeginSample(ID3D12GraphicsCommandList* pGfxCmdList, const AmdExtGpaSampleConfig& config) = 0;
-    virtual VOID EndSample(ID3D12GraphicsCommandList* pGfxCmdList, UINT32 sampleId) = 0;
+    virtual void EndSample(ID3D12GraphicsCommandList* pGfxCmdList, UINT32 sampleId) = 0;
     virtual bool IsReady() const = 0;
     virtual HRESULT GetResults(UINT32 sampleId, size_t* pSizeInBytes, void *pData) const = 0;
     virtual HRESULT Reset() = 0;
-    virtual VOID CopyResults(ID3D12GraphicsCommandList* pGfxCmdList) = 0;
+    virtual void CopyResults(ID3D12GraphicsCommandList* pGfxCmdList) = 0;
 };
 
-interface __declspec(uuid("16AE5721-7ED4-4292-9B50-B976DF1347FE"))
+MIDL_INTERFACE("16AE5721-7ED4-4292-9B50-B976DF1347FE")
 IAmdExtGpaInterface : public IUnknown
 {
 public:
     /// Queries for GPU blocks and available counters. Does not return data for counters after AmdExtGpuBlock::Rmi
     virtual HRESULT GetPerfExperimentProperties(AmdExtPerfExperimentProperties* pProperties) const = 0;
     /// Ability to control clocks for profiling
-    virtual VOID SetClockMode(const AmdExtDeviceClockMode clockModeInput,
-                              AmdExtSetClockModeOutput*   pClockModeOutput) = 0;
+    virtual void SetClockMode(
+        const AmdExtDeviceClockMode clockModeInput,
+        AmdExtSetClockModeOutput*   pClockModeOutput) = 0;
     /// Creates a gpa session
     virtual IAmdExtGpaSession* CreateGpaSession() = 0;
     /// Creates and returns a copy of a GpaSession object for use with second level command lists
@@ -97,7 +92,7 @@ public:
     virtual void DestroyGpaSession(IAmdExtGpaSession* pExtGpaSession) = 0;
 };
 
-interface __declspec(uuid("802984F4-E529-4A4E-AC4D-A32B1197B55E"))
+MIDL_INTERFACE("802984F4-E529-4A4E-AC4D-A32B1197B55E")
 IAmdExtGpaInterface2 : public IAmdExtGpaInterface
 {
 public:

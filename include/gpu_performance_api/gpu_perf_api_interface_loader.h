@@ -408,6 +408,7 @@ static inline GpaStatus GpaInterfaceLoaderLoadApi(GpaApiType api_type, const Loc
 
                             if (NULL == new_table_info)
                             {
+                                free(gpa_func_table);
                                 return kGpaStatusErrorFailed;
                             }
 

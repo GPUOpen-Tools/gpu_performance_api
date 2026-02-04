@@ -1,4 +1,4 @@
-/* Copyright (C) 2012-2025 Advanced Micro Devices, Inc. All rights reserved. */
+/* Copyright (C) 2012-2026 Advanced Micro Devices, Inc. All rights reserved. */
 
 /**
 ***************************************************************************************************
@@ -19,8 +19,8 @@
 #include "AmdDxExtIface.h"
 #include "AmdDxExtASICInfo.h"
 
-const unsigned int AmdDxASICInfoMajorVersion = 2;
-const unsigned int AmdDxASICInfoMinorVersion = 0;
+const unsigned int AmdDxASICInfoMajorVersion = 3;
+const unsigned int AmdDxASICInfoMinorVersion = 1;
 // ASIC Info extension ID passed to IAmdDxExt::GetExtInterface()
 const unsigned int AmdDxExtASICInfoID = 9;
 

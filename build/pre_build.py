@@ -1,4 +1,6 @@
-## Copyright (C) 2018-2025 Advanced Micro Devices, Inc. All rights reserved. ##
+## Copyright (C) 2018-2026 Advanced Micro Devices, Inc. All rights reserved. ##
+
+#!/usr/bin/python
 
 import os
 import sys
@@ -119,9 +121,11 @@ script_parser.add_argument("--build-number", default="0", help="Specify the buil
 script_parser.add_argument("--build", action="store_true", help="Perform the GPA build after running CMake")
 script_parser.add_argument("--builddir", action="store", help="Directory where the cmake files will be generated and the build will be performed; if not given as an absolute path then this will be relative to the top-level pre_build script")
 script_parser.add_argument("--build-jobs", default="8", help="number of simultaneous jobs to run during a build (default = 8)")
+script_parser.add_argument('--runtests', help='Run CTest after building GPA', choices=["all", "cpu-only"])
 script_parser.add_argument("--package", action="store_true", help="Generate GPA packages")
 script_parser.add_argument("--package-suffix", action="store", help="Suffix to append to the generated GPA packages")
 script_parser.add_argument("--nofetch", action="store_true", help="Avoids CMake build using FetchContent")
+script_parser.add_argument("--asan", action="store_true", help="Enable address sanitizer")
 
 if sys.platform == "win32":
     script_parser.add_argument("--skipdx11", action="store_true", help="Skip DX11 from the CMake generated project")
@@ -257,6 +261,11 @@ if build_args.nofetch == True:
 else:
     cmake_additional_args.append("-DGPA_NO_FETCH=OFF")
 
+if build_args.asan == True:
+    cmake_additional_args.append("-DGPA_ENABLE_ASAN=ON")
+else:
+    cmake_additional_args.append("-DGPA_ENABLE_ASAN=OFF")
+
 print(cmake_generator)
 
 if sys.platform == "win32":
@@ -324,17 +333,24 @@ if (build_args.build):
             print("\nERROR: CMake build failed with %d" % p.returncode)
             sys.exit(1)
 
+        if build_args.runtests:
+            ctest_config = "Release"
+            if config == "debug":
+                ctest_config = "Debug"
+
+            ctest_args = ["ctest", "--build-config", ctest_config, "--output-on-failure", "--test-dir", cmake_output_dir]
+
+            if build_args.runtests == "cpu-only":
+                ctest_args += [ "--tests-regex", "GPUPerfAPIUnitTests" ]
+
+            result = subprocess.run(ctest_args)
+
+            if result.returncode != 0:
+                print(f"CTest failed!", file=sys.stderr)
+                sys.exit(-1)
+
         # We currently only package release binaries.
         if (build_args.package and config == "release"):
-            ctest_args = ["ctest", "-C", "Release", "--tests-regex", "GPUPerfAPIUnitTests", "--output-on-failure"]
-            p = subprocess.Popen(ctest_args, cwd=cmake_output_dir, stderr=subprocess.STDOUT)
-            p.wait()
-            sys.stdout.flush()
-
-            if(p.returncode != 0):
-                print("\nERROR: CTest failed with %d" % p.returncode)
-                sys.exit(1)
-
             cpack_args = ["cpack", "-C", "Release"]
             p = subprocess.Popen(cpack_args, cwd=cmake_output_dir, stderr=subprocess.STDOUT)
             p.wait()

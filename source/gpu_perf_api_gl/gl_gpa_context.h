@@ -109,6 +109,7 @@ private:
     typedef std::vector<GpaGlPerfMonitorGroupData> GpaGlPerfGroupVector;
     GpaGlPerfGroupVector                           driver_counter_group_info_;  ///< All the counter group information from the driver.
     bool                                           driver_supports_GL1CG_;      ///< Not all hardware supports the GL1CG block, so detect when it exists.
+    bool                                           driver_supports_ATC_;        ///< Not all hardware supports the ATC block, so detect when it exists.
     bool                                           driver_supports_ATCL2_;      ///< Not all hardware supports the ATCL2 block, so detect when it exists.
     bool                                           driver_supports_CHCG_;       ///< Not all hardware supports the CHCG block, so detect when it exists.
     bool                                           driver_supports_GUS_;        ///< Not all hardware supports the GUS block, so detect when it exists.

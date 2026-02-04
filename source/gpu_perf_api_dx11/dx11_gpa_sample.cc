@@ -217,7 +217,13 @@ bool Dx11GpaSample::BeginRequest()
 
     if (nullptr != dx11_gpa_context)
     {
-        IGpaCounterAccessor*       counter_accessor  = GpaContextCounterMediator::Instance()->GetCounterAccessor(GetPass()->GetGpaSession());
+        IGpaCounterAccessor* counter_accessor = GpaContextCounterMediator::GetCounterAccessor(GetPass()->GetGpaSession());
+        assert(counter_accessor != nullptr);
+        if (nullptr == counter_accessor)
+        {
+            GPA_LOG_DEBUG_ERROR("Accessor is unassigned.");
+            return success;
+        }
         const GpaHardwareCounters& hardware_counters = counter_accessor->GetHardwareCounters();
 
         if (dx11_gpa_pass->IsTimingPass())
@@ -410,7 +416,13 @@ bool Dx11GpaSample::CreateSampleExperiment()
 
                 bool engine_param_set_success = true;
 
-                IGpaCounterAccessor*       counter_accessor  = GpaContextCounterMediator::Instance()->GetCounterAccessor(GetPass()->GetGpaSession());
+                IGpaCounterAccessor* counter_accessor = GpaContextCounterMediator::GetCounterAccessor(GetPass()->GetGpaSession());
+                assert(counter_accessor != nullptr);
+                if (nullptr == counter_accessor)
+                {
+                    GPA_LOG_DEBUG_ERROR("Accessor is unassigned.");
+                    return success;
+                }
                 const GpaHardwareCounters& hardware_counters = counter_accessor->GetHardwareCounters();
 
                 if (nullptr != amd_dx_ext_perf_experiment_)
@@ -477,7 +489,13 @@ bool Dx11GpaSample::CreateAndAddCounterToExperiment()
 
     if (nullptr != amd_dx_ext_perf_counters_)
     {
-        IGpaCounterAccessor*       counter_accessor = GpaContextCounterMediator::Instance()->GetCounterAccessor(GetPass()->GetGpaSession());
+        IGpaCounterAccessor* counter_accessor = GpaContextCounterMediator::GetCounterAccessor(GetPass()->GetGpaSession());
+        assert(counter_accessor != nullptr);
+        if (nullptr == counter_accessor)
+        {
+            GPA_LOG_DEBUG_ERROR("Accessor is unassigned.");
+            return false;
+        }
         const GpaHardwareCounters& hardware_counters = counter_accessor->GetHardwareCounters();
 
         auto add_counter_to_experiment = [&](CounterIndex counter_index) -> bool {

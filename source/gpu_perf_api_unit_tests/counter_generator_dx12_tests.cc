@@ -250,44 +250,44 @@ TEST(CounterDllTests, Dx12OpenCounterContext)
 
 TEST(CounterDllTests, Dx12CounterLibTestGfx10)
 {
-    VerifyCounterLibInterface(kGpaApiDirectx12, kDevIdGfx10, REVISION_ID_ANY);
-    VerifyCounterByPassCounterLibEntry(kGpaApiDirectx12, kDevIdGfx10, REVISION_ID_ANY);
+    VerifyCounterLibInterface(kGpaApiDirectx12, kDevIdGfx10, AMDTDeviceInfoUtils::kRevisionIdAny);
+    VerifyCounterByPassCounterLibEntry(kGpaApiDirectx12, kDevIdGfx10, AMDTDeviceInfoUtils::kRevisionIdAny);
 }
 
 TEST(CounterDllTests, Dx12CounterLibTestGfx103)
 {
-    VerifyCounterLibInterface(kGpaApiDirectx12, kDevIdGfx10_3, REVISION_ID_ANY);
-    VerifyCounterByPassCounterLibEntry(kGpaApiDirectx12, kDevIdGfx10_3, REVISION_ID_ANY);
+    VerifyCounterLibInterface(kGpaApiDirectx12, kDevIdGfx10_3, AMDTDeviceInfoUtils::kRevisionIdAny);
+    VerifyCounterByPassCounterLibEntry(kGpaApiDirectx12, kDevIdGfx10_3, AMDTDeviceInfoUtils::kRevisionIdAny);
 }
 
 TEST(CounterDllTests, Dx12CounterLibTestGfx11)
 {
-    VerifyCounterLibInterface(kGpaApiDirectx12, kDevIdGfx11, REVISION_ID_ANY);
-    VerifyCounterByPassCounterLibEntry(kGpaApiDirectx12, kDevIdGfx11, REVISION_ID_ANY);
+    VerifyCounterLibInterface(kGpaApiDirectx12, kDevIdGfx11, AMDTDeviceInfoUtils::kRevisionIdAny);
+    VerifyCounterByPassCounterLibEntry(kGpaApiDirectx12, kDevIdGfx11, AMDTDeviceInfoUtils::kRevisionIdAny);
 }
 
 TEST(CounterDllTests, Dx12CounterLibTestGfx1103)
 {
-    VerifyCounterLibInterface(kGpaApiDirectx12, kDevIdGfx11_0_3, REVISION_ID_ANY);
-    VerifyCounterByPassCounterLibEntry(kGpaApiDirectx12, kDevIdGfx11_0_3, REVISION_ID_ANY);
+    VerifyCounterLibInterface(kGpaApiDirectx12, kDevIdGfx11_0_3, AMDTDeviceInfoUtils::kRevisionIdAny);
+    VerifyCounterByPassCounterLibEntry(kGpaApiDirectx12, kDevIdGfx11_0_3, AMDTDeviceInfoUtils::kRevisionIdAny);
 }
 
 TEST(CounterDllTests, Dx12CounterLibTestGfx1103B)
 {
-    VerifyCounterLibInterface(kGpaApiDirectx12, kDevIdGfx11_0_3B, REVISION_ID_ANY);
-    VerifyCounterByPassCounterLibEntry(kGpaApiDirectx12, kDevIdGfx11_0_3B, REVISION_ID_ANY);
+    VerifyCounterLibInterface(kGpaApiDirectx12, kDevIdGfx11_0_3B, AMDTDeviceInfoUtils::kRevisionIdAny);
+    VerifyCounterByPassCounterLibEntry(kGpaApiDirectx12, kDevIdGfx11_0_3B, AMDTDeviceInfoUtils::kRevisionIdAny);
 }
 
 TEST(CounterDllTests, Dx12CounterLibTestGfx1150)
 {
-    VerifyCounterLibInterface(kGpaApiDirectx12, kDevIdGfx11_5_0, REVISION_ID_ANY);
-    VerifyCounterByPassCounterLibEntry(kGpaApiDirectx12, kDevIdGfx11_5_0, REVISION_ID_ANY);
+    VerifyCounterLibInterface(kGpaApiDirectx12, kDevIdGfx11_5_0, AMDTDeviceInfoUtils::kRevisionIdAny);
+    VerifyCounterByPassCounterLibEntry(kGpaApiDirectx12, kDevIdGfx11_5_0, AMDTDeviceInfoUtils::kRevisionIdAny);
 }
 
 TEST(CounterDllTests, Dx12CounterLibTestGfx1153)
 {
-    VerifyCounterLibInterface(kGpaApiDirectx12, kDevIdGfx11_5_3, REVISION_ID_ANY);
-    VerifyCounterByPassCounterLibEntry(kGpaApiDirectx12, kDevIdGfx11_5_3, REVISION_ID_ANY);
+    VerifyCounterLibInterface(kGpaApiDirectx12, kDevIdGfx11_5_3, AMDTDeviceInfoUtils::kRevisionIdAny);
+    VerifyCounterByPassCounterLibEntry(kGpaApiDirectx12, kDevIdGfx11_5_3, AMDTDeviceInfoUtils::kRevisionIdAny);
 }
 
 TEST(CounterDllTests, Dx12CounterFormulaTest)
@@ -306,7 +306,7 @@ TEST(ComputeDerivedCounterResult, WaveOccupancyPct)
     GpaCounterContext      gpa_counter_context        = {};
     if (LoadAndVerifyCounterLib(&handle, &gpa_counter_lib_func_table))
     {
-        GpaCounterContextHardwareInfo counter_context_hardware_info = {kAmdVendorId, kDevIdGfx10, REVISION_ID_ANY, nullptr, 0};
+        GpaCounterContextHardwareInfo counter_context_hardware_info = {kAmdVendorId, kDevIdGfx10, AMDTDeviceInfoUtils::kRevisionIdAny, nullptr, 0};
         GpaStatus                     status                        = gpa_counter_lib_func_table.GpaCounterLibOpenCounterContext(
             kGpaApiDirectx12, kGpaSessionSampleTypeStreamingCounter, counter_context_hardware_info, kGpaOpenContextDefaultBit, &gpa_counter_context);
         EXPECT_EQ(kGpaStatusOk, status);
@@ -425,7 +425,7 @@ TEST(ComputeDerivedSpmCounterResults, InvalidParameters)
     GpaCounterContext      gpa_counter_context        = {};
     if (LoadAndVerifyCounterLib(&handle, &gpa_counter_lib_func_table))
     {
-        GpaCounterContextHardwareInfo counter_context_hardware_info = {kAmdVendorId, kDevIdGfx12_0_0, REVISION_ID_ANY, nullptr, 0};
+        GpaCounterContextHardwareInfo counter_context_hardware_info = {kAmdVendorId, kDevIdGfx12_0_0, AMDTDeviceInfoUtils::kRevisionIdAny, nullptr, 0};
         GpaStatus                     status                        = gpa_counter_lib_func_table.GpaCounterLibOpenCounterContext(
             kGpaApiDirectx12, kGpaSessionSampleTypeStreamingCounter, counter_context_hardware_info, kGpaOpenContextDefaultBit, &gpa_counter_context);
         EXPECT_EQ(kGpaStatusOk, status);
@@ -443,7 +443,7 @@ TEST(ComputeDerivedSpmCounterResults, InvalidParameters)
             {
                 GpaSpmData spm_data = {};
 
-                constexpr std::array<GpaUInt64, 3> kTimeStampData = {0, 0, 0};
+                constexpr std::array<uint64_t, 3> kTimeStampData  = {0, 0, 0};
                 spm_data.timestamps                               = kTimeStampData.data();
                 spm_data.number_of_timestamps                     = static_cast<uint32_t>(kTimeStampData.size());
 
@@ -642,7 +642,7 @@ TEST(ComputeDerivedSpmCounterResults, WaveOccupancyPct)
     GpaCounterContext      gpa_counter_context        = {};
     if (LoadAndVerifyCounterLib(&handle, &gpa_counter_lib_func_table))
     {
-        GpaCounterContextHardwareInfo counter_context_hardware_info = {kAmdVendorId, kDevIdGfx12_0_0, REVISION_ID_ANY, nullptr, 0};
+        GpaCounterContextHardwareInfo counter_context_hardware_info = {kAmdVendorId, kDevIdGfx12_0_0, AMDTDeviceInfoUtils::kRevisionIdAny, nullptr, 0};
         GpaStatus                     status                        = gpa_counter_lib_func_table.GpaCounterLibOpenCounterContext(
             kGpaApiDirectx12, kGpaSessionSampleTypeStreamingCounter, counter_context_hardware_info, kGpaOpenContextDefaultBit, &gpa_counter_context);
         EXPECT_EQ(kGpaStatusOk, status);
@@ -660,7 +660,7 @@ TEST(ComputeDerivedSpmCounterResults, WaveOccupancyPct)
             {
                 GpaSpmData spm_data = {};
 
-                constexpr std::array<GpaUInt64, 3> kTimeStampData = {0, 1, 2};
+                constexpr std::array<uint64_t, 3> kTimeStampData  = {0, 1, 2};
                 spm_data.timestamps                               = kTimeStampData.data();
                 spm_data.number_of_timestamps                     = static_cast<uint32_t>(kTimeStampData.size());
 
@@ -758,7 +758,7 @@ TEST(ComputeDerivedSpmCounterResults, HardwareCounter)
     GpaCounterContext      gpa_counter_context        = {};
     if (LoadAndVerifyCounterLib(&handle, &gpa_counter_lib_func_table))
     {
-        GpaCounterContextHardwareInfo counter_context_hardware_info = {kAmdVendorId, kDevIdGfx12_0_0, REVISION_ID_ANY, nullptr, 0};
+        GpaCounterContextHardwareInfo counter_context_hardware_info = {kAmdVendorId, kDevIdGfx12_0_0, AMDTDeviceInfoUtils::kRevisionIdAny, nullptr, 0};
         GpaStatus                     status                        = gpa_counter_lib_func_table.GpaCounterLibOpenCounterContext(kGpaApiDirectx12,
                                                                                       kGpaSessionSampleTypeStreamingCounter,
                                                                                       counter_context_hardware_info,
@@ -783,7 +783,7 @@ TEST(ComputeDerivedSpmCounterResults, HardwareCounter)
             {
                 GpaSpmData spm_data = {};
 
-                constexpr std::array<GpaUInt64, 3> kTimeStampData = {0, 1, 2};
+                constexpr std::array<uint64_t, 3> kTimeStampData  = {0, 1, 2};
                 spm_data.timestamps                               = kTimeStampData.data();
                 spm_data.number_of_timestamps                     = static_cast<uint32_t>(kTimeStampData.size());
 
@@ -904,7 +904,7 @@ TEST(ComputeDerivedSpmCounterResults, WaveOccupancyPctWorkaroundGfx10)
     GpaCounterContext      gpa_counter_context        = {};
     if (LoadAndVerifyCounterLib(&handle, &gpa_counter_lib_func_table))
     {
-        const GpaCounterContextHardwareInfo counter_context_hardware_info = {kAmdVendorId, kDevIdGfx10, REVISION_ID_ANY, nullptr, 0};
+        const GpaCounterContextHardwareInfo counter_context_hardware_info = {kAmdVendorId, kDevIdGfx10, AMDTDeviceInfoUtils::kRevisionIdAny, nullptr, 0};
         GpaStatus                           status                        = gpa_counter_lib_func_table.GpaCounterLibOpenCounterContext(
             kGpaApiDirectx12, kGpaSessionSampleTypeStreamingCounter, counter_context_hardware_info, kGpaOpenContextDefaultBit, &gpa_counter_context);
         EXPECT_EQ(kGpaStatusOk, status);
@@ -922,7 +922,7 @@ TEST(ComputeDerivedSpmCounterResults, WaveOccupancyPctWorkaroundGfx10)
             {
                 GpaSpmData spm_data = {};
 
-                constexpr std::array<GpaUInt64, 3> kTimeStampData = {0, 1, 2};
+                constexpr std::array<uint64_t, 3> kTimeStampData  = {0, 1, 2};
                 spm_data.timestamps                               = kTimeStampData.data();
                 spm_data.number_of_timestamps                     = static_cast<uint32_t>(kTimeStampData.size());
 
@@ -1069,7 +1069,7 @@ TEST(ComputeDerivedSpmCounterResults, WaveOccupancyPctWorkaroundGfx103)
     GpaCounterContext      gpa_counter_context        = {};
     if (LoadAndVerifyCounterLib(&handle, &gpa_counter_lib_func_table))
     {
-        const GpaCounterContextHardwareInfo counter_context_hardware_info = {kAmdVendorId, kDevIdGfx10_3, REVISION_ID_ANY, nullptr, 0};
+        const GpaCounterContextHardwareInfo counter_context_hardware_info = {kAmdVendorId, kDevIdGfx10_3, AMDTDeviceInfoUtils::kRevisionIdAny, nullptr, 0};
         GpaStatus                           status                        = gpa_counter_lib_func_table.GpaCounterLibOpenCounterContext(
             kGpaApiDirectx12, kGpaSessionSampleTypeStreamingCounter, counter_context_hardware_info, kGpaOpenContextDefaultBit, &gpa_counter_context);
         EXPECT_EQ(kGpaStatusOk, status);
@@ -1087,7 +1087,7 @@ TEST(ComputeDerivedSpmCounterResults, WaveOccupancyPctWorkaroundGfx103)
             {
                 GpaSpmData spm_data = {};
 
-                constexpr std::array<GpaUInt64, 3> kTimeStampData = {0, 1, 2};
+                constexpr std::array<uint64_t, 3> kTimeStampData  = {0, 1, 2};
                 spm_data.timestamps                               = kTimeStampData.data();
                 spm_data.number_of_timestamps                     = static_cast<uint32_t>(kTimeStampData.size());
 
@@ -1243,7 +1243,7 @@ TEST(GpaCounterLibGetSupportedSampleTypes, SpmSqtt)
     {
         GpaStatus                  status                = kGpaStatusOk;
         GpaSupportedSampleTypeInfo info                  = {};
-        info.revision_id                                 = REVISION_ID_ANY;
+        info.revision_id                                 = AMDTDeviceInfoUtils::kRevisionIdAny;
         info.vendor_id                                   = kAmdVendorId;
         info.driver_info.driver_type                     = kIgnoreDriver;
         GpaContextSampleTypeFlags supported_sample_types = {};
@@ -1375,7 +1375,7 @@ TEST(GpaCounterLibGetSupportedSampleTypes, MinimumDriverVersion)
     {
         GpaStatus                  status = kGpaStatusOk;
         GpaSupportedSampleTypeInfo info   = {};
-        info.revision_id                  = REVISION_ID_ANY;
+        info.revision_id                  = AMDTDeviceInfoUtils::kRevisionIdAny;
         info.vendor_id                    = kAmdVendorId;
 
         info.driver_info.driver_type = kAmdProprietaryDriver;
@@ -1398,3 +1398,4 @@ TEST(GpaCounterLibGetSupportedSampleTypes, MinimumDriverVersion)
         UnloadLib(handle);
     }
 }
+

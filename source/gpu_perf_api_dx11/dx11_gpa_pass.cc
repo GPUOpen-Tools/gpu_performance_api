@@ -99,7 +99,7 @@ void Dx11GpaPass::InitializeCounterInfo()
     {
         if (nullptr != dx11_gpa_context)
         {
-            IGpaCounterAccessor*       counter_accessor  = GpaContextCounterMediator::Instance()->GetCounterAccessor(GetGpaSession());
+            IGpaCounterAccessor* counter_accessor = GpaContextCounterMediator::GetCounterAccessor(GetGpaSession());
             assert(counter_accessor != nullptr);
             if (counter_accessor == nullptr)
             {
@@ -153,7 +153,14 @@ void Dx11GpaPass::InitializeCounterInfo()
 
 void Dx11GpaPass::InitializeCounterExperimentParameters()
 {
-    IGpaCounterAccessor*       counter_accessor  = GpaContextCounterMediator::Instance()->GetCounterAccessor(GetGpaSession());
+    IGpaCounterAccessor* counter_accessor = GpaContextCounterMediator::GetCounterAccessor(GetGpaSession());
+    assert(counter_accessor != nullptr);
+    if (nullptr == counter_accessor)
+    {
+        GPA_LOG_DEBUG_ERROR("Accessor is unassigned.");
+        return;
+    }
+
     const GpaHardwareCounters& hardware_counters = counter_accessor->GetHardwareCounters();
 
     auto PopulateExperimentParams = [&](const CounterIndex& counter_index) -> bool {

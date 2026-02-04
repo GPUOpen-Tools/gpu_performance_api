@@ -1,4 +1,4 @@
-## Copyright (C) 2019-2025 Advanced Micro Devices, Inc. All rights reserved. ##
+## Copyright (C) 2019-2026 Advanced Micro Devices, Inc. All rights reserved. ##
 
 if (NOT DEFINED ENV{ANDROID_SDK})
     message(FATAL_ERROR "ANDROID_SDK is not defined")

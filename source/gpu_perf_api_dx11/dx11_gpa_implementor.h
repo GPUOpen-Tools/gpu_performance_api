@@ -38,18 +38,8 @@ public:
     PFNAmdDxExtCreate11 GetAmdExtFuncPointer() const;
 
 private:
-    /// @brief Returns the AMD hardware info for the given device and monitor.
-    ///
-    /// @param [in] d3d11_device DirectX 11 device pointer.
-    /// @param [in] primary_vendor_id Vendor id.
-    /// @param [in] primary_device_id Device id.
-    /// @param [out] hw_info Hardware info.
-    ///
-    /// @return True upon successful operation otherwise false.
-    bool GetAmdHwInfo(ID3D11Device* d3d11_device, const int& primary_vendor_id, const int& primary_device_id, GpaHwInfo& hw_info) const;
-
     /// @brief Constructor.
-    Dx11GpaImplementor();
+    Dx11GpaImplementor() = default;
 
     /// @brief Initializes the AMD extension function pointer.
     ///
@@ -65,7 +55,7 @@ private:
     /// @copydoc GpaImplementor::GetDeviceIdentifierFromContextInfo()
     GpaDeviceIdentifier GetDeviceIdentifierFromContextInfo(GpaContextInfoPtr context_info) const override final;
 
-    mutable PFNAmdDxExtCreate11 amd_dx_ext_create11_func_ptr_;  ///< AMD DirectX 11 extension Function pointer.
+    mutable PFNAmdDxExtCreate11 amd_dx_ext_create11_func_ptr_ = {};  ///< AMD DirectX 11 extension Function pointer.
 };
 
 #endif

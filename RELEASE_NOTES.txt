@@ -1,6 +1,16 @@
 ﻿# GPU Performance API Release Notes
 ---
-# Version 4.2 (11/3/2025)
+# Version 4.3
+* Add support for AMD Radeon AI PRO R9600D.
+* Add support for AMD Radeon 840M, 860M, and 890M APUs.
+* Fix GpaGetDeviceMaxWaveSlots, GpaGetDeviceMaxVgprs reporting invalid values on older drivers for DX11.
+* Fix counters that relied on the number of CUs as part of their equations on older drivers for DX11.
+* Remove dependency on AMD Display Library.
+* Update C++ language standard to C++ 20.
+* New entrypoint added: GpaGetDeviceMaxLdsBytes
+* Fix bug where GE2_DIST/GESE HW counter data would report incorrectly as GE blocks. This could cause issues when processing SPM data. EX: TessellatorBusyCycles, VsGsVerticesIn, VsGsPrimsIn, PreTessVerticesIn, PostTestPrimsOut
+
+# Version 4.2
 * Add support for additional AMD Radeon 800M Series APUs.
 * Add support for AMD Radeon RX 9060 GPUs.
 * DirectX 11: `GPUPerfAPIDXGetAMDDeviceInfo` has been removed in favor of Windows Graphics Settings to force select the GPU.
@@ -16,7 +26,7 @@
 * Fixed WriteSize/FetchSize counter on AMD Radeon RX 9000 Series hardware. It was not accounting for all sized reads/writes.
 * Fixed issue causing release builds taking far longer than they should during the linker step on Windows.
 
-# Version 4.1 (06/17/2025)
+# Version 4.1
 * Added support for AMD Radeon RX 9060 XT.
 * Added support for AMD Radeon AI PRO R9700.
 * AMD Radeon RX 9070 Series GPUs are now supported with AMD Radeon Software for Linux 25.10 or newer.
@@ -31,7 +41,7 @@
 * Updated GoogleTest to v1.16
 * Updated C# projects to .NET 8
 
-# Version 4.0 (03/11/2025)
+# Version 4.0
 * Added support for Radeon RX 9070 Series GPUs.
 * Added support for additional RDNA 3 based APUs.
 * Counter interrogation entrypoints now accept a GpaSessionId instead of a GpaContextId.
@@ -43,7 +53,7 @@
 * The directory structure in the released zip/tgz packages have been changed slightly.
 * Fixed GitHub Issue #84 - Public Counter Compiler fails awkwardly if public counter definition file contains an uppercase character.
 
-# Version 3.17 (09/20/2024)
+# Version 3.17
 * OpenGL: GPA is no longer supporting Adrenalin 19.6.3 and older drivers.
 * On all hardware and APIs, the following counters were renamed for clarity:
   * CSWavefronts was renamed to CSWavefrontsLaunched
@@ -54,7 +64,7 @@
 * CSALUStalledByLDS and CSALUStalledByLDSCycles are now based on per-wave cycle counts.
 * On Radeon RX 5000 Series and newer hardware, counters in the ComputeShader group now have simplified equations.
 
-# Version 3.16 (07/01/2024)
+# Version 3.16
 * Added support for additional RDNA 3 based APUs.
   * GPA's OpenCL support has been temporarily disabled on RDNA 3 hardware.
 * Updated error checking in counter splitting to report error if counter group max is zero.
@@ -67,7 +77,7 @@
 * Output from pre_build.py script is now generated into build\|win,linux|\ directory.
 * Compiled binaries are now generated into build\output\ directory.
 
-# Version 3.15 (12/06/2023)
+# Version 3.15
 * Updated minimum CMake version to 3.10 from 3.05.
 * Updated equation for MemUnitBusyCycles.
 * Updated description of LocalVidMemBytes.
@@ -77,7 +87,7 @@
 * Known Issues:
   * VsGsVerticesIn is incorrectly reporting zero when using Vulkan on Linux for some hardware.
 
-## Version 3.14 (09/21/2023)
+## Version 3.14
 * Added support for AMD Radeon RX 7700 XT and AMD Radeon RX 7800 XT graphics cards.
 * Added support for additional AMD Radeon 700M Series devices.
 * Added counters back to Gfx9, Gfx10, Gfx103, and Gfx11 hardware generations. These restored counters are listed below by group:
@@ -93,14 +103,14 @@
 * Added improved support for multi-GPU systems.
 * Removed code related to software counters on non-AMD hardware.
 
-## Version 3.13.1 (06/22/2023)
+## Version 3.13.1
 * Add support for additional AMD Radeon RX 7000 Series hardware.
 * Add support for AMD Radeon 700M Series APUs.
   * Vulkan and OpenGL are supported on existing drivers; DX12, DX11, and OpenCL will be enabled by an upcoming driver.
 * Bug Fixes:
   * Fixed performance regression in GPUPerfAPIDX12[-x64].dll
 
-## Version 3.13 (04/27/2023)
+## Version 3.13
 * Add support for AMD Radeon RX 7000M Series hardware.
 * Add support for AMD Radeon RX 7000S Series hardware.
 * OpenCL support for AMD Radeon RX 7000 Series hardware has been restored if using Adrenalin 23.3.2 or newer.
@@ -115,7 +125,7 @@
   * Marked kGpaOpenContextHideSoftwareCountersBit as obsolete.
   * Marked kGpaOpenContextHideHardwareCountesrBit as obsolete.
 
-## Version 3.12 (12/14/2022)
+## Version 3.12
   * Add support for AMD Radeon RX 7000 Series hardware.
   * Add support for compiling with Visual Studio 2022.
   * Reduced binary sizes by an average of 45%.
@@ -125,12 +135,12 @@
     * AMD Radeon RX 6000 Series: PostTessellation counters now only show results in pipelines using tessellation.
     * Sample apps: Fix implementation of passes in D3D11Triangle, and improve general error handling.
 
-## Version 3.11.1 (07/27/22)
+## Version 3.11.1
   * Updated OpenGL support for the Adrenalin 22.7.1 driver.
   * Added L2CacheHit counter for OpenGL on Radeon RX 5000 Series hardware.
   * Improved GPA integration into GLTriangle sample application.
 
-## Version 3.11 (04/25/22)
+## Version 3.11
   * Add support for additional GPUs and APUs.
   * Counter updates for RDNA2 (Radeon RX 6000 Series) hardware:
     * Added ray tracing counters for Vulkan: RayTriTests, RayBoxTests, TotalRayTests, and RayTestsPerWave.
@@ -142,7 +152,7 @@
     * Improved counter validation.
   * Disabled support for Mesa driver. We hope to re-enable it in a future release.
 
-## Version 3.10 (01/25/22)
+## Version 3.10
   * Add support for additional GPUs and APUs.
   * Redefined derived counters on GCN (Vega), RDNA, and RDNA2 hardware.
     * New pipeline-based counters to better match hardware behavior.
@@ -202,11 +212,11 @@
     * Consolidated parameter parsing logic in sample apps.
     * In Vulkan and DX12 samples, the return code now indicates the number of errors that were reported.
 
-## Version 3.9 (07/27/21)
+## Version 3.9
   * Add support for additional GPUs and APUs.
   * Improvements made to the sample applications.
 
-## Version 3.8 (04/01/21)
+## Version 3.8
   * Add support for additional GPUs and APUs, including AMD Radeon™ RX 6700 series GPUs.
   * Code has been updated to adhere to Google C++ Style Guide.
     * New public headers have been added.
@@ -216,7 +226,7 @@
   * Updated documentation for new codestyle (and https://github.com/GPUOpen-Tools/gpu_performance_api/issues/56).
   * Support for the --internal flag has been removed from the build script.
 
-## Version 3.7 (11/24/20)
+## Version 3.7
   * Add support for additional GPUs and APUs, including AMD Radeon™ RX 6000 series GPUs.
   * New RT counters for DXR workloads on AMD Radeon™ RX 6000 series GPUs.
     * RayTriTests, and RayBoxTests: These counters collect the number of ray intersections for triangles and boxes, respectively.
@@ -229,13 +239,13 @@
   * Remove OpenCL™ support from Linux.
   * Remove downloading the Vulkan® SDK by the build script.
 
-## Version 3.6 (05/15/20)
+## Version 3.6
   * Add support for additional GPUs and APUs, including AMD Ryzen™ 4000 Series APUs.
   * Add two new GFX10 GlobalMemory Counters for graphics using DX12 and Vulkan: LocalVidMemBytes and PcieBytes.
   * Add VS2019 project support to CMake.
   * Restructure of GPA source layout to adhere to google style.
 
-## Version 3.5 (12/13/19)
+## Version 3.5
   * Add support for additional GPUs and APUs, including Radeon 5500 and Radeon 5300 Series GPUs.
   * Add DirectX11 sample application using GPUPerfAPI.
   * Add per-API static counter generation.
@@ -250,7 +260,7 @@
     * Fixed an issue in Vulkan build with newer Vulkan SDK with amd_shader_core_properties2 extension (https://github.com/GPUOpen-Tools/gpu_performance_api/issues/45)
     * Fixed an issue with crash on unsupported Gfx6 and Gfx7 GPUs.
 
-## Version 3.4 (7/10/19)
+## Version 3.4
   * Add support for additional GPUs and APUs, including Radeon 5700 Series GPUs.
   * Add support for setting stable GPU clocks for DirectX11, OpenGL and OpenCL.
   * Add an OpenGL sample application that uses GPUPerfAPI.
@@ -267,7 +277,7 @@
     * Fixed an issue with MemUnitBusy and MemUnitStalled counters on GFX8 GPUs.
     * Fixed an issue with VSVALUBusyCycles counter on GFX9 GPUs.
 
-## Version 3.3 (12/20/18)
+## Version 3.3
   * Add support for additional GPUs and APUs.
   * New CMake-based build system.
   * Support building on Ubuntu 18.04.
@@ -276,7 +286,7 @@
   * New timing counter to report top-of-pipe to bottom-of-pipe duration.
   * GPA now builds GoogleTest libraries on the fly rather than using prebuilt binaries.
 
-## Version 3.2 (8/21/18)
+## Version 3.2
   * Add support for additional GPUs and APUs.
   * Wrapped all GPA entrypoints in try/catch to ensure unhandled exceptions do not escape the GPA library.
   * Add VS2017 project files.
@@ -285,7 +295,7 @@
     * Fixed support for scheduling counters on multiple sessions.
     * OpenGL: Fixed a bug in GPASample cleanup.
 
-## Version 3.1 (6/15/18)
+## Version 3.1
   * Add support for additional GPUs and APUs.
   * Usability improvements to GPAInterfaceLoader.h.
   * New Vulkan and DirectX 12 sample applications.
@@ -297,7 +307,7 @@
     * Vulkan: Ensure results are ready before trying to query them.
     * DirectX 12: Fixed incorrect device reference counting issue.
 
-## Version 3.0 (3/19/18)
+## Version 3.0
  * Add support for additional GPUs and APUs.
  * Support for collecting hardware counters for Vulkan and DirectX 12 applications.
  * Redesigned API to support modern graphics APIs.
@@ -324,19 +334,19 @@
    * OpenGL: Fixed a crash that can occur with an incorrectly-configured OpenGL driver.
    * OpenGL: Fixed some issues with OpenGL device-detection.
 
-## Version 2.23 (6/27/17)
+## Version 2.23
  * Add support for additional GPUs, including Vega series GPUs
  * Allow unit tests to be built and run on Linux
 
-## Version 2.22 (4/26/17)
+## Version 2.22
  * Add support for additional GPUs and APUs, including RX 500 series GPUs
 
-## Version 2.21 (12/21/16)
+## Version 2.21
  * Add support for additional GPUs and APUs.
  * ROCm/HSA: Support for ROCm 1.3 and ROCm 1.4
  * OpenGL: Fixed an issue with GPU/APU detection with newer Radeon Crimson drivers
 
-## Version 2.20 (5/12/16)
+## Version 2.20
  * Add support for additional GPUs and APUs.
  * Initial Public release of ROCm/HSA support
  * Developer Preview for DirectX12 (no hardware-based performance counter support)
@@ -349,7 +359,7 @@
  * DirectX 11: Fix PSVALUBusy counter on 2nd and 3rd generation GCN hardware
  * DirectX 11: A separate DLL (GPUPerfAPIDXGetAMDDeviceInfo\*.dll) is required in order to support certain multi-GPU configurations. This DLL will need to be deployed alongside GPUPerfAPIDX11\*.dll on multi-GPU systems. See the [User Guide](Doc/GPUPerfAPI-UserGuide.pdf) for more information.
 
-## Version 2.17 (8/12/15)
+## Version 2.17
  * Add support for additional GPUs and APUs.
  * Add OpenGL ES support for both Windows and Linux.
  * DirectX 11/OpenGL: Add CSFlatVMInsts and CSFlatLDSInsts counters to measure flat instructions used for compute shaders on 2nd Generation GCN hardware or newer.
@@ -362,7 +372,7 @@
  * Fix a potential crash in GPA_SelectContext.
  * Fix a bug in GPA_DisableCounter that could result in the counter not actually getting disabled.
 
-## Version 2.15 (1/9/15)
+## Version 2.15
  * Add support for additional GPUs and APUs.
  * Improved error handling in the various GPA_GetSample functions
  * Improved algorithm which splits counters into multiple passes.
@@ -372,7 +382,7 @@
  * DirectX 11: Fixed some incorrect Compute Shader counter values.
  * DirectX 11: Fixed a crash that could occur when querying some counters on most recent hardware.
 
-## Version 2.14 (9/5/14)
+## Version 2.14
  * Add support for additional GPUs and APUs.
  * DirectX 11: Fixed some memory leaks caused by incorrect reference counting of D3D11 devices and device contexts.
  * OpenGL: Improved memory consumption and performance during profiling.
@@ -381,9 +391,9 @@
  * OpenGL: Fixed CSALUStalledByLDS counter on Graphics IP v7 and v8 families of GPUs.
  * Removed Support for DirectX 10.
 
-## Version 2.13 (4/17/14, updated 6/20/14)
- * 6/20/14: Add support for additional GPUs and APUs.
- * 6/20/14: OpenGL: Fixed some device support.
+## Version 2.13
+ * Add support for additional GPUs and APUs.
+ * OpenGL: Fixed some device support.
  * Add support for Volcanic Islands GPUs.
  * Add support for AMD Radeon R9 200 Series GPUs.
  * Add support for Kaveri-based APUs.
@@ -395,7 +405,7 @@
  * OpenCL™: FastPath, CompletePath, and PathUtilization now report correct value on AMD Radeon HD 6000 series hardware and on Trinity/Richland-based APUs.
  * OpenCL™: Improved results when performing multi-pass profiling.
 
-## Version 2.11 (6/5/13)
+## Version 2.11
  * Add support for AMD Radeon HD 8000 Series hardware.
  * Add support for more AMD Radeon HD 7000 Series devices.
  * Add support for more FirePro, Mobility, and APU devices.
@@ -405,7 +415,7 @@
  * OpenGL/DirectX 10/DirectX 11: TexUnitBusy counter now reports correct value on AMD Radeon HD 7000 Series hardware.
  * OpenCL™: WriteSize counter now reports correct value on AMD Radeon HD 7000 Series hardware.
 
-## Version 2.9 (1/18/12)
+## Version 2.9
  * Add support for AMD Radeon 7000 Series hardware.
  * Add support for more FirePro, Mobility, and APU devices.
  * Improved memory consumption and performance during profiling.
@@ -414,11 +424,11 @@
  * DirectX 10:Fixed shader related counters on AMD Radeon HD 2000-5000 Series hardware.
  * Fixed PrimitivesIn counter on AMD Radeon HD 2000 Series hardware.
 
-## Version 2.8 (4/22/11)
+## Version 2.8
  * DirectX 10: Fixed GPUTime support on AMD Radeon HD 2000 and 3000 Series hardware.
  * DirectX 11: Fixed counter accessibility on AMD Radeon HD 2000 and 3000 Series hardware.
 
-## Version 2.7 (4/6/11)
+## Version 2.7
  * New entrypoint for registering logging callback function for improved troubleshooting.
  * Adds support for AMD Radeon HD 6000 Series hardware.
  * New DepthAndStencil counters give more detailed understanding of HiZ behavior.
@@ -426,7 +436,7 @@
  * OpenCL™: FetchSize counter now reports the correct value.
  * DirectX 10/11: Fixed support for AMD Radeon HD 4000 Series hardware; Fixed support for Catalyst 11.2 drivers on AMD Radeon HD 5000 Series hardware.
 
-## Version 2.5 (11/17/10)
+## Version 2.5
  * Adds Linux support for OpenGL and OpenCL.
  * More consistent naming between OpenCL and DX Compute Shader counters.
  * Improved methods for identifying existing hardware.
@@ -434,7 +444,7 @@
  * OpenCL™: New counters: FetchSize, CacheHit, LDSFetchInsts, LDSWriteInsts, FastPath, CompletePath, PathUtilization.
  * OpenGL: Fixed an issue that caused counters to not be available if the application is using queries; Adds tessellation related counters.
 
-## Version 2.3 (6/4/10)
+## Version 2.3
  * Supports DirectX10, DirectX11, OpenGL on ATI Radeon 2000, 3000, 4000, and 5000 series.
  * Supports OpenCL™ on ATI Radeon 4000 and 5000 series.
  * Provides derived counters based on raw HW performance counters.

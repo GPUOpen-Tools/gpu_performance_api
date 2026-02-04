@@ -33,7 +33,7 @@ GpaContext::GpaContext(const GpaHwInfo& hw_info, GpaOpenContextFlags flags)
 GpaContextSampleTypeFlags GpaContext::GetSupportedSampleTypes() const
 {
     const GpaApiType                api                     = GetApiType();
-    const GpaDriverInfo             driver_info             = QueryDriverInfo();
+    const GpaDriverInfo             driver_info             = GpaQueryDriverInfo();
 
     // Get device_id
     GpaUInt32                       device_id               = 0;

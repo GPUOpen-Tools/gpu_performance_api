@@ -284,6 +284,7 @@ The following methods can be used to query information about the context:
     "GpaGetDeviceGeneration", "Gets the device generation of the GPU associated with the specified context."
     "GpaGetDeviceMaxWaveSlots", "Gets the max wave slots of the GPU associated with the specified context."
     "GpaGetDeviceMaxVgprs", "Gets the max number of VGPRs of the GPU associated with the specified context."
+    "GpaGetDeviceMaxLdsBytes", "Gets the total number of LDS bytes of the GPU associated with the specified context."
 
 Creating and Using a Session
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@

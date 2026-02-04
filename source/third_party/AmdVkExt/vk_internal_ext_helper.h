@@ -1,4 +1,4 @@
-/* Copyright (C) 2014-2025 Advanced Micro Devices, Inc. All rights reserved. */
+/* Copyright (C) 2014-2026 Advanced Micro Devices, Inc. All rights reserved. */
 /**
  **********************************************************************************************************************
  * @file  vk_internal_ext_helper.h

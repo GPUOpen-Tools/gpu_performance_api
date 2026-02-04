@@ -56,22 +56,21 @@ GpaSession::~GpaSession()
 
     std::lock_guard<std::mutex> lock_resources(gpa_session_mutex_);
 
+    GpaUniqueObjectManager& manager = GpaUniqueObjectManager::Instance();
+
     // Clean up the passes.
-    for (auto pass_iter = passes_.begin(); pass_iter != passes_.end(); ++pass_iter)
+    for (auto const& pass : passes_)
     {
-        const GpaCommandLists pass_cmd_list = (*pass_iter)->GetCmdList();
+        const GpaCommandLists pass_cmd_list = pass->GetCmdList();
 
-        for (auto cmd_list_iter = pass_cmd_list.cbegin(); cmd_list_iter != pass_cmd_list.cend(); ++cmd_list_iter)
+        for (auto const& cmd_list : pass_cmd_list)
         {
-            GpaUniqueObjectManager::Instance()->DeleteObject(*cmd_list_iter);
+            manager.DeleteObject(cmd_list);
         }
-
-        delete *pass_iter;
     }
-
     passes_.clear();
 
-    GpaContextCounterMediator::Instance()->RemoveContext(this);
+    GpaContextCounterMediator::RemoveContext(this);
 }
 
 GpaObjectType GpaSession::ObjectType() const
@@ -91,18 +90,17 @@ GpaSessionState GpaSession::GetState() const
 
 bool GpaSession::OpenCounters()
 {
-    bool success = (kGpaStatusOk == GpaContextCounterMediator::Instance()->GenerateCounters(this, context_flags_));
+    bool success = (kGpaStatusOk == GpaContextCounterMediator::GenerateCounters(this, context_flags_));
     return success;
 }
 
 GpaStatus GpaSession::GetNumCounters(GpaUInt32* counter_count) const
 {
     GPA_INTERNAL_CHECK_NULL_PARAM(counter_count);
-    IGpaCounterAccessor* counter_accessor = GpaContextCounterMediator::Instance()->GetCounterAccessor(this);
-
+    IGpaCounterAccessor* counter_accessor = GpaContextCounterMediator::GetCounterAccessor(this);
     if (nullptr == counter_accessor)
     {
-        GPA_LOG_DEBUG_ERROR("Accessor is unassigned.");
+        GPA_LOG_ERROR("Accessor is unassigned.");
         return kGpaStatusErrorFailed;
     }
 
@@ -114,11 +112,10 @@ GpaStatus GpaSession::GetCounterName(GpaUInt32 index, const char** counter_name)
 {
     GPA_INTERNAL_CHECK_NULL_PARAM(counter_name);
 
-    IGpaCounterAccessor* counter_accessor = GpaContextCounterMediator::Instance()->GetCounterAccessor(this);
-
+    IGpaCounterAccessor* counter_accessor = GpaContextCounterMediator::GetCounterAccessor(this);
     if (nullptr == counter_accessor)
     {
-        GPA_LOG_DEBUG_ERROR("Accessor is unassigned.");
+        GPA_LOG_ERROR("Accessor is unassigned.");
         return kGpaStatusErrorFailed;
     }
 
@@ -130,11 +127,10 @@ GpaStatus GpaSession::GetCounterGroup(GpaUInt32 index, const char** counter_grou
 {
     GPA_INTERNAL_CHECK_NULL_PARAM(counter_group);
 
-    IGpaCounterAccessor* counter_accessor = GpaContextCounterMediator::Instance()->GetCounterAccessor(this);
-
+    IGpaCounterAccessor* counter_accessor = GpaContextCounterMediator::GetCounterAccessor(this);
     if (nullptr == counter_accessor)
     {
-        GPA_LOG_DEBUG_ERROR("Accessor is unassigned.");
+        GPA_LOG_ERROR("Accessor is unassigned.");
         return kGpaStatusErrorFailed;
     }
 
@@ -146,11 +142,10 @@ GpaStatus GpaSession::GetCounterDescription(GpaUInt32 index, const char** counte
 {
     GPA_INTERNAL_CHECK_NULL_PARAM(counter_description);
 
-    IGpaCounterAccessor* counter_accessor = GpaContextCounterMediator::Instance()->GetCounterAccessor(this);
-
+    IGpaCounterAccessor* counter_accessor = GpaContextCounterMediator::GetCounterAccessor(this);
     if (nullptr == counter_accessor)
     {
-        GPA_LOG_DEBUG_ERROR("Accessor is unassigned.");
+        GPA_LOG_ERROR("Accessor is unassigned.");
         return kGpaStatusErrorFailed;
     }
 
@@ -162,11 +157,10 @@ GpaStatus GpaSession::GetCounterDataType(GpaUInt32 index, GpaDataType* counter_d
 {
     GPA_INTERNAL_CHECK_NULL_PARAM(counter_data_type);
 
-    IGpaCounterAccessor* counter_accessor = GpaContextCounterMediator::Instance()->GetCounterAccessor(this);
-
+    IGpaCounterAccessor* counter_accessor = GpaContextCounterMediator::GetCounterAccessor(this);
     if (nullptr == counter_accessor)
     {
-        GPA_LOG_DEBUG_ERROR("Accessor is unassigned.");
+        GPA_LOG_ERROR("Accessor is unassigned.");
         return kGpaStatusErrorFailed;
     }
 
@@ -178,11 +172,10 @@ GpaStatus GpaSession::GetCounterUsageType(GpaUInt32 index, GpaUsageType* counter
 {
     GPA_INTERNAL_CHECK_NULL_PARAM(counter_usage_type);
 
-    IGpaCounterAccessor* counter_accessor = GpaContextCounterMediator::Instance()->GetCounterAccessor(this);
-
+    IGpaCounterAccessor* counter_accessor = GpaContextCounterMediator::GetCounterAccessor(this);
     if (nullptr == counter_accessor)
     {
-        GPA_LOG_DEBUG_ERROR("Accessor is unassigned.");
+        GPA_LOG_ERROR("Accessor is unassigned.");
         return kGpaStatusErrorFailed;
     }
 
@@ -194,11 +187,10 @@ GpaStatus GpaSession::GetCounterUuid(GpaUInt32 index, GpaUuid* counter_uuid) con
 {
     GPA_INTERNAL_CHECK_NULL_PARAM(counter_uuid);
 
-    IGpaCounterAccessor* counter_accessor = GpaContextCounterMediator::Instance()->GetCounterAccessor(this);
-
+    IGpaCounterAccessor* counter_accessor = GpaContextCounterMediator::GetCounterAccessor(this);
     if (nullptr == counter_accessor)
     {
-        GPA_LOG_DEBUG_ERROR("Accessor is unassigned.");
+        GPA_LOG_ERROR("Accessor is unassigned.");
         return kGpaStatusErrorFailed;
     }
 
@@ -210,11 +202,10 @@ GpaStatus GpaSession::GetCounterSampleType(GpaUInt32 index, GpaCounterSampleType
 {
     GPA_INTERNAL_CHECK_NULL_PARAM(counter_sample_type);
 
-    IGpaCounterAccessor* counter_accessor = GpaContextCounterMediator::Instance()->GetCounterAccessor(this);
-
+    IGpaCounterAccessor* counter_accessor = GpaContextCounterMediator::GetCounterAccessor(this);
     if (nullptr == counter_accessor)
     {
-        GPA_LOG_DEBUG_ERROR("Accessor is unassigned.");
+        GPA_LOG_ERROR("Accessor is unassigned.");
         return kGpaStatusErrorFailed;
     }
 
@@ -226,11 +217,10 @@ GpaStatus GpaSession::GetCounterIndex(const char* counter_name, GpaUInt32* count
 {
     GPA_INTERNAL_CHECK_NULL_PARAM(counter_index);
 
-    IGpaCounterAccessor* counter_accessor = GpaContextCounterMediator::Instance()->GetCounterAccessor(this);
-
+    IGpaCounterAccessor* counter_accessor = GpaContextCounterMediator::GetCounterAccessor(this);
     if (nullptr == counter_accessor)
     {
-        GPA_LOG_DEBUG_ERROR("Accessor is unassigned.");
+        GPA_LOG_ERROR("Accessor is unassigned.");
         return kGpaStatusErrorFailed;
     }
 
@@ -242,8 +232,12 @@ bool GpaSession::GetCounterSourceLocalIndex(GpaUInt32 exposed_counter_index, Gpa
     assert(nullptr != counter_source);
     assert(nullptr != source_local_index);
 
-    IGpaCounterAccessor* counter_accessor = GpaContextCounterMediator::Instance()->GetCounterAccessor(this);
-    assert(nullptr != counter_accessor);
+    IGpaCounterAccessor* counter_accessor = GpaContextCounterMediator::GetCounterAccessor(this);
+    if (counter_accessor == nullptr)
+    {
+        GPA_LOG_ERROR("Accessor is unassigned.");
+        return false;
+    }
 
     GpaCounterSourceInfo info = counter_accessor->GetCounterSourceInfo(exposed_counter_index);
 
@@ -260,7 +254,14 @@ bool GpaSession::GetCounterSourceLocalIndex(GpaUInt32 exposed_counter_index, Gpa
 
 GpaCounterSource GpaSession::GetCounterSource(GpaUInt32 internal_counter_index) const
 {
-    IGpaCounterAccessor* counter_accessor = GpaContextCounterMediator::Instance()->GetCounterAccessor(this);
+    IGpaCounterAccessor* counter_accessor = GpaContextCounterMediator::GetCounterAccessor(this);
+    assert(counter_accessor != nullptr);
+    if (counter_accessor == nullptr)
+    {
+        GPA_LOG_ERROR("Accessor is unassigned.");
+        return GpaCounterSource::kUnknown;
+    }
+
     GpaCounterSource     source           = GpaCounterSource::kUnknown;
 
     if (nullptr != counter_accessor)
@@ -285,7 +286,7 @@ GpaCounterSource GpaSession::GetCounterSource(GpaUInt32 internal_counter_index) 
 
 GpaStatus GpaSession::EnableCounter(GpaUInt32 index)
 {
-    if (!GpaContextCounterMediator::Instance()->IsCounterSchedulingSupported(this))
+    if (!GpaContextCounterMediator::IsCounterSchedulingSupported(this))
     {
         return kGpaStatusErrorFailed;
     }
@@ -315,7 +316,7 @@ GpaStatus GpaSession::EnableCounter(GpaUInt32 index)
     {
         // If we're sampling streaming counters, then only enable the counter if the set of counters remains single-pass.
         unsigned int num_passes = 0;
-        status                  = GpaContextCounterMediator::Instance()->GetRequiredPassCount(this, session_counters_, num_passes);
+        status                  = GpaContextCounterMediator::GetRequiredPassCount(this, session_counters_, num_passes);
 
         if (kGpaStatusOk == status)
         {
@@ -335,7 +336,7 @@ GpaStatus GpaSession::EnableCounter(GpaUInt32 index)
 
 GpaStatus GpaSession::DisableCounter(GpaUInt32 index)
 {
-    if (!GpaContextCounterMediator::Instance()->IsCounterSchedulingSupported(this))
+    if (!GpaContextCounterMediator::IsCounterSchedulingSupported(this))
     {
         return kGpaStatusErrorFailed;
     }
@@ -361,7 +362,7 @@ GpaStatus GpaSession::DisableCounter(GpaUInt32 index)
 
 GpaStatus GpaSession::DisableAllCounters()
 {
-    if (!GpaContextCounterMediator::Instance()->IsCounterSchedulingSupported(this))
+    if (!GpaContextCounterMediator::IsCounterSchedulingSupported(this))
     {
         return kGpaStatusErrorFailed;
     }
@@ -379,7 +380,7 @@ GpaStatus GpaSession::GetNumEnabledCounters(GpaUInt32* counter_count) const
         return kGpaStatusErrorNullPointer;
     }
 
-    if (!GpaContextCounterMediator::Instance()->IsCounterSchedulingSupported(this))
+    if (!GpaContextCounterMediator::IsCounterSchedulingSupported(this))
     {
         return kGpaStatusErrorFailed;
     }
@@ -390,7 +391,7 @@ GpaStatus GpaSession::GetNumEnabledCounters(GpaUInt32* counter_count) const
 
 GpaStatus GpaSession::GetEnabledIndex(GpaUInt32 enabled_number, GpaUInt32* enabled_counter_index) const
 {
-    if (!GpaContextCounterMediator::Instance()->IsCounterSchedulingSupported(this))
+    if (!GpaContextCounterMediator::IsCounterSchedulingSupported(this))
     {
         return kGpaStatusErrorFailed;
     }
@@ -418,7 +419,7 @@ GpaStatus GpaSession::GetEnabledIndex(GpaUInt32 enabled_number, GpaUInt32* enabl
 
 GpaStatus GpaSession::IsCounterEnabled(GpaUInt32 counter_index) const
 {
-    if (!GpaContextCounterMediator::Instance()->IsCounterSchedulingSupported(this))
+    if (!GpaContextCounterMediator::IsCounterSchedulingSupported(this))
     {
         return kGpaStatusErrorFailed;
     }
@@ -456,14 +457,14 @@ GpaStatus GpaSession::GetNumRequiredPasses(GpaUInt32* num_passes)
     }
     else
     {
-        if (!GpaContextCounterMediator::Instance()->IsCounterSchedulingSupported(this))
+        if (!GpaContextCounterMediator::IsCounterSchedulingSupported(this))
         {
             return kGpaStatusErrorFailed;
         }
 
         unsigned int pass_req = 0u;
 
-        ret_status = GpaContextCounterMediator::Instance()->GetRequiredPassCount(this, session_counters_, pass_req);
+        ret_status = GpaContextCounterMediator::GetRequiredPassCount(this, session_counters_, pass_req);
 
         if (kGpaStatusOk == ret_status)
         {
@@ -502,9 +503,9 @@ GpaStatus GpaSession::Begin()
         }
 
         // If so, we will then check how many passes are required and pre-create passes for the Session.
-        if (kGpaStatusOk == status && GpaContextCounterMediator::Instance()->IsCounterSchedulingSupported(this))
+        if (kGpaStatusOk == status && GpaContextCounterMediator::IsCounterSchedulingSupported(this))
         {
-            status = GpaContextCounterMediator::Instance()->ScheduleCounters(this, session_counters_);
+            status = GpaContextCounterMediator::ScheduleCounters(this, session_counters_);
             if (kGpaStatusOk == status)
             {
                 unsigned int pass_count = 0u;
@@ -515,7 +516,7 @@ GpaStatus GpaSession::Begin()
                 }
                 else
                 {
-                    status = GpaContextCounterMediator::Instance()->GetRequiredPassCount(this, session_counters_, pass_count);
+                    status = GpaContextCounterMediator::GetRequiredPassCount(this, session_counters_, pass_count);
                 }
 
                 if (kGpaSessionSampleTypeStreamingCounterAndSqtt == sample_type_ && pass_count != 1)
@@ -531,15 +532,20 @@ GpaStatus GpaSession::Begin()
 
                     for (GpaUInt32 pass_index_iter = 0; pass_index_iter < pass_count && success; pass_index_iter++)
                     {
-                        CounterList* pass_counter_list = GpaContextCounterMediator::Instance()->GetCounterForPass(this, pass_index_iter);
+                        CounterList* pass_counter_list = GpaContextCounterMediator::GetCounterForPass(this, pass_index_iter);
+                        if (pass_counter_list == nullptr)
+                        {
+                            GPA_LOG_ERROR("Unable to get counter list.");
+                            status = kGpaStatusErrorNullPointer;
+                            break;
+                        }
+
                         CounterList  temp_counter_list = *pass_counter_list;
                         pass_counters_map_.insert(PassCountersPair(pass_index_iter, temp_counter_list));
 
-                        GpaPass* current_pass = CreateApiPass(pass_index_iter);
-
-                        if (nullptr != current_pass)
+                        if (std::unique_ptr<GpaPass> current_pass = CreateApiPass(pass_index_iter); current_pass != nullptr)
                         {
-                            passes_.push_back(current_pass);
+                            passes_.emplace_back(std::move(current_pass));
                         }
                         else
                         {
@@ -570,11 +576,10 @@ GpaStatus GpaSession::Begin()
     else if (kGpaSessionSampleTypeSqtt == sample_type_)
     {
         //create one pass for Sqtt data
-        GpaPass* current_pass = CreateApiPass(0);
-
-        if (nullptr != current_pass)
+        constexpr PassIndex pass_index = 0;
+        if (std::unique_ptr<GpaPass> current_pass = CreateApiPass(pass_index); current_pass != nullptr)
         {
-            passes_.push_back(current_pass);
+            passes_.emplace_back(std::move(current_pass));
         }
         else
         {
@@ -643,7 +648,7 @@ GpaStatus GpaSession::End()
         // SQTT does not use counters.
         if (kGpaSessionSampleTypeSqtt != sample_type_)
         {
-            status = GpaContextCounterMediator::Instance()->UnscheduleCounters(this, session_counters_);
+            status = GpaContextCounterMediator::UnscheduleCounters(this, session_counters_);
         }
     }
 
@@ -680,7 +685,7 @@ GpaCommandListId GpaSession::CreateCommandList(GpaUInt32 pass_index, void* cmd_l
 
     if (pass_index < passes_.size())
     {
-        GpaPass* tmp_pass = passes_[pass_index];
+        const std::unique_ptr<GpaPass>& tmp_pass = passes_[pass_index];
 
         if (nullptr != tmp_pass)
         {
@@ -688,7 +693,7 @@ GpaCommandListId GpaSession::CreateCommandList(GpaUInt32 pass_index, void* cmd_l
 
             if (nullptr != gpa_cmd)
             {
-                ret_cmd_id = reinterpret_cast<GpaCommandListId>(GpaUniqueObjectManager::Instance()->CreateObject(gpa_cmd));
+                ret_cmd_id = reinterpret_cast<GpaCommandListId>(GpaUniqueObjectManager::Instance().CreateObject(gpa_cmd));
             }
         }
 
@@ -747,7 +752,7 @@ bool GpaSession::DoesCommandListExist(GpaUInt32 pass_index, GpaCommandListId gpa
 
         if (pass_index < passes_.size())
         {
-            GpaPass* tmp_pass = passes_[pass_index];
+            const std::unique_ptr<GpaPass>& tmp_pass = passes_[pass_index];
 
             if (nullptr != tmp_pass)
             {
@@ -860,7 +865,7 @@ size_t GpaSession::GetSampleResultSizeInBytes(GpaUInt32 sample_id) const
 {
     size_t size_in_bytes = 0;
 
-    if (!GpaContextCounterMediator::Instance()->IsCounterSchedulingSupported(this))
+    if (!GpaContextCounterMediator::IsCounterSchedulingSupported(this))
     {
         GPA_LOG_ERROR("Unable to GetSampleResultSizeInBytes, counter scheduler is invalid.");
     }
@@ -942,6 +947,14 @@ GpaStatus GpaSession::GetSampleResult(GpaUInt32 sample_id, size_t sample_result_
 
     GpaStatus status = kGpaStatusOk;
 
+    IGpaCounterAccessor* counter_accessor = GpaContextCounterMediator::GetCounterAccessor(this);
+    assert(counter_accessor != nullptr);
+    if (counter_accessor == nullptr)
+    {
+        GPA_LOG_ERROR("Accessor is unassigned.");
+        return kGpaStatusErrorFailed;
+    }
+
     for (GpaUInt32 counter_index_iter = 0; counter_index_iter < num_enabled; counter_index_iter++)
     {
         GpaUInt32 exposed_counter_index;
@@ -953,7 +966,7 @@ GpaStatus GpaSession::GetSampleResult(GpaUInt32 sample_id, size_t sample_result_
         }
 
         const std::variant<gpa_array_view<GpaUInt32>, GpaUInt32> internal_counters_required =
-            GpaContextCounterMediator::Instance()->GetCounterAccessor(this)->GetInternalCountersRequired(exposed_counter_index);
+            counter_accessor->GetInternalCountersRequired(exposed_counter_index);
         CounterResultLocationMap result_locations = counter_result_locations_[exposed_counter_index];
 
         GpaUInt32        source_local_index = 0;
@@ -964,8 +977,6 @@ GpaStatus GpaSession::GetSampleResult(GpaUInt32 sample_id, size_t sample_result_
             GPA_LOG_ERROR("Invalid counter index found while identifying counter source.");
             return kGpaStatusErrorIndexOutOfRange;
         }
-
-        IGpaCounterAccessor* counter_accessor = GpaContextCounterMediator::Instance()->GetCounterAccessor(this);
 
         switch (source)
         {
@@ -1219,7 +1230,7 @@ bool GpaSession::GatherCounterResultLocations()
 
     for (SessionCounters::const_iterator iter = session_counters_.cbegin(); iter != session_counters_.cend(); ++iter)
     {
-        CounterResultLocationMap* temp_result_locations = GpaContextCounterMediator::Instance()->GetCounterResultLocations(this, *iter);
+        CounterResultLocationMap* temp_result_locations = GpaContextCounterMediator::GetCounterResultLocations(this, *iter);
 
         if (nullptr != temp_result_locations)
         {

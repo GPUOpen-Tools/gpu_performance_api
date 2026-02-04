@@ -1,8 +1,5 @@
-## Copyright (C) 2025 Advanced Micro Devices, Inc. All rights reserved. ##
+## Copyright (C) 2025-2026 Advanced Micro Devices, Inc. All rights reserved. ##
 
-cmake_minimum_required(VERSION 3.10)
-
-set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(HW_COUNTER_HEADERS_GL
 ${CMAKE_CURRENT_LIST_DIR}/gpa_hw_counter_oglp_gfx10.h
 ${CMAKE_CURRENT_LIST_DIR}/gpa_hw_counter_oglp_gfx103.h

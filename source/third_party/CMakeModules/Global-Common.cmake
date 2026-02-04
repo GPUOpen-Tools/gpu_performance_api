@@ -1,4 +1,4 @@
-## Copyright (C) 2018-2025 Advanced Micro Devices, Inc. All rights reserved. ##
+## Copyright (C) 2018-2026 Advanced Micro Devices, Inc. All rights reserved. ##
 
 include(${CMAKE_CURRENT_LIST_DIR}/Global-Internal.cmake)
 
@@ -31,8 +31,6 @@ if(NOT DEFINED AMDTPlatformSuffixNumBitsOnly)
     set(AMDTPlatformSuffixNumBitsOnly "64")
 endif()
 
-set(COMMON_PREPROCESSOR_DEFINITION ${COMMON_PREPROCESSOR_DEFINITION} X64)
-
 if(NOT DEFINED AMDTOutputDir)
     set(AMDTOutputDir "${CMAKE_SOURCE_DIR}/Output")
 endif()
@@ -54,9 +52,9 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 ## Set additional compilation flags
 if(WIN32)
-    set(COMMON_COMPILATION_FLAGS ${COMMON_COMPILATION_FLAGS} /W4 /WX)
+    set(COMMON_COMPILATION_FLAGS ${COMMON_COMPILATION_FLAGS})
 else()
-    set(COMMON_COMPILATION_FLAGS ${COMMON_COMPILATION_FLAGS} -D_LINUX -fPIC -Wall -Werror)
+    set(COMMON_COMPILATION_FLAGS ${COMMON_COMPILATION_FLAGS} -D_LINUX -fPIC)
 
     if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
         set(COMMON_COMPILATION_FLAGS ${COMMON_COMPILATION_FLAGS} -fbracket-depth=1024)
@@ -64,8 +62,7 @@ else()
 endif()
 
 ## Set Global defintions
-set(COMMON_COMPILE_DEFINITIONS  ${COMMON_PREPROCESSOR_DEFINITION}
-                                AMDT_BUILD="${AMDTBuild}"
+set(COMMON_COMPILE_DEFINITIONS  AMDT_BUILD="${AMDTBuild}"
                                 ${AMDTBuild}
                                 AMDTCRT="${AMDTCrt}"
                                 AMDT_PLATFORM_SUFFIX="${AMDTPlatformSuffix}"
@@ -130,31 +127,26 @@ endif()
 
 if(WIN32)
     ## Windows Release Compilation flags:
-    ## /Z7 :Debug Information
     ## /GF :string pooling
     ## /O2 :Optimization
-    ## /MD :Multi-threaded DLL
 
     ## Linker options:
     ## /OPT:REF :References
     ## /DEBUG : generate debug information
     ## /OPT:ICF enable COMDATA folding
     ## /INCREMENTAL:NO : Incremental Link
-    set(COMMON_RELEASE_COMPILATION_FLAGS    /Z7 /GF /O2 /MD)
+    set(COMMON_RELEASE_COMPILATION_FLAGS    /GF /O2)
     set(COMMON_RELEASE_LINKER_FLAGS         "/OPT:REF /DEBUG /OPT:ICF /INCREMENTAL:NO /MANIFEST:NO")
 
     ## Debug Compiler Flags:
     ## /RTC1 : Runtime check
-    ## /Z7   : Debug format
-    ## /Gm-  : turn off minimal rebuild
     ## /Od   : Optimization disabled
-    ## /MDd  : CRT Multi-threaded debug
 
     ## Debug Linker flags:
     ## /INCREMENTAL:NO - disable incremental linking
     ## /DEBUG          - generate debug info
     ## /MANIFEST:NO    - no manifest
-    set(COMMON_DEBUG_COMPILATION_FLAGS        /RTC1 /Z7 /Gm- /Od /MDd)
+    set(COMMON_DEBUG_COMPILATION_FLAGS        /RTC1 /Od)
     set(COMMON_DEBUG_LINKER_FLAGS             "/MANIFEST:NO /DEBUG /INCREMENTAL:NO")
 else()
     set(COMMON_DEBUG_COMPILATION_FLAGS        -g -O0 -D_DEBUG)
@@ -162,9 +154,25 @@ else()
 endif()
 
 ## Each project compilation flags
+#
+# NOTE: We must APPEND to not override previous calls to add_compile_options.
 set_property(DIRECTORY PROPERTY COMPILE_OPTIONS ${COMMON_COMPILATION_FLAGS}
                                 $<$<CONFIG:DEBUG>:${COMMON_DEBUG_COMPILATION_FLAGS}>
-                                $<$<CONFIG:RELEASE>:${COMMON_RELEASE_COMPILATION_FLAGS}>)
+                                $<$<CONFIG:RELEASE>:${COMMON_RELEASE_COMPILATION_FLAGS}>
+                                APPEND)
+
+option(GPA_ENABLE_ASAN "Enable address sanitizer")
+if (GPA_ENABLE_ASAN)
+    add_compile_options(-fsanitize=address)
+    if (NOT MSVC)
+        add_link_options(-fsanitize=address)
+    endif()
+endif()
+
+if (MSVC)
+    add_compile_options(/guard:cf)
+    add_link_options(/GUARD:CF)
+endif()
 
 ## var for adding additional library dependencies
 ## For usage add this to target_link_libraries(...)

@@ -11,7 +11,6 @@
 #include "gpa_hardware_counters.h"
 #include "dx12_gpa_session.h"
 #include "dx12_gpa_context.h"
-#include "ADLUtil.h"
 
 static bool IsSampleSpm(GpaSessionSampleType sample)
 {
@@ -155,7 +154,7 @@ bool Dx12GpaSampleConfig::Initialize(IGpaSession*       session,
 
         std::vector<AmdExtPerfCounterId> counter_ids;
 
-        IGpaCounterAccessor* counter_accessor = GpaContextCounterMediator::Instance()->GetCounterAccessor(session);
+        IGpaCounterAccessor* counter_accessor = GpaContextCounterMediator::GetCounterAccessor(session);
         assert(counter_accessor != nullptr);
         if (counter_accessor == nullptr)
         {
@@ -356,6 +355,9 @@ bool Dx12GpaSampleConfig::Initialize(IGpaSession*       session,
         amd_ext_sample_config_.type                                = AmdExtGpaSampleType::Trace;
         amd_ext_sample_config_.sqtt.flags.enable                   = 1;
         amd_ext_sample_config_.sqtt.flags.supressInstructionTokens = (kGpaSqttInstructionTypeNone == session->GetSqttInstructionMask()) ? 1 : 0;
+
+        // Configure driver to start SQTT with the required wave start extension token to track LDS occupancy
+        amd_ext_sample_config_.sqtt.flags.waveStartExt = AmdExtTTWaveStartExt::ExtAlloc;
 
         amd_ext_sample_config_.sqtt.seMask = 0xFFFF;
 

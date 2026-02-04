@@ -302,6 +302,21 @@ GPA_LIB_DECL GpaStatus GpaGetDeviceMaxWaveSlots(GpaContextId gpa_context_id, Gpa
 /// @retval kGpaStatusErrorHardwareNotSupported If the number of VGPRs is 0.
 GPA_LIB_DECL GpaStatus GpaGetDeviceMaxVgprs(GpaContextId gpa_context_id, GpaUInt32* max_vgprs);
 
+/// @brief Gets the total size of LDS memory in bytes on the GPU.
+///
+/// @ingroup gpa_context_interrogation
+///
+/// @param [in] gpa_context_id Unique identifier of the opened context.
+/// @param [out] max_lds_bytes The value that will be set to the total size of LDS memory across the whole GPU.
+///
+/// @return The GPA result status of the operation.
+/// @retval kGpaStatusOk If the operation is successful.
+/// @retval kGpaStatusErrorNullPointer If any of the parameters are NULL.
+/// @retval kGpaStatusErrorContextNotFound If the supplied context is invalid.
+/// @retval kGpaStatusErrorContextNotOpen If the supplied context has not been opened.
+/// @retval kGpaStatusErrorHardwareNotSupported If the LDS size is 0.
+GPA_LIB_DECL GpaStatus GpaGetDeviceMaxLdsBytes(GpaContextId gpa_context_id, GpaUInt32* max_lds_bytes);
+
 /// @defgroup gpa_counter_interrogation GPA Counter Interrogation
 
 /// @brief Gets the number of counters available.

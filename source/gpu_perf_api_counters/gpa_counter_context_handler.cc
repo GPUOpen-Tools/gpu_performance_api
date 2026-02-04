@@ -9,10 +9,6 @@
 #include "gpa_counter_generator_scheduler_manager.h"
 #include "gpa_counter_generator.h"
 
-#ifdef WIN32
-#include "adapter.h"
-#endif
-
 #ifdef ENABLE_GPA_CL
 #include "gpa_counter_generator_cl.h"
 #include "gpa_counter_scheduler_cl.h"

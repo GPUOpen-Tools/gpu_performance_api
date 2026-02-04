@@ -69,13 +69,15 @@ public:
     /// @param [in] counter_group_accessor A class to access the internal counters.
     /// @param [in] max_counters_per_group The maximum number of counters that can be enabled in a single pass on each HW block or SW group.
     /// @param [out] num_scheduled_counters Indicates the total number of internal counters that were assigned to a pass.
+    /// @param [out] pass_partitions The resulting set of passes that the counters were split into.
     ///
-    /// @return The list of passes that the counters are separated into.
-    std::list<GpaCounterPass> SplitCounters(const std::vector<const GpaDerivedCounterInfoClass*>& public_counters_to_split,
-                                            const std::vector<GpaHardwareCounterIndices>          internal_counters_to_schedule,
-                                            IGpaCounterGroupAccessor*                             accessor,
-                                            const std::vector<unsigned int>&                      max_counters_per_group,
-                                            unsigned int&                                         num_scheduled_counters) override
+    /// @return A GpaStatus code indicating if the counters could be scheduled successfully.
+    GpaStatus SplitCounters(const std::vector<const GpaDerivedCounterInfoClass*>& public_counters_to_split,
+                            const std::vector<GpaHardwareCounterIndices>&         internal_counters_to_schedule,
+                            IGpaCounterGroupAccessor*                             counter_group_accessor,
+                            const std::vector<unsigned int>&                      max_counters_per_group,
+                            unsigned int&                                         num_scheduled_counters,
+                            std::list<GpaCounterPass>&                            pass_partitions)
     {
         // The maximum number of internal counters to enable in a single pass. This may be updated if any of the public counters require more than this value
         // to be enabled in a single pass, otherwise the algorithm would get stuck in an infinite loop trying to find a viable pass for the public counter.
@@ -84,30 +86,34 @@ public:
         // Other values I tried: 40=33 passes, 50=28 passes, 60=24 passes, 100=19passes, 120+ = 17 passes.
         const uint32_t max_internal_counters_per_pass = 120;
 
-        // This will eventually be the return value.
-        std::list<GpaCounterPass> pass_partitions;
-
         // Temporary variable to hold the number of counters assigned to each block during each of the passes.
         std::list<PerPassData> num_used_counters_per_pass_per_block;
 
         // Handle the public counters.
-        InsertPublicCounters(pass_partitions,
-                             public_counters_to_split,
-                             accessor,
-                             num_used_counters_per_pass_per_block,
-                             max_counters_per_group,
-                             num_scheduled_counters,
-                             max_internal_counters_per_pass);
+        GpaStatus public_status = InsertPublicCounters(pass_partitions,
+                                                       public_counters_to_split,
+                                                       counter_group_accessor,
+                                                       num_used_counters_per_pass_per_block,
+                                                       max_counters_per_group,
+                                                       num_scheduled_counters,
+                                                       max_internal_counters_per_pass);
+
+        if (public_status != kGpaStatusOk)
+        {
+            return public_status;
+        }
 
         // Handle the internal counters.
-        InsertHardwareCounters(
-            pass_partitions, internal_counters_to_schedule, accessor, num_used_counters_per_pass_per_block, max_counters_per_group, num_scheduled_counters);
-
-        return pass_partitions;
+        return InsertHardwareCounters(pass_partitions,
+                                      internal_counters_to_schedule,
+                                      counter_group_accessor,
+                                      num_used_counters_per_pass_per_block,
+                                      max_counters_per_group,
+                                      num_scheduled_counters);
     }
 
 private:
-    /// @brief Structure representing a point to the requested GPA_PublicCounter, and the breakdown of hardware counter passes.
+    /// @brief Structure representing a point to the requested GpaDerivedCounter, and the breakdown of hardware counter passes.
     struct PublicAndHardwareCounters
     {
         const GpaDerivedCounterInfoClass* public_counter = nullptr;  ///< The public counter.
@@ -399,13 +405,15 @@ private:
     /// @param [in] max_counters_per_group A vector containing the maximum number of simultaneous counters for each block.
     /// @param [in,out] num_scheduled_counters The total number of counters that were scheduled.
     /// @param [in] max_internal_counters_per_pass The maximum number of counters per pass.
-    void InsertPublicCounters(std::list<GpaCounterPass>&                            pass_partitions,
-                              const std::vector<const GpaDerivedCounterInfoClass*>& input_counters_to_split,
-                              IGpaCounterGroupAccessor*                             counter_accessor,
-                              std::list<PerPassData>&                               num_used_counters_per_pass_per_block,
-                              const std::vector<unsigned int>&                      max_counters_per_group,
-                              unsigned int&                                         num_scheduled_counters,
-                              unsigned int                                          max_internal_counters_per_pass)
+    ///
+    /// @return A GpaStatus code indicating if the counters could be scheduled successfully.
+    GpaStatus InsertPublicCounters(std::list<GpaCounterPass>&                            pass_partitions,
+                                   const std::vector<const GpaDerivedCounterInfoClass*>& input_counters_to_split,
+                                   IGpaCounterGroupAccessor*                             counter_accessor,
+                                   std::list<PerPassData>&                               num_used_counters_per_pass_per_block,
+                                   const std::vector<unsigned int>&                      max_counters_per_group,
+                                   unsigned int&                                         num_scheduled_counters,
+                                   unsigned int                                          max_internal_counters_per_pass)
     {
 #ifdef DEBUG_PUBLIC_COUNTER_SPLITTER
         std::stringstream ss;
@@ -418,7 +426,13 @@ private:
         // As a safety check, the internal logic in ScheduleCounters also calls the Check* functions to validate scheduling.
         for (auto public_iter = input_counters_to_split.cbegin(); public_iter != input_counters_to_split.cend(); ++public_iter)
         {
-            std::list<GpaCounterPass> counter_passes = SplitSingleCounter(*public_iter, counter_accessor, max_counters_per_group);
+            std::list<GpaCounterPass> counter_passes;
+
+            GpaStatus split_status = SplitSingleCounter(*public_iter, counter_accessor, max_counters_per_group, counter_passes);
+            if (split_status != kGpaStatusOk)
+            {
+                return split_status;
+            }
 
             uint32_t pass_index = 1;
 
@@ -512,8 +526,8 @@ private:
                 GPA_LOG_DEBUG_COUNTER_DEFS(ss.str().c_str());
             }
         }
-
 #endif
+        return kGpaStatusOk;
     }
 
     /// @brief Inserts each hardware counter into the earliest possible pass.
@@ -526,12 +540,15 @@ private:
     /// @param [in] num_used_counters_per_pass_per_block A list of passes, each consisting of the number of counters scheduled on each block.
     /// @param [in] max_counters_per_group A vector containing the maximum number of simultaneous counters for each block.
     /// @param [in,out] num_scheduled_counters The total number of internal counters that were scheduled.
-    void InsertHardwareCounters(std::list<GpaCounterPass>&                   pass_partitions,
-                                const std::vector<GpaHardwareCounterIndices> internal_counters,
-                                IGpaCounterGroupAccessor*                    counter_accessor,
-                                std::list<PerPassData>&                      num_used_counters_per_pass_per_block,
-                                const std::vector<unsigned int>&             max_counters_per_group,
-                                unsigned int&                                num_scheduled_counters)
+    ///
+    /// @retval kGpaStatusErrorInvalidCounterGroupData A counter is being enabled on a hardware block that does not support profiling, and therefore it cannot be scheduled in any pass.
+    /// @retval kGpaStatusOk The hardware counters were successfully scheduled.
+    GpaStatus InsertHardwareCounters(std::list<GpaCounterPass>&                   pass_partitions,
+                                     const std::vector<GpaHardwareCounterIndices> internal_counters,
+                                     IGpaCounterGroupAccessor*                    counter_accessor,
+                                     std::list<PerPassData>&                      num_used_counters_per_pass_per_block,
+                                     const std::vector<unsigned int>&             max_counters_per_group,
+                                     unsigned int&                                num_scheduled_counters)
     {
         // Schedule each of the internal counters.
         for (auto internal_counter_iter = internal_counters.cbegin(); internal_counter_iter != internal_counters.cend(); ++internal_counter_iter)
@@ -563,11 +580,24 @@ private:
                 continue;
             }
 
+            counter_accessor->SetCounterIndex(internal_counter_iter->hardware_index);
+
+            // Make sure this hardware counter is on an available block.
+            {
+                const unsigned int group_index = counter_accessor->GlobalGroupIndex();
+                const unsigned int group_limit = max_counters_per_group[group_index];
+                if (group_limit == 0)
+                {
+                    GPA_LOG_ERROR("Group (%u) has a counter limit of zero. It does not support profiling any counters. Counter (%u) cannot be scheduled.",
+                                  group_index,
+                                  internal_counter_iter->hardware_index);
+                    return kGpaStatusErrorInvalidCounterGroupData;
+                }
+            }
+
             // The counter needs to be scheduled.
             // Make sure there is enough space for the first pass.
             AddNewPassInfo(1, &pass_partitions, &num_used_counters_per_pass_per_block);
-
-            counter_accessor->SetCounterIndex(internal_counter_iter->hardware_index);
 
             // Iterate through the passes again and find one where the counter can be inserted.
             pass_index              = 0;
@@ -602,6 +632,8 @@ private:
                 }
             }
         }
+
+        return kGpaStatusOk;
     }
 
     /// @brief Separate a single counter into multiple passes based on the maxCountersPerGroup.
@@ -609,15 +641,15 @@ private:
     /// @param [in] public_counter The counter that needs to be split.
     /// @param [in] counter_accessor The counter accessor for the counter.
     /// @param [in] max_counters_per_group The list of max counters per group.
+    /// @param [out] pass_partitions The resulting set of passes that the counter was split into.
     ///
-    /// @return A list of passes.
-    std::list<GpaCounterPass> SplitSingleCounter(const GpaDerivedCounterInfoClass* public_counter,
-                                                 IGpaCounterGroupAccessor*         counter_accessor,
-                                                 const std::vector<unsigned int>&  max_counters_per_group)
+    /// @return A GpaStatus code indicating if the counters could be scheduled successfully.
+    GpaStatus SplitSingleCounter(const GpaDerivedCounterInfoClass* public_counter,
+                                 IGpaCounterGroupAccessor*         counter_accessor,
+                                 const std::vector<unsigned int>&  max_counters_per_group,
+                                 std::list<GpaCounterPass>&        pass_partitions)
     {
-        // This will eventually be the return value.
-        std::list<GpaCounterPass> pass_partitions;
-        GpaCounterPass            counter_pass;
+        GpaCounterPass counter_pass = {};
         pass_partitions.push_back(counter_pass);
 
         // Temporary variable to hold the number of counters assigned to each block during each of the passes.
@@ -628,6 +660,22 @@ private:
         // Iterate through the unallocated counters and put them into the appropriate pass.
         for (const GpaUInt32 counter : public_counter->internal_counters_required_)
         {
+            counter_accessor->SetCounterIndex(counter);
+            unsigned int group_index = counter_accessor->GroupIndex();
+
+            // Make sure this hardware counter is on an available block.
+            {
+                const unsigned int global_group_index = counter_accessor->GlobalGroupIndex();
+                const unsigned int group_limit        = max_counters_per_group[global_group_index];
+                if (group_limit == 0)
+                {
+                    GPA_LOG_ERROR("Group (%u) has a counter limit of zero. It does not support profiling any counters. Counter (%u) cannot be scheduled.",
+                                  global_group_index,
+                                  counter);
+                    return kGpaStatusErrorInvalidCounterGroupData;
+                }
+            }
+
             unsigned int pass_index         = 0;
             auto         counters_used_iter = num_used_counters_per_pass_per_block.begin();
             auto         counter_pass_iter  = pass_partitions.begin();
@@ -657,9 +705,6 @@ private:
                     ++counter_pass_iter;
                 }
 
-                counter_accessor->SetCounterIndex(counter);
-                unsigned int group_index = counter_accessor->GroupIndex();
-
                 // Try to add the counter to the current pass.
                 if (CheckForTimestampCounters(counter_accessor, *counter_pass_iter) &&
                     CanCounterBeAdded(counter_accessor, *counters_used_iter, max_counters_per_group) &&
@@ -678,8 +723,7 @@ private:
             }
         }
 
-        // Return the passes.
-        return pass_partitions;
+        return kGpaStatusOk;
     }
 };
 

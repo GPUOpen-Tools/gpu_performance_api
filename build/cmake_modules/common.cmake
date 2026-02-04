@@ -1,4 +1,4 @@
-## Copyright (C) 2018-2025 Advanced Micro Devices, Inc. All rights reserved. ##
+## Copyright (C) 2018-2026 Advanced Micro Devices, Inc. All rights reserved. ##
 
 include(${GPA_CMAKE_MODULES_DIR}/utils.cmake)
 
@@ -14,10 +14,6 @@ endif()
 add_compile_options(${COMMON_COMPILATION_FLAGS})
 
 if(WIN32)
-    # The global settings use /MD and /MDd. For GPA, we want to use /MT and /MTd
-    add_compile_options("$<$<CONFIG:RELEASE>:/MT>"
-                        "$<$<CONFIG:DEBUG>:/MTd>"
-                        "/EHsc")
     set(AMDTCrt "MT")
 endif()
 

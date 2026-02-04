@@ -42,7 +42,7 @@ public:
     /// Returns the counter accessor for the given context.
     ///
     /// @return Counter accessor if found for the context else nullptr.
-    const IGpaCounterAccessor* GetCounterAccessor() const;
+    [[nodiscard]] const IGpaCounterAccessor* GetCounterAccessor() const;
 
     /// Returns the counter scheduler for the given context.
     ///
@@ -117,7 +117,7 @@ public:
     /// @param [in] gpa_counter_context Unique identifier of the opened virtual context.
     ///
     /// @return counter accessor if found for the context else nullptr
-    const IGpaCounterAccessor* GetCounterAccessor(const GpaCounterContext gpa_counter_context);
+    [[nodiscard]] const IGpaCounterAccessor* GetCounterAccessor(const GpaCounterContext gpa_counter_context);
 
     /// Returns the counter scheduler for the given context.
     ///

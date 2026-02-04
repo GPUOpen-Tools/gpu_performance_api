@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2023 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2025 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Counter group accessor class.
@@ -31,7 +31,7 @@ public:
         , hardware_additional_group_count_(hardware_additional_group_count)
         , group_index_(0)
         , counter_index_(0)
-        , m_globalCounterIndex(0)
+        , global_counter_index_(0)
     {
         is_hw_            = false;
         is_additional_hw_ = false;
@@ -44,7 +44,7 @@ public:
     /// @copydoc IGpaCounterGroupAccessor::SetCounterIndex()
     void SetCounterIndex(unsigned int index) override
     {
-        m_globalCounterIndex = index;
+        global_counter_index_ = index;
 
         // Count the number of counters that belong to groups that do not include the desired index.
         unsigned int prev_group_counters = 0;
@@ -183,7 +183,7 @@ public:
     /// @copydoc IGpaCounterGroupAccessor::GetGlobalCounterIndex()
     unsigned int GetGlobalCounterIndex() const override
     {
-        return m_globalCounterIndex;
+        return global_counter_index_;
     }
 
 private:
@@ -196,7 +196,7 @@ private:
     bool                                is_hw_;                            ///< Flag to record if the counter is hardware or not.
     bool         is_additional_hw_;     ///< Flag to record if the counter is an additional HW counter (one exposed by the driver but not by GPA).
     bool         is_sw_;                ///< Flag to record if the counter is SW.
-    unsigned int m_globalCounterIndex;  ///< Global counter index
+    unsigned int global_counter_index_;  ///< Global counter index
 };
 
 #endif

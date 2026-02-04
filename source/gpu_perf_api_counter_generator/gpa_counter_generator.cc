@@ -9,9 +9,6 @@
 
 #include <cctype>
 
-#ifdef _WIN32
-#include "ADLUtil.h"
-#endif
 #include "DeviceInfoUtils.h"
 
 #include "gpu_perf_api_common/gpa_hw_info.h"
@@ -19,8 +16,6 @@
 
 #include "gpu_perf_api_counter_generator/gpa_counter_generator_base.h"
 #include "gpu_perf_api_counter_generator/gpa_counter_generator_scheduler_manager.h"
-
-std::vector<std::string> GpaHardwareCounters::kHardwareBlockString;  ///< Static map of internal and counter interface hardware block.
 
 /// @brief BlockMap for updating ASIC block data on initialization.
 class BlockMap
@@ -173,7 +168,7 @@ GpaStatus GenerateCounters(GpaApiType             desired_api,
     }
     else if (kAmdVendorId == vendor_id)
     {
-        if (AMDTDeviceInfoUtils::Instance()->GetDeviceInfo(device_id, revision_id, card_info))
+        if (AMDTDeviceInfoUtils::GetDeviceInfo(device_id, revision_id, card_info))
         {
             desired_generation = card_info.m_generation;
 
@@ -183,8 +178,6 @@ GpaStatus GenerateCounters(GpaApiType             desired_api,
                 return kGpaStatusErrorHardwareNotSupported;
             }
         }
-
-        AMDTDeviceInfoUtils::DeleteInstance();
     }
 
     if (desired_generation == GDT_HW_GENERATION_NONE)

@@ -13,7 +13,7 @@
 #include "gpu_perf_api_common/gpa_pass.h"
 #include "gpu_perf_api_common/gpa_session_interface.h"
 
-using PassInfo = std::vector<GpaPass*>;  ///< Type alias for pass index and its corresponding pass.
+using PassInfo = std::vector<std::unique_ptr<GpaPass>>;  ///< Type alias for pass index and its corresponding pass.
 
 /// Timeout constant indicating "infinite", or no, timeout.
 const uint32_t kGpaTimeoutInfinite = static_cast<uint32_t>(-1);
@@ -249,14 +249,15 @@ protected:
     /// @param [in] pass_index Index of the pass.
     ///
     /// @return API specific pass object pointer.
-    virtual GpaPass* CreateApiPass(PassIndex pass_index) = 0;
+    virtual std::unique_ptr<GpaPass> CreateApiPass(PassIndex pass_index) = 0;
 
     /// Gets the pass information.
     ///
     /// @return Pass information.
-    const PassInfo& GetPasses() const
+    GpaPass* GetCurrentPass() const
     {
-        return passes_;
+        assert(!passes_.empty());
+        return passes_.begin()->get();
     }
 
     /// Gets the counter result locations.

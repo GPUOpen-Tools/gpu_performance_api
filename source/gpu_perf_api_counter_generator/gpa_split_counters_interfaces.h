@@ -176,13 +176,15 @@ public:
     /// @param [in] counter_group_accessor A class to access the internal counters.
     /// @param [in] max_counters_per_group The maximum number of counters that can be enabled in a single pass on each HW block or SW group.
     /// @param [out] num_scheduled_counters Indicates the total number of internal counters that were assigned to a pass.
+    /// @param [out] pass_partitions The resulting set of passes that the counters were split into.
     ///
-    /// @return The list of passes that the counters are separated into.
-    virtual std::list<GpaCounterPass> SplitCounters(const std::vector<const GpaDerivedCounterInfoClass*>& public_counters_to_split,
-                                                    const std::vector<GpaHardwareCounterIndices>          internal_counters_to_schedule,
-                                                    IGpaCounterGroupAccessor*                             counter_group_accessor,
-                                                    const std::vector<unsigned int>&                      max_counters_per_group,
-                                                    unsigned int&                                         num_scheduled_counters) = 0;
+    /// @return A GpaStatus code indicating if the counters could be scheduled successfully.
+    virtual GpaStatus SplitCounters(const std::vector<const GpaDerivedCounterInfoClass*>& public_counters_to_split,
+                                    const std::vector<GpaHardwareCounterIndices>&         internal_counters_to_schedule,
+                                    IGpaCounterGroupAccessor*                             counter_group_accessor,
+                                    const std::vector<unsigned int>&                      max_counters_per_group,
+                                    unsigned int&                                         num_scheduled_counters,
+                                    std::list<GpaCounterPass>&                            pass_partitions) = 0;
 
     /// @brief Get the counter result locations.
     ///

@@ -10,15 +10,18 @@
 
 #include <assert.h>
 
-// AMD Ext
-#pragma warning(push)
-#pragma warning(disable : 4201)
 #include <AmdExtGpaInterfaceApi.h>
 
 #include "gpa_counter_accessor_interface.h"
 #include "gpa_pass.h"
 #include "gpa_session_interface.h"
 #include "logging.h"
+
+#if defined(_MSC_VER)
+#pragma warning(push)
+// AmdExtGpaSampleConfigPre1850 and AmdExtGpaSampleConfigPre2240 employ nonstandard nameless struct/union extension.
+#pragma warning(disable : 4201)
+#endif
 
 /// @brief Input structure for CmdBeginGpuProfilerSample on drivers older than 18.50.
 ///
@@ -230,7 +233,9 @@ struct AmdExtGpaSampleConfigPre2240
     }
 };
 
+#if defined(_MSC_VER)
 #pragma warning(pop)
+#endif
 
 struct CounterResultEntry
 {

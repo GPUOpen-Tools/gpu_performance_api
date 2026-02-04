@@ -17,6 +17,8 @@
 #include <array>
 #include <gtest/gtest.h>
 
+#include <DeviceInfoUtils.h>
+
 #include "gpu_performance_api/gpu_perf_api.h"
 #include "gpu_performance_api/gpu_perf_api_counters.h"
 #include "gpu_performance_api/gpu_perf_api_types.h"
@@ -73,6 +75,8 @@ constexpr unsigned int kDevIdGfx10_3_3     = 0x163f;      ///< Gfx10_3_3.
 constexpr unsigned int kDevIdGfx10_3_4     = 0x743F;      ///< Gfx10_3_4.
 constexpr unsigned int kDevIdGfx10_3_5     = 0x164D;      ///< Gfx10_3_5.
 constexpr unsigned int kDevIdGfx11         = 0x744C;      ///< Gfx11.
+constexpr unsigned int kDevIdGfx11_0_1     = 0x73C8;      ///< Gfx11_0_1.
+constexpr unsigned int kDevIdGfx11_0_2     = 0x7480;      ///< Gfx11_0_2.
 constexpr unsigned int kDevIdGfx11_0_3     = 0x15BF;      ///< Gfx11_0_3.
 constexpr unsigned int kDevIdGfx11_0_3B    = 0x15C8;      ///< Gfx11_0_3B.
 constexpr unsigned int kDevIdGfx11_0_3H    = 0x1900;      ///< Gfx11_0_3 HawkPoint
@@ -90,6 +94,8 @@ inline constexpr std::array kSupportedDeviceIds = {
     kDevIdGfx10_3_4,
     kDevIdGfx10_3_5,
     kDevIdGfx11,
+    kDevIdGfx11_0_1,
+    kDevIdGfx11_0_2,
     kDevIdGfx11_0_3,
     kDevIdGfx11_0_3B,
     kDevIdGfx11_0_3H,

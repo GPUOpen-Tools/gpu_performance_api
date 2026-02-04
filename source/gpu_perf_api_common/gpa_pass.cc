@@ -32,11 +32,16 @@ GpaPass::GpaPass(IGpaSession* gpa_session, PassIndex pass_index, GpaCounterSourc
 
     if (nullptr != counter_list_ && !counter_list_->empty())
     {
-        const GpaHardwareCounters& hardware_counters = GpaContextCounterMediator::Instance()->GetCounterAccessor(GetGpaSession())->GetHardwareCounters();
-        const CounterIndex         front             = counter_list_->front();
-        if (hardware_counters.IsTimeCounterIndex(front))
+        const IGpaCounterAccessor* counter_accessor = GpaContextCounterMediator::GetCounterAccessor(GetGpaSession());
+        assert(counter_accessor != nullptr);
+        if (nullptr != counter_accessor)
         {
-            is_timing_pass_ = true;
+            const GpaHardwareCounters& hardware_counters = counter_accessor->GetHardwareCounters();
+            const CounterIndex         front             = counter_list_->front();
+            if (hardware_counters.IsTimeCounterIndex(front))
+            {
+                is_timing_pass_ = true;
+            }
         }
     }
 
@@ -536,7 +541,7 @@ bool GpaPass::IsResultsCollectedFromDriver() const
 
 const IGpaCounterAccessor* GpaPass::GetSessionContextCounterAccessor() const
 {
-    return GpaContextCounterMediator::Instance()->GetCounterAccessor(GetGpaSession());
+    return GpaContextCounterMediator::GetCounterAccessor(GetGpaSession());
 }
 
 void GpaPass::AddCommandList(IGpaCommandList* gpa_command_list)
@@ -596,7 +601,14 @@ void GpaPass::IterateSkippedCounterList(const std::function<bool(const CounterIn
 
 bool GpaPass::FindBottomToBottomTimingDurationCounter() const
 {
-    const GpaHardwareCounters& hardware_counters = GpaContextCounterMediator::Instance()->GetCounterAccessor(GetGpaSession())->GetHardwareCounters();
+    const IGpaCounterAccessor* counter_accessor = GpaContextCounterMediator::GetCounterAccessor(GetGpaSession());
+    assert(counter_accessor != nullptr);
+    if (counter_accessor == nullptr)
+    {
+        return false;
+    }
+
+    const GpaHardwareCounters& hardware_counters = counter_accessor->GetHardwareCounters();
 
     const auto it = std::find(counter_list_->begin(), counter_list_->end(), hardware_counters.gpu_time_bottom_to_bottom_duration_counter_index_);
     const bool found = (it != counter_list_->end());
@@ -606,7 +618,14 @@ bool GpaPass::FindBottomToBottomTimingDurationCounter() const
 
 bool GpaPass::FindTopToBottomTimingDurationCounter() const
 {
-    const GpaHardwareCounters& hardware_counters = GpaContextCounterMediator::Instance()->GetCounterAccessor(GetGpaSession())->GetHardwareCounters();
+    const IGpaCounterAccessor* counter_accessor = GpaContextCounterMediator::GetCounterAccessor(GetGpaSession());
+    assert(counter_accessor != nullptr);
+    if (counter_accessor == nullptr)
+    {
+        return false;
+    }
+
+    const GpaHardwareCounters& hardware_counters = counter_accessor->GetHardwareCounters();
 
     const auto it = std::find(counter_list_->begin(), counter_list_->end(), hardware_counters.gpu_time_top_to_bottom_duration_counter_index_);
     const bool found = (it != counter_list_->end());

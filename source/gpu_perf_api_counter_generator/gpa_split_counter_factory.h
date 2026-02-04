@@ -51,54 +51,53 @@ public:
     /// @param [in] isolated_from_sq_groups The list of counter groups that must be isolated from SQ counter groups.
     ///
     /// @return The counter splitter.
-    static IGpaSplitCounters* GetNewCounterSplitter(GpaCounterSplitterAlgorithm   algorithm,
-                                                    const std::set<unsigned int>& timestamp_block_ids,
-                                                    const std::set<unsigned int>& eop_time_counter_indices,
-                                                    const std::set<unsigned int>& top_time_counter_indices,
-                                                    unsigned int                  max_sq_counters,
-                                                    unsigned int                  num_sq_groups,
-                                                    GpaSqCounterGroupDesc*        sq_counter_block_info,
-                                                    unsigned int                  num_isolated_from_sq_groups,
-                                                    const unsigned int*           isolated_from_sq_groups)
+    static std::unique_ptr<IGpaSplitCounters> GetNewCounterSplitter(GpaCounterSplitterAlgorithm   algorithm,
+                                                                    const std::set<unsigned int>& timestamp_block_ids,
+                                                                    const std::set<unsigned int>& eop_time_counter_indices,
+                                                                    const std::set<unsigned int>& top_time_counter_indices,
+                                                                    unsigned int                  max_sq_counters,
+                                                                    unsigned int                  num_sq_groups,
+                                                                    GpaSqCounterGroupDesc*        sq_counter_block_info,
+                                                                    unsigned int                  num_isolated_from_sq_groups,
+                                                                    const unsigned int*           isolated_from_sq_groups)
     {
-        IGpaSplitCounters* splitter = nullptr;
+        std::unique_ptr<IGpaSplitCounters> splitter = nullptr;
 
-        if (kMaxPerPass == algorithm)
+        switch (algorithm)
         {
-            splitter = new (std::nothrow) GpaSplitCountersMaxPerPass(timestamp_block_ids,
-                                                                     eop_time_counter_indices,
-                                                                     top_time_counter_indices,
-                                                                     max_sq_counters,
-                                                                     num_sq_groups,
-                                                                     sq_counter_block_info,
-                                                                     num_isolated_from_sq_groups,
-                                                                     isolated_from_sq_groups);
-        }
-        else if (kOnePublicCounterPerPass == algorithm)
-        {
-            splitter = new (std::nothrow) GpaSplitCountersOnePerPass(timestamp_block_ids,
-                                                                     eop_time_counter_indices,
-                                                                     top_time_counter_indices,
-                                                                     max_sq_counters,
-                                                                     num_sq_groups,
-                                                                     sq_counter_block_info,
-                                                                     num_isolated_from_sq_groups,
-                                                                     isolated_from_sq_groups);
-        }
-        else if (kConsolidated == algorithm)
-        {
-            splitter = new (std::nothrow) GpaSplitCountersConsolidated(timestamp_block_ids,
-                                                                       eop_time_counter_indices,
-                                                                       top_time_counter_indices,
-                                                                       max_sq_counters,
-                                                                       num_sq_groups,
-                                                                       sq_counter_block_info,
-                                                                       num_isolated_from_sq_groups,
-                                                                       isolated_from_sq_groups);
-        }
-        else
-        {
+        case kMaxPerPass:
+            splitter = std::make_unique<GpaSplitCountersMaxPerPass>(timestamp_block_ids,
+                                                                    eop_time_counter_indices,
+                                                                    top_time_counter_indices,
+                                                                    max_sq_counters,
+                                                                    num_sq_groups,
+                                                                    sq_counter_block_info,
+                                                                    num_isolated_from_sq_groups,
+                                                                    isolated_from_sq_groups);
+            break;
+        case kOnePublicCounterPerPass:
+            splitter = std::make_unique<GpaSplitCountersOnePerPass>(timestamp_block_ids,
+                                                                    eop_time_counter_indices,
+                                                                    top_time_counter_indices,
+                                                                    max_sq_counters,
+                                                                    num_sq_groups,
+                                                                    sq_counter_block_info,
+                                                                    num_isolated_from_sq_groups,
+                                                                    isolated_from_sq_groups);
+            break;
+        case kConsolidated:
+            splitter = std::make_unique<GpaSplitCountersConsolidated>(timestamp_block_ids,
+                                                                      eop_time_counter_indices,
+                                                                      top_time_counter_indices,
+                                                                      max_sq_counters,
+                                                                      num_sq_groups,
+                                                                      sq_counter_block_info,
+                                                                      num_isolated_from_sq_groups,
+                                                                      isolated_from_sq_groups);
+            break;
+        default:
             assert(!"Unhandled GpaCounterSplitAlgorithm supplied to factory.");
+            break;
         }
 
         if (nullptr == splitter)

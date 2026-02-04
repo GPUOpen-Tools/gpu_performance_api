@@ -174,8 +174,14 @@ It was discovered that the improvements introduced in Vega, RDNA, and RDNA2 arch
 | CS             |         |         |          |          |       |   CS    |
 
 ## Known Issues
-### GpaGetDeviceMaxWaveSlots may report an incorrect number with DX11 APIs.
-DX11 may report incorrect values on drivers older than Adrenalin `25.8.1`.
+
+### Unable to set clock mode on Windows after Nth time (N ~= 50)
+After a large number of consecutive profiling sessions (typically around 50), the GPU Performance API (GPA) may become unable to configure the GPU clock mode on Windows systems.
+
+This behavior has been traced to an issue in the AMD Windows kernel‑mode driver. The only known workaround is to restart the system when this condition occurs.
+
+### Intermittent TDR Events on RDNA4 GPUs
+During profiling on AMD RDNA4‑based graphics hardware, users may encounter sporadic Timeout Detection and Recovery (TDR) events. AMD is actively investigating the root cause and working on a fix.
 
 ### GPA doesn't support MESA on Linux
 GPA is only compatible with AMD's Pro and Open Source drivers.

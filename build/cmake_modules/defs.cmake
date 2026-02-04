@@ -1,4 +1,4 @@
-## Copyright (C) 2018-2025 Advanced Micro Devices, Inc. All rights reserved. ##
+## Copyright (C) 2018-2026 Advanced Micro Devices, Inc. All rights reserved. ##
 
 if(NOT DEFINED GPA_OUTPUT_DIR)
     set(GPA_OUTPUT_DIR ${PROJECT_SOURCE_DIR}/build/output)
@@ -30,10 +30,7 @@ set(GPA_SRC_THIRD_PARTY                                     "${PROJECT_SOURCE_DI
 ## List of common cmake files
 set(CMAKE_COMMON_SRC_GLOBAL_CMAKE_MODULE                    ${GPA_SRC_THIRD_PARTY}/CMakeModules/Global-Common.cmake)
 set(CMAKE_COMMON_SRC_GLOBAL_INTERNAL                        ${GPA_SRC_THIRD_PARTY}/CMakeModules/Global-Internal.cmake)
-set(CMAKE_COMMON_SRC_GLOBAL_AMD_DX_EXT                      ${GPA_SRC_THIRD_PARTY}/AmdDxExt/Global-AmdDxExt.cmake)
-set(CMAKE_COMMON_SRC_GLOBAL_AMD_VK_EXT                      ${GPA_SRC_THIRD_PARTY}/AmdVkExt/Global-AmdVkExt.cmake)
 set(CMAKE_COMMON_LIB_GLOBAL_EXT_OPENGL                      ${GPA_SRC_THIRD_PARTY}/opengl/Global-OpenGL.cmake)
-set(CMAKE_COMMON_LIB_GLOBAL_EXT_VULKAN                      ${GPA_SRC_THIRD_PARTY}/Vulkan/Global-Vulkan.cmake)
 
 ## Variables for installation.
 
@@ -41,6 +38,7 @@ set(GPA_INSTALL_PREFIX ${PROJECT_VERSION_MAJOR}_${PROJECT_VERSION_MINOR})
 set(GPA_INSTALL_BINDIR ${GPA_INSTALL_PREFIX}/bin)
 set(GPA_INSTALL_LIBDIR ${GPA_INSTALL_PREFIX}/lib)
 set(GPA_INSTALL_INCLUDEDIR ${GPA_INSTALL_PREFIX}/include)
+set(GPA_INSTALL_TESTDIR TestKit/Tests)
 
 ## Options controlling the behavior of clang tools
 

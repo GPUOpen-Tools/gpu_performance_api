@@ -5,6 +5,7 @@
 /// @brief Functions for evaluating derived counter formula.
 //==============================================================================
 
+#include <cinttypes>
 #include <vector>
 
 #include "gpu_performance_api/gpu_perf_api_types.h"
@@ -283,8 +284,7 @@ static GpaStatus EvaluateExpression(const char*                     expression,
     vector<T> stack;
     T*        write_result = reinterpret_cast<T*>(result);
 
-    char* context = nullptr;
-    context;  //TODO: gcc is not considering unused in strtok_s
+    [[maybe_unused]] char* context = nullptr;
     char* pch = strtok_s(buffer.data(), " ,", &context);
 
     while (nullptr != pch)
@@ -354,9 +354,9 @@ static GpaStatus EvaluateExpression(const char*                     expression,
             else if (result_type == kGpaDataTypeUint64)
             {
 #ifdef _LINUX
-                scan_result = sscanf(pch, "(%llu)", reinterpret_cast<GpaUInt64*>(&constant));
+                scan_result = sscanf(pch, "(%" PRIu64 ")", reinterpret_cast<GpaUInt64*>(&constant));
 #else
-                scan_result = sscanf_s(pch, "(%I64u)", reinterpret_cast<GpaUInt64*>(&constant));
+                scan_result = sscanf_s(pch, "(%" PRIu64 ")", reinterpret_cast<GpaUInt64*>(&constant));
 #endif
             }
             else

@@ -11,7 +11,7 @@
 #define GPU_PERFORMANCE_API_GPU_PERF_API_TYPES_H_
 
 #include <limits.h>
-
+#include <stdint.h>
 #ifdef _WIN32
 #include <Windows.h>
 typedef HMODULE LibHandle;  ///< Typedef for HMODULE for loading the library on windows.
@@ -54,15 +54,14 @@ typedef struct _GpaUuid
 #endif
 static_assert(sizeof(GpaUuid) == 16, "GpaUuid is expected to be a 16-byte packed structure");
 
-typedef float          GpaFloat32;  ///< GPA specific type for 32-bit float.
-typedef double         GpaFloat64;  ///< GPA specific type for 64-bit float.
-typedef unsigned char  GpaUInt8;    ///< GPA specific type for 8-bit unsigned integer.
-typedef unsigned short GpaUInt16;   ///< GPA specific type for 16-bit unsigned integer.
-typedef unsigned int   GpaUInt32;   ///< GPA specific type for 32-bit unsigned integer.
+typedef float    GpaFloat32;  ///< GPA specific type for 32-bit float.
+typedef double   GpaFloat64;  ///< GPA specific type for 64-bit float.
+typedef uint8_t  GpaUInt8;    ///< GPA specific type for 8-bit unsigned integer.
+typedef uint16_t GpaUInt16;   ///< GPA specific type for 16-bit unsigned integer.
+typedef uint32_t GpaUInt32;   ///< GPA specific type for 32-bit unsigned integer.
+typedef uint64_t GpaUInt64;   ///< GPA specific type for 64-bit unsigned integer.
 
-#ifdef _WIN32
-typedef unsigned __int64 GpaUInt64;  ///< GPA specific type for 64-bit unsigned integer.
-#else                                // _WIN32
+#ifndef _WIN32
 #ifndef GPA_LIB_DECL
 #ifdef __cplusplus
 #define GPA_LIB_DECL extern "C"
@@ -70,8 +69,6 @@ typedef unsigned __int64 GpaUInt64;  ///< GPA specific type for 64-bit unsigned 
 #define GPA_LIB_DECL
 #endif
 #endif
-
-typedef unsigned long long GpaUInt64;  ///< GPA specific type for 64-bit unsigned integer.
 
 #ifndef UNREFERENCED_PARAMETER
 #define UNREFERENCED_PARAMETER(x) (void)(x)
@@ -98,7 +95,6 @@ typedef unsigned long long GpaUInt64;  ///< GPA specific type for 64-bit unsigne
 #ifndef FALSE
 #define FALSE 0
 #endif
-
 #endif
 
 /// Macro for max uint32.
@@ -290,6 +286,7 @@ typedef enum
     kGpaHwGenerationCdna2,                                  ///< CDNA 2
     kGpaHwGenerationCdna3,                                  ///< CDNA 3
     kGpaHwGenerationGfx12,                                  ///< GFX IP 12.
+    kGpaHwGenerationCdna4,                                  ///< CDNA 4
     kGpaHwGenerationLast                                    ///< Marker indicating last element.
 } GpaHwGeneration;
 

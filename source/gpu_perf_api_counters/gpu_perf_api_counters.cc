@@ -45,6 +45,16 @@ BOOL WINAPI DllMain(HINSTANCE, DWORD reason, LPVOID)
     }
     return TRUE;
 }
+
+// Using the static version of the runtime libraries simplifies installation and can help with performance.
+#ifndef _MT
+#error "Use the multithread, static version of the runtime library!"
+#endif
+
+#ifndef _CONTROL_FLOW_GUARD
+#error "Control flow guard is not enabled!"
+#endif
+
 #endif
 
 #ifdef __linux__
@@ -306,7 +316,6 @@ GPU_PERF_API_COUNTERS_DECL GpaStatus GpaCounterLibGetNumCounters(const GpaCounte
     }
 
     const IGpaCounterAccessor* counter_accessor = GpaCounterContextManager::Instance()->GetCounterAccessor(gpa_virtual_context);
-
     if (nullptr != counter_accessor)
     {
         *counter_count = counter_accessor->GetNumCounters();
@@ -331,7 +340,6 @@ GPU_PERF_API_COUNTERS_DECL GpaStatus GpaCounterLibGetCounterName(const GpaCounte
     }
 
     const IGpaCounterAccessor* counter_accessor = GpaCounterContextManager::Instance()->GetCounterAccessor(gpa_virtual_context);
-
     if (nullptr != counter_accessor)
     {
         *gpa_counter_name = counter_accessor->GetCounterName(gpa_counter_index);
@@ -367,7 +375,6 @@ GPU_PERF_API_COUNTERS_DECL GpaStatus GpaCounterLibGetCounterIndex(const GpaCount
     }
 
     const IGpaCounterAccessor* counter_accessor = GpaCounterContextManager::Instance()->GetCounterAccessor(gpa_virtual_context);
-
     if (nullptr != counter_accessor)
     {
         bool counter_found = false;
@@ -410,7 +417,6 @@ GPU_PERF_API_COUNTERS_DECL GpaStatus GpaCounterLibGetCounterGroup(const GpaCount
     }
 
     const IGpaCounterAccessor* counter_accessor = GpaCounterContextManager::Instance()->GetCounterAccessor(gpa_virtual_context);
-
     if (nullptr != counter_accessor)
     {
         *gpa_counter_group = counter_accessor->GetCounterGroup(gpa_counter_index);
@@ -435,7 +441,6 @@ GPU_PERF_API_COUNTERS_DECL GpaStatus GpaCounterLibGetCounterDescription(const Gp
     }
 
     const IGpaCounterAccessor* counter_accessor = GpaCounterContextManager::Instance()->GetCounterAccessor(gpa_virtual_context);
-
     if (nullptr != counter_accessor)
     {
         *gpa_counter_description = counter_accessor->GetCounterDescription(gpa_counter_index);
@@ -460,7 +465,6 @@ GPU_PERF_API_COUNTERS_DECL GpaStatus GpaCounterLibGetCounterDataType(const GpaCo
     }
 
     const IGpaCounterAccessor* counter_accessor = GpaCounterContextManager::Instance()->GetCounterAccessor(gpa_virtual_context);
-
     if (nullptr != counter_accessor)
     {
         *gpa_counter_data_type = counter_accessor->GetCounterDataType(gpa_counter_index);
@@ -485,7 +489,6 @@ GPU_PERF_API_COUNTERS_DECL GpaStatus GpaCounterLibGetCounterUsageType(const GpaC
     }
 
     const IGpaCounterAccessor* counter_accessor = GpaCounterContextManager::Instance()->GetCounterAccessor(gpa_virtual_context);
-
     if (nullptr != counter_accessor)
     {
         *gpa_counter_usage_type = counter_accessor->GetCounterUsageType(gpa_counter_index);
@@ -510,7 +513,6 @@ GPU_PERF_API_COUNTERS_DECL GpaStatus GpaCounterLibGetCounterUuid(const GpaCounte
     }
 
     const IGpaCounterAccessor* counter_accessor = GpaCounterContextManager::Instance()->GetCounterAccessor(gpa_virtual_context);
-
     if (nullptr != counter_accessor)
     {
         *gpa_counter_uuid = counter_accessor->GetCounterUuid(gpa_counter_index);
@@ -535,7 +537,6 @@ GPU_PERF_API_COUNTERS_DECL GpaStatus GpaCounterLibGetCounterSampleType(const Gpa
     }
 
     const IGpaCounterAccessor* counter_accessor = GpaCounterContextManager::Instance()->GetCounterAccessor(gpa_virtual_context);
-
     if (nullptr != counter_accessor)
     {
         *gpa_counter_sample_type = counter_accessor->GetCounterSampleType(gpa_counter_index);
@@ -560,7 +561,6 @@ GPU_PERF_API_COUNTERS_DECL GpaStatus GpaCounterLibGetCounterInfo(const GpaCounte
     }
 
     const IGpaCounterAccessor* counter_accessor = GpaCounterContextManager::Instance()->GetCounterAccessor(gpa_virtual_context);
-
     if (nullptr != counter_accessor)
     {
         GpaCounterInfo* gpa_counter_info_temp = counter_accessor->GetCounterInfo(gpa_counter_index);
@@ -699,7 +699,6 @@ GPU_PERF_API_COUNTERS_DECL GpaStatus GpaCounterLibGetCountersByPass(const GpaCou
     }
 
     const IGpaCounterAccessor* counter_accessor = GpaCounterContextManager::Instance()->GetCounterAccessor(gpa_virtual_context);
-
     if (nullptr == counter_accessor)
     {
         return kGpaStatusErrorFailed;

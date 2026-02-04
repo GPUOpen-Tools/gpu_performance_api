@@ -226,12 +226,12 @@ public:
     /// @brief Checks if the Bottom-Of-Pipe (BOP) to BOP timing counter is found.
     ///
     /// @return True if the BOP to BOP timing counter is found.
-    bool FindBottomToBottomTimingDurationCounter() const;
+    [[nodiscard]] bool FindBottomToBottomTimingDurationCounter() const;
 
     /// @brief Checks if the Top-Of-Pipe (TOP) to Bottom-Of-Pipe (BOP) timing counter is found.
     ///
     /// @return True if the TOP to BOP timing counter is found.
-    bool FindTopToBottomTimingDurationCounter() const;
+    [[nodiscard]] bool FindTopToBottomTimingDurationCounter() const;
 
     /// @brief Iterate over all the counter in the pass.
     ///
@@ -259,7 +259,7 @@ public:
     /// @brief Returns the counter accessor for the pass' session context.
     ///
     /// @return counter accessor.
-    const IGpaCounterAccessor* GetSessionContextCounterAccessor() const;
+    [[nodiscard]] const IGpaCounterAccessor* GetSessionContextCounterAccessor() const;
 
 protected:
     /// @brief Checks to see if the supplied ClientSampleId has been opened on this pass.

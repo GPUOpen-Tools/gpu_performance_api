@@ -1,4 +1,4 @@
-## Copyright (C) 2023-2025 Advanced Micro Devices, Inc. All rights reserved. ##
+## Copyright (C) 2023-2026 Advanced Micro Devices, Inc. All rights reserved. ##
 
 include(${GPA_CMAKE_MODULES_DIR}/clang_utils.cmake)
 
@@ -61,22 +61,4 @@ endif()
 ## Macro to exclude a target from the default build process
 macro(REMOVE_TARGET_FROM_BUILD TARGET_NAME)
     set_property(TARGET ${ARGV0} PROPERTY ${EXCLUDE_FROM_BUILD} ON)
-endmacro()
-
-## Macro to remove C++ options for C builds
-macro(REMOVE_CPP_COMPILE_OPTIONS)
-    get_property(NATIVE_C_BUILD_OPTIONS DIRECTORY PROPERTY COMPILE_OPTIONS)
-    set(USE_COMPILE_OPTIONS "")
-
-    foreach(OPTION IN ITEMS ${NATIVE_C_BUILD_OPTIONS})
-        if(OPTION STREQUAL "-std=c++11")
-            continue()
-        elseif(OPTION STREQUAL "-std=c++17")
-            continue()
-        elseif(OPTION STREQUAL "-Wno-non-virtual-dtor")
-            continue()
-        endif()
-        set(USE_COMPILE_OPTIONS ${USE_COMPILE_OPTIONS} ${OPTION})
-    endforeach()
-    set_property(DIRECTORY PROPERTY COMPILE_OPTIONS ${USE_COMPILE_OPTIONS})
 endmacro()

@@ -1479,10 +1479,9 @@ TEST_P(GpaApiErrorTest, FunctionTable)
     GpaStatus status = gpa_function_table_->GpaGetFuncTable(nullptr);
     EXPECT_EQ(kGpaStatusErrorNullPointer, status) << "GpaGetFuncTable should return kGpaStatusErrorNullPointer if passed a nullptr";
 
-    GpaFunctionTable* function_table = nullptr;
+    std::unique_ptr<GpaFunctionTable> function_table = std::make_unique<GpaFunctionTable>();
 
-    function_table = new GpaFunctionTable();
-    status         = gpa_function_table_->GpaGetFuncTable(reinterpret_cast<void*>(function_table));
+    status = gpa_function_table_->GpaGetFuncTable(reinterpret_cast<void*>(function_table.get()));
     ASSERT_EQ(kGpaStatusOk, status) << "GpaGetFuncTable should return kGpaStatusOk upon success.";
     EXPECT_EQ(function_table->major_version, GPA_FUNCTION_TABLE_MAJOR_VERSION_NUMBER)
         << "A GpaFunctionTable properly initialized by GpaGetFuncTable should contain the correct "
@@ -1493,16 +1492,16 @@ TEST_P(GpaApiErrorTest, FunctionTable)
 
     // The table consists of a certain number of void*'s for each function pointer, as well as
     // two GpaUInt32's for the major_version and minor_version.
-    const std::size_t EXPECTED_TABLE_SIZE = (71 * sizeof(void*)) + (2 * sizeof(GpaUInt32));
-    EXPECT_EQ(function_table->minor_version, EXPECTED_TABLE_SIZE) << "A GpaFunctionTable properly "
-                                                                     "initialized by GpaGetFuncTable should contain the expected number of entry points; "
-                                                                     "additional entry should be appended to the end of the function table in "
-                                                                     "gpu_perf_api_functions.h to ensure binary compatibility with applications linked against "
-                                                                     "older versions of GPA.";
+    constexpr std::size_t kExpectedTableSize = (72 * sizeof(void*)) + (2 * sizeof(GpaUInt32));
+    EXPECT_EQ(function_table->minor_version, kExpectedTableSize) << "A GpaFunctionTable properly "
+                                                                    "initialized by GpaGetFuncTable should contain the expected number of entry points; "
+                                                                    "additional entry should be appended to the end of the function table in "
+                                                                    "gpu_perf_api_functions.h to ensure binary compatibility with applications linked against "
+                                                                    "older versions of GPA.";
 
     function_table->major_version = 1024;
     function_table->minor_version = 0;
-    status                        = gpa_function_table_->GpaGetFuncTable(reinterpret_cast<void*>(function_table));
+    status                        = gpa_function_table_->GpaGetFuncTable(reinterpret_cast<void*>(function_table.get()));
     ASSERT_EQ(kGpaStatusErrorLibLoadMajorVersionMismatch, status) << "GpaGetFuncTable should return kGpaStatusErrorLibLoadMajorVersionMismatch when the "
                                                                      "minor_version of the GpaFunctionTable it receives is set to 0.";
     EXPECT_EQ(function_table->major_version, GPA_FUNCTION_TABLE_MAJOR_VERSION_NUMBER)
@@ -1514,7 +1513,7 @@ TEST_P(GpaApiErrorTest, FunctionTable)
 
     function_table->major_version = GPA_FUNCTION_TABLE_MAJOR_VERSION_NUMBER;
     function_table->minor_version = GPA_FUNCTION_TABLE_MINOR_VERSION_NUMBER + 1024;
-    status                        = function_table->GpaGetFuncTable(reinterpret_cast<void*>(function_table));
+    status                        = function_table->GpaGetFuncTable(reinterpret_cast<void*>(function_table.get()));
     ASSERT_EQ(kGpaStatusErrorLibLoadMinorVersionMismatch, status)
         << "GpaGetFuncTable should return kGpaStatusErrorLibLoadMajorVersionMismatch when the "
            "minor_version of the GpaFunctionTable it receives is set to a value greater than expected.";
@@ -1525,10 +1524,9 @@ TEST_P(GpaApiErrorTest, FunctionTable)
         << "GpaGetFuncTable should set the minor_version of a GpaFunctionTable to the correct "
            "minor version number even if initialized to an incorrect value.";
 
-    delete function_table;
-    function_table = new GpaFunctionTable();
+    function_table = std::make_unique<GpaFunctionTable>();
     function_table->minor_version -= sizeof(void*);
-    status = gpa_function_table_->GpaGetFuncTable(reinterpret_cast<void*>(function_table));
+    status = gpa_function_table_->GpaGetFuncTable(reinterpret_cast<void*>(function_table.get()));
     ASSERT_EQ(kGpaStatusOk, status) << "GpaGetFuncTable should return kGpaStatusOk when the minor_version of the "
                                        "GpaFunctionTable it receives is set to a value less than expected.";
     EXPECT_EQ(gpa_function_table_->major_version, GPA_FUNCTION_TABLE_MAJOR_VERSION_NUMBER)
@@ -1539,11 +1537,9 @@ TEST_P(GpaApiErrorTest, FunctionTable)
            "minor version number even if initialized to an incorrect value.";
 
     // Note: Whenever GPA function table changes, we need to update this with the last function in the GPA function table
-    EXPECT_EQ(nullptr, function_table->GpaGetDeviceMaxVgprs) << "When GpaGetFuncTable receives a GpaFunctionTable with a minor_version set to a value "
-                                                                "that is less than the size of the internal GPA function table, then all entries in the "
-                                                                "GpaFunctionTable beyond this value shall be set to a nullptr.";
-
-    delete function_table;
+    EXPECT_EQ(nullptr, function_table->GpaGetDeviceMaxLdsBytes) << "When GpaGetFuncTable receives a GpaFunctionTable with a minor_version set to a value "
+                                                                   "that is less than the size of the internal GPA function table, then all entries in the "
+                                                                   "GpaFunctionTable beyond this value shall be set to a nullptr.";
 }
 
 INSTANTIATE_TEST_SUITE_P(API, GpaApiErrorTest, GetApiParametersList());

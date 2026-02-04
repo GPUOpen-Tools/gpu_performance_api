@@ -8,6 +8,7 @@
 #ifndef GPU_PERF_API_COUNTER_GENERATOR_COMMON_GPA_HARDWARE_COUNTERS_H_
 #define GPU_PERF_API_COUNTER_GENERATOR_COMMON_GPA_HARDWARE_COUNTERS_H_
 
+#include <ranges>
 #include <sstream>
 
 #include "gpu_perf_api_common/gpa_common_defs.h"
@@ -115,140 +116,6 @@ public:
     /// @brief Initializes an instance of the GpaHardwareCounters class.
     GpaHardwareCounters()
     {
-        if (kHardwareBlockString.empty())
-        {
-            static_assert(kGpaHwBlockCpf == static_cast<GpaHwBlock>(kGpaInternalHwBlockCpf), "Mismatched block");
-            static_assert(kGpaHwBlockIa == static_cast<GpaHwBlock>(kGpaInternalHwBlockIa), "Mismatched block");
-            static_assert(kGpaHwBlockVgt == static_cast<GpaHwBlock>(kGpaInternalHwBlockVgt), "Mismatched block");
-            static_assert(kGpaHwBlockPa == static_cast<GpaHwBlock>(kGpaInternalHwBlockPa), "Mismatched block");
-            static_assert(kGpaHwBlockSc == static_cast<GpaHwBlock>(kGpaInternalHwBlockSc), "Mismatched block");
-            static_assert(kGpaHwBlockSpi == static_cast<GpaHwBlock>(kGpaInternalHwBlockSpi), "Mismatched block");
-            static_assert(kGpaHwBlockSq == static_cast<GpaHwBlock>(kGpaInternalHwBlockSq), "Mismatched block");
-            static_assert(kGpaHwBlockSx == static_cast<GpaHwBlock>(kGpaInternalHwBlockSx), "Mismatched block");
-            static_assert(kGpaHwBlockTa == static_cast<GpaHwBlock>(kGpaInternalHwBlockTa), "Mismatched block");
-            static_assert(kGpaHwBlockTd == static_cast<GpaHwBlock>(kGpaInternalHwBlockTd), "Mismatched block");
-            static_assert(kGpaHwBlockTcp == static_cast<GpaHwBlock>(kGpaInternalHwBlockTcp), "Mismatched block");
-            static_assert(kGpaHwBlockTcc == static_cast<GpaHwBlock>(kGpaInternalHwBlockTcc), "Mismatched block");
-            static_assert(kGpaHwBlockTca == static_cast<GpaHwBlock>(kGpaInternalHwBlockTca), "Mismatched block");
-            static_assert(kGpaHwBlockDb == static_cast<GpaHwBlock>(kGpaInternalHwBlockDb), "Mismatched block");
-            static_assert(kGpaHwBlockCb == static_cast<GpaHwBlock>(kGpaInternalHwBlockCb), "Mismatched block");
-            static_assert(kGpaHwBlockGds == static_cast<GpaHwBlock>(kGpaInternalHwBlockGds), "Mismatched block");
-            static_assert(kGpaHwBlockSrbm == static_cast<GpaHwBlock>(kGpaInternalHwBlockSrbm), "Mismatched block");
-            static_assert(kGpaHwBlockGrbm == static_cast<GpaHwBlock>(kGpaInternalHwBlockGrbm), "Mismatched block");
-            static_assert(kGpaHwBlockGrbmse == static_cast<GpaHwBlock>(kGpaInternalHwBlockGrbmse), "Mismatched block");
-            static_assert(kGpaHwBlockRlc == static_cast<GpaHwBlock>(kGpaInternalHwBlockRlc), "Mismatched block");
-            static_assert(kGpaHwBlockDma == static_cast<GpaHwBlock>(kGpaInternalHwBlockDma), "Mismatched block");
-            static_assert(kGpaHwBlockMc == static_cast<GpaHwBlock>(kGpaInternalHwBlockMc), "Mismatched block");
-            static_assert(kGpaHwBlockCpg == static_cast<GpaHwBlock>(kGpaInternalHwBlockCpg), "Mismatched block");
-            static_assert(kGpaHwBlockCpc == static_cast<GpaHwBlock>(kGpaInternalHwBlockCpc), "Mismatched block");
-            static_assert(kGpaHwBlockWd == static_cast<GpaHwBlock>(kGpaInternalHwBlockWd), "Mismatched block");
-            static_assert(kGpaHwBlockTcs == static_cast<GpaHwBlock>(kGpaInternalHwBlockTcs), "Mismatched block");
-            static_assert(kGpaHwBlockAtc == static_cast<GpaHwBlock>(kGpaInternalHwBlockAtc), "Mismatched block");
-            static_assert(kGpaHwBlockAtcl2 == static_cast<GpaHwBlock>(kGpaInternalHwBlockAtcl2), "Mismatched block");
-            static_assert(kGpaHwBlockMcvml2 == static_cast<GpaHwBlock>(kGpaInternalHwBlockMcvml2), "Mismatched block");
-            static_assert(kGpaHwBlockEa == static_cast<GpaHwBlock>(kGpaInternalHwBlockEa), "Mismatched block");
-            static_assert(kGpaHwBlockRpb == static_cast<GpaHwBlock>(kGpaInternalHwBlockRpb), "Mismatched block");
-            static_assert(kGpaHwBlockRmi == static_cast<GpaHwBlock>(kGpaInternalHwBlockRmi), "Mismatched block");
-            static_assert(kGpaHwBlockUmcch == static_cast<GpaHwBlock>(kGpaInternalHwBlockUmcch), "Mismatched block");
-            static_assert(kGpaHwBlockGe == static_cast<GpaHwBlock>(kGpaInternalHwBlockGe), "Mismatched block");
-            static_assert(kGpaHwBlockGl1A == static_cast<GpaHwBlock>(kGpaInternalHwBlockGl1A), "Mismatched block");
-            static_assert(kGpaHwBlockGl1C == static_cast<GpaHwBlock>(kGpaInternalHwBlockGl1C), "Mismatched block");
-            static_assert(kGpaHwBlockGl1Cg == static_cast<GpaHwBlock>(kGpaInternalHwBlockGl1Cg), "Mismatched block");
-            static_assert(kGpaHwBlockGl2A == static_cast<GpaHwBlock>(kGpaInternalHwBlockGl2A), "Mismatched block");
-            static_assert(kGpaHwBlockGl2C == static_cast<GpaHwBlock>(kGpaInternalHwBlockGl2C), "Mismatched block");
-            static_assert(kGpaHwBlockCha == static_cast<GpaHwBlock>(kGpaInternalHwBlockCha), "Mismatched block");
-            static_assert(kGpaHwBlockChc == static_cast<GpaHwBlock>(kGpaInternalHwBlockChc), "Mismatched block");
-            static_assert(kGpaHwBlockChcg == static_cast<GpaHwBlock>(kGpaInternalHwBlockChcg), "Mismatched block");
-            static_assert(kGpaHwBlockGus == static_cast<GpaHwBlock>(kGpaInternalHwBlockGus), "Mismatched block");
-            static_assert(kGpaHwBlockGcr == static_cast<GpaHwBlock>(kGpaInternalHwBlockGcr), "Mismatched block");
-            static_assert(kGpaHwBlockPh == static_cast<GpaHwBlock>(kGpaInternalHwBlockPh), "Mismatched block");
-            static_assert(kGpaHwBlockUtcl1 == static_cast<GpaHwBlock>(kGpaInternalHwBlockUtcl1), "Mismatched block");
-            static_assert(kGpaHwBlockGedist == static_cast<GpaHwBlock>(kGpaInternalHwBlockGedist), "Mismatched block");
-            static_assert(kGpaHwBlockGese == static_cast<GpaHwBlock>(kGpaInternalHwBlockGese), "Mismatched block");
-            static_assert(kGpaHwBlockDfmall == static_cast<GpaHwBlock>(kGpaInternalHwBlockDfmall), "Mismatched block");
-            static_assert(kGpaHwBlockSqWgp == static_cast<GpaHwBlock>(kGpaInternalHwBlockSqWgp), "Mismatched block");
-            static_assert(kGpaHwBlockPc == static_cast<GpaHwBlock>(kGpaInternalHwBlockPc), "Mismatched block");
-            static_assert(kGpaHwBlockGl1XA == static_cast<GpaHwBlock>(kGpaInternalHwBlockGl1XA), "Mismatched block");
-            static_assert(kGpaHwBlockGl1XC == static_cast<GpaHwBlock>(kGpaInternalHwBlockGl1XC), "Mismatched block");
-            static_assert(kGpaHwBlockWgs == static_cast<GpaHwBlock>(kGpaInternalHwBlockWgs), "Mismatched block");
-            static_assert(kGpaHwBlockEaCpwd == static_cast<GpaHwBlock>(kGpaInternalHwBlockEaCpwd), "Mismatched block");
-            static_assert(kGpaHwBlockEaSe == static_cast<GpaHwBlock>(kGpaInternalHwBlockEaSe), "Mismatched block");
-            static_assert(kGpaHwBlockCount == static_cast<GpaHwBlock>(kGpaInternalHwBlockSqFirst), "Mismatched block");
-
-            kHardwareBlockString = {GPA_ENUM_STRING_VAL(kGpaInternalHwBlockCpf, "CPF"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockIa, "IA"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockVgt, "VGT"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockPa, "PA_SU"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSc, "PA_SC"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSpi, "SPI"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSq, "SQ"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSx, "SX"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockTa, "TA"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockTd, "TD"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockTcp, "TCP"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockTcc, "TCC"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockTca, "TCA"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockDb, "DB"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockCb, "CB"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockGds, "GDS"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSrbm, "SRBM"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockGrbm, "GRBM"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockGrbmse, "GRBMSE"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockRlc, "RLC"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockDma, "DMA"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockMc, "MC"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockCpg, "CPG"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockCpc, "CPC"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockWd, "WD"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockTcs, "TCS"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockAtc, "ATC"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockAtcl2, "ATCL2"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockMcvml2, "MCVML2"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockEa, "GCEA"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockRpb, "RPB"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockRmi, "RMI"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockUmcch, "UMC"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockGe, "GE"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockGl1A, "GL1A"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockGl1C, "GL1C"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockGl1Cg, "GL1CG"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockGl2A, "GL2A"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockGl2C, "GL2C"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockCha, "CHA"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockChc, "CHC"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockChcg, "CHCG"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockGus, "GUS"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockGcr, "GCR"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockPh, "PA_PH"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockUtcl1, "UTCL1"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockGedist, "GEDIST"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockGese, "GESE"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockDfmall, "DFMALL"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqWgp, "SQWGP"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockPc, "PC"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockGl1XA, "GL1XA"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockGl1XC, "GL1XC"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockWgs, "WGS"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockEaCpwd, "GC_EA_CPWD"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockEa, "GC_EA_SE"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqPs, "SQ_PS"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqVs, "SQ_VS"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqGs, "SQ_GS"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqEs, "SQ_ES"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqHs, "SQ_HS"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqLs, "SQ_LS"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqCs, "SQ_CS"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqPs, "SQG_PS"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqGs, "SQG_GS"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqHs, "SQG_HS"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqCs, "SQG_CS"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqPs, "SQWGP_PS"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqGs, "SQWGP_GS"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqHs, "SQWGP_HS"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqCs, "SQWGP_CS"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqG, "SQG")};
-        }
-
         Clear();
     }
 
@@ -345,7 +212,7 @@ public:
                 }
             }
 
-            if ((size_t)gpa_internal_hardware_block >= kHardwareBlockString.size())
+            if (static_cast<size_t>(gpa_internal_hardware_block) >= kHardwareBlockString.size())
             {
                 // The supplied hardware block is out of range, so it cannot be added to the cache, nor found in the cache.
                 return false;
@@ -599,19 +466,32 @@ public:
 
     void GetHardwareBlock(const GpaUInt32& group, GpaHwBlock& gpa_hw_block, GpaShaderMask& gpa_shader_mask) const
     {
-        std::string group_name(internal_counter_groups_[group].name);
+        const GpaCounterGroupDesc& counter_description = internal_counter_groups_[group];
+        const std::string_view     group_name(counter_description.name);
 
         GpaInternalHardwareBlock internal_hw_block = kGpaInternalHwBlockCount;
         bool                     found             = false;
 
-        // Iterate backwards so that "SQ_PS" won't match "SQ". By iterating backwards, "SQ_PS" will always find SQ_PS"
-        // before "SQ".
+        // This relies on the order of kHardwareBlockString to have the more specific names later in the list.
+        // And can easily cause bugs if the order is changed without considering this code.
+        //
+        // IE: first we find "GE2_DIST" before "GE", so we correctly map to the GEDIST block instead of the GE block.
+        // Furthermore, the strings must match with the generated code
         for (auto block_iter = kHardwareBlockString.rbegin(); block_iter != kHardwareBlockString.rend(); ++block_iter)
         {
-            if (group_name.find(*block_iter) != std::string::npos)
+            // Allows us to loop through multiple block names in a single string, separated by '|'
+            // EX: GE_SE|GE2_SE since we need to match both to the same internal block.
+            for (const auto word : std::string_view(*block_iter) | std::views::split('|'))
             {
-                internal_hw_block = static_cast<GpaInternalHardwareBlock>(kHardwareBlockString.rend() - block_iter - 1);
-                found             = true;
+                if (!std::ranges::empty(std::ranges::search(group_name, word)))
+                {
+                    internal_hw_block = static_cast<GpaInternalHardwareBlock>(kHardwareBlockString.rend() - block_iter - 1);
+                    found             = true;
+                    break;
+                }
+            }
+            if (found)
+            {
                 break;
             }
         }
@@ -621,13 +501,20 @@ public:
             if (internal_hw_block >= kGpaInternalHwBlockSqFirst && internal_hw_block <= kGpaInternalHwBlockSqLast)
             {
                 // These ensure that the blocks and the shader mask are in the same order.
-                static_assert((kGpaInternalHwBlockSqPs - kGpaHwBlockCount) == kGpaShaderMaskPs, "");
-                static_assert((kGpaInternalHwBlockSqVs - kGpaHwBlockCount) == kGpaShaderMaskVs, "");
-                static_assert((kGpaInternalHwBlockSqGs - kGpaHwBlockCount) == kGpaShaderMaskGs, "");
-                static_assert((kGpaInternalHwBlockSqEs - kGpaHwBlockCount) == kGpaShaderMaskEs, "");
-                static_assert((kGpaInternalHwBlockSqHs - kGpaHwBlockCount) == kGpaShaderMaskHs, "");
-                static_assert((kGpaInternalHwBlockSqLs - kGpaHwBlockCount) == kGpaShaderMaskLs, "");
-                static_assert((kGpaInternalHwBlockSqCs - kGpaHwBlockCount) == kGpaShaderMaskCs, "");
+                static_assert((static_cast<uint32_t>(kGpaInternalHwBlockSqPs) - static_cast<uint32_t>(kGpaHwBlockCount)) ==
+                              static_cast<uint32_t>(kGpaShaderMaskPs));
+                static_assert((static_cast<uint32_t>(kGpaInternalHwBlockSqVs) - static_cast<uint32_t>(kGpaHwBlockCount)) ==
+                              static_cast<uint32_t>(kGpaShaderMaskVs));
+                static_assert((static_cast<uint32_t>(kGpaInternalHwBlockSqGs) - static_cast<uint32_t>(kGpaHwBlockCount)) ==
+                              static_cast<uint32_t>(kGpaShaderMaskGs));
+                static_assert((static_cast<uint32_t>(kGpaInternalHwBlockSqEs) - static_cast<uint32_t>(kGpaHwBlockCount)) ==
+                              static_cast<uint32_t>(kGpaShaderMaskEs));
+                static_assert((static_cast<uint32_t>(kGpaInternalHwBlockSqHs) - static_cast<uint32_t>(kGpaHwBlockCount)) ==
+                              static_cast<uint32_t>(kGpaShaderMaskHs));
+                static_assert((static_cast<uint32_t>(kGpaInternalHwBlockSqLs) - static_cast<uint32_t>(kGpaHwBlockCount)) ==
+                              static_cast<uint32_t>(kGpaShaderMaskLs));
+                static_assert((static_cast<uint32_t>(kGpaInternalHwBlockSqCs) - static_cast<uint32_t>(kGpaHwBlockCount)) ==
+                              static_cast<uint32_t>(kGpaShaderMaskCs));
 
                 gpa_hw_block = kGpaHwBlockSq;
 
@@ -1028,13 +915,13 @@ public:
     gpa_array_view<gpa_array_view<GpaHardwareCounterDesc>>
                                         counter_groups_array_;      ///< List of counter groups as defined by the list of internal counters in each group.
     gpa_array_view<GpaCounterGroupDesc> internal_counter_groups_;   ///< List of internal counter groups.
-    GpaCounterGroupDesc*             additional_groups_;         ///< List of internal counter groups exposed by the driver, but not known by GPA.
-    unsigned int                     additional_group_count_;    ///< The number of internal counter groups exposed by the driver, but not known by GPA.
-    GpaSqCounterGroupDesc*           sq_counter_groups_;         ///< List of GpaSqCounterGroupDesc.
-    unsigned int                     sq_group_count_;            ///< The number of internal SQ counter groups.
-    std::set<unsigned int>           timestamp_block_ids_;       ///< Set of timestamp block id's.
-    std::set<unsigned int>           eop_time_counter_indices_;  ///< Set of End-Of-Pipeline timestamp counter indices.
-    std::set<unsigned int>           top_time_counter_indices_;  ///< Set of Top-Of-Pipeline timestamp counter indices.
+    GpaCounterGroupDesc*                additional_groups_;         ///< List of internal counter groups exposed by the driver, but not known by GPA.
+    unsigned int                        additional_group_count_;    ///< The number of internal counter groups exposed by the driver, but not known by GPA.
+    GpaSqCounterGroupDesc*              sq_counter_groups_;         ///< List of GpaSqCounterGroupDesc.
+    unsigned int                        sq_group_count_;            ///< The number of internal SQ counter groups.
+    std::set<unsigned int>              timestamp_block_ids_;       ///< Set of timestamp block id's.
+    std::set<unsigned int>              eop_time_counter_indices_;  ///< Set of End-Of-Pipeline timestamp counter indices.
+    std::set<unsigned int>              top_time_counter_indices_;  ///< Set of Top-Of-Pipeline timestamp counter indices.
 
     std::set<unsigned int> level_waves_indices_;                      ///< Set of LEVEL_WAVES counter indices.
     unsigned int gpu_time_bottom_to_bottom_duration_counter_index_;   ///< The index of the GPUTime Bottom-to-Bottom duration counter (-1 if it doesn't exist).
@@ -1066,8 +953,141 @@ public:
     bool                                hardware_exposed_counters_generated_;             ///< Indicates that the hardware exposed counters have been generated.
     GpaPaddedCounterDesc*               padded_counters_;                                 ///< List of GPA padded counters by groups.
     unsigned int                        padded_counter_count_;                            ///< Count of GPA padded counter by group.
-    static std::vector<std::string>     kHardwareBlockString;                             ///< Internal hardware block string map.
     mutable std::map<CounterIndex, GpaCounterInfo*> counter_info_map_;                    ///< Map from counter index to counter info.
+
+    ///< Internal hardware block string literal map.
+    inline constexpr static std::array kHardwareBlockString = {GPA_ENUM_STRING_VAL(kGpaInternalHwBlockCpf, "CPF"),
+                                                               GPA_ENUM_STRING_VAL(kGpaInternalHwBlockIa, "IA"),
+                                                               GPA_ENUM_STRING_VAL(kGpaInternalHwBlockVgt, "VGT"),
+                                                               GPA_ENUM_STRING_VAL(kGpaInternalHwBlockPa, "PA_SU"),
+                                                               GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSc, "PA_SC"),
+                                                               GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSpi, "SPI"),
+                                                               GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSq, "SQ"),
+                                                               GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSx, "SX"),
+                                                               GPA_ENUM_STRING_VAL(kGpaInternalHwBlockTa, "TA"),
+                                                               GPA_ENUM_STRING_VAL(kGpaInternalHwBlockTd, "TD"),
+                                                               GPA_ENUM_STRING_VAL(kGpaInternalHwBlockTcp, "TCP"),
+                                                               GPA_ENUM_STRING_VAL(kGpaInternalHwBlockTcc, "TCC"),
+                                                               GPA_ENUM_STRING_VAL(kGpaInternalHwBlockTca, "TCA"),
+                                                               GPA_ENUM_STRING_VAL(kGpaInternalHwBlockDb, "DB"),
+                                                               GPA_ENUM_STRING_VAL(kGpaInternalHwBlockCb, "CB"),
+                                                               GPA_ENUM_STRING_VAL(kGpaInternalHwBlockGds, "GDS"),
+                                                               GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSrbm, "SRBM"),
+                                                               GPA_ENUM_STRING_VAL(kGpaInternalHwBlockGrbm, "GRBM"),
+                                                               GPA_ENUM_STRING_VAL(kGpaInternalHwBlockGrbmse, "GRBMSE"),
+                                                               GPA_ENUM_STRING_VAL(kGpaInternalHwBlockRlc, "RLC"),
+                                                               GPA_ENUM_STRING_VAL(kGpaInternalHwBlockDma, "DMA"),
+                                                               GPA_ENUM_STRING_VAL(kGpaInternalHwBlockMc, "MC"),
+                                                               GPA_ENUM_STRING_VAL(kGpaInternalHwBlockCpg, "CPG"),
+                                                               GPA_ENUM_STRING_VAL(kGpaInternalHwBlockCpc, "CPC"),
+                                                               GPA_ENUM_STRING_VAL(kGpaInternalHwBlockWd, "WD"),
+                                                               GPA_ENUM_STRING_VAL(kGpaInternalHwBlockTcs, "TCS"),
+                                                               GPA_ENUM_STRING_VAL(kGpaInternalHwBlockAtc, "ATC"),
+                                                               GPA_ENUM_STRING_VAL(kGpaInternalHwBlockAtcl2, "ATCL2"),
+                                                               GPA_ENUM_STRING_VAL(kGpaInternalHwBlockMcvml2, "MCVML2"),
+                                                               GPA_ENUM_STRING_VAL(kGpaInternalHwBlockEa, "GCEA"),
+                                                               GPA_ENUM_STRING_VAL(kGpaInternalHwBlockRpb, "RPB"),
+                                                               GPA_ENUM_STRING_VAL(kGpaInternalHwBlockRmi, "RMI"),
+                                                               GPA_ENUM_STRING_VAL(kGpaInternalHwBlockUmcch, "UMC"),
+                                                               GPA_ENUM_STRING_VAL(kGpaInternalHwBlockGe, "GE"),
+                                                               GPA_ENUM_STRING_VAL(kGpaInternalHwBlockGl1A, "GL1A"),
+                                                               GPA_ENUM_STRING_VAL(kGpaInternalHwBlockGl1C, "GL1C"),
+                                                               GPA_ENUM_STRING_VAL(kGpaInternalHwBlockGl1Cg, "GL1CG"),
+                                                               GPA_ENUM_STRING_VAL(kGpaInternalHwBlockGl2A, "GL2A"),
+                                                               GPA_ENUM_STRING_VAL(kGpaInternalHwBlockGl2C, "GL2C"),
+                                                               GPA_ENUM_STRING_VAL(kGpaInternalHwBlockCha, "CHA"),
+                                                               GPA_ENUM_STRING_VAL(kGpaInternalHwBlockChc, "CHC"),
+                                                               GPA_ENUM_STRING_VAL(kGpaInternalHwBlockChcg, "CHCG"),
+                                                               GPA_ENUM_STRING_VAL(kGpaInternalHwBlockGus, "GUS"),
+                                                               GPA_ENUM_STRING_VAL(kGpaInternalHwBlockGcr, "GCR"),
+                                                               GPA_ENUM_STRING_VAL(kGpaInternalHwBlockPh, "PA_PH"),
+                                                               GPA_ENUM_STRING_VAL(kGpaInternalHwBlockUtcl1, "UTCL1"),
+                                                               GPA_ENUM_STRING_VAL(kGpaInternalHwBlockGedist, "GE2_DIST"),
+                                                               // We must check for both GE_SE and GE2_SE since both map to the same internal block.
+                                                               GPA_ENUM_STRING_VAL(kGpaInternalHwBlockGese, "GE_SE|GE2_SE"),
+                                                               GPA_ENUM_STRING_VAL(kGpaInternalHwBlockDfmall, "DFMALL"),
+                                                               GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqWgp, "SQWGP"),
+                                                               GPA_ENUM_STRING_VAL(kGpaInternalHwBlockPc, "PC"),
+                                                               GPA_ENUM_STRING_VAL(kGpaInternalHwBlockGl1XA, "GL1XA"),
+                                                               GPA_ENUM_STRING_VAL(kGpaInternalHwBlockGl1XC, "GL1XC"),
+                                                               GPA_ENUM_STRING_VAL(kGpaInternalHwBlockWgs, "WGS"),
+                                                               GPA_ENUM_STRING_VAL(kGpaInternalHwBlockEaCpwd, "GC_EA_CPWD"),
+                                                               GPA_ENUM_STRING_VAL(kGpaInternalHwBlockEa, "GC_EA_SE"),
+                                                               GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqPs, "SQ_PS"),
+                                                               GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqVs, "SQ_VS"),
+                                                               GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqGs, "SQ_GS"),
+                                                               GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqEs, "SQ_ES"),
+                                                               GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqHs, "SQ_HS"),
+                                                               GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqLs, "SQ_LS"),
+                                                               GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqCs, "SQ_CS"),
+                                                               GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqPs, "SQG_PS"),
+                                                               GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqGs, "SQG_GS"),
+                                                               GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqHs, "SQG_HS"),
+                                                               GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqCs, "SQG_CS"),
+                                                               GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqPs, "SQWGP_PS"),
+                                                               GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqGs, "SQWGP_GS"),
+                                                               GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqHs, "SQWGP_HS"),
+                                                               GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqCs, "SQWGP_CS"),
+                                                               GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqG, "SQG")};
+
+    static_assert(kHardwareBlockString.size() == kGpaInternalHwBlockCount);
+    static_assert(kGpaHwBlockCpf == static_cast<GpaHwBlock>(kGpaInternalHwBlockCpf), "Mismatched block");
+    static_assert(kGpaHwBlockIa == static_cast<GpaHwBlock>(kGpaInternalHwBlockIa), "Mismatched block");
+    static_assert(kGpaHwBlockVgt == static_cast<GpaHwBlock>(kGpaInternalHwBlockVgt), "Mismatched block");
+    static_assert(kGpaHwBlockPa == static_cast<GpaHwBlock>(kGpaInternalHwBlockPa), "Mismatched block");
+    static_assert(kGpaHwBlockSc == static_cast<GpaHwBlock>(kGpaInternalHwBlockSc), "Mismatched block");
+    static_assert(kGpaHwBlockSpi == static_cast<GpaHwBlock>(kGpaInternalHwBlockSpi), "Mismatched block");
+    static_assert(kGpaHwBlockSq == static_cast<GpaHwBlock>(kGpaInternalHwBlockSq), "Mismatched block");
+    static_assert(kGpaHwBlockSx == static_cast<GpaHwBlock>(kGpaInternalHwBlockSx), "Mismatched block");
+    static_assert(kGpaHwBlockTa == static_cast<GpaHwBlock>(kGpaInternalHwBlockTa), "Mismatched block");
+    static_assert(kGpaHwBlockTd == static_cast<GpaHwBlock>(kGpaInternalHwBlockTd), "Mismatched block");
+    static_assert(kGpaHwBlockTcp == static_cast<GpaHwBlock>(kGpaInternalHwBlockTcp), "Mismatched block");
+    static_assert(kGpaHwBlockTcc == static_cast<GpaHwBlock>(kGpaInternalHwBlockTcc), "Mismatched block");
+    static_assert(kGpaHwBlockTca == static_cast<GpaHwBlock>(kGpaInternalHwBlockTca), "Mismatched block");
+    static_assert(kGpaHwBlockDb == static_cast<GpaHwBlock>(kGpaInternalHwBlockDb), "Mismatched block");
+    static_assert(kGpaHwBlockCb == static_cast<GpaHwBlock>(kGpaInternalHwBlockCb), "Mismatched block");
+    static_assert(kGpaHwBlockGds == static_cast<GpaHwBlock>(kGpaInternalHwBlockGds), "Mismatched block");
+    static_assert(kGpaHwBlockSrbm == static_cast<GpaHwBlock>(kGpaInternalHwBlockSrbm), "Mismatched block");
+    static_assert(kGpaHwBlockGrbm == static_cast<GpaHwBlock>(kGpaInternalHwBlockGrbm), "Mismatched block");
+    static_assert(kGpaHwBlockGrbmse == static_cast<GpaHwBlock>(kGpaInternalHwBlockGrbmse), "Mismatched block");
+    static_assert(kGpaHwBlockRlc == static_cast<GpaHwBlock>(kGpaInternalHwBlockRlc), "Mismatched block");
+    static_assert(kGpaHwBlockDma == static_cast<GpaHwBlock>(kGpaInternalHwBlockDma), "Mismatched block");
+    static_assert(kGpaHwBlockMc == static_cast<GpaHwBlock>(kGpaInternalHwBlockMc), "Mismatched block");
+    static_assert(kGpaHwBlockCpg == static_cast<GpaHwBlock>(kGpaInternalHwBlockCpg), "Mismatched block");
+    static_assert(kGpaHwBlockCpc == static_cast<GpaHwBlock>(kGpaInternalHwBlockCpc), "Mismatched block");
+    static_assert(kGpaHwBlockWd == static_cast<GpaHwBlock>(kGpaInternalHwBlockWd), "Mismatched block");
+    static_assert(kGpaHwBlockTcs == static_cast<GpaHwBlock>(kGpaInternalHwBlockTcs), "Mismatched block");
+    static_assert(kGpaHwBlockAtc == static_cast<GpaHwBlock>(kGpaInternalHwBlockAtc), "Mismatched block");
+    static_assert(kGpaHwBlockAtcl2 == static_cast<GpaHwBlock>(kGpaInternalHwBlockAtcl2), "Mismatched block");
+    static_assert(kGpaHwBlockMcvml2 == static_cast<GpaHwBlock>(kGpaInternalHwBlockMcvml2), "Mismatched block");
+    static_assert(kGpaHwBlockEa == static_cast<GpaHwBlock>(kGpaInternalHwBlockEa), "Mismatched block");
+    static_assert(kGpaHwBlockRpb == static_cast<GpaHwBlock>(kGpaInternalHwBlockRpb), "Mismatched block");
+    static_assert(kGpaHwBlockRmi == static_cast<GpaHwBlock>(kGpaInternalHwBlockRmi), "Mismatched block");
+    static_assert(kGpaHwBlockUmcch == static_cast<GpaHwBlock>(kGpaInternalHwBlockUmcch), "Mismatched block");
+    static_assert(kGpaHwBlockGe == static_cast<GpaHwBlock>(kGpaInternalHwBlockGe), "Mismatched block");
+    static_assert(kGpaHwBlockGl1A == static_cast<GpaHwBlock>(kGpaInternalHwBlockGl1A), "Mismatched block");
+    static_assert(kGpaHwBlockGl1C == static_cast<GpaHwBlock>(kGpaInternalHwBlockGl1C), "Mismatched block");
+    static_assert(kGpaHwBlockGl1Cg == static_cast<GpaHwBlock>(kGpaInternalHwBlockGl1Cg), "Mismatched block");
+    static_assert(kGpaHwBlockGl2A == static_cast<GpaHwBlock>(kGpaInternalHwBlockGl2A), "Mismatched block");
+    static_assert(kGpaHwBlockGl2C == static_cast<GpaHwBlock>(kGpaInternalHwBlockGl2C), "Mismatched block");
+    static_assert(kGpaHwBlockCha == static_cast<GpaHwBlock>(kGpaInternalHwBlockCha), "Mismatched block");
+    static_assert(kGpaHwBlockChc == static_cast<GpaHwBlock>(kGpaInternalHwBlockChc), "Mismatched block");
+    static_assert(kGpaHwBlockChcg == static_cast<GpaHwBlock>(kGpaInternalHwBlockChcg), "Mismatched block");
+    static_assert(kGpaHwBlockGus == static_cast<GpaHwBlock>(kGpaInternalHwBlockGus), "Mismatched block");
+    static_assert(kGpaHwBlockGcr == static_cast<GpaHwBlock>(kGpaInternalHwBlockGcr), "Mismatched block");
+    static_assert(kGpaHwBlockPh == static_cast<GpaHwBlock>(kGpaInternalHwBlockPh), "Mismatched block");
+    static_assert(kGpaHwBlockUtcl1 == static_cast<GpaHwBlock>(kGpaInternalHwBlockUtcl1), "Mismatched block");
+    static_assert(kGpaHwBlockGedist == static_cast<GpaHwBlock>(kGpaInternalHwBlockGedist), "Mismatched block");
+    static_assert(kGpaHwBlockGese == static_cast<GpaHwBlock>(kGpaInternalHwBlockGese), "Mismatched block");
+    static_assert(kGpaHwBlockDfmall == static_cast<GpaHwBlock>(kGpaInternalHwBlockDfmall), "Mismatched block");
+    static_assert(kGpaHwBlockSqWgp == static_cast<GpaHwBlock>(kGpaInternalHwBlockSqWgp), "Mismatched block");
+    static_assert(kGpaHwBlockPc == static_cast<GpaHwBlock>(kGpaInternalHwBlockPc), "Mismatched block");
+    static_assert(kGpaHwBlockGl1XA == static_cast<GpaHwBlock>(kGpaInternalHwBlockGl1XA), "Mismatched block");
+    static_assert(kGpaHwBlockGl1XC == static_cast<GpaHwBlock>(kGpaInternalHwBlockGl1XC), "Mismatched block");
+    static_assert(kGpaHwBlockWgs == static_cast<GpaHwBlock>(kGpaInternalHwBlockWgs), "Mismatched block");
+    static_assert(kGpaHwBlockEaCpwd == static_cast<GpaHwBlock>(kGpaInternalHwBlockEaCpwd), "Mismatched block");
+    static_assert(kGpaHwBlockEaSe == static_cast<GpaHwBlock>(kGpaInternalHwBlockEaSe), "Mismatched block");
+    static_assert(kGpaHwBlockCount == static_cast<GpaHwBlock>(kGpaInternalHwBlockSqFirst), "Mismatched block");
 
 };
 

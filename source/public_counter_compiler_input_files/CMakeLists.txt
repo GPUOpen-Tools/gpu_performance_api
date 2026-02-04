@@ -1,8 +1,4 @@
-## Copyright (C) 2018-2025 Advanced Micro Devices, Inc. All rights reserved. ##
-
-cmake_minimum_required(VERSION 3.10)
-
-set(DEPTH "../../")
+## Copyright (C) 2018-2026 Advanced Micro Devices, Inc. All rights reserved. ##
 
 set(GPA_PROJECT_NAME PublicCounterDefinitionFiles)
 set(ProjectName ${GPA_PROJECT_NAME})

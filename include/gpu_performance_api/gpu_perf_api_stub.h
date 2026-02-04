@@ -81,6 +81,11 @@ static inline GpaStatus GpaGetDeviceMaxVgprs(GpaContextId gpa_context_id, GpaUIn
     RETURN_GPA_SUCCESS;
 }
 
+static inline GpaStatus GpaGetDeviceMaxLdsBytes(GpaContextId gpa_context_id, GpaUInt32* max_lds_bytes)
+{
+    RETURN_GPA_SUCCESS;
+}
+
 static inline GpaStatus GpaGetNumCounters(GpaSessionId gpa_session_id, GpaUInt32* number_of_counters)
 {
     RETURN_GPA_SUCCESS;

@@ -57,7 +57,7 @@ void VkGpaPass::InitializeSampleConfig()
             return;
         }
 
-        IGpaCounterAccessor* counter_accessor = GpaContextCounterMediator::Instance()->GetCounterAccessor(GetGpaSession());
+        IGpaCounterAccessor* counter_accessor = GpaContextCounterMediator::GetCounterAccessor(GetGpaSession());
         assert(counter_accessor != nullptr);
         if (counter_accessor == nullptr)
         {

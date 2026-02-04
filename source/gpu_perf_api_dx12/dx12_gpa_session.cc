@@ -83,15 +83,6 @@ Dx12GpaSession::~Dx12GpaSession()
     }
 }
 
-void Dx12GpaSession::GetDriverVersion(uint32_t& major, uint32_t& minor, uint32_t& sub_minor)
-{
-    Dx12GpaContext* dx12_gpa_context = dynamic_cast<Dx12GpaContext*>(this->GetParentContext());
-    if (dx12_gpa_context != nullptr)
-    {
-        dx12_gpa_context->GetDriverVersion(major, minor, sub_minor);
-    }
-}
-
 GpaStatus Dx12GpaSession::ContinueSampleOnCommandList(GpaUInt32 src_sample_id, GpaCommandListId primary_command_list_id)
 {
     bool succeed = false;
@@ -178,10 +169,8 @@ IAmdExtGpaInterface* Dx12GpaSession::GetAmdExtInterface() const
     return amd_ext_gpa_interface_;
 }
 
-GpaPass* Dx12GpaSession::CreateApiPass(PassIndex pass_index)
+std::unique_ptr<GpaPass> Dx12GpaSession::CreateApiPass(PassIndex pass_index)
 {
-    GpaPass* ret_pass = nullptr;
-
     GpaSessionSampleType sample_type = GetSampleType();
 
     CounterList*     pass_counters  = nullptr;
@@ -213,13 +202,7 @@ GpaPass* Dx12GpaSession::CreateApiPass(PassIndex pass_index)
         return nullptr;
     }
 
-    Dx12GpaPass* dx12_pass = new (std::nothrow) Dx12GpaPass(this, pass_index, counter_source, pass_counters);
-    if (nullptr != dx12_pass)
-    {
-        ret_pass = dx12_pass;
-    }
-
-    return ret_pass;
+    return std::make_unique<Dx12GpaPass>(this, pass_index, counter_source, pass_counters);
 }
 
 GpaStatus Dx12GpaSession::SqttBegin(void* command_list)
@@ -415,7 +398,7 @@ GpaStatus Dx12GpaSession::SqttSpmBegin(void* command_list)
         return kGpaStatusErrorFailed;
     }
 
-    auto current_pass = dynamic_cast<Dx12GpaPass*>(GetPasses()[0]);
+    auto current_pass = dynamic_cast<Dx12GpaPass*>(GetCurrentPass());
     if (current_pass == nullptr)
     {
         GPA_LOG_ERROR("Unable to get current pass.");
@@ -521,7 +504,7 @@ GpaStatus Dx12GpaSession::SpmBegin(void* command_list)
         return kGpaStatusErrorFailed;
     }
 
-    auto current_pass = dynamic_cast<Dx12GpaPass*>(GetPasses()[0]);
+    auto current_pass = dynamic_cast<Dx12GpaPass*>(GetCurrentPass());
     if (current_pass == nullptr)
     {
         GPA_LOG_ERROR("Unable to get current pass.");
@@ -653,7 +636,7 @@ GpaStatus Dx12GpaSession::SpmCalculateDerivedCounters(const GpaSpmData* spm_data
 
     GpaStatus status = kGpaStatusOk;
 
-    const auto current_pass = dynamic_cast<Dx12GpaPass*>(GetPasses()[0]);
+    const auto current_pass = dynamic_cast<Dx12GpaPass*>(GetCurrentPass());
     if (current_pass == nullptr)
     {
         GPA_LOG_ERROR("Unable to get current pass.");
@@ -761,7 +744,13 @@ GpaStatus Dx12GpaSession::SpmCalculateDerivedCounters(const GpaSpmData* spm_data
     // Calculate return counter values - grouped by counter id
     uint64_t* dest_results = derived_counter_results;
 
-    IGpaCounterAccessor* counter_accessor = GpaContextCounterMediator::Instance()->GetCounterAccessor(this);
+    IGpaCounterAccessor* counter_accessor = GpaContextCounterMediator::GetCounterAccessor(this);
+    assert(counter_accessor != nullptr);
+    if (nullptr == counter_accessor)
+    {
+        GPA_LOG_DEBUG_ERROR("Accessor is unassigned.");
+        return kGpaStatusErrorFailed;
+    }
 
     const std::vector<CounterResultEntry>& spm_counter_result_entries = current_pass->GetAmdExtSampleConfig().GetSpmCounterResultEntries();
 
@@ -784,7 +773,7 @@ GpaStatus Dx12GpaSession::SpmCalculateDerivedCounters(const GpaSpmData* spm_data
         }
 
         const std::variant<gpa_array_view<GpaUInt32>, GpaUInt32> internal_counters_required =
-            GpaContextCounterMediator::Instance()->GetCounterAccessor(this)->GetInternalCountersRequired(exposed_counter_index);
+            counter_accessor->GetInternalCountersRequired(exposed_counter_index);
         auto result_locations_map = GetCounterResultLocations();
         auto result_locations     = result_locations_map[exposed_counter_index];
 

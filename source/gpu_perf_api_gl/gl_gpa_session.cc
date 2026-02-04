@@ -33,27 +33,14 @@ GpaApiType GlGpaSession::GetApiType() const
     return kGpaApiOpengl;
 }
 
-GpaPass* GlGpaSession::CreateApiPass(PassIndex pass_index)
+std::unique_ptr<GpaPass> GlGpaSession::CreateApiPass(PassIndex pass_index)
 {
-    GpaPass* ret_pass = nullptr;
-
-    CounterList*     pass_counters  = GetCountersForPass(pass_index);
+    CounterList* pass_counters = GetCountersForPass(pass_index);
     assert(pass_counters != nullptr);
     if (pass_counters != nullptr && pass_counters->size() > 0)
     {
         GpaCounterSource counter_source = GetCounterSource((*pass_counters)[0]);
-
-        GlGpaPass* gl_pass = new (std::nothrow) GlGpaPass(this, pass_index, counter_source, pass_counters);
-
-        if (nullptr == gl_pass)
-        {
-            GPA_LOG_ERROR("Unable to allocate memory for the pass.");
-        }
-        else
-        {
-            ret_pass = gl_pass;
-        }
+        return std::make_unique<GlGpaPass>(this, pass_index, counter_source, pass_counters);
     }
-
-    return ret_pass;
+    return nullptr;
 }

@@ -89,8 +89,7 @@ bool VkGpaImplementor::GetHwInfoFromApi(const GpaContextInfoPtr context_info, Gp
                     // For now it is assumed that Vk MGPU support is exposed to the app
                     // and the app always opens the device on the correct GPU.
                     // In case where MGPU support hides the GPU from the app, then
-                    // we will need to use Vk MGPU extension (and possibly ADL util)
-                    // to get the correct HW info.
+                    // we will need to use Vk MGPU extension to get the correct HW info.
                     VkPhysicalDeviceShaderCoreProperties2AMD shader_core_properties_2_amd = {};
                     shader_core_properties_2_amd.sType                                    = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_CORE_PROPERTIES_2_AMD;
 
@@ -100,7 +99,7 @@ bool VkGpaImplementor::GetHwInfoFromApi(const GpaContextInfoPtr context_info, Gp
 
                     VkPhysicalDeviceGpaProperties2AMD physical_device_properties2 = {};
                     physical_device_properties2.sType                             = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_GPA_PROPERTIES2_AMD;
-                    physical_device_properties2.revisionId                        = REVISION_ID_ANY;
+                    physical_device_properties2.revisionId                        = AMDTDeviceInfoUtils::kRevisionIdAny;
                     physical_device_properties2.pNext                             = &shader_core_properties_amd;
 
                     VkPhysicalDeviceProperties2KHR physical_device_properties = {};
@@ -134,7 +133,7 @@ bool VkGpaImplementor::GetHwInfoFromApi(const GpaContextInfoPtr context_info, Gp
                         {
                             GDT_GfxCardInfo card_info = {};
 
-                            if (AMDTDeviceInfoUtils::Instance()->GetDeviceInfo(device_id, device_revision, card_info))
+                            if (AMDTDeviceInfoUtils::GetDeviceInfo(device_id, device_revision, card_info))
                             {
                                 hardware_generation = card_info.m_generation;
 
@@ -201,8 +200,6 @@ bool VkGpaImplementor::GetHwInfoFromApi(const GpaContextInfoPtr context_info, Gp
                             {
                                 GPA_LOG_ERROR("Unable to get device info from AMDTDeviceInfoUtils.");
                             }
-
-                            AMDTDeviceInfoUtils::DeleteInstance();
                         }
                         else
                         {
@@ -341,7 +338,7 @@ IGpaContext* VkGpaImplementor::OpenApiContext(GpaContextInfoPtr context_info, co
 
 bool VkGpaImplementor::CloseApiContext(IGpaContext* context)
 {
-    assert(nullptr != context);
+    assert(context);
 
     GpaStatus set_default_clocks_result = kGpaStatusOk;
 

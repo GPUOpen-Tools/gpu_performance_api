@@ -10,12 +10,10 @@
 #include "gpu_performance_api/gpu_perf_api_counters.h"
 #include "gpu_performance_api/gpu_perf_api_types.h"
 
-class GpaHwInfo;
-
 /// @brief Returns the appropriate driver information if possible. Check the driver_type before using.
 ///
 /// @return The driver version + type of driver.
-[[nodiscard]] GpaDriverInfo QueryDriverInfo();
+[[nodiscard]] GpaDriverInfo GpaQueryDriverInfo();
 
 /// @brief Used to calculate supported sample types for a given AMD GPU
 ///

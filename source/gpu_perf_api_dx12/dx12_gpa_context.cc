@@ -7,7 +7,6 @@
 
 #include "gpu_perf_api_dx12/dx12_gpa_context.h"
 
-#include "ADLUtil.h"
 #include "DeviceInfoUtils.h"
 
 #include "gpu_perf_api_common/gpa_unique_object.h"
@@ -28,9 +27,6 @@ Dx12GpaContext::Dx12GpaContext(ID3D12Device* d3d12_device, const GpaHwInfo& hw_i
     gpa_interface_              = nullptr;
     gpa_interface2_             = nullptr;
     clock_mode_                 = AmdExtDeviceClockMode::Default;
-
-    AMDTADLUtils::Instance()->GetDriverVersion(driver_major_ver_, driver_minor_ver_, driver_sub_minor_ver_);
-    AMDTADLUtils::DeleteInstance();
 }
 
 Dx12GpaContext::~Dx12GpaContext()
@@ -71,7 +67,7 @@ GpaSessionId Dx12GpaContext::CreateSession(GpaSessionSampleType sample_type)
         if (nullptr != new_gpa_dx12_gpa_session)
         {
             AddGpaSession(new_gpa_dx12_gpa_session);
-            ret_session_id = reinterpret_cast<GpaSessionId>(GpaUniqueObjectManager::Instance()->CreateObject(new_gpa_dx12_gpa_session));
+            ret_session_id = reinterpret_cast<GpaSessionId>(GpaUniqueObjectManager::Instance().CreateObject(new_gpa_dx12_gpa_session));
         }
     }
 
@@ -82,7 +78,7 @@ bool Dx12GpaContext::DeleteSession(GpaSessionId session_id)
 {
     bool success = false;
 
-    if (GpaUniqueObjectManager::Instance()->DoesExist(session_id))
+    if (GpaUniqueObjectManager::Instance().DoesExist(session_id))
     {
         Dx12GpaSession* dx12_session = reinterpret_cast<Dx12GpaSession*>(session_id->Object());
 
@@ -91,7 +87,7 @@ bool Dx12GpaContext::DeleteSession(GpaSessionId session_id)
         if (GetIndex(dx12_session, &index))
         {
             RemoveGpaSession(dx12_session);
-            GpaUniqueObjectManager::Instance()->DeleteObject(session_id);
+            GpaUniqueObjectManager::Instance().DeleteObject(session_id);
             delete dx12_session;
             success = true;
         }
@@ -144,13 +140,7 @@ bool Dx12GpaContext::InitializeAmdExtension()
         {
             result = kGpaStatusErrorDriverNotSupported;
 
-            HMODULE h_dll = nullptr;
-#ifdef X64
-            h_dll = ::GetModuleHandleW(L"amdxc64.dll");
-#else
-            h_dll = ::GetModuleHandleW(L"amdxc32.dll");
-#endif
-
+            const HMODULE h_dll = ::GetModuleHandleW(L"amdxc64.dll");
             if (nullptr == h_dll)
             {
                 GPA_LOG_ERROR("Unable to get driver module handle.");
@@ -319,11 +309,4 @@ GpaStatus Dx12GpaContext::SetStableClocks(bool use_profiling_clocks)
     }
 
     return kGpaStatusOk;
-}
-
-void Dx12GpaContext::GetDriverVersion(uint32_t& major, uint32_t& minor, uint32_t& sub_minor)
-{
-    major     = driver_major_ver_;
-    minor     = driver_minor_ver_;
-    sub_minor = driver_sub_minor_ver_;
 }

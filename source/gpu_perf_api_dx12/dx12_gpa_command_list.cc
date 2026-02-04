@@ -8,6 +8,7 @@
 #include "gpu_perf_api_dx12/dx12_gpa_command_list.h"
 
 #include "gpu_perf_api_common/gpa_common_defs.h"
+#include "gpu_perf_api_common/gpa_hw_support.h"
 #include "gpu_perf_api_common/logging.h"
 
 #include "gpu_perf_api_dx12/dx12_gpa_context.h"
@@ -37,21 +38,16 @@ Dx12GpaCommandList::Dx12GpaCommandList(Dx12GpaSession*    dx12_gpa_session,
     has_any_hardware_counters_ = dx12_gpa_pass->GetEnabledCounterCount() > 0;
 
     // BeginSample configuration struct can change based on driver versions.
-    uint32_t major_ver     = 0;
-    uint32_t minor_ver     = 0;
-    uint32_t sub_minor_ver = 0;
-    if (dx12_gpa_session != nullptr)
-    {
-        dx12_gpa_session->GetDriverVersion(major_ver, minor_ver, sub_minor_ver);
-    }
+    const GpaDriverInfo driver_info = GpaQueryDriverInfo();
 
     // If the driver is unsigned, or the version is >= 22.40 use the default configuration.
-    if (!(major_ver || minor_ver || sub_minor_ver) || (major_ver > 22) || (major_ver == 22 && minor_ver >= 40))
+    if (driver_info.driver_type == kIgnoreDriver || (driver_info.major > 22) || (driver_info.major == 22 && driver_info.minor >= 40))
     {
         use_pre2240_config_ = false;
         use_pre1850_config_ = false;
     }
-    else if (((major_ver < 22) || (major_ver == 22 && minor_ver < 40)) && ((major_ver > 18) || (major_ver == 18 && minor_ver >= 50)))
+    else if (((driver_info.major < 22) || (driver_info.major == 22 && driver_info.minor < 40)) &&
+             ((driver_info.major > 18) || (driver_info.major == 18 && driver_info.minor >= 50)))
     {
         // If the driver is < 22.40 and >= 18.50 use the pre-22.40 configuration.
         use_pre2240_config_ = true;

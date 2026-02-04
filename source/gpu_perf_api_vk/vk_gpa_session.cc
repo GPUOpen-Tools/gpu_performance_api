@@ -88,23 +88,15 @@ GpaStatus VkGpaSession::CopySecondarySamples(GpaCommandListId secondary_command_
     return is_copied ? kGpaStatusOk : kGpaStatusErrorFailed;
 }
 
-GpaPass* VkGpaSession::CreateApiPass(PassIndex pass_index)
+std::unique_ptr<GpaPass> VkGpaSession::CreateApiPass(PassIndex pass_index)
 {
-    GpaPass* ret_pass = nullptr;
-
-    CounterList*     pass_counters  = GetCountersForPass(pass_index);
+    CounterList* pass_counters = GetCountersForPass(pass_index);
     assert(pass_counters != nullptr);
     if (pass_counters != nullptr && pass_counters->size() > 0)
     {
         GpaCounterSource counter_source = GetCounterSource((*pass_counters)[0]);
-
-        VkGpaPass* vk_gpa_pass = new (std::nothrow) VkGpaPass(this, pass_index, counter_source, pass_counters);
-
-        if (nullptr != vk_gpa_pass)
-        {
-            ret_pass = vk_gpa_pass;
-        }
+        return std::make_unique<VkGpaPass>(this, pass_index, counter_source, pass_counters);
     }
 
-    return ret_pass;
+    return nullptr;
 }

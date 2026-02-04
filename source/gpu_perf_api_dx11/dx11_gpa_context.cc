@@ -74,7 +74,7 @@ GpaSessionId Dx11GpaContext::CreateSession(GpaSessionSampleType sample_type)
 
         if (nullptr != new_dx11_gpa_session)
         {
-            ret_session_id = reinterpret_cast<GpaSessionId>(GpaUniqueObjectManager::Instance()->CreateObject(new_dx11_gpa_session));
+            ret_session_id = reinterpret_cast<GpaSessionId>(GpaUniqueObjectManager::Instance().CreateObject(new_dx11_gpa_session));
         }
     }
 
@@ -85,7 +85,7 @@ bool Dx11GpaContext::DeleteSession(GpaSessionId session_id)
 {
     bool success = false;
 
-    if (GpaUniqueObjectManager::Instance()->DoesExist(session_id))
+    if (GpaUniqueObjectManager::Instance().DoesExist(session_id))
     {
         Dx11GpaSession* dx11_gpa_session = reinterpret_cast<Dx11GpaSession*>(session_id->Object());
 
@@ -94,7 +94,7 @@ bool Dx11GpaContext::DeleteSession(GpaSessionId session_id)
         if (GetIndex(dx11_gpa_session, &index))
         {
             RemoveGpaSession(dx11_gpa_session);
-            GpaUniqueObjectManager::Instance()->DeleteObject(session_id);
+            GpaUniqueObjectManager::Instance().DeleteObject(session_id);
             delete dx11_gpa_session;
             success = true;
         }
