@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016-2024 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief GL entry points.
@@ -25,7 +25,7 @@ namespace ogl_utils
     decltype(glGetIntegerv)* ogl_get_integer_v = nullptr;
     decltype(glGetError)*    ogl_get_error     = nullptr;
 
-#ifdef _LINUX
+#ifdef __linux__
 #ifndef GLES
     decltype(glXGetClientString)* ogl_x_get_client_string = nullptr;
 #endif
@@ -73,8 +73,6 @@ namespace ogl_utils
     const char* kAmdRendererString           = "AMD";
     const char* kRadeonRendererString        = "Radeon";
     const char* kAtiRendererString           = "ATI";
-    const char* kNvidiaRendererString        = "NVIDIA";
-    const char* kIntelRendererString         = "Intel";
     bool        are_gl_functions_initialized = false;
     LibHandle   gl_lib_handle                = nullptr;
 #ifdef GLES
@@ -115,7 +113,7 @@ namespace ogl_utils
             case GL_STACK_UNDERFLOW:
             case GL_OUT_OF_MEMORY:
                 error_found = true;
-                GPA_LOG_ERROR("%s", error_message.c_str());
+                GpaLogger::Instance().LogError("{}", error_message);
                 break;
 
             default:
@@ -130,31 +128,30 @@ namespace ogl_utils
     void QuerySupportedPlatformExtensions()
     {
 // On Linux we must enumerate the GLX extensions separately, as they will not be included in the list of GL_EXTENSIONS queried by ogl_get_string_i
-#ifdef _LINUX
+#ifdef __linux__
 #ifndef GLES
         if (ogl_x_get_client_string == nullptr)
+        {
+            LOAD_LIBRARY_SYMBOL(ogl_x_get_client_string, glXGetClientString);
             if (ogl_x_get_client_string == nullptr)
             {
-                LOAD_LIBRARY_SYMBOL(ogl_x_get_client_string, glXGetClientString);
-                if (ogl_x_get_client_string == nullptr)
-                {
-                    GPA_LOG_ERROR("Could not load glXGetClientString; unable to enumerate GLX extensions.");
-                    return;
-                }
+                GpaLogger::Instance().LogError("Could not load glXGetClientString; unable to enumerate GLX extensions.");
+                return;
             }
+        }
 
         // We open up an additional connection to the X server here to avoid passing around the X server connection used by the app itself.
         Display* display = XOpenDisplay(nullptr);
         if (display == nullptr)
         {
-            GPA_LOG_ERROR("Failed to open connection to the X server; unable to enumerate GLX extensions.");
+            GpaLogger::Instance().LogError("Failed to open connection to the X server; unable to enumerate GLX extensions.");
             return;
         }
 
         const char* ext_string = ogl_x_get_client_string(display, GLX_EXTENSIONS);
         if (ext_string == nullptr)
         {
-            GPA_LOG_ERROR("Failed to retrieve extension string; unable to enumerate GLX extensions.");
+            GpaLogger::Instance().LogError("Failed to retrieve extension string; unable to enumerate GLX extensions.");
             return;
         }
 
@@ -197,13 +194,13 @@ bool ogl_utils::LoadGl()
         gl_lib_handle = LoadLibraryA("opengl32.dll");
         if (gl_lib_handle == nullptr)
         {
-            GPA_LOG_ERROR("Failed to load opengl32.dll");
+            GpaLogger::Instance().LogError("Failed to load opengl32.dll");
         }
 #else
         gl_lib_handle = LoadLibraryA("libEGL.dll");
         if (gl_lib_handle == nullptr)
         {
-            GPA_LOG_ERROR("Failed to load libEGL.dll");
+            GpaLogger::Instance().LogError("Failed to load libEGL.dll");
         }
 #endif
 #else
@@ -211,13 +208,13 @@ bool ogl_utils::LoadGl()
         gl_lib_handle = dlopen("libGL.so", RTLD_LAZY);
         if (gl_lib_handle == nullptr)
         {
-            GPA_LOG_ERROR("Failed to load libGL.so");
+            GpaLogger::Instance().LogError("Failed to load libGL.so");
         }
 #else
         egl_lib_handle = dlopen("libEGL.so", RTLD_NOW);
         if (egl_lib_handle == nullptr)
         {
-            GPA_LOG_ERROR("Failed to load libEGL.so");
+            GpaLogger::Instance().LogError("Failed to load libEGL.so");
         }
 
         if (nullptr == gl_lib_handle)
@@ -236,7 +233,7 @@ bool ogl_utils::LoadGl()
 
             if (gl_lib_handle == nullptr)
             {
-                GPA_LOG_ERROR("Failed to load libGLESv3.so or libGLESv2.so or libGLES.so");
+                GpaLogger::Instance().LogError("Failed to load libGLESv3.so or libGLESv2.so or libGLES.so");
             }
         }
 #endif
@@ -255,7 +252,7 @@ void ogl_utils::QuerySupportedExtensions()
 {
     if (nullptr != ogl_get_string && !are_supported_extensions_queried)
     {
-        GPA_LOG_MESSAGE("Using OpenGL 1.x method to query extensions.");
+        GpaLogger::Instance().LogMessage("Using OpenGL 1.x method to query extensions.");
         GLint num_extensions = 0;
         ogl_get_integer_v(GL_NUM_EXTENSIONS, &num_extensions);
 
@@ -337,22 +334,22 @@ bool ogl_utils::InitializeGlCoreFunctions()
 
         if (nullptr == ogl_flush)
         {
-            GPA_LOG_ERROR("Unable to initialize glFlush function pointer.");
+            GpaLogger::Instance().LogError("Unable to initialize glFlush function pointer.");
             return false;
         }
         else if (nullptr == ogl_get_string)
         {
-            GPA_LOG_ERROR("Unable to initialize glGetString function pointer.");
+            GpaLogger::Instance().LogError("Unable to initialize glGetString function pointer.");
             return false;
         }
         else if (nullptr == ogl_get_integer_v)
         {
-            GPA_LOG_ERROR("Unable to initialize glGetIntegerv function pointer.");
+            GpaLogger::Instance().LogError("Unable to initialize glGetIntegerv function pointer.");
             return false;
         }
         else if (nullptr == ogl_get_error)
         {
-            GPA_LOG_ERROR("Unable to initialize glGetError function pointer.");
+            GpaLogger::Instance().LogError("Unable to initialize glGetError function pointer.");
             return false;
         }
 
@@ -360,7 +357,7 @@ bool ogl_utils::InitializeGlCoreFunctions()
     }
     else
     {
-        GPA_LOG_ERROR("Failed to load GL when initializing GL core functions.");
+        GpaLogger::Instance().LogError("Failed to load GL when initializing GL core functions.");
     }
 
     return false;
@@ -409,7 +406,7 @@ bool ExtractDriverVersionInfo()
 {
     if (ogl_utils::ogl_get_string == nullptr)
     {
-        GPA_LOG_ERROR("Failed to extract driver version info - glGetString is undefined.");
+        GpaLogger::Instance().LogError("Failed to extract driver version info - glGetString is undefined.");
         return false;
     }
 
@@ -424,7 +421,7 @@ bool ExtractDriverVersionInfo()
     if (CheckForMesaDriver(gl_version_string))
     {
         ogl_utils::gl_driver_type = ogl_utils::GpaGlDriverType::kMesa;
-        GPA_LOG_MESSAGE("Mesa driver found. Mesa is no longer supported.");
+        GpaLogger::Instance().LogMessage("Mesa driver found. Mesa is no longer supported.");
 
         // Determining that this is the Mesa driver is sufficient to return true here.
         return true;
@@ -439,7 +436,7 @@ bool ExtractDriverVersionInfo()
 
         if (end_build_number == std::string::npos)
         {
-            GPA_LOG_ERROR("Failed to parse version number - missing first space.");
+            GpaLogger::Instance().LogError("Failed to parse version number - missing first space.");
             return false;
         }
 
@@ -452,7 +449,7 @@ bool ExtractDriverVersionInfo()
 
         if (first_decimal == second_decimal)
         {
-            GPA_LOG_ERROR("Failed to parse version number - does not contain two decimal points.");
+            GpaLogger::Instance().LogError("Failed to parse version number - does not contain two decimal points.");
             return false;
         }
 
@@ -473,7 +470,7 @@ bool ExtractDriverVersionInfo()
             // Sanity check that this string is 6 characters long. The version format is "YYMMDD".
             if (post_version_string.length() != 6)
             {
-                GPA_LOG_ERROR("Post version string has an unexpected length. Expected format is YYMMDD.");
+                GpaLogger::Instance().LogError("Post version string has an unexpected length. Expected format is YYMMDD.");
                 return false;
             }
 
@@ -481,7 +478,9 @@ bool ExtractDriverVersionInfo()
 
             if (post_version_number < ogl_utils::kGlDriverVerSwitchToOglp)
             {
-                GPA_LOG_ERROR("Post version number (%d) is less than the expected value (%d) for the supported drivers.", post_version_number, ogl_utils::kGlDriverVerSwitchToOglp);
+                GpaLogger::Instance().LogError("Post version number ({}) is less than the expected value ({}) for the supported drivers.",
+                                               post_version_number,
+                                               ogl_utils::kGlDriverVerSwitchToOglp);
                 return false;
             }
             else
@@ -568,7 +567,7 @@ bool ogl_utils::InitContextGlAmdPerfMonitor2ExtensionFunctions()
     }
     else
     {
-        GPA_LOG_ERROR("Failed to load GL when initializing gl_AMD_performance_monitor_2 extension.");
+        GpaLogger::Instance().LogError("Failed to load GL when initializing gl_AMD_performance_monitor_2 extension.");
     }
 
     return false;
@@ -585,7 +584,7 @@ bool ogl_utils::InitializeGlFunctions()
 
     if (!LoadGl())
     {
-        GPA_LOG_ERROR("Unable to get handle of OpenGL module.");
+        GpaLogger::Instance().LogError("Unable to get handle of OpenGL module.");
         return false;
     }
 
@@ -597,7 +596,7 @@ bool ogl_utils::InitializeGlFunctions()
 
     if (!InitializeGlCoreFunctions())
     {
-        GPA_LOG_ERROR("Unable to Initialize required GL functions.");
+        GpaLogger::Instance().LogError("Unable to Initialize required GL functions.");
         return false;
     }
 
@@ -635,27 +634,27 @@ bool ogl_utils::InitializeGlFunctions()
 
     if (nullptr == ogl_get_query_object_iv)
     {
-        GPA_LOG_MESSAGE("glGetQueryObjectiv entry point not exposed by the driver.");
+        GpaLogger::Instance().LogMessage("glGetQueryObjectiv entry point not exposed by the driver.");
     }
 
     if (nullptr == ogl_gen_queries)
     {
-        GPA_LOG_MESSAGE("glGenQueries entry point not exposed by the driver.");
+        GpaLogger::Instance().LogMessage("glGenQueries entry point not exposed by the driver.");
     }
 
     if (nullptr == ogl_delete_queries)
     {
-        GPA_LOG_MESSAGE("glDeleteQueries entry point not exposed by the driver.");
+        GpaLogger::Instance().LogMessage("glDeleteQueries entry point not exposed by the driver.");
     }
 
     if (nullptr == ogl_query_counter)
     {
-        GPA_LOG_MESSAGE("glQueryCounter entry point not exposed by the driver.");
+        GpaLogger::Instance().LogMessage("glQueryCounter entry point not exposed by the driver.");
     }
 
     if (nullptr == ogl_get_query_object_ui_64_v_ext)
     {
-        GPA_LOG_MESSAGE("glGetQueryObjectui64vEXT entry point not exposed by the driver.");
+        GpaLogger::Instance().LogMessage("glGetQueryObjectui64vEXT entry point not exposed by the driver.");
     }
 
     if (nullptr == ogl_get_string_i || nullptr == ogl_get_query_object_ui_64_v_ext || nullptr == ogl_get_query_object_iv || nullptr == ogl_gen_queries ||
@@ -664,17 +663,17 @@ bool ogl_utils::InitializeGlFunctions()
         if (timer_query_ext_found)
         {
 #ifndef GLES
-            GPA_LOG_ERROR("The GL_ARB_timer_query extension is exposed by the driver, but the not all entry points are available.");
+            GpaLogger::Instance().LogError("The GL_ARB_timer_query extension is exposed by the driver, but the not all entry points are available.");
 #else
-            GPA_LOG_ERROR("The GL_EXT_disjoint_timer_query extension is exposed by the driver, but the entry points are not available.");
+            GpaLogger::Instance().LogError("The GL_EXT_disjoint_timer_query extension is exposed by the driver, but the entry points are not available.");
 #endif
         }
         else
         {
 #ifndef GLES
-            GPA_LOG_ERROR("The GL_ARB_timer_query extension is not exposed by the driver.");
+            GpaLogger::Instance().LogError("The GL_ARB_timer_query extension is not exposed by the driver.");
 #else
-            GPA_LOG_ERROR("The GL_EXT_disjoint_timer_query extension is not exposed by the driver.");
+            GpaLogger::Instance().LogError("The GL_EXT_disjoint_timer_query extension is not exposed by the driver.");
 #endif
         }
 
@@ -694,27 +693,22 @@ bool ogl_utils::InitializeGlFunctions()
     {
         if (debug_output_ext_found)
         {
-            GPA_LOG_MESSAGE("The GL_AMD_debug_output extension is exposed by the driver, but not all entry points are available.");
+            GpaLogger::Instance().LogMessage("The GL_AMD_debug_output extension is exposed by the driver, but not all entry points are available.");
         }
         else
         {
             // This interface is not required, but does help improve error logging, so allow the code
             // to continue if this is not available.
-            GPA_LOG_MESSAGE("The GL_AMD_debug_output extension is not exposed by the driver.");
+            GpaLogger::Instance().LogMessage("The GL_AMD_debug_output extension is not exposed by the driver.");
         }
     }
 #endif
 
     if (nullptr == ogl_set_gpa_device_clock_mode_amd_x)
     {
-        GPA_LOG_MESSAGE("The glSetGpaDeviceClockModeAMDX extension entry point is not exposed by the driver.");
+        GpaLogger::Instance().LogMessage("The glSetGpaDeviceClockModeAMDX extension entry point is not exposed by the driver.");
     }
 
     are_gl_functions_initialized = ret_val;
     return ret_val;
-}
-
-void ogl_utils::Cleanup()
-{
-    GpaLogger::DeleteInstance();
 }

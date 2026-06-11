@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016-2024 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Base class for counter generation.
@@ -23,7 +23,7 @@ void GpaCounterGeneratorBase::SetAllowedCounters(bool allow_public_counters, boo
     do_allow_hardware_exposed_counters_ = allow_hardware_counters;
 }
 
-GpaStatus GpaCounterGeneratorBase::GenerateCounters(GDT_HW_GENERATION desired_generation, GDT_HW_ASIC_TYPE asic_type)
+GpaStatus GpaCounterGeneratorBase::GenerateCounters(device_info::HwGeneration desired_generation, device_info::AsicType asic_type)
 {
     GpaStatus status = kGpaStatusErrorNotEnabled;
 
@@ -38,7 +38,7 @@ GpaStatus GpaCounterGeneratorBase::GenerateCounters(GDT_HW_GENERATION desired_ge
 
         if (status != kGpaStatusOk)
         {
-            GPA_LOG_ERROR("Failed to generate public counters.");
+            GpaLogger::Instance().LogError("Failed to generate public counters.");
             return status;
         }
     }
@@ -50,7 +50,7 @@ GpaStatus GpaCounterGeneratorBase::GenerateCounters(GDT_HW_GENERATION desired_ge
 
         if (status != kGpaStatusOk)
         {
-            GPA_LOG_ERROR("Failed to generate hardware counters.");
+            GpaLogger::Instance().LogError("Failed to generate hardware counters.");
             return status;
         }
     }
@@ -61,7 +61,7 @@ GpaStatus GpaCounterGeneratorBase::GenerateCounters(GDT_HW_GENERATION desired_ge
 
         if (status != kGpaStatusOk)
         {
-            GPA_LOG_ERROR("Failed to generate hardware exposed counters.");
+            GpaLogger::Instance().LogError("Failed to generate hardware exposed counters.");
             return status;
         }
     }
@@ -69,7 +69,7 @@ GpaStatus GpaCounterGeneratorBase::GenerateCounters(GDT_HW_GENERATION desired_ge
     if (0 == GetNumCounters())
     {
         // No counters reported, return hardware not supported.
-        GPA_LOG_ERROR("No counters were available to expose.");
+        GpaLogger::Instance().LogError("No counters were available to expose.");
         status = kGpaStatusErrorHardwareNotSupported;
     }
 
@@ -119,9 +119,9 @@ GpaUInt32 GpaCounterGeneratorBase::GetNumAmdCounters() const
     return count;
 }
 
-GpaStatus GpaCounterGeneratorBase::GenerateHardwareExposedCounters(GDT_HW_GENERATION    desired_generation,
-                                                                   GDT_HW_ASIC_TYPE     asic_type,
-                                                                   GpaHardwareCounters* hardware_counters)
+GpaStatus GpaCounterGeneratorBase::GenerateHardwareExposedCounters(device_info::HwGeneration desired_generation,
+                                                                   device_info::AsicType     asic_type,
+                                                                   GpaHardwareCounters*      hardware_counters)
 {
     UNREFERENCED_PARAMETER(desired_generation);
     UNREFERENCED_PARAMETER(asic_type);
@@ -143,12 +143,12 @@ bool GpaCounterGeneratorBase::MapHardwareExposedCounter(GpaHardwareCounters* har
     for (size_t g = 0; g < num_hardware_exposed_counter_groups; ++g)
     {
         const GpaUInt32 block_counter_start_index     = hardware_counters->hardware_exposed_counter_groups_[g].hardware_block_start_index;
-        const GpaUInt32 num_exposed_counters_in_group = static_cast<GpaUInt32>(hardware_counters->hardware_exposed_counters_[g].size());
+        const GpaUInt32 num_exposed_counters_in_group = static_cast<GpaUInt32>(hardware_counters->hardware_exposed_counters_[g]->size());
 
         for (unsigned int count_iter = 0; count_iter < num_exposed_counters_in_group; ++count_iter)
         {
             // Get the counter to expose.
-            const GpaHardwareCounterDesc& exposed_counter = hardware_counters->hardware_exposed_counters_[g][count_iter];
+            const GpaHardwareCounterDesc& exposed_counter = (*hardware_counters->hardware_exposed_counters_[g])[count_iter];
 
             // Add the counter to a long list of all the exposed counters from all the groups.
             hardware_counters->hardware_exposed_counters_list_.push_back(exposed_counter);
@@ -597,18 +597,6 @@ GpaStatus GpaCounterGeneratorBase::ComputePublicCounterValue(GpaUInt32          
                                                              const GpaHwInfo&                hardware_info) const
 {
     return public_counters_.ComputeCounterValue(counter_index, results, result, hardware_info);
-}
-
-void GpaCounterGeneratorBase::ComputeSwCounterValue(GpaUInt32 software_counter_index, GpaUInt64 value, void* result, const GpaHwInfo* hardware_info) const
-{
-    UNREFERENCED_PARAMETER(software_counter_index);
-    UNREFERENCED_PARAMETER(hardware_info);
-
-    if (nullptr != result)
-    {
-        GpaUInt64* ret_value = static_cast<GpaUInt64*>(result);
-        *ret_value           = value;
-    }
 }
 
 const GpaHardwareCounters& GpaCounterGeneratorBase::GetHardwareCounters() const

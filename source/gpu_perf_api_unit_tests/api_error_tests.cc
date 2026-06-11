@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2018-2025 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  Unit tests to validate error handling/reporting from GPA APIs
@@ -1536,6 +1536,8 @@ TEST_P(GpaApiErrorTest, FunctionTable)
         << "GpaGetFuncTable should set the minor_version of a GpaFunctionTable to the correct "
            "minor version number even if initialized to an incorrect value.";
 
+    // The pointer immediately before the truncation boundary must be populated.
+    EXPECT_NE(nullptr, function_table->GpaGetDeviceMaxVgprs) << "GpaGetFuncTable must populate all function pointers within the caller's advertised size.";
     // Note: Whenever GPA function table changes, we need to update this with the last function in the GPA function table
     EXPECT_EQ(nullptr, function_table->GpaGetDeviceMaxLdsBytes) << "When GpaGetFuncTable receives a GpaFunctionTable with a minor_version set to a value "
                                                                    "that is less than the size of the internal GPA function table, then all entries in the "

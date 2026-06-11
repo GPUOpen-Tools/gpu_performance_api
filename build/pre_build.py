@@ -1,4 +1,4 @@
-## Copyright (C) 2018-2026 Advanced Micro Devices, Inc. All rights reserved. ##
+#/ Copyright (C) Advanced Micro Devices, Inc. All rights reserved.
 
 #!/usr/bin/python
 
@@ -30,7 +30,7 @@ sys.path.append(gpa_root)
 
 # Specify the type of build files to generate
 cmake_generator = None
-cmake_generator_configs = ["debug", "release"]
+cmake_generator_configs = ["Debug", "Release"]
 cmake_vs2022_generator = 'Visual Studio 17 2022'
 cmake_make_file_generator = 'Unix Makefiles'
 cmake_ninja_file_generator = 'Ninja'
@@ -40,7 +40,7 @@ cmake_cmd = "cmake"
 verbosity_enabled = False
 
 def Log(var):
-    if verbosity_enabled == True:
+    if verbosity_enabled:
         print(var, flush=True)
 
 def GenerateProjectFileUsingCmake(cmake_generator, target_platform,
@@ -72,7 +72,7 @@ def GenerateProjectFileUsingCmake(cmake_generator, target_platform,
 
     print("INFO: Build output directory is: " + cmake_build_file_dir)
 
-    if clean == True:
+    if clean:
         # NOTE in python 3.12 onerror is deprecated
         # This should eventually be updated to onexc
         #
@@ -80,17 +80,17 @@ def GenerateProjectFileUsingCmake(cmake_generator, target_platform,
         shutil.rmtree(cmake_build_file_dir, onerror=remove_readonly, ignore_errors=True)
         Log("Deleting directory " + cmake_build_file_dir)
 
-    if project_config == "debug":
-        cmake_config_arg = "-Dbuild-debug=ON"
+    if project_config == "Debug":
+        cmake_config_arg = "-DCMAKE_BUILD_TYPE=Debug"
     else:
-        cmake_config_arg = "-Dbuild-debug=OFF"
+        cmake_config_arg = "-DCMAKE_BUILD_TYPE=Release"
 
     print("Running CMake with arguments:")
     for args in additional_cmake_args:
         print(args, flush=True)
 
     cmake_arguments = [cmake_cmd, "-S", cmakelists_root, "-B", cmake_build_file_dir]
-    cmake_arguments += ["-G", cmake_generator, "-Dusingscript=ON", cmake_config_arg]
+    cmake_arguments += ["-G", cmake_generator, cmake_config_arg]
 
     for args in additional_cmake_args:
         cmake_arguments.append(args)
@@ -115,7 +115,7 @@ if sys.platform == "win32":
     script_parser.add_argument("--vs", default="2022", choices=["2022"], help="specify the version of Visual Studio to be used with this script (default: 2022; overrides --ninja)")
 
 script_parser.add_argument("--ninja", action="store_true", help="Generate build files for the Ninja build system")
-script_parser.add_argument("--config", choices=["debug", "release"], help="Specify the build config for Makefiles (default: both)")
+script_parser.add_argument("--config", choices=["Debug", "Release"], help="Specify the build config for Makefiles (default: both)")
 script_parser.add_argument("--clean", action="store_true", help="Delete cmake-generated directories created by this script")
 script_parser.add_argument("--build-number", default="0", help="Specify the build number, primarily to be used by build machines to produce versioned builds")
 script_parser.add_argument("--build", action="store_true", help="Perform the GPA build after running CMake")
@@ -153,62 +153,32 @@ build_args = script_parser.parse_args()
 # Set the BUILD version number.
 cmake_additional_args=["-Dbuild=" + build_args.build_number]
 
-if build_args.verbose == True:
+if build_args.verbose:
     cmake_additional_args.append("-DCMAKE_VERBOSE_MAKEFILE=ON")
     # Helps provide useful information during FetchContent.
     cmake_additional_args.append("--log-level=DEBUG")
 
 if sys.platform == "win32":
-    if build_args.skipdx11 == True:
-        cmake_additional_args.append("-Dskipdx11=ON")
-    else:
-        cmake_additional_args.append("-Dskipdx11=OFF")
+    cmake_additional_args.append("-Dskipdx11=" + ("ON" if build_args.skipdx11 else "OFF"))
+    cmake_additional_args.append("-Dskipdx12=" + ("ON" if build_args.skipdx12 else "OFF"))
 
-    if build_args.skipdx12 == True:
-        cmake_additional_args.append("-Dskipdx12=ON")
-    else:
-        cmake_additional_args.append("-Dskipdx12=OFF")
-
-if build_args.skipvulkan == True:
-    cmake_additional_args.append("-Dskipvulkan=ON")
-else:
-    cmake_additional_args.append("-Dskipvulkan=OFF")
-
-if build_args.skipopengl == True:
-    cmake_additional_args.append("-Dskipopengl=ON")
-else:
-    cmake_additional_args.append("-Dskipopengl=OFF")
-
-if build_args.skiptests == True:
-    cmake_additional_args.append("-Dskiptests=ON")
-else:
-    cmake_additional_args.append("-Dskiptests=OFF")
-
-if build_args.skipexamples == True:
-    cmake_additional_args.append("-Dskipexamples=ON")
-else:
-    cmake_additional_args.append("-Dskipexamples=OFF")
-
-if build_args.skipdocs == True:
-    cmake_additional_args.append("-Dskipdocs=ON")
-else:
-    cmake_additional_args.append("-Dskipdocs=OFF")
-
-if build_args.skipcsharp == True:
-    cmake_additional_args.append("-Dskipcsharp=ON")
-else:
-    cmake_additional_args.append("-Dskipcsharp=OFF")
+cmake_additional_args.append("-Dskipvulkan=" + ("ON" if build_args.skipvulkan else "OFF"))
+cmake_additional_args.append("-Dskipopengl=" + ("ON" if build_args.skipopengl else "OFF"))
+cmake_additional_args.append("-Dskiptests=" + ("ON" if build_args.skiptests else "OFF"))
+cmake_additional_args.append("-Dskipexamples=" + ("ON" if build_args.skipexamples else "OFF"))
+cmake_additional_args.append("-Dskipdocs=" + ("ON" if build_args.skipdocs else "OFF"))
+cmake_additional_args.append("-Dskipcsharp=" + ("ON" if build_args.skipcsharp else "OFF"))
 
 if build_args.package_suffix is not None:
     cmake_additional_args.append("-DGPA_PACKAGE_SUFFIX=" + build_args.package_suffix)
 else:
     cmake_additional_args.append("-UGPA_PACKAGE_SUFFIX")
 
-if build_args.config == "debug":
-    cmake_generator_configs.remove("release")
+if build_args.config == "Debug":
+    cmake_generator_configs.remove("Release")
 
-if build_args.config == "release":
-    cmake_generator_configs.remove("debug")
+if build_args.config == "Release":
+    cmake_generator_configs.remove("Debug")
 
 if sys.platform == "win32":
     if build_args.vs == "2022":
@@ -227,7 +197,7 @@ cmake_cmd = build_args.cmakecmd
 
 verbosity_enabled = build_args.verbose
 
-if build_args.android == True:
+if build_args.android:
     cmake_additional_args.append("-DCMAKE_TOOLCHAIN_FILE=" + android_toolchain)
     cmake_additional_args.append("-Dskipopengl=ON")
     cmake_additional_args.append("-Dskiptests=ON")
@@ -236,42 +206,19 @@ if build_args.android == True:
 # Ignored by generators other than Make and Ninja, so no harm in leaving it always on
 cmake_additional_args.append("-DCMAKE_EXPORT_COMPILE_COMMANDS=ON")
 
-if build_args.clang_format == True:
-    cmake_additional_args.append("-DGPA_RUN_CLANG_FORMAT=ON")
-else:
-    cmake_additional_args.append("-DGPA_RUN_CLANG_FORMAT=OFF")
-
-if build_args.clang_tidy == True:
-    cmake_additional_args.append("-DGPA_RUN_CLANG_TIDY=ON")
-else:
-    cmake_additional_args.append("-DGPA_RUN_CLANG_TIDY=OFF")
-
-if build_args.fixlint == True:
-    cmake_additional_args.append("-DGPA_APPLY_LINT_FIXES=ON")
-else:
-    cmake_additional_args.append("-DGPA_APPLY_LINT_FIXES=OFF")
-
-if build_args.cleanlint == True:
-    cmake_additional_args.append("-DGPA_REQUIRE_CLEAN_LINT=ON")
-else:
-    cmake_additional_args.append("-DGPA_REQUIRE_CLEAN_LINT=OFF")
-
-if build_args.nofetch == True:
-    cmake_additional_args.append("-DGPA_NO_FETCH=ON")
-else:
-    cmake_additional_args.append("-DGPA_NO_FETCH=OFF")
-
-if build_args.asan == True:
-    cmake_additional_args.append("-DGPA_ENABLE_ASAN=ON")
-else:
-    cmake_additional_args.append("-DGPA_ENABLE_ASAN=OFF")
+cmake_additional_args.append("-DGPA_RUN_CLANG_FORMAT=" + ("ON" if build_args.clang_format else "OFF"))
+cmake_additional_args.append("-DGPA_RUN_CLANG_TIDY=" + ("ON" if build_args.clang_tidy else "OFF"))
+cmake_additional_args.append("-DGPA_APPLY_LINT_FIXES=" + ("ON" if build_args.fixlint else "OFF"))
+cmake_additional_args.append("-DGPA_REQUIRE_CLEAN_LINT=" + ("ON" if build_args.cleanlint else "OFF"))
+cmake_additional_args.append("-DGPA_NO_FETCH=" + ("ON" if build_args.nofetch else "OFF"))
+cmake_additional_args.append("-DGPA_ENABLE_ASAN=" + ("ON" if build_args.asan else "OFF"))
 
 print(cmake_generator)
 
 if sys.platform == "win32":
-    cmake_generator_configs = ["release"]
+    cmake_generator_configs = ["Release"]
 
-cmake_build_configs = ["debug", "release"]
+cmake_build_configs = ["Debug", "Release"]
 
 print("configs: %s" % cmake_generator_configs)
 
@@ -279,7 +226,7 @@ for config in cmake_generator_configs:
 
     platform = 'x64'
 
-    if build_args.builddir != None:
+    if build_args.builddir is not None:
         cmake_output_path = build_args.builddir
     else:
         if sys.platform == "win32":
@@ -290,26 +237,25 @@ for config in cmake_generator_configs:
         cmake_output_path = cmake_output_path + "_x64"
 
         # Append _android to output dir if building for android
-        if build_args.android == True:
+        if build_args.android:
             cmake_output_path = cmake_output_path + "_android"
 
-    if GenerateProjectFileUsingCmake(cmake_generator, platform,
+    if not GenerateProjectFileUsingCmake(cmake_generator, platform,
                                         config, cmake_additional_args,
-                                        build_args.clean, cmake_output_path) == False:
+                                        build_args.clean, cmake_output_path):
         print("Unable to generate project files")
         sys.exit(1)
 
 if (build_args.build):
     config_suffix = "_x64"
-    if build_args.android == True:
+    if build_args.android:
         config_suffix = config_suffix + "_android"
 
     for config in cmake_build_configs:
         print( "\nBuilding " + config + " configuration\n")
-        build_dir = ""
 
         cmake_output_dir = pre_bld_script_root
-        if build_args.builddir != None:
+        if build_args.builddir is not None:
             cmake_output_dir = build_args.builddir
 
         if sys.platform == "win32":
@@ -318,7 +264,7 @@ if (build_args.build):
             cmake_output_dir = os.path.join(cmake_output_dir, "linux", "make_" + config + config_suffix)
 
         if build_args.ninja or sys.platform != "win32":
-            cmake_args = ["cmake", "--build", cmake_output_dir, "--parallel", build_args.build_jobs]
+            cmake_args = ["cmake", "--build", cmake_output_dir, "--parallel", build_args.build_jobs, "--config", config]
 
         elif sys.platform == "win32":
             # For Visual Studio, specify the config to build
@@ -335,7 +281,7 @@ if (build_args.build):
 
         if build_args.runtests:
             ctest_config = "Release"
-            if config == "debug":
+            if config == "Debug":
                 ctest_config = "Debug"
 
             ctest_args = ["ctest", "--build-config", ctest_config, "--output-on-failure", "--test-dir", cmake_output_dir]
@@ -347,10 +293,10 @@ if (build_args.build):
 
             if result.returncode != 0:
                 print(f"CTest failed!", file=sys.stderr)
-                sys.exit(-1)
+                sys.exit(1)
 
-        # We currently only package release binaries.
-        if (build_args.package and config == "release"):
+        # We currently only package Release binaries.
+        if (build_args.package and config == "Release"):
             cpack_args = ["cpack", "-C", "Release"]
             p = subprocess.Popen(cpack_args, cwd=cmake_output_dir, stderr=subprocess.STDOUT)
             p.wait()

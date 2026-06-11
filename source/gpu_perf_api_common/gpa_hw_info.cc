@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016-2025 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  A class for managing hardware information.
@@ -11,7 +11,8 @@
 
 #include <assert.h>
 #include <cinttypes>
-#include <DeviceInfoUtils.h>
+#include <string_view>
+#include "device_info.hpp"
 
 bool GpaHwInfo::GetDeviceId(GpaUInt32& id) const
 {
@@ -19,14 +20,13 @@ bool GpaHwInfo::GetDeviceId(GpaUInt32& id) const
     return device_id_set_;
 }
 
-bool GpaHwInfo::IsUnsupportedDeviceId(const GpaApiType api, GpaDriverInfo const& driver_info) const
+bool GpaHwInfo::IsUnsupportedDevice(const GpaApiType api, GpaDriverInfo const& driver_info) const
 {
-    bool is_unsupported = true;
-    if (device_id_set_ && revision_id_set_)
+    if (const std::optional<device_info::AdapterId> device_description = GetDeviceDescription(); device_description.has_value())
     {
-        is_unsupported = IsDeviceUnprofilable(device_id_, revision_id_, api, driver_info);
+        return IsDeviceUnprofilable(*device_description, api, driver_info);
     }
-    return is_unsupported;
+    return true;
 }
 
 bool GpaHwInfo::GetRevisionId(GpaUInt32& id) const
@@ -51,18 +51,6 @@ bool GpaHwInfo::GetGpuIndex(unsigned int& gpu_index) const
 {
     gpu_index = gpu_index_;
     return gpu_index_set_;
-}
-
-bool GpaHwInfo::GetHwGeneration(GDT_HW_GENERATION& gen) const
-{
-    gen = generation_;
-    return generation_set_;
-}
-
-bool GpaHwInfo::GetHwAsicType(GDT_HW_ASIC_TYPE& type) const
-{
-    type = asic_type_;
-    return asic_type_ != GDT_ASIC_TYPE_NONE;
 }
 
 void GpaHwInfo::SetDeviceId(const GpaUInt32& id)
@@ -93,12 +81,6 @@ void GpaHwInfo::SetGpuIndex(const unsigned int& gpu_index)
 {
     gpu_index_set_ = true;
     gpu_index_     = gpu_index;
-}
-
-void GpaHwInfo::SetHwGeneration(const GDT_HW_GENERATION& generation)
-{
-    generation_set_ = true;
-    generation_     = generation;
 }
 
 void GpaHwInfo::SetTimeStampFrequency(const GpaUInt64& frequency)
@@ -155,251 +137,87 @@ void GpaHwInfo::SetNumberVgprs(const GpaUInt32 num_vgpr)
     num_vgpr_     = num_vgpr;
 }
 
-bool GpaHwInfo::UpdateDeviceInfoBasedOnDeviceId(const GpaApiType api, GpaDriverInfo const& driver_info)
+bool GpaHwInfo::UpdateDeviceInfoBasedOnDeviceDescription()
 {
-    std::vector<GDT_GfxCardInfo> card_list;
-    GDT_GfxCardInfo              card_info         = {};
-    GDT_DeviceInfo               device_info       = {};
-    bool                         device_info_found = false;
+    const std::optional<device_info::AdapterId> adapter_id = GetDeviceDescription();
 
-    if (device_name_set_)
+    if (!adapter_id.has_value())
     {
-        if (AMDTDeviceInfoUtils::GetAllCardsWithDeviceId(device_id_, card_list))
-        {
-            for (auto it = card_list.begin(); it != card_list.end(); ++it)
-            {
-                if (revision_id_set_ && revision_id_ != AMDTDeviceInfoUtils::kRevisionIdAny && it->m_revID != revision_id_)
-                {
-                    continue;
-                }
-
-                // First check for CAL name matches.
-                std::string this_cal_name(it->m_szCALName);
-
-                if (0 == this_cal_name.compare(device_name_))
-                {
-                    card_info = *it;
-
-                    if (AMDTDeviceInfoUtils::GetDeviceInfo(it->m_szCALName, device_info))
-                    {
-                        device_info_found = true;
-                        break;
-                    }
-                }
-
-                // Next check for marketing name matches.
-                std::string this_marketing_name(it->m_szMarketingName);
-
-                if (0 == this_marketing_name.compare(device_name_))
-                {
-                    card_info = *it;
-
-                    if (AMDTDeviceInfoUtils::GetDeviceInfo(card_info.m_deviceID, card_info.m_revID, device_info))
-                    {
-                        device_info_found = true;
-                        break;
-                    }
-                }
-            }
-        }
-    }
-
-    if (!device_info_found)
-    {
-        if (AMDTDeviceInfoUtils::GetDeviceInfo(device_id_, revision_id_, card_info))
-        {
-            GPA_LOG_DEBUG_MESSAGE("Found device ID: %" PRIu32 " which is generation %d.", card_info.m_deviceID, card_info.m_generation);
-
-            if (AMDTDeviceInfoUtils::GetDeviceInfo(device_id_, revision_id_, device_info))
-            {
-                device_info_found = true;
-            }
-        }
-    }
-
-    if (device_info_found)
-    {
-        if (!num_shader_engines_set_)
-        {
-            SetNumberShaderEngines(static_cast<GpaUInt32>(device_info.m_nNumShaderEngines));
-        }
-
-        if (!num_shader_arrays_set_)
-        {
-            SetNumberShaderArrays(static_cast<GpaUInt32>(device_info.numberSHs()));
-        }
-
-        if (!num_cu_set_)
-        {
-            SetNumberCus(static_cast<GpaUInt32>(device_info.numberCUs()));
-        }
-
-        if (!num_simd_set_)
-        {
-            SetNumberSimds(static_cast<GpaUInt32>(device_info.numberSIMDs()));
-        }
-
-        if (!su_clock_prim_set_)
-        {
-            SetSuClocksPrim(static_cast<GpaUInt32>(device_info.m_suClocksPrim));
-        }
-
-        if (!num_waves_per_simd_set_)
-        {
-            SetWavesPerSimd(static_cast<GpaUInt32>(device_info.m_nMaxWavePerSIMD));
-        }
-
-        if (!num_prim_pipes_set_)
-        {
-            SetNumberPrimPipes(static_cast<GpaUInt32>(device_info.m_nNumPrimPipes));
-        }
-
-        if (!num_vgpr_set_)
-        {
-            SetNumberVgprs(static_cast<GpaUInt32>(device_info.numberVGPRs()));
-        }
-
-        if (!num_lds_bytes_.has_value())
-        {
-            num_lds_bytes_ = AMDTDeviceInfoUtils::GetTotalLdsSizeInBytes(card_info.m_generation, device_info);
-        }
-
-        asic_type_ = card_info.m_asicType;
-        SetDeviceName(card_info.m_szMarketingName);
-        SetHwGeneration(card_info.m_generation);
-        return true;
-    }
-    else
-    {
-        // Only emit an error for AMD devices.
-        if (IsAmd())
-        {
-            // Checking for recognized unsupported cards and only logging debug message if an unsupported card is found.
-            if (IsUnsupportedDeviceId(api, driver_info))
-            {
-                GPA_LOG_DEBUG_MESSAGE("Device ID of unsupported card found: 0x%04X.", device_id_);
-            }
-            else
-            {
-                GPA_LOG_ERROR("Unrecognized device ID: 0x%04X, rev 0x%02X.", device_id_, revision_id_);
-            }
-        }
-
+        GpaLogger::Instance().LogError("Device description is not set; cannot update device info.");
         return false;
     }
-}
 
-bool GpaHwInfo::UpdateRevisionIdBasedOnDeviceIdAndName()
-{
-    std::vector<GDT_GfxCardInfo> card_list;
-
-    if (device_name_set_)
+    const std::optional<device_info::CardInfo> card_info = device_info::GetCardInfo(*adapter_id);
+    if (!card_info.has_value())
     {
-        if (AMDTDeviceInfoUtils::GetAllCardsWithDeviceId(device_id_, card_list))
-        {
-            // First check for exact matches.
-            for (auto it = card_list.begin(); it != card_list.end(); ++it)
-            {
-                std::string this_marketing_name(it->m_szMarketingName);
-
-                if (0 == this_marketing_name.compare(device_name_))
-                {
-                    SetRevisionId(static_cast<GpaUInt32>(it->m_revID));
-                    return true;
-                }
-            }
-
-            // If no exact match is found, try a substring match (first part of string should match marketing name).
-            for (auto it = card_list.begin(); it != card_list.end(); ++it)
-            {
-                std::string this_marketing_name(it->m_szMarketingName);
-
-                if (0 == device_name_.find(this_marketing_name))
-                {
-                    SetRevisionId(static_cast<GpaUInt32>(it->m_revID));
-                    return true;
-                }
-            }
-        }
+        GpaLogger::Instance().LogError("Failed to get card info based on device description.");
+        return false;
     }
 
-    SetRevisionId(AMDTDeviceInfoUtils::kRevisionIdAny);
-    return false;
-}
-
-bool GpaHwInfo::UpdateDeviceInfoBasedOnAsicTypeAndName(GDT_HW_ASIC_TYPE asic_type)
-{
-    std::vector<GDT_GfxCardInfo> card_list;
-
-    if (device_name_set_)
+    const std::optional<device_info::DeviceInfo> dev_info = device_info::GetDeviceInfo(*card_info);
+    if (!dev_info.has_value())
     {
-        if (AMDTDeviceInfoUtils::GetAllCardsWithAsicType(asic_type, card_list))
-        {
-            // First check for exact matches.
-            for (auto it = card_list.begin(); it != card_list.end(); ++it)
-            {
-                std::string this_marketing_name(it->m_szMarketingName);
-
-                if (0 == this_marketing_name.compare(device_name_))
-                {
-                    SetDeviceId(it->m_deviceID);
-                    SetRevisionId(it->m_revID);
-                    return true;
-                }
-            }
-
-            // If no exact match is found, try a substring match (first part of string should match marketing name).
-            for (auto it = card_list.begin(); it != card_list.end(); ++it)
-            {
-                std::string this_marketing_name(it->m_szMarketingName);
-
-                if (0 == device_name_.find(this_marketing_name))
-                {
-                    SetDeviceId(it->m_deviceID);
-                    SetRevisionId(it->m_revID);
-                    return true;
-                }
-            }
-        }
+        GpaLogger::Instance().LogError("Failed to get device info based on card info.");
+        return false;
     }
 
-    // If a match has not been found, try to match using the already set device id.
-    return UpdateRevisionIdBasedOnDeviceIdAndName();
-}
-
-bool GpaHwInfo::operator==(const GpaHwInfo& other_hw_info) const
-{
-    bool is_same = false;
-
-    if (!vendor_id_set_)
+    if (!num_shader_engines_set_)
     {
-        GPA_LOG_ERROR("Failed to get vendor Id.");
-    }
-    else if (!device_id_set_)
-    {
-        GPA_LOG_ERROR("Failed to get device Id.");
-    }
-    else if (!revision_id_set_)
-    {
-        GPA_LOG_ERROR("Failed to get revision Id.");
-    }
-    else if (vendor_id_ != other_hw_info.vendor_id_)
-    {
-        GPA_LOG_DEBUG_ERROR("Vendor ID mismatch.");
-    }
-    else if (device_id_ != other_hw_info.device_id_)
-    {
-        GPA_LOG_DEBUG_ERROR("Device Id Mismatch.");
-    }
-    else if (revision_id_ != AMDTDeviceInfoUtils::kRevisionIdAny && other_hw_info.revision_id_ != AMDTDeviceInfoUtils::kRevisionIdAny &&
-             revision_id_ != other_hw_info.revision_id_)
-    {
-        GPA_LOG_DEBUG_ERROR("Revision Id Mismatch.");
-    }
-    else
-    {
-        is_same = true;
+        SetNumberShaderEngines(static_cast<GpaUInt32>(dev_info->num_shader_engines));
     }
 
-    return is_same;
+    if (!num_shader_arrays_set_)
+    {
+        SetNumberShaderArrays(static_cast<GpaUInt32>(device_info::TotalShaderArrays(*dev_info)));
+    }
+
+    if (!num_cu_set_)
+    {
+        SetNumberCus(static_cast<GpaUInt32>(dev_info->num_cus));
+    }
+
+    if (!num_simd_set_)
+    {
+        SetNumberSimds(static_cast<GpaUInt32>(device_info::TotalSimds(*dev_info)));
+    }
+
+    if (!su_clock_prim_set_)
+    {
+        SetSuClocksPrim(static_cast<GpaUInt32>(dev_info->clocks_per_primitive));
+    }
+
+    if (!num_waves_per_simd_set_)
+    {
+        SetWavesPerSimd(static_cast<GpaUInt32>(dev_info->max_wave_per_simd));
+    }
+
+    if (!num_prim_pipes_set_)
+    {
+        SetNumberPrimPipes(static_cast<GpaUInt32>(dev_info->num_prim_pipes));
+    }
+
+    if (!num_vgpr_set_)
+    {
+        SetNumberVgprs(static_cast<GpaUInt32>(device_info::TotalVgprs(*dev_info)));
+    }
+
+    if (!num_lds_bytes_.has_value())
+    {
+        num_lds_bytes_ = device_info::GetTotalLdsSizeInBytes(card_info->generation, *dev_info);
+    }
+
+    if (!max_sq_counters_.has_value() && dev_info->num_sq_counters > 0)
+    {
+        max_sq_counters_ = dev_info->num_sq_counters;
+    }
+
+    asic_type_ = card_info->asic_type;
+    SetDeviceName(card_info->marketing_name);
+
+    if (!generation_.has_value())
+    {
+        generation_ = card_info->generation;
+    }
+
+    return true;
 }

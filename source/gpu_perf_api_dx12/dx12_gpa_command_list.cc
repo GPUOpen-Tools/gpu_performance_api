@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2023 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief DX12 GPA Command List Implementation
@@ -80,7 +80,7 @@ bool Dx12GpaCommandList::BeginCommandListRequest()
 
             if (amd_ext_session_ == nullptr)
             {
-                GPA_LOG_ERROR("Failed to create the AMD Extension session.");
+                GpaLogger::Instance().LogError("Failed to create the AMD Extension session.");
                 return false;
             }
         }
@@ -90,7 +90,7 @@ bool Dx12GpaCommandList::BeginCommandListRequest()
 
         if (!success)
         {
-            GPA_LOG_ERROR("The driver extension is unable to begin the command list.");
+            GpaLogger::Instance().LogError("The driver extension is unable to begin the command list.");
         }
         else
         {
@@ -99,7 +99,7 @@ bool Dx12GpaCommandList::BeginCommandListRequest()
     }
     else
     {
-        GPA_LOG_ERROR("The command list has already been started.");
+        GpaLogger::Instance().LogError("The command list has already been started.");
     }
 
     return success;
@@ -121,14 +121,14 @@ bool Dx12GpaCommandList::EndCommandListRequest()
         }
         else
         {
-            GPA_LOG_ERROR(
+            GpaLogger::Instance().LogError(
                 "The driver extension is unable to end the command list. This can occur if GPA_EndCommandList is called after the command list has been "
                 "closed.");
         }
     }
     else
     {
-        GPA_LOG_ERROR("The command list has not been started.");
+        GpaLogger::Instance().LogError("The command list has not been started.");
     }
 
     return success;
@@ -155,7 +155,7 @@ bool Dx12GpaCommandList::BeginSampleRequest(ClientSampleId client_sample_id, Gpa
     }
     else
     {
-        GPA_LOG_ERROR("Unable to begin sample in command list.");
+        GpaLogger::Instance().LogError("Unable to begin sample in command list.");
     }
 
     return success;
@@ -225,7 +225,8 @@ bool Dx12GpaCommandList::CopyBundleSamples(std::vector<ClientSampleId>  client_s
     }
     else
     {
-        GPA_LOG_ERROR("Unable to copy bundle samples. Copying is only supported on primary command lists for samples that do not already exist.");
+        GpaLogger::Instance().LogError(
+            "Unable to copy bundle samples. Copying is only supported on primary command lists for samples that do not already exist.");
     }
 
     return success;
@@ -290,7 +291,7 @@ bool Dx12GpaCommandList::OpenHwSample(ClientSampleId client_sample_id, DriverSam
                 if (*driver_sample_id == kSInvalidSampleIndex)
                 {
                     success = false;
-                    GPA_LOG_ERROR("Unable to begin request due to invalid sample index.");
+                    GpaLogger::Instance().LogError("Unable to begin request due to invalid sample index.");
                 }
                 else
                 {

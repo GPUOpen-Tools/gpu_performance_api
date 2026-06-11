@@ -1,5 +1,18 @@
 ﻿# GPU Performance API Release Notes
 ---
+# Version 4.4
+* Treat GFX11.5 GPUs as a separate HW generation.
+* Third party repos are cloned into the external/third_party directory.
+* Add GpaCounterLibGetHardwareGeneration to calculate GpaHwGeneration offline without calling GpaOpenContext.
+* Fixed potential memory leak related to the design of GpaApiManager singleton (gpu_perf_api_interface_loader.h). Requires recompiling project with latest headers. See updated usage documentation.
+* Streaming counter scheduling is no longer limited to 120 counters.
+* Implemented workaround for global variables not being re-initialized on Linux after dlclose when compiling with GNU (IE gcc/g++) toolchain. GPA now compiles with `-fno-gnu-unique` to mitigate this behavior.
+* Added explicit documentation for environment variables GPA supports.
+* Added support for GPA_EXPOSE_HW_COUNTERS environment variable. See official docs for details.
+* CMake build properly supports Ninja Multi-Config and other multi-configuration generators.
+* Updated logging to utilize C++20 std::format logging. Notably fixes crashes in niche situations due to incorrect format specifiers.
+* Removed dependency on TSingleton.
+
 # Version 4.3
 * Add support for AMD Radeon AI PRO R9600D.
 * Add support for AMD Radeon 840M, 860M, and 890M APUs.

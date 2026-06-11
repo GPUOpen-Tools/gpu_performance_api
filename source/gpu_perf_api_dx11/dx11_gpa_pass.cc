@@ -1,11 +1,13 @@
 //==============================================================================
-// Copyright (c) 2017-2025 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  DX11 GPA Pass Object Implementation
 //==============================================================================
 
 #include "gpu_perf_api_dx11/dx11_gpa_pass.h"
+
+#include <memory>
 
 #include "gpu_perf_api_common/gpa_context_counter_mediator.h"
 
@@ -20,18 +22,9 @@ Dx11GpaPass::Dx11GpaPass(IGpaSession* gpa_session, PassIndex pass_index, GpaCoun
     InitializeCounterInfo();
 }
 
-GpaSample* Dx11GpaPass::CreateApiSpecificSample(IGpaCommandList* cmd_list, GpaSampleType sample_type, ClientSampleId sample_id)
+std::unique_ptr<GpaSample> Dx11GpaPass::CreateApiSpecificSample(IGpaCommandList* cmd_list, GpaSampleType sample_type, ClientSampleId sample_id)
 {
-    GpaSample* ret_sample = nullptr;
-
-    Dx11GpaSample* dx11_gpa_sample = new (std::nothrow) Dx11GpaSample(this, cmd_list, sample_type, sample_id);
-
-    if (nullptr != dx11_gpa_sample)
-    {
-        ret_sample = dx11_gpa_sample;
-    }
-
-    return ret_sample;
+    return std::make_unique<Dx11GpaSample>(this, cmd_list, sample_type, sample_id);
 }
 
 bool Dx11GpaPass::ContinueSample(ClientSampleId src_sample_id, IGpaCommandList* primary_gpa_cmd_list)
@@ -43,14 +36,12 @@ bool Dx11GpaPass::ContinueSample(ClientSampleId src_sample_id, IGpaCommandList* 
     return status;
 }
 
-IGpaCommandList* Dx11GpaPass::CreateApiSpecificCommandList(void* cmd, CommandListId command_list_id, GpaCommandListType cmdType)
+std::unique_ptr<IGpaCommandList> Dx11GpaPass::CreateApiSpecificCommandList(void* cmd, CommandListId command_list_id, GpaCommandListType cmdType)
 {
     UNREFERENCED_PARAMETER(cmd);
     UNREFERENCED_PARAMETER(cmdType);
 
-    Dx11GpaCommandList* ret_cmd_list = new (std::nothrow) Dx11GpaCommandList(GetGpaSession(), this, command_list_id);
-
-    return ret_cmd_list;
+    return std::make_unique<Dx11GpaCommandList>(GetGpaSession(), this, command_list_id);
 }
 
 bool Dx11GpaPass::EndSample(IGpaCommandList* cmd_list)
@@ -84,7 +75,7 @@ void Dx11GpaPass::InitializeCounterInfo()
 
     if (counter_list_ == nullptr)
     {
-        GPA_LOG_ERROR("Invalid counter list.");
+        GpaLogger::Instance().LogError("Invalid counter list.");
         return;
     }
 
@@ -103,7 +94,7 @@ void Dx11GpaPass::InitializeCounterInfo()
             assert(counter_accessor != nullptr);
             if (counter_accessor == nullptr)
             {
-                GPA_LOG_ERROR("Invalid counter accessor. Disabling all counters in pass.");
+                GpaLogger::Instance().LogError("Invalid counter accessor. Disabling all counters in pass.");
                 for (const CounterIndex counter_index : *counter_list_)
                 {
                     DisableCounterForPass(counter_index);
@@ -124,7 +115,7 @@ void Dx11GpaPass::InitializeCounterInfo()
                 if (PE_BLOCK_RLC == block_id)
                 {
                     // RLC counters cause a reboot, so don't allow them to be enabled.
-                    GPA_LOG_ERROR("An unstable counter is included in the counter selection. Please remove it and re-profile.");
+                    GpaLogger::Instance().LogError("An unstable counter is included in the counter selection. Please remove it and re-profile.");
                     DisableAllCountersForPass();
                     break;
                 }
@@ -157,7 +148,7 @@ void Dx11GpaPass::InitializeCounterExperimentParameters()
     assert(counter_accessor != nullptr);
     if (nullptr == counter_accessor)
     {
-        GPA_LOG_DEBUG_ERROR("Accessor is unassigned.");
+        GpaLogger::Instance().LogDebugError("Accessor is unassigned.");
         return;
     }
 

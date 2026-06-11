@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2020-2024 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  GPA counter context handler.
@@ -7,6 +7,8 @@
 
 #ifndef GPU_PERF_API_COUNTERS_GPA_COUNTER_CONTEXT_HANDLER_H_
 #define GPU_PERF_API_COUNTERS_GPA_COUNTER_CONTEXT_HANDLER_H_
+
+#include <memory>
 
 #include "gpu_performance_api/gpu_perf_api_types.h"
 #include "gpu_performance_api/gpu_perf_api_counters.h"
@@ -65,7 +67,7 @@ struct _GpaCounterContext
     /// Constructor.
     ///
     /// @param [in] gpa_counter_context gpa counter context.
-    _GpaCounterContext(GpaCounterContextHandler* gpa_counter_context);
+    _GpaCounterContext(std::unique_ptr<GpaCounterContextHandler> gpa_counter_context);
 
     /// Member from pointer operator overloading.
     ///
@@ -73,9 +75,9 @@ struct _GpaCounterContext
     GpaCounterContextHandler* operator->() const;
 
     /// Destructor.
-    ~_GpaCounterContext();
+    ~_GpaCounterContext() = default;
 
-    GpaCounterContextHandler* gpa_counter_context_handler;  ///< Underlying GpaCounterContextHandler class object.
+    std::unique_ptr<GpaCounterContextHandler> gpa_counter_context_handler;  ///< Underlying GpaCounterContextHandler class object.
 };
 
 /// GpaCounterContextManager singleton class
@@ -85,16 +87,10 @@ public:
     /// Get the instance of virtual context manager.
     ///
     /// @return Static instance of GPA counter context manager.
-    static GpaCounterContextManager* Instance();
-
-    /// Deletes the instance.
-    static void DeleteInstance();
-
-    /// Deletes the instance if there are zero contexts remaining.
-    static void DeleteInstanceIfZero();
+    static GpaCounterContextManager& Instance();
 
     /// Destructor.
-    ~GpaCounterContextManager();
+    ~GpaCounterContextManager() = default;
 
     /// Creates a virtual context.
     ///
@@ -162,13 +158,16 @@ private:
     /// @param [in] sample_type Sample type.
     void InitCounterScheduler(const GpaApiType& api_type, const GpaSessionSampleType sample_type);
 
-    /// Closes all the contexts.
-    void CloseAllContext();
+    /// @brief Entry stored in the counter-context map that owns the context.
+    struct CounterContextEntry
+    {
+        std::unique_ptr<_GpaCounterContext> owned_context;  ///< Owns the counter context instance.
+        GpaApiType                          api_type;       ///< The API type of the context.
+    };
 
-    static GpaCounterContextManager*            gpa_counter_context_manager_;  ///< Static instance of counter context manager.
-    std::map<GpaCounterContext, GpaApiType>     gpa_counter_context_map_;      ///< Map of counter contexts vs API.
-    std::map<GpaApiType, IGpaCounterAccessor*>  gpa_counter_accessor_map_;     ///< Map of counter accessor.
-    std::map<GpaApiType, IGpaCounterScheduler*> gpa_counter_scheduler_map_;    ///< Map of counter scheduler.
+    std::map<GpaCounterContext, CounterContextEntry>                                            gpa_counter_context_map_;    ///< Map of counter contexts vs API.
+    std::map<GpaSessionSampleType, std::map<GpaApiType, std::unique_ptr<IGpaCounterAccessor>>>  gpa_counter_accessor_map_;   ///< Map of counter accessor.
+    std::map<GpaSessionSampleType, std::map<GpaApiType, std::unique_ptr<IGpaCounterScheduler>>> gpa_counter_scheduler_map_;  ///< Map of counter scheduler.
 };
 
 #endif

@@ -1,0 +1,42 @@
+//==============================================================================
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief  Function to get full paths to the GPA DLLs for each API.
+//==============================================================================
+#ifndef GPA_UNIT_TESTS_CONFIG_H_
+#define GPA_UNIT_TESTS_CONFIG_H_
+
+#include "gpu_perf_api_unit_tests/utils/gpu_perf_api_loader.h"
+
+/// @brief Get the GPA DLL name for the specified api.
+///
+/// @param [in] api The API to load GPA for.
+///
+/// @return The full path to the dll to load.
+inline const char* GpaGetFullPathToSharedLibrary(const GpaApiType api)
+{
+    switch (api)
+    {
+    case kGpaApiDirectx11:
+        return $<IF:$<TARGET_EXISTS:GPUPerfAPIDX11>,"$<TARGET_FILE:GPUPerfAPIDX11>","">;
+    case kGpaApiDirectx12:
+        return $<IF:$<TARGET_EXISTS:GPUPerfAPIDX12>,"$<TARGET_FILE:GPUPerfAPIDX12>","">;
+    case kGpaApiOpengl:
+        return $<IF:$<TARGET_EXISTS:GPUPerfAPIGL>,"$<TARGET_FILE:GPUPerfAPIGL>","">;
+    case kGpaApiVulkan:
+        return $<IF:$<TARGET_EXISTS:GPUPerfAPIVK>,"$<TARGET_FILE:GPUPerfAPIVK>","">;
+    default:
+        return "";
+    }
+}
+
+/// @brief Get the GPA Counter Library name.
+///
+/// @return The full path to the counter library.
+inline const char *GpaGetFullPathToCounterLib()
+{
+    return "$<TARGET_FILE:GPUPerfAPICounters>";
+}
+
+#endif // GPA_UNIT_TESTS_CONFIG_H_

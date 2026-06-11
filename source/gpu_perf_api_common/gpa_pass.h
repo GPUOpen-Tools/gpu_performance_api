@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2025 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  GPA Pass Object Header.
@@ -19,19 +19,19 @@
 #include "gpu_perf_api_common/gpa_context.h"
 #include "gpu_perf_api_common/gpa_sample.h"
 
-using PassIndex                = unsigned int;                                    ///< Type alias for pass index.
-using SampleCount              = unsigned int;                                    ///< Type alias for sample count.
-using CounterCount             = unsigned int;                                    ///< Type alias for counter count.
-using CounterIndex             = unsigned int;                                    ///< Type alias for counter index.
-using SamplesMap               = std::unordered_map<ClientSampleId, GpaSample*>;  ///< Type alias for map of client sample id and GPA sample object.
-using GpaInternalSampleCounter = std::atomic<unsigned int>;                       ///< Type alias for GPA internal sample counter.
-using ClientGpaSamplesMap      = std::map<unsigned int, unsigned int>;            ///< Type alias for map of internal sample id and client sample id.
-using CounterList              = std::vector<CounterIndex>;                       ///< Type alias for counter list.
-using SkippedCounters          = std::set<CounterIndex>;                          ///< Type alias for list of skipped counters.
-using SampleIndex              = unsigned int;                                    ///< Type alias for sample indexes.
-using GpaCommandLists          = std::vector<IGpaCommandList*>;                   ///< Type alias for list of GPA command lists.
-using CommandListCounter       = unsigned int;                                    ///< Type alias for command list counter.
-using CommandListId            = unsigned int;                                    ///< Type alias for command list Id.
+using PassIndex    = unsigned int;                                                    ///< Type alias for pass index.
+using SampleCount  = unsigned int;                                                    ///< Type alias for sample count.
+using CounterCount = unsigned int;                                                    ///< Type alias for counter count.
+using CounterIndex = unsigned int;                                                    ///< Type alias for counter index.
+using SamplesMap   = std::unordered_map<ClientSampleId, std::unique_ptr<GpaSample>>;  ///< Type alias for map of client sample id and GPA sample object.
+using GpaInternalSampleCounter = std::atomic<unsigned int>;                           ///< Type alias for GPA internal sample counter.
+using ClientGpaSamplesMap      = std::map<unsigned int, unsigned int>;                ///< Type alias for map of internal sample id and client sample id.
+using CounterList              = std::vector<CounterIndex>;                           ///< Type alias for counter list.
+using SkippedCounters          = std::set<CounterIndex>;                              ///< Type alias for list of skipped counters.
+using SampleIndex              = unsigned int;                                        ///< Type alias for sample indexes.
+using GpaCommandLists          = std::vector<std::unique_ptr<IGpaCommandList>>;       ///< Type alias for list of GPA command lists.
+using CommandListCounter       = unsigned int;                                        ///< Type alias for command list counter.
+using CommandListId            = unsigned int;                                        ///< Type alias for command list Id.
 
 /// @brief Class for GPA pass.
 class GpaPass
@@ -287,7 +287,7 @@ protected:
     /// @param [in] client_sample_id The client-supplied Id that will identify the created sample.
     ///
     /// @return A newly allocated API-specific GPASample object.
-    virtual GpaSample* CreateApiSpecificSample(IGpaCommandList* gpa_cmd_list, GpaSampleType sample_type, ClientSampleId client_sample_id) = 0;
+    virtual std::unique_ptr<GpaSample> CreateApiSpecificSample(IGpaCommandList* gpa_cmd_list, GpaSampleType sample_type, ClientSampleId client_sample_id) = 0;
 
     /// @brief Creates a command list.
     ///
@@ -296,7 +296,7 @@ protected:
     /// @param [in] cmd_type Type of the command list.
     ///
     /// @return The API-specific command list or null if an error occurred.
-    virtual IGpaCommandList* CreateApiSpecificCommandList(void* cmd_list, CommandListId command_list_id, GpaCommandListType cmd_type) = 0;
+    virtual std::unique_ptr<IGpaCommandList> CreateApiSpecificCommandList(void* cmd_list, CommandListId command_list_id, GpaCommandListType cmd_type) = 0;
 
     /// @brief Get the counter index in the list of the counters passed to the driver for sample creation.
     ///
@@ -321,7 +321,7 @@ protected:
     ///
     /// @param [in] sample_id The id of the sample being added.
     /// @param [in] gpa_sample The sample being added.
-    void AddClientSample(ClientSampleId sample_id, GpaSample* gpa_sample);
+    void AddClientSample(ClientSampleId sample_id, std::unique_ptr<GpaSample> gpa_sample);
 
     const CounterList*                                    counter_list_;                  ///< List of counter in a pass.
     std::map<GpaUInt32, std::shared_ptr<GpaSampleResult>> counter_results_by_sample_id_;  ///< Maps a sample ID to a set of counter results.
@@ -330,7 +330,7 @@ private:
     /// @brief Add the GPA command list.
     ///
     /// @param [in] gpa_command_list GPA command list.
-    void AddCommandList(IGpaCommandList* gpa_command_list);
+    void AddCommandList(std::unique_ptr<IGpaCommandList> gpa_command_list);
 
     /// @brief Checks whether the all the samples are valid and ready to get the result.
     ///

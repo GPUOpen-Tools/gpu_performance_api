@@ -1,9 +1,14 @@
 //==============================================================================
-// Copyright (c) 2012-2025 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Unit Tests for Dx12 Counter Generator.
 //==============================================================================
+
+#include <cctype>
+#include <string_view>
+#include <unordered_map>
+#include <unordered_set>
 
 #include "gpu_performance_api/gpu_perf_api_types.h"
 
@@ -12,11 +17,13 @@
 #include "auto_generated/gpu_perf_api_unit_tests/counters/public_derived_counters_dx12_gfx10.h"
 #include "auto_generated/gpu_perf_api_unit_tests/counters/public_derived_counters_dx12_gfx103.h"
 #include "auto_generated/gpu_perf_api_unit_tests/counters/public_derived_counters_dx12_gfx11.h"
+#include "auto_generated/gpu_perf_api_unit_tests/counters/public_derived_counters_dx12_gfx115.h"
 #include "auto_generated/gpu_perf_api_unit_tests/counters/public_derived_counters_dx12_gfx12.h"
 
 #include "auto_generated/gpu_perf_api_counter_generator/gpa_hw_counter_dx12_gfx10.h"
 #include "auto_generated/gpu_perf_api_counter_generator/gpa_hw_counter_dx12_gfx103.h"
 #include "auto_generated/gpu_perf_api_counter_generator/gpa_hw_counter_dx12_gfx11.h"
+#include "auto_generated/gpu_perf_api_counter_generator/gpa_hw_counter_dx12_gfx115.h"
 #include "auto_generated/gpu_perf_api_counter_generator/gpa_hw_counter_dx12_gfx12.h"
 
 #include "gpu_perf_api_unit_tests/counter_generator_tests.h"
@@ -32,7 +39,7 @@ static void GetExpectedCountersForGeneration(GpaHwGeneration           generatio
     const GpaCounterDesc* public_counters      = nullptr;
     size_t                public_counter_count = 0;
 
-    gpa_array_view<gpa_array_view<GpaHardwareCounterDesc>> hardware_counter_groups;
+    gpa_array_view<gpa_array_view<GpaHardwareCounterDesc>*> hardware_counter_groups;
 
     switch (generation)
     {
@@ -54,6 +61,12 @@ static void GetExpectedCountersForGeneration(GpaHwGeneration           generatio
         hardware_counter_groups = counter_dx12_gfx11::kDx12CounterGroupArrayGfx11;
         break;
 
+    case kGpaHwGenerationGfx115:
+        public_counters         = kDx12Gfx115PublicCounters;
+        public_counter_count    = kDx12Gfx115PublicCounterCount;
+        hardware_counter_groups = counter_dx12_gfx115::kDx12CounterGroupArrayGfx115;
+        break;
+
     case kGpaHwGenerationGfx12:
         public_counters         = kDx12Gfx12PublicCounters;
         public_counter_count    = kDx12Gfx12PublicCounterCount;
@@ -63,6 +76,12 @@ static void GetExpectedCountersForGeneration(GpaHwGeneration           generatio
     default:
         assert(!"Unrecognized hardware generation in GetExpectedCountersForGeneration");
         break;
+    }
+
+    if (public_counters == nullptr || public_counter_count == 0)
+    {
+        assert(!"Failed to set public counters for unit tests.");
+        return;
     }
 
     for (size_t i = 0; i < public_counter_count; i++)
@@ -79,10 +98,10 @@ static void GetExpectedCountersForGeneration(GpaHwGeneration           generatio
     const size_t num_hardware_counter_groups = hardware_counter_groups.size();
     for (size_t i = 0; i < num_hardware_counter_groups; ++i)
     {
-        const size_t num_counters_in_group = hardware_counter_groups[i].size();
+        const size_t num_counters_in_group = hardware_counter_groups[i]->size();
         for (size_t j = 0; j < num_counters_in_group; ++j)
         {
-            hardware_counter_names.push_back(hardware_counter_groups[i][j].name);
+            hardware_counter_names.push_back((*hardware_counter_groups[i])[j].name);
         }
     }
 }
@@ -109,6 +128,11 @@ static gpa_array_view<GpaCounterDesc> GetExpectedPublicCounters(GpaHwGeneration 
         public_counter_count = kDx12Gfx11PublicCounterCount;
         break;
 
+    case kGpaHwGenerationGfx115:
+        public_counters      = kDx12Gfx115PublicCounters;
+        public_counter_count = kDx12Gfx115PublicCounterCount;
+        break;
+
     case kGpaHwGenerationGfx12:
         public_counters      = kDx12Gfx12PublicCounters;
         public_counter_count = kDx12Gfx12PublicCounterCount;
@@ -124,16 +148,10 @@ static gpa_array_view<GpaCounterDesc> GetExpectedPublicCounters(GpaHwGeneration 
 
 TEST(CounterDllTests, Dx12UnsupportedHardwareGenerations)
 {
-    VerifyHardwareNotSupported(kGpaApiDirectx12, kGpaHwGenerationNone);
-    VerifyHardwareNotSupported(kGpaApiDirectx12, kGpaHwGenerationNvidia);
-    VerifyHardwareNotSupported(kGpaApiDirectx12, kGpaHwGenerationIntel);
-    VerifyHardwareNotSupported(kGpaApiDirectx12, kGpaHwGenerationGfx6);
-    VerifyHardwareNotSupported(kGpaApiDirectx12, kGpaHwGenerationGfx7);
-    VerifyHardwareNotSupported(kGpaApiDirectx12, kGpaHwGenerationGfx8);
-    VerifyHardwareNotSupported(kGpaApiDirectx12, kGpaHwGenerationGfx9);
-    VerifyHardwareNotSupported(kGpaApiDirectx12, kGpaHwGenerationCdna);
-    VerifyHardwareNotSupported(kGpaApiDirectx12, kGpaHwGenerationCdna2);
-    VerifyHardwareNotSupported(kGpaApiDirectx12, kGpaHwGenerationCdna3);
+    for (const GpaHwGeneration generation : kUnsupportedHardwareGenerations)
+    {
+        VerifyHardwareNotSupported(kGpaApiDirectx12, generation);
+    }
 }
 
 TEST(CounterDllTests, Dx12VerifyInvalidOpenContextParameters)
@@ -155,6 +173,11 @@ TEST(CounterDllTests, Dx12DerivedCounterBlocksGfx103)
 TEST(CounterDllTests, Dx12DerivedCounterBlocksGfx11)
 {
     VerifyDerivedCounterCount(kGpaApiDirectx12, kGpaHwGenerationGfx11, GetExpectedPublicCounters(kGpaHwGenerationGfx11));
+}
+
+TEST(CounterDllTests, Dx12DerivedCounterBlocksGfx115)
+{
+    VerifyDerivedCounterCount(kGpaApiDirectx12, kGpaHwGenerationGfx115, GetExpectedPublicCounters(kGpaHwGenerationGfx115));
 }
 
 TEST(CounterDllTests, Dx12DerivedCounterBlocksGfx12)
@@ -185,12 +208,14 @@ TEST(CounterDllTests, Dx12CounterNamesByDeviceId)
     std::vector<const char*> empty_list_to_skip_tests;
     VerifyCounterNames(kGpaApiDirectx12, kDevIdGfx11_0_3, derived_counter_names, empty_list_to_skip_tests);
     VerifyCounterNames(kGpaApiDirectx12, kDevIdGfx11_0_3B, derived_counter_names, empty_list_to_skip_tests);
+    GetExpectedCountersForGeneration(kGpaHwGenerationGfx115, derived_counter_names, hardware_counter_names);
     VerifyCounterNames(kGpaApiDirectx12, kDevIdGfx11_5_0, derived_counter_names, empty_list_to_skip_tests);
     VerifyCounterNames(kGpaApiDirectx12, kDevIdGfx11_5_3, derived_counter_names, empty_list_to_skip_tests);
 
     GetExpectedCountersForGeneration(kGpaHwGenerationGfx12, derived_counter_names, hardware_counter_names);
     VerifyCounterNames(kGpaApiDirectx12, kDevIdGfx12_0_0, derived_counter_names, hardware_counter_names);
     VerifyCounterNames(kGpaApiDirectx12, kDevIdGfx12_0_1, derived_counter_names, hardware_counter_names);
+
 }
 
 TEST(CounterDllTests, Dx12CounterNamesGfx10)
@@ -217,6 +242,14 @@ TEST(CounterDllTests, Dx12CounterNamesGfx11)
     VerifyCounterNames(kGpaApiDirectx12, kGpaHwGenerationGfx11, counter_names, hardware_counter_names);
 }
 
+TEST(CounterDllTests, Dx12CounterNamesGfx115)
+{
+    std::vector<const char*> counter_names;
+    std::vector<const char*> hardware_counter_names;
+    GetExpectedCountersForGeneration(kGpaHwGenerationGfx115, counter_names, hardware_counter_names);
+    VerifyCounterNames(kGpaApiDirectx12, kGpaHwGenerationGfx115, counter_names, hardware_counter_names);
+}
+
 TEST(CounterDllTests, Dx12CounterNamesGfx12)
 {
     std::vector<const char*> counter_names;
@@ -236,58 +269,604 @@ TEST(CounterDllTests, Dx12CounterNamesByGeneration)
     VerifyCounterNames(kGpaApiDirectx12, kGpaHwGenerationGfx103, counter_names, hardware_counter_names);
     GetExpectedCountersForGeneration(kGpaHwGenerationGfx11, counter_names, hardware_counter_names);
     VerifyCounterNames(kGpaApiDirectx12, kGpaHwGenerationGfx11, counter_names, hardware_counter_names);
+    GetExpectedCountersForGeneration(kGpaHwGenerationGfx115, counter_names, hardware_counter_names);
+    VerifyCounterNames(kGpaApiDirectx12, kGpaHwGenerationGfx115, counter_names, hardware_counter_names);
     GetExpectedCountersForGeneration(kGpaHwGenerationGfx12, counter_names, hardware_counter_names);
     VerifyCounterNames(kGpaApiDirectx12, kGpaHwGenerationGfx12, counter_names, hardware_counter_names);
 }
 
 TEST(CounterDllTests, Dx12OpenCounterContext)
 {
-    VerifyOpenCounterContext(kGpaApiDirectx12, kGpaHwGenerationGfx10);
-    VerifyOpenCounterContext(kGpaApiDirectx12, kGpaHwGenerationGfx103);
-    VerifyOpenCounterContext(kGpaApiDirectx12, kGpaHwGenerationGfx11);
-    VerifyOpenCounterContext(kGpaApiDirectx12, kGpaHwGenerationGfx12);
+    VerifyOpenCounterContextAllGenerations(kGpaApiDirectx12);
 }
 
 TEST(CounterDllTests, Dx12CounterLibTestGfx10)
 {
-    VerifyCounterLibInterface(kGpaApiDirectx12, kDevIdGfx10, AMDTDeviceInfoUtils::kRevisionIdAny);
-    VerifyCounterByPassCounterLibEntry(kGpaApiDirectx12, kDevIdGfx10, AMDTDeviceInfoUtils::kRevisionIdAny);
+    VerifyCounterLibInterface(kGpaApiDirectx12, kDevIdGfx10, device_info::kRevisionIdAny);
+    VerifyCounterByPassCounterLibEntry(kGpaApiDirectx12, kDevIdGfx10, device_info::kRevisionIdAny);
 }
 
 TEST(CounterDllTests, Dx12CounterLibTestGfx103)
 {
-    VerifyCounterLibInterface(kGpaApiDirectx12, kDevIdGfx10_3, AMDTDeviceInfoUtils::kRevisionIdAny);
-    VerifyCounterByPassCounterLibEntry(kGpaApiDirectx12, kDevIdGfx10_3, AMDTDeviceInfoUtils::kRevisionIdAny);
+    VerifyCounterLibInterface(kGpaApiDirectx12, kDevIdGfx10_3, device_info::kRevisionIdAny);
+    VerifyCounterByPassCounterLibEntry(kGpaApiDirectx12, kDevIdGfx10_3, device_info::kRevisionIdAny);
 }
 
 TEST(CounterDllTests, Dx12CounterLibTestGfx11)
 {
-    VerifyCounterLibInterface(kGpaApiDirectx12, kDevIdGfx11, AMDTDeviceInfoUtils::kRevisionIdAny);
-    VerifyCounterByPassCounterLibEntry(kGpaApiDirectx12, kDevIdGfx11, AMDTDeviceInfoUtils::kRevisionIdAny);
+    VerifyCounterLibInterface(kGpaApiDirectx12, kDevIdGfx11, device_info::kRevisionIdAny);
+    VerifyCounterByPassCounterLibEntry(kGpaApiDirectx12, kDevIdGfx11, device_info::kRevisionIdAny);
 }
 
 TEST(CounterDllTests, Dx12CounterLibTestGfx1103)
 {
-    VerifyCounterLibInterface(kGpaApiDirectx12, kDevIdGfx11_0_3, AMDTDeviceInfoUtils::kRevisionIdAny);
-    VerifyCounterByPassCounterLibEntry(kGpaApiDirectx12, kDevIdGfx11_0_3, AMDTDeviceInfoUtils::kRevisionIdAny);
+    VerifyCounterLibInterface(kGpaApiDirectx12, kDevIdGfx11_0_3, device_info::kRevisionIdAny);
+    VerifyCounterByPassCounterLibEntry(kGpaApiDirectx12, kDevIdGfx11_0_3, device_info::kRevisionIdAny);
 }
 
 TEST(CounterDllTests, Dx12CounterLibTestGfx1103B)
 {
-    VerifyCounterLibInterface(kGpaApiDirectx12, kDevIdGfx11_0_3B, AMDTDeviceInfoUtils::kRevisionIdAny);
-    VerifyCounterByPassCounterLibEntry(kGpaApiDirectx12, kDevIdGfx11_0_3B, AMDTDeviceInfoUtils::kRevisionIdAny);
+    VerifyCounterLibInterface(kGpaApiDirectx12, kDevIdGfx11_0_3B, device_info::kRevisionIdAny);
+    VerifyCounterByPassCounterLibEntry(kGpaApiDirectx12, kDevIdGfx11_0_3B, device_info::kRevisionIdAny);
 }
 
 TEST(CounterDllTests, Dx12CounterLibTestGfx1150)
 {
-    VerifyCounterLibInterface(kGpaApiDirectx12, kDevIdGfx11_5_0, AMDTDeviceInfoUtils::kRevisionIdAny);
-    VerifyCounterByPassCounterLibEntry(kGpaApiDirectx12, kDevIdGfx11_5_0, AMDTDeviceInfoUtils::kRevisionIdAny);
+    VerifyCounterLibInterface(kGpaApiDirectx12, kDevIdGfx11_5_0, device_info::kRevisionIdAny);
+    VerifyCounterByPassCounterLibEntry(kGpaApiDirectx12, kDevIdGfx11_5_0, device_info::kRevisionIdAny);
+}
+
+TEST(CounterDllTests, Dx12CounterLibTestGfx1151)
+{
+    VerifyCounterLibInterface(kGpaApiDirectx12, kDevIdGfx11_5_1, device_info::kRevisionIdAny);
+    VerifyCounterByPassCounterLibEntry(kGpaApiDirectx12, kDevIdGfx11_5_1, device_info::kRevisionIdAny);
+}
+
+TEST(CounterDllTests, Dx12CounterLibTestGfx1152)
+{
+    VerifyCounterLibInterface(kGpaApiDirectx12, kDevIdGfx11_5_2, device_info::kRevisionIdAny);
+    VerifyCounterByPassCounterLibEntry(kGpaApiDirectx12, kDevIdGfx11_5_2, device_info::kRevisionIdAny);
 }
 
 TEST(CounterDllTests, Dx12CounterLibTestGfx1153)
 {
-    VerifyCounterLibInterface(kGpaApiDirectx12, kDevIdGfx11_5_3, AMDTDeviceInfoUtils::kRevisionIdAny);
-    VerifyCounterByPassCounterLibEntry(kGpaApiDirectx12, kDevIdGfx11_5_3, AMDTDeviceInfoUtils::kRevisionIdAny);
+    VerifyCounterLibInterface(kGpaApiDirectx12, kDevIdGfx11_5_3, device_info::kRevisionIdAny);
+    VerifyCounterByPassCounterLibEntry(kGpaApiDirectx12, kDevIdGfx11_5_3, device_info::kRevisionIdAny);
+}
+
+// Returns true if any hardware counter name in the context starts with the given prefix.
+static bool HwCounterPrefixPresent(GpaCounterLibFuncTable& fn, GpaCounterContext ctx, std::string_view prefix)
+{
+    GpaUInt32 num_counters = 0;
+    if (fn.GpaCounterLibGetNumCounters(ctx, &num_counters) != kGpaStatusOk)
+    {
+        return false;
+    }
+    for (GpaUInt32 i = 0; i < num_counters; ++i)
+    {
+        const char* name = nullptr;
+        if (fn.GpaCounterLibGetCounterName(ctx, i, &name) == kGpaStatusOk && name != nullptr)
+        {
+            if (std::string_view(name).starts_with(prefix))
+            {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+TEST(CounterDllTests, Dx12SpmCounterCapacityGfx10)
+{
+    const std::unordered_map<std::string_view, GpaUInt32> kExpected = {
+        // numGenericSpmModules=1 => 4
+        {"CPF", 4},
+        {"CPG", 4},
+        {"CPC", 4},
+        {"CB", 4},
+        {"GDS", 4},
+        {"GCEA", 4},
+        {"CHA", 4},
+        {"CHC", 4},
+        {"CHCG", 4},
+        {"GUS", 4},
+        {"GCR", 4},
+        {"GL1A", 4},
+        {"GL1C", 4},
+        {"GL2A", 8},
+        {"GL2C", 8},
+        {"PA_SC", 4},
+        {"RMI", 4},
+        {"SDMA", 8},
+        {"SQ", 16},
+        {"SQ_ES", 16},
+        {"SQ_GS", 16},
+        {"SQ_VS", 16},
+        {"SQ_PS", 16},
+        {"SQ_LS", 16},
+        {"SQ_HS", 16},
+        {"SQ_CS", 16},
+        {"SPI", 16},
+        {"SX", 8},
+        {"TA", 4},
+        {"TD", 4},
+        {"TCP", 8},
+        {"DB", 8},
+        {"GE", 16},
+        {"PA_SU", 16},
+        {"PA_PH", 16},
+        {"ATCL2", 4},
+        // no generic SPM modules => 0
+        {"GRBM", 0},
+        {"GRBMSE", 0},
+        {"RLC", 0},
+        {"ATC", 0},
+        {"UMC", 0},
+    };
+
+    std::unordered_set<std::string_view> checked;
+    for (const GpaCounterGroupDesc& group : counter_dx12_gfx10::kHwDx12GroupsGfx10)
+    {
+        std::string_view name = group.name;
+
+        auto expected_it = kExpected.find(name);
+        if (expected_it == kExpected.end())
+        {
+            auto it = name.end();
+            while (it != name.begin() && std::isdigit(static_cast<unsigned char>(*(it - 1))))
+                --it;
+            expected_it = kExpected.find(std::string_view(name.begin(), it));
+        }
+        if (expected_it == kExpected.end())
+            continue;
+
+        const std::string_view base = expected_it->first;
+        if (checked.count(base))
+            continue;
+        checked.insert(base);
+
+        EXPECT_EQ(expected_it->second, group.max_active_spm_counters)
+            << "Block " << group.name << ": expected max_active_spm_counters=" << expected_it->second << ", got " << group.max_active_spm_counters;
+    }
+
+    for (const auto& [block, _] : kExpected)
+    {
+        EXPECT_TRUE(checked.count(block)) << "Block " << block << " not found in kHwDx12GroupsGfx10";
+    }
+}
+
+TEST(CounterDllTests, Dx12SpmCounterCapacityGfx103)
+{
+    const std::unordered_map<std::string_view, GpaUInt32> kExpected = {
+        {"CPF", 4},
+        {"CPG", 4},
+        {"CPC", 4},
+        {"CB", 4},
+        {"GDS", 16},
+        {"GCEA", 4},
+        {"CHA", 4},
+        {"CHC", 4},
+        {"CHCG", 4},
+        {"GUS", 4},
+        {"GCR", 4},
+        {"GL1A", 4},
+        {"GL1C", 4},
+        {"GL2A", 8},
+        {"GL2C", 8},
+        {"PA_SC", 4},
+        {"RMI", 4},
+        {"SDMA", 8},
+        {"SQ", 16},
+        {"SQ_ES", 16},
+        {"SQ_GS", 16},
+        {"SQ_VS", 16},
+        {"SQ_PS", 16},
+        {"SQ_LS", 16},
+        {"SQ_HS", 16},
+        {"SQ_CS", 16},
+        {"SPI", 16},
+        {"SX", 8},
+        {"TA", 4},
+        {"TD", 4},
+        {"TCP", 8},
+        {"DB", 8},
+        {"GE", 16},
+        {"GE_SE", 4},
+        {"GE2_DIST", 4},
+        {"PA_SU", 16},
+        {"PA_PH", 16},
+        // no generic SPM modules => 0
+        {"GRBM", 0},
+        {"GRBMSE", 0},
+        {"RLC", 0},
+        {"ATC", 0},
+        {"ATCL2", 0},
+    };
+
+    std::unordered_set<std::string_view> checked;
+    for (const GpaCounterGroupDesc& group : counter_dx12_gfx103::kHwDx12GroupsGfx103)
+    {
+        std::string_view name = group.name;
+
+        auto expected_it = kExpected.find(name);
+        if (expected_it == kExpected.end())
+        {
+            auto it = name.end();
+            while (it != name.begin() && std::isdigit(static_cast<unsigned char>(*(it - 1))))
+                --it;
+            expected_it = kExpected.find(std::string_view(name.begin(), it));
+        }
+        if (expected_it == kExpected.end())
+            continue;
+
+        const std::string_view base = expected_it->first;
+        if (checked.count(base))
+            continue;
+        checked.insert(base);
+
+        EXPECT_EQ(expected_it->second, group.max_active_spm_counters)
+            << "Block " << group.name << ": expected max_active_spm_counters=" << expected_it->second << ", got " << group.max_active_spm_counters;
+    }
+
+    for (const auto& [block, _] : kExpected)
+    {
+        EXPECT_TRUE(checked.count(block)) << "Block " << block << " not found in kHwDx12GroupsGfx103";
+    }
+}
+
+TEST(CounterDllTests, Dx12SpmCounterCapacityGfx11)
+{
+    const std::unordered_map<std::string_view, GpaUInt32> kExpected = {
+        {"CPF", 4},
+        {"CPG", 4},
+        {"CPC", 4},
+        {"CB", 4},
+        {"GDS", 4},
+        {"GCEA", 4},
+        {"CHA", 4},
+        {"CHC", 4},
+        {"CHCG", 4},
+        {"GUS", 4},
+        {"GCR", 4},
+        {"GL1A", 4},
+        {"GL1C", 4},
+        {"GL2A", 8},
+        {"GL2C", 8},
+        {"PA_SC", 4},
+        {"RMI", 4},
+        {"SDMA", 8},
+        {"SQG", 8},
+        {"SQG_GS", 8},
+        {"SQG_PS", 8},
+        {"SQG_HS", 8},
+        {"SQG_CS", 8},
+        {"SPI", 16},
+        {"SX", 8},
+        {"TA", 4},
+        {"TD", 4},
+        {"TCP", 8},
+        {"DB", 8},
+        {"GE", 16},
+        {"GE_SE", 16},
+        {"GE2_DIST", 16},
+        {"PA_SU", 16},
+        {"PA_PH", 16},
+        // no generic SPM modules => 0
+        {"GRBM", 0},
+        {"GRBMSE", 0},
+        {"RLC", 0},
+        {"PC", 0},
+    };
+
+    std::unordered_set<std::string_view> checked;
+    for (const GpaCounterGroupDesc& group : counter_dx12_gfx11::kHwDx12GroupsGfx11)
+    {
+        std::string_view name = group.name;
+
+        auto expected_it = kExpected.find(name);
+        if (expected_it == kExpected.end())
+        {
+            auto it = name.end();
+            while (it != name.begin() && std::isdigit(static_cast<unsigned char>(*(it - 1))))
+                --it;
+            expected_it = kExpected.find(std::string_view(name.begin(), it));
+        }
+        if (expected_it == kExpected.end())
+            continue;
+
+        const std::string_view base = expected_it->first;
+        if (checked.count(base))
+            continue;
+        checked.insert(base);
+
+        EXPECT_EQ(expected_it->second, group.max_active_spm_counters)
+            << "Block " << group.name << ": expected max_active_spm_counters=" << expected_it->second << ", got " << group.max_active_spm_counters;
+    }
+
+    for (const auto& [block, _] : kExpected)
+    {
+        EXPECT_TRUE(checked.count(block)) << "Block " << block << " not found in kHwDx12GroupsGfx11";
+    }
+}
+
+TEST(CounterDllTests, Dx12SpmCounterCapacityGfx115)
+{
+    const std::unordered_map<std::string_view, GpaUInt32> kExpected = {
+        {"CPF", 1},
+        {"CPG", 1},
+        {"CPC", 1},
+        {"CB", 1},
+        {"GDS", 4},
+        {"GCEA", 1},
+        {"CHA", 1},
+        {"CHC", 1},
+        {"GCR", 1},
+        {"GL1A", 1},
+        {"GL1C", 1},
+        {"GL2A", 2},
+        {"GL2C", 2},
+        {"PA_SC", 1},
+        {"RMI", 1},
+        {"SQG", 0},
+        {"SQG_GS", 0},
+        {"SQG_PS", 0},
+        {"SQG_HS", 0},
+        {"SQG_CS", 0},
+        {"SPI", 4},
+        {"SX", 2},
+        {"TA", 1},
+        {"TD", 1},
+        {"TCP", 2},
+        {"DB", 2},
+        {"GE2_DIST", 4},
+        {"GE2_SE", 4},
+        {"PA_SU", 4},
+        {"PA_PH", 4},
+        {"PC", 4},
+        {"ATCL2", 4},
+        // no generic SPM modules => 0
+        {"GRBM", 0},
+        {"GRBMSE", 0},
+        {"RLC", 0},
+        {"ATC", 0},
+    };
+
+    std::unordered_set<std::string_view> checked;
+    for (const GpaCounterGroupDesc& group : counter_dx12_gfx115::kHwDx12GroupsGfx115)
+    {
+        std::string_view name = group.name;
+
+        auto expected_it = kExpected.find(name);
+        if (expected_it == kExpected.end())
+        {
+            auto it = name.end();
+            while (it != name.begin() && std::isdigit(static_cast<unsigned char>(*(it - 1))))
+                --it;
+            expected_it = kExpected.find(std::string_view(name.begin(), it));
+        }
+        if (expected_it == kExpected.end())
+            continue;
+
+        const std::string_view base = expected_it->first;
+        if (checked.count(base))
+            continue;
+        checked.insert(base);
+
+        EXPECT_EQ(expected_it->second, group.max_active_spm_counters)
+            << "Block " << group.name << ": expected max_active_spm_counters=" << expected_it->second << ", got " << group.max_active_spm_counters;
+    }
+
+    for (const auto& [block, _] : kExpected)
+    {
+        EXPECT_TRUE(checked.count(block)) << "Block " << block << " not found in kHwDx12GroupsGfx115";
+    }
+}
+
+TEST(CounterDllTests, Dx12SpmCounterCapacityGfx12)
+{
+    const std::unordered_map<std::string_view, GpaUInt32> kExpected = {
+        {"CPF", 4},
+        {"CPG", 4},
+        {"CPC", 4},
+        {"CB", 4},
+        {"CHA", 16},
+        {"CHC", 16},
+        {"GCR", 8},
+        {"GL1A", 16},
+        {"GL1XA", 0},
+        {"GL1XC", 16},
+        {"GL1C", 16},
+        {"GL2A", 16},
+        {"GL2C", 16},
+        {"PA_SC", 4},
+        {"SDMA", 8},
+        {"SQG", 8},
+        {"SQG_GS", 8},
+        {"SQG_PS", 8},
+        {"SQG_HS", 8},
+        {"SQG_CS", 8},
+        {"SPI", 24},
+        {"SX", 16},
+        {"TA", 4},
+        {"TD", 4},
+        {"TCP", 8},
+        {"DB", 16},
+        {"GE1", 16},
+        {"GE2_DIST", 16},
+        {"GE2_SE", 16},
+        {"GC_EA_SE", 4},
+        {"GC_EA_CPWD", 4},
+        {"PA_SU", 16},
+        {"WGS", 4},
+        {"PC", 16},
+        // no generic SPM modules => 0
+        {"GRBM", 0},
+        {"GRBMSE", 0},
+        {"RLC", 0},
+    };
+
+    std::unordered_set<std::string_view> checked;
+    for (const GpaCounterGroupDesc& group : counter_dx12_gfx12::kHwDx12GroupsGfx12)
+    {
+        std::string_view name = group.name;
+
+        auto expected_it = kExpected.find(name);
+        if (expected_it == kExpected.end())
+        {
+            auto it = name.end();
+            while (it != name.begin() && std::isdigit(static_cast<unsigned char>(*(it - 1))))
+                --it;
+            expected_it = kExpected.find(std::string_view(name.begin(), it));
+        }
+        if (expected_it == kExpected.end())
+            continue;
+
+        const std::string_view base = expected_it->first;
+        if (checked.count(base))
+            continue;
+        checked.insert(base);
+
+        EXPECT_EQ(expected_it->second, group.max_active_spm_counters)
+            << "Block " << group.name << ": expected max_active_spm_counters=" << expected_it->second << ", got " << group.max_active_spm_counters;
+    }
+
+    for (const auto& [block, _] : kExpected)
+    {
+        EXPECT_TRUE(checked.count(block)) << "Block " << block << " not found in kHwDx12GroupsGfx12";
+    }
+}
+
+// GPA cannot have two GpaCounterContext objects for different hardware generations open
+// simultaneously (known limitation — the library must be unloaded between contexts).
+// Block-difference checks are split into two independent tests so each gets a fresh load.
+TEST(CounterDllTests, Dx12BlockPresenceGfx11)
+{
+    GpaCounterLibFuncTable gpa_counter_lib_func_table = {};
+    auto                   lib_guard                  = LoadAndVerifyCounterLib(&gpa_counter_lib_func_table);
+    if (!lib_guard)
+    {
+        return;
+    }
+
+    constexpr GpaOpenContextFlags kHwFlags = kGpaOpenContextDefaultBit | kGpaOpenContextEnableHardwareCountersBit;
+    GpaCounterContextHardwareInfo hw_info  = {device_info::kAmdVendorId, kDevIdGfx11, device_info::kRevisionIdAny, nullptr, 0};
+    GpaCounterContext             ctx      = nullptr;
+    ASSERT_EQ(kGpaStatusOk,
+              gpa_counter_lib_func_table.GpaCounterLibOpenCounterContext(kGpaApiDirectx12, kGpaSessionSampleTypeDiscreteCounter, hw_info, kHwFlags, &ctx));
+
+    // GFX11 exposes GE_SE (6 instances). GE2_SE is the GFX11.5 rename and must not appear on GFX11.
+    EXPECT_TRUE(HwCounterPrefixPresent(gpa_counter_lib_func_table, ctx, "GE_SE")) << "GE_SE block missing on GFX11";
+    EXPECT_FALSE(HwCounterPrefixPresent(gpa_counter_lib_func_table, ctx, "GE2_SE")) << "GE2_SE unexpectedly present on GFX11";
+
+    gpa_counter_lib_func_table.GpaCounterLibCloseCounterContext(ctx);
+}
+
+TEST(CounterDllTests, Dx12BlockPresenceGfx115)
+{
+    GpaCounterLibFuncTable gpa_counter_lib_func_table = {};
+    auto                   lib_guard                  = LoadAndVerifyCounterLib(&gpa_counter_lib_func_table);
+    if (!lib_guard)
+    {
+        return;
+    }
+
+    constexpr GpaOpenContextFlags kHwFlags = kGpaOpenContextDefaultBit | kGpaOpenContextEnableHardwareCountersBit;
+    GpaCounterContextHardwareInfo hw_info  = {device_info::kAmdVendorId, kDevIdGfx11_5_0, device_info::kRevisionIdAny, nullptr, 0};
+    GpaCounterContext             ctx      = nullptr;
+    ASSERT_EQ(kGpaStatusOk,
+              gpa_counter_lib_func_table.GpaCounterLibOpenCounterContext(kGpaApiDirectx12, kGpaSessionSampleTypeDiscreteCounter, hw_info, kHwFlags, &ctx));
+
+    // GFX11.5 exposes GE2_SE (renamed from GE_SE, 1 instance). GE_SE must not appear.
+    EXPECT_TRUE(HwCounterPrefixPresent(gpa_counter_lib_func_table, ctx, "GE2_SE")) << "GE2_SE block missing on GFX11.5";
+    EXPECT_FALSE(HwCounterPrefixPresent(gpa_counter_lib_func_table, ctx, "GE_SE")) << "GE_SE unexpectedly present on GFX11.5 (should be GE2_SE)";
+
+    gpa_counter_lib_func_table.GpaCounterLibCloseCounterContext(ctx);
+}
+
+TEST(CounterDllTests, Dx12BlockPresenceGfx10)
+{
+    GpaCounterLibFuncTable gpa_counter_lib_func_table = {};
+    auto                   lib_guard                  = LoadAndVerifyCounterLib(&gpa_counter_lib_func_table);
+    if (!lib_guard)
+    {
+        return;
+    }
+
+    constexpr GpaOpenContextFlags kHwFlags = kGpaOpenContextDefaultBit | kGpaOpenContextEnableHardwareCountersBit;
+    GpaCounterContextHardwareInfo hw_info  = {device_info::kAmdVendorId, kDevIdGfx10, device_info::kRevisionIdAny, nullptr, 0};
+    GpaCounterContext             ctx      = nullptr;
+    ASSERT_EQ(kGpaStatusOk,
+              gpa_counter_lib_func_table.GpaCounterLibOpenCounterContext(kGpaApiDirectx12, kGpaSessionSampleTypeDiscreteCounter, hw_info, kHwFlags, &ctx));
+
+    // GFX10 uses SQ (not SQG); SQG must not appear.
+    EXPECT_TRUE(HwCounterPrefixPresent(gpa_counter_lib_func_table, ctx, "SQ_")) << "SQ block missing on GFX10";
+    EXPECT_FALSE(HwCounterPrefixPresent(gpa_counter_lib_func_table, ctx, "SQG_")) << "SQG unexpectedly present on GFX10";
+    EXPECT_FALSE(HwCounterPrefixPresent(gpa_counter_lib_func_table, ctx, "SQWGP")) << "SQWGP unexpectedly present on GFX10";
+    // GFX10 does not have GE2_DIST (introduced in GFX10.3) or GE_SE.
+    EXPECT_FALSE(HwCounterPrefixPresent(gpa_counter_lib_func_table, ctx, "GE1_")) << "GE1 unexpectedly present on GFX10 (introduced in GFX12)";
+    EXPECT_FALSE(HwCounterPrefixPresent(gpa_counter_lib_func_table, ctx, "GE2_DIST")) << "GE2_DIST unexpectedly present on GFX10";
+    // GE_SE0_ (with trailing underscore) identifies the actual GE_SE block; GFX10's GE block has
+    // sub-counters like GE_SE0PA0_* that would match the shorter "GE_SE" prefix but are not the block.
+    EXPECT_FALSE(HwCounterPrefixPresent(gpa_counter_lib_func_table, ctx, "GE_SE0_")) << "GE_SE block unexpectedly present on GFX10 (introduced in GFX10.3)";
+
+    gpa_counter_lib_func_table.GpaCounterLibCloseCounterContext(ctx);
+}
+
+TEST(CounterDllTests, Dx12BlockPresenceGfx103)
+{
+    GpaCounterLibFuncTable gpa_counter_lib_func_table = {};
+    auto                   lib_guard                  = LoadAndVerifyCounterLib(&gpa_counter_lib_func_table);
+    if (!lib_guard)
+    {
+        return;
+    }
+
+    constexpr GpaOpenContextFlags kHwFlags = kGpaOpenContextDefaultBit | kGpaOpenContextEnableHardwareCountersBit;
+    GpaCounterContextHardwareInfo hw_info  = {device_info::kAmdVendorId, kDevIdGfx10_3, device_info::kRevisionIdAny, nullptr, 0};
+    GpaCounterContext             ctx      = nullptr;
+    ASSERT_EQ(kGpaStatusOk,
+              gpa_counter_lib_func_table.GpaCounterLibOpenCounterContext(kGpaApiDirectx12, kGpaSessionSampleTypeDiscreteCounter, hw_info, kHwFlags, &ctx));
+
+    // GFX10.3 still uses SQ (not SQG); SQG must not appear.
+    EXPECT_TRUE(HwCounterPrefixPresent(gpa_counter_lib_func_table, ctx, "SQ_")) << "SQ block missing on GFX10.3";
+    EXPECT_FALSE(HwCounterPrefixPresent(gpa_counter_lib_func_table, ctx, "SQG_")) << "SQG unexpectedly present on GFX10.3";
+    EXPECT_FALSE(HwCounterPrefixPresent(gpa_counter_lib_func_table, ctx, "SQWGP")) << "SQWGP unexpectedly present on GFX10.3";
+    // GFX10.3 still has GE (not GE1). GE2_DIST is new in GFX10.3. GE_SE is new in GFX10.3.
+    EXPECT_TRUE(HwCounterPrefixPresent(gpa_counter_lib_func_table, ctx, "GE_")) << "GE block missing on GFX10.3";
+    EXPECT_FALSE(HwCounterPrefixPresent(gpa_counter_lib_func_table, ctx, "GE1_")) << "GE1 unexpectedly present on GFX10.3";
+    EXPECT_FALSE(HwCounterPrefixPresent(gpa_counter_lib_func_table, ctx, "GE2_SE")) << "GE2_SE unexpectedly present on GFX10.3";
+
+    gpa_counter_lib_func_table.GpaCounterLibCloseCounterContext(ctx);
+}
+
+TEST(CounterDllTests, Dx12BlockPresenceGfx12)
+{
+    GpaCounterLibFuncTable gpa_counter_lib_func_table = {};
+    auto                   lib_guard                  = LoadAndVerifyCounterLib(&gpa_counter_lib_func_table);
+    if (!lib_guard)
+    {
+        return;
+    }
+
+    constexpr GpaOpenContextFlags kHwFlags = kGpaOpenContextDefaultBit | kGpaOpenContextEnableHardwareCountersBit;
+    GpaCounterContextHardwareInfo hw_info  = {device_info::kAmdVendorId, kDevIdGfx12_0_0, device_info::kRevisionIdAny, nullptr, 0};
+    GpaCounterContext             ctx      = nullptr;
+    ASSERT_EQ(kGpaStatusOk,
+              gpa_counter_lib_func_table.GpaCounterLibOpenCounterContext(kGpaApiDirectx12, kGpaSessionSampleTypeDiscreteCounter, hw_info, kHwFlags, &ctx));
+
+    // GFX11 blocks removed from GFX12.
+    EXPECT_FALSE(HwCounterPrefixPresent(gpa_counter_lib_func_table, ctx, "GDS_")) << "GDS unexpectedly present on GFX12";
+    EXPECT_FALSE(HwCounterPrefixPresent(gpa_counter_lib_func_table, ctx, "GUS_")) << "GUS unexpectedly present on GFX12";
+    EXPECT_FALSE(HwCounterPrefixPresent(gpa_counter_lib_func_table, ctx, "PA_PH_")) << "PA_PH unexpectedly present on GFX12";
+    EXPECT_FALSE(HwCounterPrefixPresent(gpa_counter_lib_func_table, ctx, "GCEA")) << "GCEA unexpectedly present on GFX12 (renamed to GC_EA_SE)";
+    EXPECT_FALSE(HwCounterPrefixPresent(gpa_counter_lib_func_table, ctx, "GE_SE")) << "GE_SE unexpectedly present on GFX12 (renamed to GE2_SE)";
+    // GFX12 renames: GE -> GE1, GE_SE -> GE2_SE; GE must not appear.
+    EXPECT_FALSE(HwCounterPrefixPresent(gpa_counter_lib_func_table, ctx, "GE_")) << "GE unexpectedly present on GFX12 (renamed to GE1)";
+    EXPECT_TRUE(HwCounterPrefixPresent(gpa_counter_lib_func_table, ctx, "GE1_")) << "GE1 block missing on GFX12";
+    EXPECT_TRUE(HwCounterPrefixPresent(gpa_counter_lib_func_table, ctx, "GE2_SE")) << "GE2_SE block missing on GFX12";
+    EXPECT_TRUE(HwCounterPrefixPresent(gpa_counter_lib_func_table, ctx, "GE2_DIST")) << "GE2_DIST block missing on GFX12";
+
+    gpa_counter_lib_func_table.GpaCounterLibCloseCounterContext(ctx);
 }
 
 TEST(CounterDllTests, Dx12CounterFormulaTest)
@@ -295,18 +874,19 @@ TEST(CounterDllTests, Dx12CounterFormulaTest)
     VerifyCounterFormula(GetExpectedPublicCounters(kGpaHwGenerationGfx10));
     VerifyCounterFormula(GetExpectedPublicCounters(kGpaHwGenerationGfx103));
     VerifyCounterFormula(GetExpectedPublicCounters(kGpaHwGenerationGfx11));
+    VerifyCounterFormula(GetExpectedPublicCounters(kGpaHwGenerationGfx115));
     VerifyCounterFormula(GetExpectedPublicCounters(kGpaHwGenerationGfx12));
 }
 
 // Currently this test will only work with the DX12 API. Since only DX12 supports kGpaSessionSampleTypeStreamingCounter
 TEST(ComputeDerivedCounterResult, WaveOccupancyPct)
 {
-    LibHandle              handle                     = {};
     GpaCounterLibFuncTable gpa_counter_lib_func_table = {};
     GpaCounterContext      gpa_counter_context        = {};
-    if (LoadAndVerifyCounterLib(&handle, &gpa_counter_lib_func_table))
+    auto                   lib_guard                  = LoadAndVerifyCounterLib(&gpa_counter_lib_func_table);
+    if (lib_guard)
     {
-        GpaCounterContextHardwareInfo counter_context_hardware_info = {kAmdVendorId, kDevIdGfx10, AMDTDeviceInfoUtils::kRevisionIdAny, nullptr, 0};
+        GpaCounterContextHardwareInfo counter_context_hardware_info = {device_info::kAmdVendorId, kDevIdGfx10, device_info::kRevisionIdAny, nullptr, 0};
         GpaStatus                     status                        = gpa_counter_lib_func_table.GpaCounterLibOpenCounterContext(
             kGpaApiDirectx12, kGpaSessionSampleTypeStreamingCounter, counter_context_hardware_info, kGpaOpenContextDefaultBit, &gpa_counter_context);
         EXPECT_EQ(kGpaStatusOk, status);
@@ -411,8 +991,6 @@ TEST(ComputeDerivedCounterResult, WaveOccupancyPct)
 
         status = gpa_counter_lib_func_table.GpaCounterLibCloseCounterContext(gpa_counter_context);
         EXPECT_EQ(kGpaStatusOk, status);
-
-        UnloadLib(handle);
     }
 }
 
@@ -420,12 +998,12 @@ TEST(ComputeDerivedCounterResult, WaveOccupancyPct)
 // Some are as simple as checking for nullptr. But others are verifying the counter data, and sizes passed in.
 TEST(ComputeDerivedSpmCounterResults, InvalidParameters)
 {
-    LibHandle              handle                     = {};
     GpaCounterLibFuncTable gpa_counter_lib_func_table = {};
     GpaCounterContext      gpa_counter_context        = {};
-    if (LoadAndVerifyCounterLib(&handle, &gpa_counter_lib_func_table))
+    auto                   lib_guard                  = LoadAndVerifyCounterLib(&gpa_counter_lib_func_table);
+    if (lib_guard)
     {
-        GpaCounterContextHardwareInfo counter_context_hardware_info = {kAmdVendorId, kDevIdGfx12_0_0, AMDTDeviceInfoUtils::kRevisionIdAny, nullptr, 0};
+        GpaCounterContextHardwareInfo counter_context_hardware_info = {device_info::kAmdVendorId, kDevIdGfx12_0_0, device_info::kRevisionIdAny, nullptr, 0};
         GpaStatus                     status                        = gpa_counter_lib_func_table.GpaCounterLibOpenCounterContext(
             kGpaApiDirectx12, kGpaSessionSampleTypeStreamingCounter, counter_context_hardware_info, kGpaOpenContextDefaultBit, &gpa_counter_context);
         EXPECT_EQ(kGpaStatusOk, status);
@@ -443,9 +1021,9 @@ TEST(ComputeDerivedSpmCounterResults, InvalidParameters)
             {
                 GpaSpmData spm_data = {};
 
-                constexpr std::array<uint64_t, 3> kTimeStampData  = {0, 0, 0};
-                spm_data.timestamps                               = kTimeStampData.data();
-                spm_data.number_of_timestamps                     = static_cast<uint32_t>(kTimeStampData.size());
+                constexpr std::array<uint64_t, 3> kTimeStampData = {0, 0, 0};
+                spm_data.timestamps                              = kTimeStampData.data();
+                spm_data.number_of_timestamps                    = static_cast<uint32_t>(kTimeStampData.size());
 
                 // There are 32 SQWGP*_SQ_PERF_SEL_LEVEL_WAVES[0..31] IDs for WaveOccupancyPct on GFX12
                 std::array<GpaSpmCounterInfo, 32> spm_counter_info = {};
@@ -629,20 +1207,18 @@ TEST(ComputeDerivedSpmCounterResults, InvalidParameters)
 
         status = gpa_counter_lib_func_table.GpaCounterLibCloseCounterContext(gpa_counter_context);
         EXPECT_EQ(kGpaStatusOk, status);
-
-        UnloadLib(handle);
     }
 }
 
 // Verify WaveOccupancyPct is working correctly for 3 timestamps.
 TEST(ComputeDerivedSpmCounterResults, WaveOccupancyPct)
 {
-    LibHandle              handle                     = {};
     GpaCounterLibFuncTable gpa_counter_lib_func_table = {};
     GpaCounterContext      gpa_counter_context        = {};
-    if (LoadAndVerifyCounterLib(&handle, &gpa_counter_lib_func_table))
+    auto                   lib_guard                  = LoadAndVerifyCounterLib(&gpa_counter_lib_func_table);
+    if (lib_guard)
     {
-        GpaCounterContextHardwareInfo counter_context_hardware_info = {kAmdVendorId, kDevIdGfx12_0_0, AMDTDeviceInfoUtils::kRevisionIdAny, nullptr, 0};
+        GpaCounterContextHardwareInfo counter_context_hardware_info = {device_info::kAmdVendorId, kDevIdGfx12_0_0, 0xC0, nullptr, 0};
         GpaStatus                     status                        = gpa_counter_lib_func_table.GpaCounterLibOpenCounterContext(
             kGpaApiDirectx12, kGpaSessionSampleTypeStreamingCounter, counter_context_hardware_info, kGpaOpenContextDefaultBit, &gpa_counter_context);
         EXPECT_EQ(kGpaStatusOk, status);
@@ -660,9 +1236,9 @@ TEST(ComputeDerivedSpmCounterResults, WaveOccupancyPct)
             {
                 GpaSpmData spm_data = {};
 
-                constexpr std::array<uint64_t, 3> kTimeStampData  = {0, 1, 2};
-                spm_data.timestamps                               = kTimeStampData.data();
-                spm_data.number_of_timestamps                     = static_cast<uint32_t>(kTimeStampData.size());
+                constexpr std::array<uint64_t, 3> kTimeStampData = {0, 1, 2};
+                spm_data.timestamps                              = kTimeStampData.data();
+                spm_data.number_of_timestamps                    = static_cast<uint32_t>(kTimeStampData.size());
 
                 // There are 32 SQWGP*_SQ_PERF_SEL_LEVEL_WAVES[0..31] IDs for WaveOccupancyPct on GFX12
                 std::array<GpaSpmCounterInfo, 32> spm_counter_info = {};
@@ -745,20 +1321,18 @@ TEST(ComputeDerivedSpmCounterResults, WaveOccupancyPct)
 
         status = gpa_counter_lib_func_table.GpaCounterLibCloseCounterContext(gpa_counter_context);
         EXPECT_EQ(kGpaStatusOk, status);
-
-        UnloadLib(handle);
     }
 }
 
 // Get HW counter results from a hardware counter.
 TEST(ComputeDerivedSpmCounterResults, HardwareCounter)
 {
-    LibHandle              handle                     = {};
     GpaCounterLibFuncTable gpa_counter_lib_func_table = {};
     GpaCounterContext      gpa_counter_context        = {};
-    if (LoadAndVerifyCounterLib(&handle, &gpa_counter_lib_func_table))
+    auto                   lib_guard                  = LoadAndVerifyCounterLib(&gpa_counter_lib_func_table);
+    if (lib_guard)
     {
-        GpaCounterContextHardwareInfo counter_context_hardware_info = {kAmdVendorId, kDevIdGfx12_0_0, AMDTDeviceInfoUtils::kRevisionIdAny, nullptr, 0};
+        GpaCounterContextHardwareInfo counter_context_hardware_info = {device_info::kAmdVendorId, kDevIdGfx12_0_0, device_info::kRevisionIdAny, nullptr, 0};
         GpaStatus                     status                        = gpa_counter_lib_func_table.GpaCounterLibOpenCounterContext(kGpaApiDirectx12,
                                                                                       kGpaSessionSampleTypeStreamingCounter,
                                                                                       counter_context_hardware_info,
@@ -783,9 +1357,9 @@ TEST(ComputeDerivedSpmCounterResults, HardwareCounter)
             {
                 GpaSpmData spm_data = {};
 
-                constexpr std::array<uint64_t, 3> kTimeStampData  = {0, 1, 2};
-                spm_data.timestamps                               = kTimeStampData.data();
-                spm_data.number_of_timestamps                     = static_cast<uint32_t>(kTimeStampData.size());
+                constexpr std::array<uint64_t, 3> kTimeStampData = {0, 1, 2};
+                spm_data.timestamps                              = kTimeStampData.data();
+                spm_data.number_of_timestamps                    = static_cast<uint32_t>(kTimeStampData.size());
 
                 // There are 32 SQWGP*_SQ_PERF_SEL_LEVEL_WAVES[0..31] IDs for WaveOccupancyPct on GFX12
                 std::array<GpaSpmCounterInfo, 32> spm_counter_info = {};
@@ -891,20 +1465,18 @@ TEST(ComputeDerivedSpmCounterResults, HardwareCounter)
 
         status = gpa_counter_lib_func_table.GpaCounterLibCloseCounterContext(gpa_counter_context);
         EXPECT_EQ(kGpaStatusOk, status);
-
-        UnloadLib(handle);
     }
 }
 
 // Verify negative counter results are interpreted correctly for Gfx10.
 TEST(ComputeDerivedSpmCounterResults, WaveOccupancyPctWorkaroundGfx10)
 {
-    LibHandle              handle                     = {};
     GpaCounterLibFuncTable gpa_counter_lib_func_table = {};
     GpaCounterContext      gpa_counter_context        = {};
-    if (LoadAndVerifyCounterLib(&handle, &gpa_counter_lib_func_table))
+    auto                   lib_guard                  = LoadAndVerifyCounterLib(&gpa_counter_lib_func_table);
+    if (lib_guard)
     {
-        const GpaCounterContextHardwareInfo counter_context_hardware_info = {kAmdVendorId, kDevIdGfx10, AMDTDeviceInfoUtils::kRevisionIdAny, nullptr, 0};
+        const GpaCounterContextHardwareInfo counter_context_hardware_info = {device_info::kAmdVendorId, kDevIdGfx10, device_info::kRevisionIdAny, nullptr, 0};
         GpaStatus                           status                        = gpa_counter_lib_func_table.GpaCounterLibOpenCounterContext(
             kGpaApiDirectx12, kGpaSessionSampleTypeStreamingCounter, counter_context_hardware_info, kGpaOpenContextDefaultBit, &gpa_counter_context);
         EXPECT_EQ(kGpaStatusOk, status);
@@ -922,9 +1494,9 @@ TEST(ComputeDerivedSpmCounterResults, WaveOccupancyPctWorkaroundGfx10)
             {
                 GpaSpmData spm_data = {};
 
-                constexpr std::array<uint64_t, 3> kTimeStampData  = {0, 1, 2};
-                spm_data.timestamps                               = kTimeStampData.data();
-                spm_data.number_of_timestamps                     = static_cast<uint32_t>(kTimeStampData.size());
+                constexpr std::array<uint64_t, 3> kTimeStampData = {0, 1, 2};
+                spm_data.timestamps                              = kTimeStampData.data();
+                spm_data.number_of_timestamps                    = static_cast<uint32_t>(kTimeStampData.size());
 
                 // There are 2 SQ*_PERF_SEL_LEVEL_WAVES[0..1] IDs for WaveOccupancyPct on GFX10
                 std::array<GpaSpmCounterInfo, 2> spm_counter_info = {};
@@ -1056,20 +1628,18 @@ TEST(ComputeDerivedSpmCounterResults, WaveOccupancyPctWorkaroundGfx10)
 
         status = gpa_counter_lib_func_table.GpaCounterLibCloseCounterContext(gpa_counter_context);
         EXPECT_EQ(kGpaStatusOk, status);
-
-        UnloadLib(handle);
     }
 }
 
 // Verify negative counter results are interpreted correctly for Gfx10.3
 TEST(ComputeDerivedSpmCounterResults, WaveOccupancyPctWorkaroundGfx103)
 {
-    LibHandle              handle                     = {};
     GpaCounterLibFuncTable gpa_counter_lib_func_table = {};
     GpaCounterContext      gpa_counter_context        = {};
-    if (LoadAndVerifyCounterLib(&handle, &gpa_counter_lib_func_table))
+    auto                   lib_guard                  = LoadAndVerifyCounterLib(&gpa_counter_lib_func_table);
+    if (lib_guard)
     {
-        const GpaCounterContextHardwareInfo counter_context_hardware_info = {kAmdVendorId, kDevIdGfx10_3, AMDTDeviceInfoUtils::kRevisionIdAny, nullptr, 0};
+        const GpaCounterContextHardwareInfo counter_context_hardware_info = {device_info::kAmdVendorId, kDevIdGfx10_3, device_info::kRevisionIdAny, nullptr, 0};
         GpaStatus                           status                        = gpa_counter_lib_func_table.GpaCounterLibOpenCounterContext(
             kGpaApiDirectx12, kGpaSessionSampleTypeStreamingCounter, counter_context_hardware_info, kGpaOpenContextDefaultBit, &gpa_counter_context);
         EXPECT_EQ(kGpaStatusOk, status);
@@ -1087,9 +1657,9 @@ TEST(ComputeDerivedSpmCounterResults, WaveOccupancyPctWorkaroundGfx103)
             {
                 GpaSpmData spm_data = {};
 
-                constexpr std::array<uint64_t, 3> kTimeStampData  = {0, 1, 2};
-                spm_data.timestamps                               = kTimeStampData.data();
-                spm_data.number_of_timestamps                     = static_cast<uint32_t>(kTimeStampData.size());
+                constexpr std::array<uint64_t, 3> kTimeStampData = {0, 1, 2};
+                spm_data.timestamps                              = kTimeStampData.data();
+                spm_data.number_of_timestamps                    = static_cast<uint32_t>(kTimeStampData.size());
 
                 // There are 4 SQ*_PERF_SEL_LEVEL_WAVES[0..1] IDs for WaveOccupancyPct on GFX10.3
                 std::array<GpaSpmCounterInfo, 4> spm_counter_info = {};
@@ -1221,8 +1791,6 @@ TEST(ComputeDerivedSpmCounterResults, WaveOccupancyPctWorkaroundGfx103)
 
         status = gpa_counter_lib_func_table.GpaCounterLibCloseCounterContext(gpa_counter_context);
         EXPECT_EQ(kGpaStatusOk, status);
-
-        UnloadLib(handle);
     }
 }
 
@@ -1236,15 +1804,15 @@ TEST(GpaCounterLibGetSupportedSampleTypes, Directx12)
 TEST(GpaCounterLibGetSupportedSampleTypes, SpmSqtt)
 {
     constexpr GpaApiType   api                        = kGpaApiDirectx12;
-    LibHandle              handle                     = {};
     GpaCounterLibFuncTable gpa_counter_lib_func_table = {};
+    auto                   lib_guard                  = LoadAndVerifyCounterLib(&gpa_counter_lib_func_table);
 
-    if (LoadAndVerifyCounterLib(&handle, &gpa_counter_lib_func_table))
+    if (lib_guard)
     {
         GpaStatus                  status                = kGpaStatusOk;
         GpaSupportedSampleTypeInfo info                  = {};
-        info.revision_id                                 = AMDTDeviceInfoUtils::kRevisionIdAny;
-        info.vendor_id                                   = kAmdVendorId;
+        info.revision_id                                 = device_info::kRevisionIdAny;
+        info.vendor_id                                   = device_info::kAmdVendorId;
         info.driver_info.driver_type                     = kIgnoreDriver;
         GpaContextSampleTypeFlags supported_sample_types = {};
 
@@ -1359,24 +1927,28 @@ TEST(GpaCounterLibGetSupportedSampleTypes, SpmSqtt)
                 EXPECT_EQ(supported_sample_types, flags) << kDevIdGfx10_3_4;
             }
         }
-
-        UnloadLib(handle);
     }
+
+    // Unset environment variables to avoid affecting other tests
+    BOOL ret = SetEnvironmentVariableW(L"AMD_GPA_ENABLE_SPM", nullptr);
+    EXPECT_GT(ret, 0);
+    ret = SetEnvironmentVariableW(L"AMD_GPA_ENABLE_SQTT", nullptr);
+    EXPECT_GT(ret, 0);
 }
 
 // Verify minimum driver version
 TEST(GpaCounterLibGetSupportedSampleTypes, MinimumDriverVersion)
 {
     constexpr GpaApiType   api                        = kGpaApiDirectx12;
-    LibHandle              handle                     = {};
     GpaCounterLibFuncTable gpa_counter_lib_func_table = {};
+    auto                   lib_guard                  = LoadAndVerifyCounterLib(&gpa_counter_lib_func_table);
 
-    if (LoadAndVerifyCounterLib(&handle, &gpa_counter_lib_func_table))
+    if (lib_guard)
     {
         GpaStatus                  status = kGpaStatusOk;
         GpaSupportedSampleTypeInfo info   = {};
-        info.revision_id                  = AMDTDeviceInfoUtils::kRevisionIdAny;
-        info.vendor_id                    = kAmdVendorId;
+        info.revision_id                  = device_info::kRevisionIdAny;
+        info.vendor_id                    = device_info::kAmdVendorId;
 
         info.driver_info.driver_type = kAmdProprietaryDriver;
         info.driver_info.major       = 19;
@@ -1394,8 +1966,58 @@ TEST(GpaCounterLibGetSupportedSampleTypes, MinimumDriverVersion)
             EXPECT_EQ(kGpaStatusErrorHardwareNotSupported, status);
             EXPECT_EQ(supported_sample_types, 0);
         }
-
-        UnloadLib(handle);
     }
 }
 
+TEST(GpaCounterLib, GpaExposeHwCountersEnvVar)
+{
+    constexpr GpaApiType   api                        = kGpaApiDirectx12;
+    GpaCounterLibFuncTable gpa_counter_lib_func_table = {};
+    auto                   lib_guard                  = LoadAndVerifyCounterLib(&gpa_counter_lib_func_table);
+
+    std::set<GpaUInt32> counter_tracker;
+
+    if (lib_guard)
+    {
+        // Verify environment variables are working.
+        for (const wchar_t* env_var_value : {L"1", L"0"})
+        {
+            GpaCounterContext gpa_counter_context = {};
+
+            // By default HW counters aren't enabled.
+            constexpr GpaOpenContextBits flags = kGpaOpenContextDefaultBit;
+
+            BOOL ret = SetEnvironmentVariableW(L"GPA_EXPOSE_HW_COUNTERS", env_var_value);
+            EXPECT_GT(ret, 0);
+
+            GpaStatus status = gpa_counter_lib_func_table.GpaCounterLibOpenCounterContext(api,
+                                                                                          kGpaSessionSampleTypeDiscreteCounter,
+                                                                                          {.vendor_id                    = device_info::kAmdVendorId,
+                                                                                           .device_id                    = kDevIdGfx12_0_1,
+                                                                                           .revision_id                  = device_info::kRevisionIdAny,
+                                                                                           .gpa_hardware_attributes      = nullptr,
+                                                                                           .gpa_hardware_attribute_count = 0},
+                                                                                          flags,
+                                                                                          &gpa_counter_context);
+            EXPECT_EQ(kGpaStatusOk, status);
+
+            if (status == kGpaStatusOk)
+            {
+                uint32_t num_counters = 0;
+                status                = gpa_counter_lib_func_table.GpaCounterLibGetNumCounters(gpa_counter_context, &num_counters);
+                EXPECT_EQ(kGpaStatusOk, status);
+
+                counter_tracker.insert(num_counters);
+
+                status = gpa_counter_lib_func_table.GpaCounterLibCloseCounterContext(gpa_counter_context);
+                EXPECT_EQ(kGpaStatusOk, status);
+            }
+        }
+    }
+
+    EXPECT_EQ(counter_tracker.size(), 2) << "Counter counts should be different when the environment variable is enabled vs disabled.";
+
+    // Unset environment variables to avoid affecting other tests
+    BOOL ret = SetEnvironmentVariableW(L"GPA_EXPOSE_HW_COUNTERS", nullptr);
+    EXPECT_GT(ret, 0);
+}

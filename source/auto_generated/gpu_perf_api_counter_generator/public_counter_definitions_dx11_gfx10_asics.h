@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2010-2025 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Public Counter Definitions ASIC file for DX11_GFX10
@@ -23,7 +23,7 @@ namespace dx11_gfx10_asics
     /// @param [out] c Returned set of derived counters, if available.
     ///
     /// @return True if the ASIC matched one available, and c was updated.
-    inline void UpdatePublicAsicSpecificCounters(GDT_HW_GENERATION desired_generation, GDT_HW_ASIC_TYPE asic_type, GpaDerivedCounters& c)
+    inline void UpdatePublicAsicSpecificCounters(device_info::HwGeneration desired_generation, device_info::AsicType asic_type, GpaDerivedCounters& c)
     {
         UNREFERENCED_PARAMETER(desired_generation);
         UNREFERENCED_PARAMETER(asic_type);

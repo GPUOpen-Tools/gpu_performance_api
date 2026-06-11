@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief GPA Command List Implementation.
@@ -36,12 +36,12 @@ bool GpaCommandList::Begin()
 
         if (!success)
         {
-            GPA_LOG_ERROR("Failed to begin the command list.");
+            GpaLogger::Instance().LogError("Failed to begin the command list.");
         }
     }
     else
     {
-        GPA_LOG_ERROR("Command list is already running.");
+        GpaLogger::Instance().LogError("Command list is already running.");
     }
 
     return success;
@@ -53,11 +53,11 @@ bool GpaCommandList::End()
 
     if (CommandListState::kUndefined == command_list_state_)
     {
-        GPA_LOG_ERROR("Command list is not yet opened for sampling.");
+        GpaLogger::Instance().LogError("Command list is not yet opened for sampling.");
     }
     else if (CommandListState::kSampleRecordingEnd == command_list_state_)
     {
-        GPA_LOG_ERROR("Command List already ended.");
+        GpaLogger::Instance().LogError("Command List already ended.");
     }
     else if (CommandListState::kSampleRecordingBegin == command_list_state_)
     {
@@ -66,7 +66,7 @@ bool GpaCommandList::End()
         {
             if (!CloseLastSample(false))
             {
-                GPA_LOG_ERROR("Unable to close the last sample.");
+                GpaLogger::Instance().LogError("Unable to close the last sample.");
             }
         }
 
@@ -74,7 +74,7 @@ bool GpaCommandList::End()
 
         if (!success)
         {
-            GPA_LOG_ERROR("Unable to end the command list.");
+            GpaLogger::Instance().LogError("Unable to end the command list.");
         }
         else
         {
@@ -109,15 +109,15 @@ bool GpaCommandList::BeginSample(ClientSampleId client_sample_index, GpaSample* 
 
     if (CommandListState::kSampleRecordingBegin != command_list_state_)
     {
-        GPA_LOG_ERROR("Command list must be in recording state to start/end a sample.");
+        GpaLogger::Instance().LogError("Command list must be in recording state to start/end a sample.");
     }
     else if (nullptr != GetSample(client_sample_index))
     {
-        GPA_LOG_ERROR("Sample Id already exists.");
+        GpaLogger::Instance().LogError("Sample Id already exists.");
     }
     else if (nullptr != last_sample_)
     {
-        GPA_LOG_ERROR("Previous sample must be ended before starting a new one.");
+        GpaLogger::Instance().LogError("Previous sample must be ended before starting a new one.");
     }
     else
     {
@@ -139,7 +139,7 @@ bool GpaCommandList::BeginSample(ClientSampleId client_sample_index, GpaSample* 
             }
             else
             {
-                GPA_LOG_ERROR("Failed to begin sample on command list.");
+                GpaLogger::Instance().LogError("Failed to begin sample on command list.");
             }
         }
     }
@@ -153,11 +153,11 @@ bool GpaCommandList::CloseLastSample(bool closing_by_client)
 
     if (CommandListState::kSampleRecordingBegin != command_list_state_)
     {
-        GPA_LOG_ERROR("Command list must be in recording state to start/end a sample.");
+        GpaLogger::Instance().LogError("Command list must be in recording state to start/end a sample.");
     }
     else if (nullptr == last_sample_)
     {
-        GPA_LOG_ERROR("Sample must be started before ending one.");
+        GpaLogger::Instance().LogError("Sample must be started before ending one.");
     }
     else
     {
@@ -165,7 +165,7 @@ bool GpaCommandList::CloseLastSample(bool closing_by_client)
 
         if (!succeeded)
         {
-            GPA_LOG_ERROR("Unable to end the sample on command list.");
+            GpaLogger::Instance().LogError("Unable to end the sample on command list.");
         }
         else
         {
@@ -173,7 +173,7 @@ bool GpaCommandList::CloseLastSample(bool closing_by_client)
 
             if (!succeeded)
             {
-                GPA_LOG_ERROR("Unable to end the sample.");
+                GpaLogger::Instance().LogError("Unable to end the sample.");
             }
             else
             {

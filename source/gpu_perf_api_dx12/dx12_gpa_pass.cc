@@ -1,11 +1,13 @@
 //==============================================================================
-// Copyright (c) 2017-2023 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  DX12 GPA Pass Object Implementation
 //==============================================================================
 
 #include "gpu_perf_api_dx12/dx12_gpa_pass.h"
+
+#include <memory>
 
 #include "gpu_perf_api_counter_generator/gpa_counter_generator_dx12_base.h"
 
@@ -21,20 +23,20 @@ Dx12GpaPass::Dx12GpaPass(IGpaSession* gpa_session, PassIndex pass_index, GpaCoun
 {
     if (!amd_ext_sample_config_.Initialize(gpa_session, GetCounterSource(), counter_list_, this, IsTimingPass()))
     {
-        GPA_LOG_ERROR("Sample configuration failed to initialize for pass %u.", pass_index);
+        GpaLogger::Instance().LogError("Sample configuration failed to initialize for pass {}.", pass_index);
     }
 }
 
-GpaSample* Dx12GpaPass::CreateApiSpecificSample(IGpaCommandList* cmd_list, GpaSampleType sample_type, ClientSampleId sample_id)
+std::unique_ptr<GpaSample> Dx12GpaPass::CreateApiSpecificSample(IGpaCommandList* cmd_list, GpaSampleType sample_type, ClientSampleId sample_id)
 {
-    Dx12GpaSample*      ret_dx12_gpa_sample = nullptr;
-    Dx12GpaCommandList* dx12_gpa_cmd_list   = reinterpret_cast<Dx12GpaCommandList*>(cmd_list);
+    std::unique_ptr<GpaSample> ret_dx12_gpa_sample;
+    Dx12GpaCommandList*        dx12_gpa_cmd_list = reinterpret_cast<Dx12GpaCommandList*>(cmd_list);
 
     // First Check whether the command list is opened and last sample is closed.
     if (nullptr != dx12_gpa_cmd_list && nullptr == dx12_gpa_cmd_list->GetSample(sample_id) && dx12_gpa_cmd_list->IsCommandListRunning() &&
         dx12_gpa_cmd_list->IsLastSampleClosed())
     {
-        ret_dx12_gpa_sample = new (std::nothrow) Dx12GpaSample(this, cmd_list, sample_type, sample_id);
+        ret_dx12_gpa_sample = std::make_unique<Dx12GpaSample>(this, cmd_list, sample_type, sample_id);
     }
 
     return ret_dx12_gpa_sample;
@@ -57,9 +59,9 @@ bool Dx12GpaPass::UpdateResults()
     return is_completed;
 }
 
-IGpaCommandList* Dx12GpaPass::CreateApiSpecificCommandList(void* cmd, CommandListId command_list_id, GpaCommandListType cmd_type)
+std::unique_ptr<IGpaCommandList> Dx12GpaPass::CreateApiSpecificCommandList(void* cmd, CommandListId command_list_id, GpaCommandListType cmd_type)
 {
-    IGpaCommandList* ret_cmd_list = nullptr;
+    std::unique_ptr<IGpaCommandList> ret_cmd_list;
 
     D3D12_COMMAND_LIST_TYPE command_list_type;
 
@@ -67,17 +69,11 @@ IGpaCommandList* Dx12GpaPass::CreateApiSpecificCommandList(void* cmd, CommandLis
     {
         if (command_list_type != D3D12_COMMAND_LIST_TYPE_COPY)
         {
-            Dx12GpaCommandList* dx12_gpa_cmd_list =
-                new (std::nothrow) Dx12GpaCommandList(reinterpret_cast<Dx12GpaSession*>(GetGpaSession()), this, cmd, command_list_id, cmd_type);
-
-            if (nullptr != dx12_gpa_cmd_list)
-            {
-                ret_cmd_list = dx12_gpa_cmd_list;
-            }
+            ret_cmd_list = std::make_unique<Dx12GpaCommandList>(reinterpret_cast<Dx12GpaSession*>(GetGpaSession()), this, cmd, command_list_id, cmd_type);
         }
         else
         {
-            GPA_LOG_ERROR("Copy command lists are not supported.");
+            GpaLogger::Instance().LogError("Copy command lists are not supported.");
         }
     }
 
@@ -99,7 +95,7 @@ bool Dx12GpaPass::EndSample(IGpaCommandList* cmd_list)
     }
     else
     {
-        GPA_LOG_ERROR("Either the command list is closed or there is no open sample on the command list.");
+        GpaLogger::Instance().LogError("Either the command list is closed or there is no open sample on the command list.");
     }
 
     return success;
@@ -151,18 +147,18 @@ bool Dx12GpaPass::CopySecondarySamples(std::vector<ClientSampleId> client_sample
                             {
                                 GpaSampleType sample_type =
                                     GetCounterSource() == GpaCounterSource::kHardware ? GpaSampleType::kHardware : GpaSampleType::kSoftware;
-                                Dx12GpaSample* new_sample =
-                                    reinterpret_cast<Dx12GpaSample*>(CreateApiSpecificSample(dx12_primary_gpa_cmd_list, sample_type, *iter));
+                                std::unique_ptr<GpaSample> owned_sample = CreateApiSpecificSample(dx12_primary_gpa_cmd_list, sample_type, *iter);
+                                Dx12GpaSample*             new_sample   = reinterpret_cast<Dx12GpaSample*>(owned_sample.get());
 
                                 if (nullptr != new_sample)
                                 {
                                     // Add this sample to command list as well to sample list.
-                                    AddClientSample(*iter, new_sample);
+                                    AddClientSample(*iter, std::move(owned_sample));
                                     new_sample_list.push_back(new_sample);
                                 }
                                 else
                                 {
-                                    GPA_LOG_ERROR("Unable to copy secondary samples: Unable to create sample.");
+                                    GpaLogger::Instance().LogError("Unable to copy secondary samples: Unable to create sample.");
                                 }
 
                                 index++;
@@ -200,32 +196,35 @@ bool Dx12GpaPass::CopySecondarySamples(std::vector<ClientSampleId> client_sample
                         }
                         else
                         {
-                            GPA_LOG_ERROR("Unable to copy secondary samples: Number of new sample ids is not same as that on secondary command list.");
+                            GpaLogger::Instance().LogError(
+                                "Unable to copy secondary samples: Number of new sample ids is not same as that on secondary command list.");
                         }
                     }
                     else
                     {
-                        GPA_LOG_ERROR("Unable to copy secondary samples: Either primary command list is closed or the last sample is not closed.");
+                        GpaLogger::Instance().LogError(
+                            "Unable to copy secondary samples: Either primary command list is closed or the last sample is not closed.");
                     }
                 }
                 else
                 {
-                    GPA_LOG_ERROR("Unable to copy secondary samples: Either secondary command list is not closed or the last sample is not closed.");
+                    GpaLogger::Instance().LogError(
+                        "Unable to copy secondary samples: Either secondary command list is not closed or the last sample is not closed.");
                 }
             }
             else
             {
-                GPA_LOG_ERROR("Unable to copy secondary samples: Primary and Secondary command list must be from the same pass.");
+                GpaLogger::Instance().LogError("Unable to copy secondary samples: Primary and Secondary command list must be from the same pass.");
             }
         }
         else
         {
-            GPA_LOG_ERROR("Unable to copy secondary samples: One primary command list and one secondary command list are required.");
+            GpaLogger::Instance().LogError("Unable to copy secondary samples: One primary command list and one secondary command list are required.");
         }
     }
     else
     {
-        GPA_LOG_ERROR("Unable to copy secondary samples: Not all client sample ids are unique.");
+        GpaLogger::Instance().LogError("Unable to copy secondary samples: Not all client sample ids are unique.");
     }
 
     return success;
@@ -242,7 +241,7 @@ void Dx12GpaPass::ResetPass() const
 
     for (auto it = GetCmdList().begin(); it != GetCmdList().end(); ++it)
     {
-        Dx12GpaCommandList* dx12_cmd_list = reinterpret_cast<Dx12GpaCommandList*>(*it);
+        Dx12GpaCommandList* dx12_cmd_list = reinterpret_cast<Dx12GpaCommandList*>(it->get());
         dx12_cmd_list->ReleaseNonGpaResources();
     }
 

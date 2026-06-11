@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2025 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  GPA DX12 Context implementation
@@ -7,7 +7,7 @@
 
 #include "gpu_perf_api_dx12/dx12_gpa_context.h"
 
-#include "DeviceInfoUtils.h"
+#include <memory>
 
 #include "gpu_perf_api_common/gpa_unique_object.h"
 
@@ -44,7 +44,7 @@ bool Dx12GpaContext::Initialize()
     {
         if (!InitializeAmdExtension())
         {
-            GPA_LOG_ERROR("Unabled to initialize AMD profiling extension for DX12.");
+            GpaLogger::Instance().LogError("Unable to initialize AMD profiling extension for DX12.");
         }
         else
         {
@@ -62,13 +62,11 @@ GpaSessionId Dx12GpaContext::CreateSession(GpaSessionSampleType sample_type)
 
     if (nullptr != gpa_interface_)
     {
-        Dx12GpaSession* new_gpa_dx12_gpa_session = new (std::nothrow) Dx12GpaSession(this, sample_type, gpa_interface_);
+        auto            new_gpa_dx12_gpa_session = std::make_unique<Dx12GpaSession>(this, sample_type, gpa_interface_);
+        Dx12GpaSession* raw_session              = new_gpa_dx12_gpa_session.get();
 
-        if (nullptr != new_gpa_dx12_gpa_session)
-        {
-            AddGpaSession(new_gpa_dx12_gpa_session);
-            ret_session_id = reinterpret_cast<GpaSessionId>(GpaUniqueObjectManager::Instance().CreateObject(new_gpa_dx12_gpa_session));
-        }
+        AddGpaSession(std::move(new_gpa_dx12_gpa_session));
+        ret_session_id = reinterpret_cast<GpaSessionId>(GpaUniqueObjectManager::Instance().CreateObject(raw_session));
     }
 
     return ret_session_id;
@@ -86,9 +84,9 @@ bool Dx12GpaContext::DeleteSession(GpaSessionId session_id)
 
         if (GetIndex(dx12_session, &index))
         {
-            RemoveGpaSession(dx12_session);
             GpaUniqueObjectManager::Instance().DeleteObject(session_id);
-            delete dx12_session;
+            // Removing from the session list triggers destruction via unique_ptr.
+            RemoveGpaSession(dx12_session);
             success = true;
         }
     }
@@ -136,14 +134,14 @@ bool Dx12GpaContext::InitializeAmdExtension()
 
     if (nullptr != d3d12_device_)
     {
-        if (nullptr == gpa_interface_ && IsAmdDevice())
+        if (nullptr == gpa_interface_)
         {
             result = kGpaStatusErrorDriverNotSupported;
 
             const HMODULE h_dll = ::GetModuleHandleW(L"amdxc64.dll");
             if (nullptr == h_dll)
             {
-                GPA_LOG_ERROR("Unable to get driver module handle.");
+                GpaLogger::Instance().LogError("Unable to get driver module handle.");
             }
             else
             {
@@ -152,7 +150,7 @@ bool Dx12GpaContext::InitializeAmdExtension()
 
                 if (nullptr == amd_ext_d3d_create_func)
                 {
-                    GPA_LOG_ERROR("Unable to get driver extension entry point.");
+                    GpaLogger::Instance().LogError("Unable to get driver extension entry point.");
                 }
                 else
                 {
@@ -160,7 +158,7 @@ bool Dx12GpaContext::InitializeAmdExtension()
 
                     if (FAILED(hr))
                     {
-                        GPA_LOG_ERROR("Unable to get driver extension interface.");
+                        GpaLogger::Instance().LogError("Unable to get driver extension interface.");
                     }
                     else
                     {
@@ -178,7 +176,7 @@ bool Dx12GpaContext::InitializeAmdExtension()
 
                         if (FAILED(hr))
                         {
-                            GPA_LOG_ERROR("Unable to get driver GPA extension interface.");
+                            GpaLogger::Instance().LogError("Unable to get driver GPA extension interface.");
                         }
                         else
                         {
@@ -192,19 +190,19 @@ bool Dx12GpaContext::InitializeAmdExtension()
                             }
                             else
                             {
-                                GPA_LOG_ERROR("No valid GPA interface.");
+                                GpaLogger::Instance().LogError("No valid GPA interface.");
                                 result = kGpaStatusErrorFailed;
                             }
 
                             if (FAILED(hr))
                             {
-                                GPA_LOG_ERROR("Unable to get current hardware perf experiment properties.");
+                                GpaLogger::Instance().LogError("Unable to get current hardware perf experiment properties.");
                             }
                             else
                             {
                                 if (0 == amd_device_props_.features.counters)
                                 {
-                                    GPA_LOG_ERROR("Active GPU hardware does not support performance counters.");
+                                    GpaLogger::Instance().LogError("Active GPU hardware does not support performance counters.");
                                     result = kGpaStatusErrorHardwareNotSupported;
                                 }
                                 else
@@ -235,10 +233,7 @@ void Dx12GpaContext::CleanUp()
 
     if (nullptr != gpa_interface_)
     {
-        IterateGpaSessionList([](IGpaSession* gpa_session) -> bool {
-            delete gpa_session;
-            return true;
-        });
+        // ClearSessionList() destroys the owned sessions via unique_ptr.
         ClearSessionList();
 
         if (nullptr != gpa_interface2_)

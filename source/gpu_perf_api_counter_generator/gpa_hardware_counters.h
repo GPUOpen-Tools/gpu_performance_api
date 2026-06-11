@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016-2025 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  Maintains a set of hardware counters.
@@ -8,6 +8,7 @@
 #ifndef GPU_PERF_API_COUNTER_GENERATOR_COMMON_GPA_HARDWARE_COUNTERS_H_
 #define GPU_PERF_API_COUNTER_GENERATOR_COMMON_GPA_HARDWARE_COUNTERS_H_
 
+#include <memory>
 #include <ranges>
 #include <sstream>
 
@@ -120,15 +121,7 @@ public:
     }
 
     /// @brief Virtual destructor.
-    virtual ~GpaHardwareCounters()
-    {
-        for (auto it = counter_info_map_.begin(); it != counter_info_map_.end(); ++it)
-        {
-            delete it->second;
-        }
-
-        counter_info_map_.clear();
-    }
+    virtual ~GpaHardwareCounters() = default;
 
     /// @brief Clears all counter data.
     void Clear()
@@ -642,7 +635,7 @@ public:
     /// @param [out] gpa_hw_counter The hardware counter info.
     ///
     /// @return True if the counter index is valid; false otherwise.
-    bool GetHardwareInfo(const GpaUInt32& counter_index, GpaHwCounter& gpa_hw_counter) const
+    [[nodiscard]] bool GetHardwareInfo(const GpaUInt32& counter_index, GpaHwCounter& gpa_hw_counter) const
     {
         if (counter_index == gpu_time_bottom_to_bottom_duration_counter_index_)
         {
@@ -789,28 +782,30 @@ public:
     /// @return Counter info.
     GpaCounterInfo* GetCounterInfo(GpaUInt32 exposed_counter_index) const
     {
-        auto            counter_info     = counter_info_map_.find(exposed_counter_index);
-        GpaCounterInfo* gpa_counter_info = nullptr;
+        auto counter_info = counter_info_map_.find(exposed_counter_index);
 
         if (counter_info == counter_info_map_.end())
         {
-            gpa_counter_info = new (std::nothrow) GpaCounterInfo();
-
-            if (nullptr != gpa_counter_info)
+            GpaHwCounter hw_counter = {};
+            if (GetHardwareInfo(exposed_counter_index, hw_counter))
             {
-                gpa_counter_info->is_derived_counter = false;
-                GpaHwCounter hw_counter;
-                GetHardwareInfo(exposed_counter_index, hw_counter);
+                auto gpa_counter_info                    = std::make_unique<GpaCounterInfo>();
+                gpa_counter_info->is_derived_counter     = false;
                 gpa_counter_info->gpa_hw_counter         = &counter_hardware_info_map_[exposed_counter_index];
-                counter_info_map_[exposed_counter_index] = gpa_counter_info;
+                auto* raw_ptr                            = gpa_counter_info.get();
+                counter_info_map_[exposed_counter_index] = std::move(gpa_counter_info);
+                return raw_ptr;
+            }
+            else
+            {
+                assert(false);
+                return nullptr;
             }
         }
         else
         {
-            gpa_counter_info = counter_info->second;
+            return counter_info->second.get();
         }
-
-        return gpa_counter_info;
     }
 
     /// @brief Return the number of padded counters in the group.
@@ -912,7 +907,7 @@ public:
                         *std::min_element(top_time_counter_indices_.begin(), top_time_counter_indices_.end()));
     }
 
-    gpa_array_view<gpa_array_view<GpaHardwareCounterDesc>>
+    gpa_array_view<gpa_array_view<GpaHardwareCounterDesc>*>
                                         counter_groups_array_;      ///< List of counter groups as defined by the list of internal counters in each group.
     gpa_array_view<GpaCounterGroupDesc> internal_counter_groups_;   ///< List of internal counter groups.
     GpaCounterGroupDesc*                additional_groups_;         ///< List of internal counter groups exposed by the driver, but not known by GPA.
@@ -945,7 +940,7 @@ public:
     mutable std::map<CounterIndex, GpaHwCounter> counter_hardware_info_map_;  ///< Cache of the counter index and hardware info.
 
     // Hardware exposed counters.
-    gpa_array_view<gpa_array_view<GpaHardwareCounterDesc>>
+    gpa_array_view<gpa_array_view<GpaHardwareCounterDesc>*>
         hardware_exposed_counters_;  ///< List of counter groups as defined by the list of hardware exposed counters in each group.
     GpaCounterGroupExposedCounterDesc*  hardware_exposed_counter_groups_;                 ///< List of hardware exposed counter groups.
     std::vector<GpaHardwareCounterDesc> hardware_exposed_counters_list_;                  ///< Vector of hardware exposed counters.
@@ -953,7 +948,7 @@ public:
     bool                                hardware_exposed_counters_generated_;             ///< Indicates that the hardware exposed counters have been generated.
     GpaPaddedCounterDesc*               padded_counters_;                                 ///< List of GPA padded counters by groups.
     unsigned int                        padded_counter_count_;                            ///< Count of GPA padded counter by group.
-    mutable std::map<CounterIndex, GpaCounterInfo*> counter_info_map_;                    ///< Map from counter index to counter info.
+    mutable std::map<CounterIndex, std::unique_ptr<GpaCounterInfo>> counter_info_map_;  ///< Map from counter index to counter info.
 
     ///< Internal hardware block string literal map.
     inline constexpr static std::array kHardwareBlockString = {GPA_ENUM_STRING_VAL(kGpaInternalHwBlockCpf, "CPF"),

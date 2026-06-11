@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  Vulkan GPA Pass Object Header
@@ -33,10 +33,10 @@ public:
     virtual ~VkGpaPass() = default;
 
     /// @copydoc GpaPass::CreateApiSpecificSample(IGpaCommandList*, GpaSampleType, unsigned int)
-    GpaSample* CreateApiSpecificSample(IGpaCommandList* command_list, GpaSampleType sample_type, unsigned int sample_id) override final;
+    std::unique_ptr<GpaSample> CreateApiSpecificSample(IGpaCommandList* command_list, GpaSampleType sample_type, unsigned int sample_id) override final;
 
     /// @copydoc GpaPass::CreateApiSpecificCommandList(void*, CommandListId, GpaCommandListType)
-    IGpaCommandList* CreateApiSpecificCommandList(void* cmd, CommandListId command_list_id, GpaCommandListType command_type) override final;
+    std::unique_ptr<IGpaCommandList> CreateApiSpecificCommandList(void* cmd, CommandListId command_list_id, GpaCommandListType command_type) override final;
 
     /// @copydoc GpaPass::EndSample(IGpaCommandList*)
     bool EndSample(IGpaCommandList* command_list) override final;

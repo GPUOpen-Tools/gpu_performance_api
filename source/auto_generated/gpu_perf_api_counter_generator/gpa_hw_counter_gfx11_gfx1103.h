@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2010-2025 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Hardware counter info for GFX11_GFX1103.
@@ -13,10 +13,11 @@
 // clang-format off
 
 #include "gpu_perf_api_common/gpa_array_view.hpp"
+#include <algorithm>
 #include <array>
 #include <cassert>
 
-#include "DeviceInfo.h"
+#include "device_info.hpp"
 
 struct GpaHardwareCounterDesc;
 
@@ -29,11 +30,11 @@ namespace counter_gfx11_gfx1103
 /// @param [in] asic_type The ASIC type that is currently in use.
 ///
 /// @return True if the ASIC is matched by this file.
-inline bool MatchAsic(GDT_HW_ASIC_TYPE asic_type)
+inline bool MatchAsic(device_info::AsicType asic_type)
 {
-    static constexpr std::array asics_supported = { GDT_GFX11_0_3, GDT_GFX11_0_3A, GDT_GFX11_0_3B };
+    static constexpr std::array asics_supported = { device_info::AsicType::kGfx11_0_3, device_info::AsicType::kGfx11_0_3A, device_info::AsicType::kGfx11_0_3B };
 
-    return std::find(asics_supported.begin(), asics_supported.end(), asic_type) != asics_supported.end();
+    return std::ranges::find(asics_supported, asic_type) != asics_supported.end();
 }
 
 /// @brief This function is called on variant hardware which has a different register spec and therefore we need to substitute the base set of counters with the variant's set.
@@ -51,7 +52,7 @@ inline void ReplaceBlockInstanceCounters(gpa_array_view<GpaHardwareCounterDesc> 
 /// @param [in] asic_type The ASIC type that is currently in use.
 ///
 /// @return True if the ASIC is matched by this file and block instances are updated, otherwise false.
-inline bool OverrideBlockInstanceCounters(GDT_HW_ASIC_TYPE asic_type)
+inline bool OverrideBlockInstanceCounters(device_info::AsicType asic_type)
 {
     if (!MatchAsic(asic_type))
     {
@@ -61,7 +62,7 @@ inline bool OverrideBlockInstanceCounters(GDT_HW_ASIC_TYPE asic_type)
     return true;
 }
 
-bool OverrideMaxBlockEvents(GDT_HW_ASIC_TYPE asic_type);
+bool OverrideMaxBlockEvents(device_info::AsicType asic_type);
 } // counter_gfx11_gfx1103
 
 // clang-format on

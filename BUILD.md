@@ -21,6 +21,7 @@
       * `pip install pyenchant`
       * `pip install sphinxcontrib-spelling`
     * **Note:** Be sure to add Python scripts to PATH in order to build documentation from pre_build scripts.
+  * C++20 compiler toolchain that supports `std::format` (GNU 13+, Clang 17+, etc.)
 
 ## Windows Build Information
 The Windows projects each include a .rc file that embeds the VERSIONINFO resource into the final binary.
@@ -54,7 +55,7 @@ python build/pre_build.py --help
 
 Additional switches that can be used with the pre_build.py script:
 --vs=[2022]: Specify the Visual Studio version for which to generate projects. Default is 2022.
---config=[debug,release]: Specify the config for which to generate makefiles. Default is both. A specific config can only be specified on Linux. On Windows, both configs are always supported by the generated VS solution and project files.
+--config=[Debug,Release]: Specify the config for which to generate makefiles. Default is both. A specific config can only be specified on Linux. On Windows, both configs are always supported by the generated VS solution and project files.
 --clean: Delete cmake-generated directories created by this script
 --skipdx11: Does not generate build files for DX11 version of GPA (Windows only)
 --skipdx12: Does not generate build files for DX12 version of GPA (Windows only)
@@ -99,7 +100,7 @@ cmake --build build/win/ --config Debug
 
 On Linux
 
-Assuming you use `Unix Makefiles` which is the default `generator` on Windows
+Assuming you use `Unix Makefiles` which is the default `generator` on Linux
 
 ```sh
 cmake -S . -B build/linux -D CMAKE_BUILD_TYPE=Debug
@@ -115,26 +116,21 @@ NOTES:
 
 NOTE: The PublicCounterCompiler Tool requires using the `Visual Studio` generator due to `C#` usage!
 
-The PublicCounterCompiler Tool is a C# utility that will generate C++ code to define the public (or derived) counters.
-It takes as input text files contained in the [public_counter_compiler_input_files](source/public_counter_compiler_input_files) directory and
-outputs files in the [gpu_perf_api_counter_generator](source/auto_generated/gpu_perf_api_counter_generator), [gpu_perf_api_unit_tests](source/auto_generated/gpu_perf_api_unit_tests)
-and [docs](docs) directories.
+The PublicCounterCompiler Tool is a C# CLI utility that generates C++ code to define the public (or derived) counters.
+It reads counter definition files from [source/codegen](source/codegen) and outputs files to
+[source/auto_generated/gpu_perf_api_counter_generator](source/auto_generated/gpu_perf_api_counter_generator),
+[source/auto_generated/gpu_perf_api_unit_tests/counters](source/auto_generated/gpu_perf_api_unit_tests/counters),
+and [documentation/sphinx/source](documentation/sphinx/source).
 
-There are three ways to execute the tool:
-* With no parameters - the user interface opens with no fields prepopulated.
-* With two parameters - the user interface opens with the two main fields prepopulated. Note that pressing the "Compile Public Counters" button will load the correct input files and generate the output files in the correct location.
-  * Param 1: **API** - the API to compile counters for (e.g. GL, CL, DX11, DX12, VK, etc.)
-  * Param 2: **HW generation** - the generation to compile counters for (ex: Gfx9, Gfx10, Gfx11 etc.)
-* With six or seven parameters - the user interface does not open and will generate the C++ files using the specified input and output file locations.
-  * Param 1: **Counter names file** - text file containing hardware counter names and type (CounterNames[API][GEN].txt)
-  * Param 2: **Public counter definition file** - text file defining how the public counters are calculated (PublicCounterDefinitions\*.txt)
-  * Param 3: **Output Dir** - the directory to generate the output in (e.g. the path to the GPUPerfAPICounterGenerator directory)
-  * Param 4: **Test output Dir** - the directory to generate the test output in (e.g. the path to the GPUPerfAPIUnitTests/counters directory)
-  * Param 5: **API** - the API to take the counter names from (e.g. DX12)
-  * Param 6: **GPU** - the GPU to take the counter names from (e.g. Gfx11)
-  * Param 7: **GPU ASIC** - the subversion of GPU to take the counter names from (optional)
+```sh
+# Generate the C++ code
+PublicCounterCompiler
 
-See the various `public_counter_definitions_*.txt` files in the [public_counter_compiler_input_files](source/public_counter_compiler_input_files) directory. These contain all the counter definitions.
+# Get command line options for more granular control
+PublicCounterCompiler --help
+```
+
+See the `public_counter_definitions_*.txt` files in [source/codegen](source/codegen). These contain all the counter definitions.
 Each counter is given a name, a description, a type, an optional usage type, a list of hardware counters required and a formula applied to the values of the hardware counters to calculate the value of the counter.
 
 Counter formulas are expressed in a Reverse Polish Notation and are made up the following elements:

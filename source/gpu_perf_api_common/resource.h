@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016-2018 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  Common Resource file

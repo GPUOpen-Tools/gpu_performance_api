@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2018-2025 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  GL include files and common util functions.
@@ -15,9 +15,7 @@
 #include <GL/gl.h>
 #include <GL/glext.h>
 #include <GL/wglext.h>
-#endif
-
-#ifdef _LINUX
+#else
 #include <GL/glx.h>
 #include <GL/glxext.h>
 #endif

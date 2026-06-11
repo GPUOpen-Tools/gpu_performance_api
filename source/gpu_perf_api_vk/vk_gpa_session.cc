@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2024 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief A Vulkan-specific implementation of the GPA Session interface
@@ -40,17 +40,17 @@ GpaStatus VkGpaSession::ContinueSampleOnCommandList(GpaUInt32 src_sample_id, Gpa
             }
             else
             {
-                GPA_LOG_ERROR("Unable to continue sample.");
+                GpaLogger::Instance().LogError("Unable to continue sample.");
             }
         }
         else
         {
-            GPA_LOG_ERROR("Pass doesn't exist.");
+            GpaLogger::Instance().LogError("Pass doesn't exist.");
         }
     }
     else
     {
-        GPA_LOG_ERROR("Invalid Parameter.");
+        GpaLogger::Instance().LogError("Invalid Parameter.");
     }
 
     return succeed ? kGpaStatusOk : kGpaStatusErrorFailed;
@@ -82,7 +82,7 @@ GpaStatus VkGpaSession::CopySecondarySamples(GpaCommandListId secondary_command_
     }
     else
     {
-        GPA_LOG_ERROR("Invalid Parameter.");
+        GpaLogger::Instance().LogError("Invalid Parameter.");
     }
 
     return is_copied ? kGpaStatusOk : kGpaStatusErrorFailed;

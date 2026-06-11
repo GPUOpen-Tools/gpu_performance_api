@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2025 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief GPA Common Context class.
@@ -10,6 +10,7 @@
 
 #include <functional>
 #include <list>
+#include <memory>
 #include <mutex>
 #include <numeric>
 
@@ -20,7 +21,7 @@
 #include "gpu_perf_api_common/gpa_session_interface.h"
 
 /// @brief Type alias for list of IGpaSession objects.
-using GpaSessionList = std::list<IGpaSession*>;
+using GpaSessionList = std::list<std::unique_ptr<IGpaSession>>;
 
 /// @brief Abstract GPAContext for common context code.
 class GpaContext : public IGpaContext
@@ -33,13 +34,7 @@ public:
     virtual ~GpaContext() = default;
 
     /// @copydoc IGpaContext::GetSupportedSampleTypes()
-    GpaContextSampleTypeFlags GetSupportedSampleTypes() const override;
-
-    /// @copydoc IGpaContext::ArePublicCountersExposed()
-    bool ArePublicCountersExposed() const override;
-
-    /// @copydoc IGpaContext::AreHardwareCountersExposed()
-    bool AreHardwareCountersExposed() const override;
+    [[nodiscard]] std::optional<GpaContextSampleTypeFlags> GetSupportedSampleTypes() const override;
 
     /// @copydoc IGpaContext::GetHwInfo()
     const GpaHwInfo& GetHwInfo() const override;
@@ -89,17 +84,12 @@ protected:
     /// @param [in] open Flag indicating context to be marked open or closed.
     void SetAsOpened(bool open);
 
-    /// @brief Returns whether the device is AMD device or not.
-    ///
-    /// @return true if context device is AMD device otherwise false.
-    bool IsAmdDevice() const;
-
     /// @brief Adds the GPA session to the session list.
     ///
-    /// @param [in] gpa_session GPA session object pointer.
-    GPA_THREAD_SAFE_FUNCTION void AddGpaSession(IGpaSession* gpa_session);
+    /// @param [in] gpa_session GPA session object pointer. Ownership is transferred to the context.
+    GPA_THREAD_SAFE_FUNCTION void AddGpaSession(std::unique_ptr<IGpaSession> gpa_session);
 
-    /// @brief Removes the GPA session from the session list.
+    /// @brief Removes the GPA session from the session list, which destroys the session.
     ///
     /// @param [in] gpa_session GPA session object pointer.
     GPA_THREAD_SAFE_FUNCTION void RemoveGpaSession(IGpaSession* gpa_session);
@@ -125,14 +115,9 @@ private:
     GpaHwInfo           hw_info_;                                ///< Hw info.
     bool                is_open_;                                ///< Flag indicating context is open or not.
     GpaSessionList      gpa_session_list_;                       ///< List of GPA sessions in the context.
-    bool                is_amd_device_;                          ///< Flag indicating whether the device is AMD or not.
     mutable std::mutex  gpa_session_list_mutex_;                 ///< Mutex for GPA session list.
     IGpaSession*        active_session_;                         ///< Gpa session to keep track of active session.
     mutable std::mutex  active_session_mutex_;                   ///< Mutex for the active session.
-
-#ifdef _WIN32
-    inline static HANDLE gpa_mutex_handle = NULL;  // IPC Mutex to prevent TDRs from multiple apps trying to profile GPU
-#endif
 };
 
 #endif

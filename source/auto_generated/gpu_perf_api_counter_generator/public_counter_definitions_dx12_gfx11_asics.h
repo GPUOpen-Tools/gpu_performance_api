@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2010-2025 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Public Counter Definitions ASIC file for DX12_GFX11
@@ -16,7 +16,6 @@
 
 #include "auto_generated/gpu_perf_api_counter_generator/public_counter_definitions_dx12_gfx11_gfx1102.h"
 #include "auto_generated/gpu_perf_api_counter_generator/public_counter_definitions_dx12_gfx11_gfx1103.h"
-#include "auto_generated/gpu_perf_api_counter_generator/public_counter_definitions_dx12_gfx11_gfx1150.h"
 
 namespace dx12_gfx11_asics
 {
@@ -27,7 +26,7 @@ namespace dx12_gfx11_asics
     /// @param [out] c Returned set of derived counters, if available.
     ///
     /// @return True if the ASIC matched one available, and c was updated.
-    inline void UpdatePublicAsicSpecificCounters(GDT_HW_GENERATION desired_generation, GDT_HW_ASIC_TYPE asic_type, GpaDerivedCounters& c)
+    inline void UpdatePublicAsicSpecificCounters(device_info::HwGeneration desired_generation, device_info::AsicType asic_type, GpaDerivedCounters& c)
     {
         // Override max block events first so we could chain these if we want
         counter_dx12_gfx11::OverrideMaxBlockEvents(asic_type);
@@ -38,11 +37,6 @@ namespace dx12_gfx11_asics
         }
 
         if (dx12_gfx11_gfx1103::UpdatePublicAsicSpecificCounters(desired_generation, asic_type, c))
-        {
-            return;
-        }
-
-        if (dx12_gfx11_gfx1150::UpdatePublicAsicSpecificCounters(desired_generation, asic_type, c))
         {
             return;
         }

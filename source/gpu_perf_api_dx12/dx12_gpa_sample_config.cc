@@ -1,11 +1,13 @@
 //==============================================================================
-// Copyright (c) 2018-2025 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  DX12 GPA Sample Configuration Header.
 //==============================================================================
 
 #include "dx12_gpa_sample_config.h"
+
+#include "device_info.hpp"
 
 #include "gpa_context_counter_mediator.h"
 #include "gpa_hardware_counters.h"
@@ -19,11 +21,8 @@ static bool IsSampleSpm(GpaSessionSampleType sample)
 
 Dx12GpaSampleConfig::~Dx12GpaSampleConfig()
 {
-    if (amd_ext_sample_config_.perfCounters.pIds != nullptr)
-    {
-        delete[] amd_ext_sample_config_.perfCounters.pIds;
-        amd_ext_sample_config_.perfCounters.pIds = nullptr;
-    }
+    // perf_counter_ids_storage_ is automatically destroyed by the vector destructor.
+    amd_ext_sample_config_.perfCounters.pIds = nullptr;
 }
 
 bool Dx12GpaSampleConfig::UpdateSpmSettings(const IGpaSession* session)
@@ -34,6 +33,11 @@ bool Dx12GpaSampleConfig::UpdateSpmSettings(const IGpaSession* session)
     }
 
     auto dx12_session = dynamic_cast<const Dx12GpaSession*>(session);
+    if (dx12_session == nullptr)
+    {
+        GpaLogger::Instance().LogError("UpdateSpmSettings: dynamic_cast to Dx12GpaSession failed; session is not a DX12 session.");
+        return false;
+    }
 
     amd_ext_sample_config_.type = AmdExtGpaSampleType::Trace;
 
@@ -55,7 +59,7 @@ bool Dx12GpaSampleConfig::UpdateSpmSettings(const IGpaSession* session)
     assert(0 != shader_engine_count);
     if (0 == shader_engine_count)
     {
-        GPA_LOG_ERROR("Shader engine count not set. Defaulting to 4.");
+        GpaLogger::Instance().LogError("Shader engine count not set. Defaulting to 4.");
         shader_engine_count = 4;
     }
 
@@ -117,7 +121,7 @@ bool Dx12GpaSampleConfig::Initialize(IGpaSession*       session,
     assert(session);
     if (nullptr == session)
     {
-        GPA_LOG_ERROR("Null session supplied to Dx12GpaSampleConfig::Initialize.");
+        GpaLogger::Instance().LogError("Null session supplied to Dx12GpaSampleConfig::Initialize.");
         return false;
     }
 
@@ -142,13 +146,13 @@ bool Dx12GpaSampleConfig::Initialize(IGpaSession*       session,
     {
         if (kGpaSessionSampleTypeDiscreteCounter == sample_type_ && nullptr == gpa_pass)
         {
-            GPA_LOG_ERROR("Configuring discrete counters requires a GpaPass object.");
+            GpaLogger::Instance().LogError("Configuring discrete counters requires a GpaPass object.");
             return false;
         }
 
         if (nullptr == counter_list)
         {
-            GPA_LOG_ERROR("Configuring discrete counters requires a list of counters.");
+            GpaLogger::Instance().LogError("Configuring discrete counters requires a list of counters.");
             return false;
         }
 
@@ -158,7 +162,7 @@ bool Dx12GpaSampleConfig::Initialize(IGpaSession*       session,
         assert(counter_accessor != nullptr);
         if (counter_accessor == nullptr)
         {
-            GPA_LOG_ERROR("Invalid counter accessor.");
+            GpaLogger::Instance().LogError("Invalid counter accessor.");
             return false;
         }
 
@@ -204,7 +208,7 @@ bool Dx12GpaSampleConfig::Initialize(IGpaSession*       session,
                     const auto         hardware_counter_iter = hardware_counters.hardware_counters_.find(global_counter_index);
                     if (hardware_counter_iter == hardware_counters.hardware_counters_.cend())
                     {
-                        GPA_LOG_ERROR("Failed to locate hardware counter using global index %d.", global_counter_index);
+                        GpaLogger::Instance().LogError("Failed to locate hardware counter using global index {}.", global_counter_index);
                         return false;
                     }
 
@@ -217,7 +221,8 @@ bool Dx12GpaSampleConfig::Initialize(IGpaSession*       session,
                     {
                         assert(nullptr != gpa_pass);
                         gpa_pass->DisableCounterForPass(global_counter_index);
-                        GPA_LOG_DEBUG_MESSAGE("Disabling counter at index %s as number of block instances is less than the current instance.", i);
+                        GpaLogger::Instance().LogDebugMessage("Disabling counter at index {} as number of block instances is less than the current instance.",
+                                                              i);
                         counter_result_entries_.push_back(CounterResultEntry{global_counter_index, 0, 0});
                         continue;
                     }
@@ -226,7 +231,7 @@ bool Dx12GpaSampleConfig::Initialize(IGpaSession*       session,
                     {
                         assert(nullptr != gpa_pass);
                         gpa_pass->DisableCounterForPass(global_counter_index);
-                        GPA_LOG_DEBUG_MESSAGE("Disabling counter at index %s as max event ID in context is less than the current event ID.", i);
+                        GpaLogger::Instance().LogDebugMessage("Disabling counter at index {} as max event ID in context is less than the current event ID.", i);
                         counter_result_entries_.push_back(CounterResultEntry{global_counter_index, 0, 0});
                         continue;
                     }
@@ -250,7 +255,8 @@ bool Dx12GpaSampleConfig::Initialize(IGpaSession*       session,
                         assert(hw_counter_desc->hardware_counters->counter_index_in_group <= counters);
                         assert(nullptr != gpa_pass);
                         gpa_pass->DisableCounterForPass(global_counter_index);
-                        GPA_LOG_ERROR("Disabling counter at index %s as the counter index in the group does not correspond to a known counter.", i);
+                        GpaLogger::Instance().LogError(
+                            "Disabling counter at index {} as the counter index in the group does not correspond to a known counter.", i);
                         counter_result_entries_.push_back(CounterResultEntry{global_counter_index, 0, 0});
                         continue;
                     }
@@ -260,7 +266,7 @@ bool Dx12GpaSampleConfig::Initialize(IGpaSession*       session,
                         assert(group_index <= (hardware_counters.internal_counter_groups_.size() + hardware_counters.additional_group_count_));
                         assert(nullptr != gpa_pass);
                         gpa_pass->DisableCounterForPass(global_counter_index);
-                        GPA_LOG_ERROR("Disabling counter at index %s as the counter's group index does not correspond to a known group.", i);
+                        GpaLogger::Instance().LogError("Disabling counter at index {} as the counter's group index does not correspond to a known group.", i);
                         counter_result_entries_.push_back(CounterResultEntry{global_counter_index, 0, 0});
                         continue;
                     }
@@ -322,14 +328,8 @@ bool Dx12GpaSampleConfig::Initialize(IGpaSession*       session,
                 }
 
                 amd_ext_sample_config_.perfCounters.numCounters = static_cast<UINT32>(counter_ids.size());
-                AmdExtPerfCounterId* amd_ext_perf_counter_id    = new (std::nothrow) AmdExtPerfCounterId[counter_ids.size()];
-
-                if (nullptr != amd_ext_perf_counter_id)
-                {
-                    memcpy(amd_ext_perf_counter_id, counter_ids.data(), sizeof(AmdExtPerfCounterId) * counter_ids.size());
-                }
-
-                amd_ext_sample_config_.perfCounters.pIds = amd_ext_perf_counter_id;
+                perf_counter_ids_storage_.assign(counter_ids.begin(), counter_ids.end());
+                amd_ext_sample_config_.perfCounters.pIds = perf_counter_ids_storage_.data();
                 // set shader mask
                 amd_ext_sample_config_.flags.sqShaderMask = 1;
                 amd_ext_sample_config_.sqShaderMask       = mask_value;

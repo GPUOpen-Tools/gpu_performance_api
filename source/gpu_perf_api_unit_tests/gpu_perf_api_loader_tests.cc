@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2018-2025 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Unit tests for GpuPerfApiLoader.
@@ -57,11 +57,9 @@ void GpuPerfApiLoaderTest::Run()
     const char* api_name = api_name_.find(api)->second;
 
     GpuPerfApiLoader gpa_loader;
-    const char*      dll_path      = "";
     const char*      error_message = "";
 
-    EXPECT_TRUE(gpa_loader.Load(dll_path, api, &error_message))
-        << "GPA loading with the legacy method failed for " << api_name << ". Error message: " << error_message;
+    EXPECT_TRUE(gpa_loader.Load(api, &error_message)) << "GPA loading with generated full-path helpers failed for " << api_name << ". Error message: " << error_message;
 
     // When the GpuPerfApiLoader is destroyed, it will automatically unload the loaded DLL.
 }

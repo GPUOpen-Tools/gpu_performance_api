@@ -1,11 +1,13 @@
 //==============================================================================
-// Copyright (c) 2017-2025 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  Vulkan GPA Pass Object Implementation
 //==============================================================================
 
 #include "gpu_perf_api_vk/vk_gpa_pass.h"
+
+#include <memory>
 
 #include "gpu_perf_api_common/gpa_context_counter_mediator.h"
 
@@ -22,24 +24,21 @@ VkGpaPass::VkGpaPass(IGpaSession* gpa_session, PassIndex pass_index, GpaCounterS
     InitializeSampleConfig();
 }
 
-GpaSample* VkGpaPass::CreateApiSpecificSample(IGpaCommandList* command_list, GpaSampleType sample_type, unsigned int sample_id)
+std::unique_ptr<GpaSample> VkGpaPass::CreateApiSpecificSample(IGpaCommandList* command_list, GpaSampleType sample_type, unsigned int sample_id)
 {
-    GpaSample* sample = nullptr;
+    std::unique_ptr<GpaSample> sample;
 
     if (GpaSampleType::kHardware == sample_type)
     {
-        sample = new (std::nothrow) VkGpaHardwareSample(this, command_list, sample_id);
+        sample = std::make_unique<VkGpaHardwareSample>(this, command_list, sample_id);
     }
 
     return sample;
 }
 
-IGpaCommandList* VkGpaPass::CreateApiSpecificCommandList(void* command, CommandListId command_list_id, GpaCommandListType command_type)
+std::unique_ptr<IGpaCommandList> VkGpaPass::CreateApiSpecificCommandList(void* command, CommandListId command_list_id, GpaCommandListType command_type)
 {
-    VkGpaCommandList* vk_command_list =
-        new (std::nothrow) VkGpaCommandList(reinterpret_cast<VkGpaSession*>(GetGpaSession()), this, command, command_list_id, command_type);
-
-    return vk_command_list;
+    return std::make_unique<VkGpaCommandList>(reinterpret_cast<VkGpaSession*>(GetGpaSession()), this, command, command_list_id, command_type);
 }
 
 void VkGpaPass::InitializeSampleConfig()
@@ -53,7 +52,7 @@ void VkGpaPass::InitializeSampleConfig()
         assert(counter_list_ != nullptr);
         if (counter_list_ == nullptr)
         {
-            GPA_LOG_ERROR("There is no counter list to enable.");
+            GpaLogger::Instance().LogError("There is no counter list to enable.");
             return;
         }
 
@@ -61,7 +60,7 @@ void VkGpaPass::InitializeSampleConfig()
         assert(counter_accessor != nullptr);
         if (counter_accessor == nullptr)
         {
-            GPA_LOG_ERROR("Invalid counter accessor.");
+            GpaLogger::Instance().LogError("Invalid counter accessor.");
             return;
         }
 
@@ -231,15 +230,15 @@ bool VkGpaPass::EndSample(IGpaCommandList* command_list)
 
     if (nullptr == command_list)
     {
-        GPA_LOG_ERROR("Null pointer to GPA CommandList supplied.");
+        GpaLogger::Instance().LogError("Null pointer to GPA CommandList supplied.");
     }
     else if (!command_list->IsCommandListRunning())
     {
-        GPA_LOG_ERROR("CommandList is closed for sampling.");
+        GpaLogger::Instance().LogError("CommandList is closed for sampling.");
     }
     else if (command_list->IsLastSampleClosed())
     {
-        GPA_LOG_ERROR("There is no open sample on the CommandList.");
+        GpaLogger::Instance().LogError("There is no open sample on the CommandList.");
     }
     else
     {
@@ -300,18 +299,18 @@ bool VkGpaPass::CopySecondarySamples(VkGpaCommandList* secondary_vk_gpa_command_
                             {
                                 GpaSampleType sample_type =
                                     GetCounterSource() == GpaCounterSource::kHardware ? GpaSampleType::kHardware : GpaSampleType::kSoftware;
-                                VkGpaSample* new_sample =
-                                    reinterpret_cast<VkGpaSample*>(CreateApiSpecificSample(secondary_vk_gpa_command_list, sample_type, new_sample_ids[i]));
+                                std::unique_ptr<GpaSample> owned_sample = CreateApiSpecificSample(secondary_vk_gpa_command_list, sample_type, new_sample_ids[i]);
+                                VkGpaSample*               new_sample   = reinterpret_cast<VkGpaSample*>(owned_sample.get());
 
                                 if (nullptr != new_sample)
                                 {
                                     // Add this sample to command list as well to sample list.
-                                    AddClientSample(new_sample_ids[i], new_sample);
+                                    AddClientSample(new_sample_ids[i], std::move(owned_sample));
                                     new_sample_list.push_back(new_sample);
                                 }
                                 else
                                 {
-                                    GPA_LOG_ERROR("Unable to copy secondary samples: Unable to create sample.");
+                                    GpaLogger::Instance().LogError("Unable to copy secondary samples: Unable to create sample.");
                                 }
 
                                 index++;
@@ -351,32 +350,35 @@ bool VkGpaPass::CopySecondarySamples(VkGpaCommandList* secondary_vk_gpa_command_
                         }
                         else
                         {
-                            GPA_LOG_ERROR("Unable to copy secondary samples: Number of new sample ids is not same as that on secondary command list.");
+                            GpaLogger::Instance().LogError(
+                                "Unable to copy secondary samples: Number of new sample ids is not same as that on secondary command list.");
                         }
                     }
                     else
                     {
-                        GPA_LOG_ERROR("Unable to copy secondary samples: Either primary command list is closed or the last sample is not closed.");
+                        GpaLogger::Instance().LogError(
+                            "Unable to copy secondary samples: Either primary command list is closed or the last sample is not closed.");
                     }
                 }
                 else
                 {
-                    GPA_LOG_ERROR("Unable to copy secondary samples: Either secondary command list is not closed or the last sample is not closed.");
+                    GpaLogger::Instance().LogError(
+                        "Unable to copy secondary samples: Either secondary command list is not closed or the last sample is not closed.");
                 }
             }
             else
             {
-                GPA_LOG_ERROR("Unable to copy secondary samples: Primary and Secondary command list must be from the same pass.");
+                GpaLogger::Instance().LogError("Unable to copy secondary samples: Primary and Secondary command list must be from the same pass.");
             }
         }
         else
         {
-            GPA_LOG_ERROR("Unable to copy secondary samples: One primary command list and one secondary command list are required.");
+            GpaLogger::Instance().LogError("Unable to copy secondary samples: One primary command list and one secondary command list are required.");
         }
     }
     else
     {
-        GPA_LOG_ERROR("Unable to copy secondary samples: Not all client sample ids are unique.");
+        GpaLogger::Instance().LogError("Unable to copy secondary samples: Not all client sample ids are unique.");
     }
 
     return copied;

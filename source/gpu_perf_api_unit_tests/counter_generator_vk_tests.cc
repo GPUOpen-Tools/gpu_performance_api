@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2012-2025 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Unit Tests for VK Counter Generator.
@@ -12,11 +12,13 @@
 #include "auto_generated/gpu_perf_api_unit_tests/counters/public_derived_counters_vk_gfx10.h"
 #include "auto_generated/gpu_perf_api_unit_tests/counters/public_derived_counters_vk_gfx103.h"
 #include "auto_generated/gpu_perf_api_unit_tests/counters/public_derived_counters_vk_gfx11.h"
+#include "auto_generated/gpu_perf_api_unit_tests/counters/public_derived_counters_vk_gfx115.h"
 #include "auto_generated/gpu_perf_api_unit_tests/counters/public_derived_counters_vk_gfx12.h"
 
 #include "auto_generated/gpu_perf_api_counter_generator/gpa_hw_counter_vk_gfx10.h"
 #include "auto_generated/gpu_perf_api_counter_generator/gpa_hw_counter_vk_gfx103.h"
 #include "auto_generated/gpu_perf_api_counter_generator/gpa_hw_counter_vk_gfx11.h"
+#include "auto_generated/gpu_perf_api_counter_generator/gpa_hw_counter_vk_gfx115.h"
 #include "auto_generated/gpu_perf_api_counter_generator/gpa_hw_counter_vk_gfx12.h"
 
 #include "gpu_perf_api_unit_tests/counter_generator_tests.h"
@@ -32,7 +34,7 @@ static void GetExpectedCountersForGeneration(GpaHwGeneration           generatio
     const GpaCounterDesc* public_counters      = nullptr;
     size_t                public_counter_count = 0;
 
-    gpa_array_view<gpa_array_view<GpaHardwareCounterDesc>> hardware_counter_groups;
+    gpa_array_view<gpa_array_view<GpaHardwareCounterDesc>*> hardware_counter_groups;
 
     switch (generation)
     {
@@ -52,6 +54,12 @@ static void GetExpectedCountersForGeneration(GpaHwGeneration           generatio
         public_counters         = kVkGfx11PublicCounters;
         public_counter_count    = kVkGfx11PublicCounterCount;
         hardware_counter_groups = counter_vk_gfx11::kVkCounterGroupArrayGfx11;
+        break;
+
+    case kGpaHwGenerationGfx115:
+        public_counters         = kVkGfx115PublicCounters;
+        public_counter_count    = kVkGfx115PublicCounterCount;
+        hardware_counter_groups = counter_vk_gfx115::kVkCounterGroupArrayGfx115;
         break;
 
     case kGpaHwGenerationGfx12:
@@ -79,10 +87,10 @@ static void GetExpectedCountersForGeneration(GpaHwGeneration           generatio
     const size_t num_hardware_counter_groups = hardware_counter_groups.size();
     for (size_t i = 0; i < num_hardware_counter_groups; ++i)
     {
-        const size_t num_counters_in_group = hardware_counter_groups[i].size();
+        const size_t num_counters_in_group = hardware_counter_groups[i]->size();
         for (size_t j = 0; j < num_counters_in_group; ++j)
         {
-            hardware_counter_names.push_back(hardware_counter_groups[i][j].name);
+            hardware_counter_names.push_back((*hardware_counter_groups[i])[j].name);
         }
     }
 }
@@ -109,6 +117,11 @@ static gpa_array_view<GpaCounterDesc> GetExpectedPublicCounters(GpaHwGeneration 
         public_counter_count = kVkGfx11PublicCounterCount;
         break;
 
+    case kGpaHwGenerationGfx115:
+        public_counters      = kVkGfx115PublicCounters;
+        public_counter_count = kVkGfx115PublicCounterCount;
+        break;
+
     case kGpaHwGenerationGfx12:
         public_counters      = kVkGfx12PublicCounters;
         public_counter_count = kVkGfx12PublicCounterCount;
@@ -124,16 +137,10 @@ static gpa_array_view<GpaCounterDesc> GetExpectedPublicCounters(GpaHwGeneration 
 
 TEST(CounterDllTests, VkUnsupportedHardwareGenerations)
 {
-    VerifyHardwareNotSupported(kGpaApiVulkan, kGpaHwGenerationNone);
-    VerifyHardwareNotSupported(kGpaApiVulkan, kGpaHwGenerationNvidia);
-    VerifyHardwareNotSupported(kGpaApiVulkan, kGpaHwGenerationIntel);
-    VerifyHardwareNotSupported(kGpaApiVulkan, kGpaHwGenerationGfx6);
-    VerifyHardwareNotSupported(kGpaApiVulkan, kGpaHwGenerationGfx7);
-    VerifyHardwareNotSupported(kGpaApiVulkan, kGpaHwGenerationGfx8);
-    VerifyHardwareNotSupported(kGpaApiVulkan, kGpaHwGenerationGfx9);
-    VerifyHardwareNotSupported(kGpaApiVulkan, kGpaHwGenerationCdna);
-    VerifyHardwareNotSupported(kGpaApiVulkan, kGpaHwGenerationCdna2);
-    VerifyHardwareNotSupported(kGpaApiVulkan, kGpaHwGenerationCdna3);
+    for (const GpaHwGeneration generation : kUnsupportedHardwareGenerations)
+    {
+        VerifyHardwareNotSupported(kGpaApiVulkan, generation);
+    }
 }
 
 TEST(CounterDllTests, VkVerifyInvalidOpenContextParameters)
@@ -148,8 +155,10 @@ TEST(CounterDllTests, VulkanDerivedCounterBlocks)
     VerifyDerivedCounterCount(kGpaApiVulkan, kGpaHwGenerationGfx10, GetExpectedPublicCounters(kGpaHwGenerationGfx10));
     VerifyDerivedCounterCount(kGpaApiVulkan, kGpaHwGenerationGfx103, GetExpectedPublicCounters(kGpaHwGenerationGfx103));
     VerifyDerivedCounterCount(kGpaApiVulkan, kGpaHwGenerationGfx11, GetExpectedPublicCounters(kGpaHwGenerationGfx11));
+    VerifyDerivedCounterCount(kGpaApiVulkan, kGpaHwGenerationGfx115, GetExpectedPublicCounters(kGpaHwGenerationGfx115));
     VerifyDerivedCounterCount(kGpaApiVulkan, kGpaHwGenerationGfx12, GetExpectedPublicCounters(kGpaHwGenerationGfx12));
 }
+
 #endif
 
 // Test the VK counter names on all supported hardware.
@@ -175,6 +184,7 @@ TEST(CounterDllTests, VkCounterNamesByDeviceId)
     std::vector<const char*> empty_list_to_skip_tests;
     VerifyCounterNames(kGpaApiVulkan, kDevIdGfx11_0_3, derived_counter_names, empty_list_to_skip_tests);
     VerifyCounterNames(kGpaApiVulkan, kDevIdGfx11_0_3B, derived_counter_names, empty_list_to_skip_tests);
+    GetExpectedCountersForGeneration(kGpaHwGenerationGfx115, derived_counter_names, hardware_counter_names);
     VerifyCounterNames(kGpaApiVulkan, kDevIdGfx11_5_0, derived_counter_names, empty_list_to_skip_tests);
     VerifyCounterNames(kGpaApiVulkan, kDevIdGfx11_5_3, derived_counter_names, empty_list_to_skip_tests);
 
@@ -207,6 +217,14 @@ TEST(CounterDllTests, VkCounterNamesGfx11)
     VerifyCounterNames(kGpaApiVulkan, kGpaHwGenerationGfx11, counter_names, hardware_counter_names);
 }
 
+TEST(CounterDllTests, VkCounterNamesGfx115)
+{
+    std::vector<const char*> counter_names;
+    std::vector<const char*> hardware_counter_names;
+    GetExpectedCountersForGeneration(kGpaHwGenerationGfx115, counter_names, hardware_counter_names);
+    VerifyCounterNames(kGpaApiVulkan, kGpaHwGenerationGfx115, counter_names, hardware_counter_names);
+}
+
 TEST(CounterDllTests, VkCounterNamesGfx12)
 {
     std::vector<const char*> counter_names;
@@ -226,71 +244,82 @@ TEST(CounterDllTests, VkCounterNamesByGeneration)
     VerifyCounterNames(kGpaApiVulkan, kGpaHwGenerationGfx103, counter_names, hardware_counter_names);
     GetExpectedCountersForGeneration(kGpaHwGenerationGfx11, counter_names, hardware_counter_names);
     VerifyCounterNames(kGpaApiVulkan, kGpaHwGenerationGfx11, counter_names, hardware_counter_names);
+    GetExpectedCountersForGeneration(kGpaHwGenerationGfx115, counter_names, hardware_counter_names);
+    VerifyCounterNames(kGpaApiVulkan, kGpaHwGenerationGfx115, counter_names, hardware_counter_names);
     GetExpectedCountersForGeneration(kGpaHwGenerationGfx12, counter_names, hardware_counter_names);
     VerifyCounterNames(kGpaApiVulkan, kGpaHwGenerationGfx12, counter_names, hardware_counter_names);
 }
 
 TEST(CounterDllTests, VkOpenCounterContext)
 {
-    VerifyOpenCounterContext(kGpaApiVulkan, kGpaHwGenerationGfx10);
-    VerifyOpenCounterContext(kGpaApiVulkan, kGpaHwGenerationGfx103);
-    VerifyOpenCounterContext(kGpaApiVulkan, kGpaHwGenerationGfx11);
-    VerifyOpenCounterContext(kGpaApiVulkan, kGpaHwGenerationGfx12);
+    VerifyOpenCounterContextAllGenerations(kGpaApiVulkan);
 }
 
 #ifdef _WIN32
 TEST(CounterDllTests, VkCounterLibTestGfx10)
 {
-    VerifyCounterLibInterface(kGpaApiVulkan, kDevIdGfx10, AMDTDeviceInfoUtils::kRevisionIdAny);
-    VerifyCounterByPassCounterLibEntry(kGpaApiVulkan, kDevIdGfx10, AMDTDeviceInfoUtils::kRevisionIdAny);
+    VerifyCounterLibInterface(kGpaApiVulkan, kDevIdGfx10, device_info::kRevisionIdAny);
+    VerifyCounterByPassCounterLibEntry(kGpaApiVulkan, kDevIdGfx10, device_info::kRevisionIdAny);
 }
 
 TEST(CounterDllTests, VkCounterLibTestGfx103)
 {
-    VerifyCounterLibInterface(kGpaApiVulkan, kDevIdGfx10_3, AMDTDeviceInfoUtils::kRevisionIdAny);
-    VerifyCounterByPassCounterLibEntry(kGpaApiVulkan, kDevIdGfx10_3, AMDTDeviceInfoUtils::kRevisionIdAny);
+    VerifyCounterLibInterface(kGpaApiVulkan, kDevIdGfx10_3, device_info::kRevisionIdAny);
+    VerifyCounterByPassCounterLibEntry(kGpaApiVulkan, kDevIdGfx10_3, device_info::kRevisionIdAny);
 }
 
 TEST(CounterDllTests, VkCounterLibTestGfx11)
 {
-    VerifyCounterLibInterface(kGpaApiVulkan, kDevIdGfx11, AMDTDeviceInfoUtils::kRevisionIdAny);
-    VerifyCounterByPassCounterLibEntry(kGpaApiVulkan, kDevIdGfx11, AMDTDeviceInfoUtils::kRevisionIdAny);
+    VerifyCounterLibInterface(kGpaApiVulkan, kDevIdGfx11, device_info::kRevisionIdAny);
+    VerifyCounterByPassCounterLibEntry(kGpaApiVulkan, kDevIdGfx11, device_info::kRevisionIdAny);
 }
 
 TEST(CounterDllTests, VkCounterLibTestGfx1103)
 {
-    VerifyCounterLibInterface(kGpaApiVulkan, kDevIdGfx11_0_3, AMDTDeviceInfoUtils::kRevisionIdAny);
-    VerifyCounterByPassCounterLibEntry(kGpaApiVulkan, kDevIdGfx11_0_3, AMDTDeviceInfoUtils::kRevisionIdAny);
+    VerifyCounterLibInterface(kGpaApiVulkan, kDevIdGfx11_0_3, device_info::kRevisionIdAny);
+    VerifyCounterByPassCounterLibEntry(kGpaApiVulkan, kDevIdGfx11_0_3, device_info::kRevisionIdAny);
 }
 
 TEST(CounterDllTests, VkCounterLibTestGfx1103B)
 {
-    VerifyCounterLibInterface(kGpaApiVulkan, kDevIdGfx11_0_3B, AMDTDeviceInfoUtils::kRevisionIdAny);
-    VerifyCounterByPassCounterLibEntry(kGpaApiVulkan, kDevIdGfx11_0_3B, AMDTDeviceInfoUtils::kRevisionIdAny);
+    VerifyCounterLibInterface(kGpaApiVulkan, kDevIdGfx11_0_3B, device_info::kRevisionIdAny);
+    VerifyCounterByPassCounterLibEntry(kGpaApiVulkan, kDevIdGfx11_0_3B, device_info::kRevisionIdAny);
 }
 
 TEST(CounterDllTests, VkCounterLibTestGfx1150)
 {
-    VerifyCounterLibInterface(kGpaApiVulkan, kDevIdGfx11_5_0, AMDTDeviceInfoUtils::kRevisionIdAny);
-    VerifyCounterByPassCounterLibEntry(kGpaApiVulkan, kDevIdGfx11_5_0, AMDTDeviceInfoUtils::kRevisionIdAny);
+    VerifyCounterLibInterface(kGpaApiVulkan, kDevIdGfx11_5_0, device_info::kRevisionIdAny);
+    VerifyCounterByPassCounterLibEntry(kGpaApiVulkan, kDevIdGfx11_5_0, device_info::kRevisionIdAny);
+}
+
+TEST(CounterDllTests, VkCounterLibTestGfx1151)
+{
+    VerifyCounterLibInterface(kGpaApiVulkan, kDevIdGfx11_5_1, device_info::kRevisionIdAny);
+    VerifyCounterByPassCounterLibEntry(kGpaApiVulkan, kDevIdGfx11_5_1, device_info::kRevisionIdAny);
+}
+
+TEST(CounterDllTests, VkCounterLibTestGfx1152)
+{
+    VerifyCounterLibInterface(kGpaApiVulkan, kDevIdGfx11_5_2, device_info::kRevisionIdAny);
+    VerifyCounterByPassCounterLibEntry(kGpaApiVulkan, kDevIdGfx11_5_2, device_info::kRevisionIdAny);
 }
 
 TEST(CounterDllTests, VkCounterLibTestGfx1153)
 {
-    VerifyCounterLibInterface(kGpaApiVulkan, kDevIdGfx11_5_3, AMDTDeviceInfoUtils::kRevisionIdAny);
-    VerifyCounterByPassCounterLibEntry(kGpaApiVulkan, kDevIdGfx11_5_3, AMDTDeviceInfoUtils::kRevisionIdAny);
+    VerifyCounterLibInterface(kGpaApiVulkan, kDevIdGfx11_5_3, device_info::kRevisionIdAny);
+    VerifyCounterByPassCounterLibEntry(kGpaApiVulkan, kDevIdGfx11_5_3, device_info::kRevisionIdAny);
 }
 
 #endif
 
 TEST(HardwareCounterTests, VkGfx1034SqSqcPerfSelLdsBankConflict)
 {
-    LibHandle              handle                     = nullptr;
     GpaCounterLibFuncTable gpa_counter_lib_func_table = {};
     GpaCounterContext      gpa_counter_context        = nullptr;
-    if (LoadAndVerifyCounterLib(&handle, &gpa_counter_lib_func_table))
+    auto                   lib_guard                  = LoadAndVerifyCounterLib(&gpa_counter_lib_func_table);
+    if (lib_guard)
     {
-        GpaCounterContextHardwareInfo counter_context_hardware_info = {kAmdVendorId, kDevIdGfx10_3_4, AMDTDeviceInfoUtils::kRevisionIdAny, nullptr, 0};
+        GpaCounterContextHardwareInfo counter_context_hardware_info = {device_info::kAmdVendorId, kDevIdGfx10_3_4, device_info::kRevisionIdAny, nullptr, 0};
         GpaStatus                     gpa_status                    = gpa_counter_lib_func_table.GpaCounterLibOpenCounterContext(
             kGpaApiVulkan, kGpaSessionSampleTypeDiscreteCounter, counter_context_hardware_info, kGpaOpenContextEnableHardwareCountersBit, &gpa_counter_context);
         EXPECT_EQ(kGpaStatusOk, gpa_status);
@@ -323,19 +352,17 @@ TEST(HardwareCounterTests, VkGfx1034SqSqcPerfSelLdsBankConflict)
 
         gpa_status = gpa_counter_lib_func_table.GpaCounterLibCloseCounterContext(gpa_counter_context);
         EXPECT_EQ(kGpaStatusOk, gpa_status);
-
-        UnloadLib(handle);
     }
 }
 
 TEST(HardwareCounterTests, VkGfx10Gl2cPerfSelMiss)
 {
-    LibHandle              handle                     = nullptr;
     GpaCounterLibFuncTable gpa_counter_lib_func_table = {};
     GpaCounterContext      gpa_counter_context        = nullptr;
-    if (LoadAndVerifyCounterLib(&handle, &gpa_counter_lib_func_table))
+    auto                   lib_guard                  = LoadAndVerifyCounterLib(&gpa_counter_lib_func_table);
+    if (lib_guard)
     {
-        GpaCounterContextHardwareInfo counter_context_hardware_info = {kAmdVendorId, kDevIdGfx10, AMDTDeviceInfoUtils::kRevisionIdAny, nullptr, 0};
+        GpaCounterContextHardwareInfo counter_context_hardware_info = {device_info::kAmdVendorId, kDevIdGfx10, device_info::kRevisionIdAny, nullptr, 0};
         GpaStatus                     gpa_status                    = gpa_counter_lib_func_table.GpaCounterLibOpenCounterContext(
             kGpaApiVulkan, kGpaSessionSampleTypeDiscreteCounter, counter_context_hardware_info, kGpaOpenContextEnableHardwareCountersBit, &gpa_counter_context);
         EXPECT_EQ(kGpaStatusOk, gpa_status);
@@ -378,19 +405,17 @@ TEST(HardwareCounterTests, VkGfx10Gl2cPerfSelMiss)
 
         gpa_status = gpa_counter_lib_func_table.GpaCounterLibCloseCounterContext(gpa_counter_context);
         EXPECT_EQ(kGpaStatusOk, gpa_status);
-
-        UnloadLib(handle);
     }
 }
 
 TEST(HardwareCounterTests, VkGfx103Gl2cPerfSelMiss)
 {
-    LibHandle              handle                     = nullptr;
     GpaCounterLibFuncTable gpa_counter_lib_func_table = {};
     GpaCounterContext      gpa_counter_context        = nullptr;
-    if (LoadAndVerifyCounterLib(&handle, &gpa_counter_lib_func_table))
+    auto                   lib_guard                  = LoadAndVerifyCounterLib(&gpa_counter_lib_func_table);
+    if (lib_guard)
     {
-        GpaCounterContextHardwareInfo counter_context_hardware_info = {kAmdVendorId, kDevIdGfx10_3, AMDTDeviceInfoUtils::kRevisionIdAny, nullptr, 0};
+        GpaCounterContextHardwareInfo counter_context_hardware_info = {device_info::kAmdVendorId, kDevIdGfx10_3, device_info::kRevisionIdAny, nullptr, 0};
         GpaStatus                     gpa_status                    = gpa_counter_lib_func_table.GpaCounterLibOpenCounterContext(
             kGpaApiVulkan, kGpaSessionSampleTypeDiscreteCounter, counter_context_hardware_info, kGpaOpenContextEnableHardwareCountersBit, &gpa_counter_context);
         EXPECT_EQ(kGpaStatusOk, gpa_status);
@@ -433,19 +458,17 @@ TEST(HardwareCounterTests, VkGfx103Gl2cPerfSelMiss)
 
         gpa_status = gpa_counter_lib_func_table.GpaCounterLibCloseCounterContext(gpa_counter_context);
         EXPECT_EQ(kGpaStatusOk, gpa_status);
-
-        UnloadLib(handle);
     }
 }
 
 TEST(HardwareCounterTests, VkGfx1031Gl2cPerfSelMiss)
 {
-    LibHandle              handle                     = nullptr;
     GpaCounterLibFuncTable gpa_counter_lib_func_table = {};
     GpaCounterContext      gpa_counter_context        = nullptr;
-    if (LoadAndVerifyCounterLib(&handle, &gpa_counter_lib_func_table))
+    auto                   lib_guard                  = LoadAndVerifyCounterLib(&gpa_counter_lib_func_table);
+    if (lib_guard)
     {
-        GpaCounterContextHardwareInfo counter_context_hardware_info = {kAmdVendorId, kDevIdGfx10_3_1, AMDTDeviceInfoUtils::kRevisionIdAny, nullptr, 0};
+        GpaCounterContextHardwareInfo counter_context_hardware_info = {device_info::kAmdVendorId, kDevIdGfx10_3_1, device_info::kRevisionIdAny, nullptr, 0};
         GpaStatus                     gpa_status                    = gpa_counter_lib_func_table.GpaCounterLibOpenCounterContext(
             kGpaApiVulkan, kGpaSessionSampleTypeDiscreteCounter, counter_context_hardware_info, kGpaOpenContextEnableHardwareCountersBit, &gpa_counter_context);
         EXPECT_EQ(kGpaStatusOk, gpa_status);
@@ -488,19 +511,17 @@ TEST(HardwareCounterTests, VkGfx1031Gl2cPerfSelMiss)
 
         gpa_status = gpa_counter_lib_func_table.GpaCounterLibCloseCounterContext(gpa_counter_context);
         EXPECT_EQ(kGpaStatusOk, gpa_status);
-
-        UnloadLib(handle);
     }
 }
 
 TEST(HardwareCounterTests, VkGfx11Gl2cPerfSelMiss)
 {
-    LibHandle              handle                     = nullptr;
     GpaCounterLibFuncTable gpa_counter_lib_func_table = {};
     GpaCounterContext      gpa_counter_context        = nullptr;
-    if (LoadAndVerifyCounterLib(&handle, &gpa_counter_lib_func_table))
+    auto                   lib_guard                  = LoadAndVerifyCounterLib(&gpa_counter_lib_func_table);
+    if (lib_guard)
     {
-        GpaCounterContextHardwareInfo counter_context_hardware_info = {kAmdVendorId, kDevIdGfx11, AMDTDeviceInfoUtils::kRevisionIdAny, nullptr, 0};
+        GpaCounterContextHardwareInfo counter_context_hardware_info = {device_info::kAmdVendorId, kDevIdGfx11, device_info::kRevisionIdAny, nullptr, 0};
         GpaStatus                     gpa_status                    = gpa_counter_lib_func_table.GpaCounterLibOpenCounterContext(
             kGpaApiVulkan, kGpaSessionSampleTypeDiscreteCounter, counter_context_hardware_info, kGpaOpenContextEnableHardwareCountersBit, &gpa_counter_context);
         EXPECT_EQ(kGpaStatusOk, gpa_status);
@@ -543,19 +564,17 @@ TEST(HardwareCounterTests, VkGfx11Gl2cPerfSelMiss)
 
         gpa_status = gpa_counter_lib_func_table.GpaCounterLibCloseCounterContext(gpa_counter_context);
         EXPECT_EQ(kGpaStatusOk, gpa_status);
-
-        UnloadLib(handle);
     }
 }
 
 TEST(HardwareCounterTests, VkGfx1103Gl2cPerfSelMiss)
 {
-    LibHandle              handle                     = nullptr;
     GpaCounterLibFuncTable gpa_counter_lib_func_table = {};
     GpaCounterContext      gpa_counter_context        = nullptr;
-    if (LoadAndVerifyCounterLib(&handle, &gpa_counter_lib_func_table))
+    auto                   lib_guard                  = LoadAndVerifyCounterLib(&gpa_counter_lib_func_table);
+    if (lib_guard)
     {
-        GpaCounterContextHardwareInfo counter_context_hardware_info = {kAmdVendorId, kDevIdGfx11_0_3, AMDTDeviceInfoUtils::kRevisionIdAny, nullptr, 0};
+        GpaCounterContextHardwareInfo counter_context_hardware_info = {device_info::kAmdVendorId, kDevIdGfx11_0_3, device_info::kRevisionIdAny, nullptr, 0};
         GpaStatus                     gpa_status                    = gpa_counter_lib_func_table.GpaCounterLibOpenCounterContext(
             kGpaApiVulkan, kGpaSessionSampleTypeDiscreteCounter, counter_context_hardware_info, kGpaOpenContextEnableHardwareCountersBit, &gpa_counter_context);
         EXPECT_EQ(kGpaStatusOk, gpa_status);
@@ -598,8 +617,6 @@ TEST(HardwareCounterTests, VkGfx1103Gl2cPerfSelMiss)
 
         gpa_status = gpa_counter_lib_func_table.GpaCounterLibCloseCounterContext(gpa_counter_context);
         EXPECT_EQ(kGpaStatusOk, gpa_status);
-
-        UnloadLib(handle);
     }
 }
 
@@ -608,6 +625,7 @@ TEST(CounterDllTests, VkCounterFormulaTest)
     VerifyCounterFormula(GetExpectedPublicCounters(kGpaHwGenerationGfx10));
     VerifyCounterFormula(GetExpectedPublicCounters(kGpaHwGenerationGfx103));
     VerifyCounterFormula(GetExpectedPublicCounters(kGpaHwGenerationGfx11));
+    VerifyCounterFormula(GetExpectedPublicCounters(kGpaHwGenerationGfx115));
     VerifyCounterFormula(GetExpectedPublicCounters(kGpaHwGenerationGfx12));
 }
 
@@ -618,19 +636,18 @@ TEST(GpaCounterLibGetSupportedSampleTypes, Vulkan)
 
 TEST(GpaCounterLibGetSupportedSampleTypes, InvalidParameters)
 {
-    LibHandle              handle                     = {};
     GpaCounterLibFuncTable gpa_counter_lib_func_table = {};
 
     // The API is arbitrary for this test.
-    constexpr GpaApiType api = kGpaApiVulkan;
-
-    if (LoadAndVerifyCounterLib(&handle, &gpa_counter_lib_func_table))
+    constexpr GpaApiType api       = kGpaApiVulkan;
+    auto                 lib_guard = LoadAndVerifyCounterLib(&gpa_counter_lib_func_table);
+    if (lib_guard)
     {
         GpaStatus                  status                = kGpaStatusOk;
         GpaSupportedSampleTypeInfo info                  = {};
         info.device_id                                   = kDevIdGfx12_0_0;
-        info.revision_id                                 = AMDTDeviceInfoUtils::kRevisionIdAny;
-        info.vendor_id                                   = kAmdVendorId;
+        info.revision_id                                 = device_info::kRevisionIdAny;
+        info.vendor_id                                   = device_info::kAmdVendorId;
         info.driver_info.driver_type                     = kIgnoreDriver;
         GpaContextSampleTypeFlags supported_sample_types = {};
 
@@ -667,7 +684,7 @@ TEST(GpaCounterLibGetSupportedSampleTypes, InvalidParameters)
             status = gpa_counter_lib_func_table.GpaCounterLibGetSupportedSampleTypes(api, &info, &supported_sample_types);
             EXPECT_EQ(kGpaStatusErrorHardwareNotSupported, status);
 
-            info.revision_id = AMDTDeviceInfoUtils::kRevisionIdAny;
+            info.revision_id = device_info::kRevisionIdAny;
 
             // Invalid vendor id.
             info.vendor_id = 0;
@@ -675,7 +692,7 @@ TEST(GpaCounterLibGetSupportedSampleTypes, InvalidParameters)
             status = gpa_counter_lib_func_table.GpaCounterLibGetSupportedSampleTypes(api, &info, &supported_sample_types);
             EXPECT_EQ(kGpaStatusErrorHardwareNotSupported, status);
 
-            info.vendor_id = kAmdVendorId;
+            info.vendor_id = device_info::kAmdVendorId;
         }
 
         // Invalid driver information.
@@ -688,20 +705,68 @@ TEST(GpaCounterLibGetSupportedSampleTypes, InvalidParameters)
 
             info.driver_info.driver_type = kIgnoreDriver;
         }
+    }
+}
 
-        UnloadLib(handle);
+TEST(GpaCounterLibGetHardwareGeneration, InvalidParameters)
+{
+    GpaCounterLibFuncTable gpa_counter_lib_func_table = {};
+    auto                   lib_guard                  = LoadAndVerifyCounterLib(&gpa_counter_lib_func_table);
+    if (lib_guard)
+    {
+        // Check for nullptr.
+        {
+            const GpaDeviceDescription device_desc = {
+                .vendor_id = device_info::kAmdVendorId, .device_id = kDevIdGfx12_0_0, .revision_id = device_info::kRevisionIdAny};
+
+            GpaStatus       status = kGpaStatusOk;
+            GpaHwGeneration gen    = kGpaHwGenerationLast;
+
+            status = gpa_counter_lib_func_table.GpaCounterLibGetHardwareGeneration(&device_desc, nullptr);
+            EXPECT_EQ(kGpaStatusErrorNullPointer, status);
+
+            status = gpa_counter_lib_func_table.GpaCounterLibGetHardwareGeneration(nullptr, &gen);
+            EXPECT_EQ(kGpaStatusErrorNullPointer, status);
+        }
+
+        // Check for invalid HW vendor
+        for (const GpaUInt32 vendor_id : kUnsupportedVendorIds)
+        {
+            const GpaDeviceDescription device_desc = {.vendor_id = vendor_id, .device_id = kDevIdGfx12_0_0, .revision_id = device_info::kRevisionIdAny};
+
+            GpaHwGeneration gen    = kGpaHwGenerationLast;
+            GpaStatus       status = kGpaStatusOk;
+
+            status = gpa_counter_lib_func_table.GpaCounterLibGetHardwareGeneration(&device_desc, &gen);
+            EXPECT_EQ(kGpaStatusErrorHardwareNotSupported, status);
+            EXPECT_EQ(kGpaHwGenerationNone, gen);
+        }
+
+        // Invalid device IDs
+        for (const GpaUInt32 device_id : kUnsupportedDeviceIds)
+        {
+            const GpaDeviceDescription device_desc = {
+                .vendor_id = device_info::kAmdVendorId, .device_id = device_id, .revision_id = device_info::kRevisionIdAny};
+
+            GpaHwGeneration gen    = kGpaHwGenerationLast;
+            GpaStatus       status = kGpaStatusOk;
+
+            status = gpa_counter_lib_func_table.GpaCounterLibGetHardwareGeneration(&device_desc, &gen);
+            EXPECT_EQ(kGpaStatusErrorHardwareNotSupported, status);
+            EXPECT_EQ(kGpaHwGenerationNone, gen);
+        }
     }
 }
 
 // The main intent of this test is to ensure functionality RGP/RDP is relying on works.
 TEST(GpaCounterLibGetCounterIndex, RadeonToolsSanityCheck)
 {
-    LibHandle              handle                     = {};
     GpaCounterLibFuncTable gpa_counter_lib_func_table = {};
     GpaCounterContext      gpa_counter_context        = {};
-    if (LoadAndVerifyCounterLib(&handle, &gpa_counter_lib_func_table))
+    auto                   lib_guard                  = LoadAndVerifyCounterLib(&gpa_counter_lib_func_table);
+    if (lib_guard)
     {
-        GpaCounterContextHardwareInfo counter_context_hardware_info = {kAmdVendorId, kDevIdGfx11, AMDTDeviceInfoUtils::kRevisionIdAny, nullptr, 0};
+        GpaCounterContextHardwareInfo counter_context_hardware_info = {device_info::kAmdVendorId, kDevIdGfx11, device_info::kRevisionIdAny, nullptr, 0};
         GpaStatus                     status                        = gpa_counter_lib_func_table.GpaCounterLibOpenCounterContext(
             kGpaApiVulkan, kGpaSessionSampleTypeDiscreteCounter, counter_context_hardware_info, kGpaOpenContextDefaultBit, &gpa_counter_context);
         EXPECT_EQ(kGpaStatusOk, status);
@@ -733,8 +798,6 @@ TEST(GpaCounterLibGetCounterIndex, RadeonToolsSanityCheck)
 
         status = gpa_counter_lib_func_table.GpaCounterLibCloseCounterContext(gpa_counter_context);
         EXPECT_EQ(kGpaStatusOk, status);
-
-        UnloadLib(handle);
     }
 }
 
@@ -743,15 +806,14 @@ TEST(GpaCounterLibGetCounterIndex, RadeonToolsSanityCheck)
 // On GFX10 this derived counter uses only 1 HW counter from the GE block.
 TEST(GpaCounterLibGetCounterInfo, TessellatorBusyCycles)
 {
-    static_assert(GpaHwGeneration::kGpaHwGenerationLast == 15, "GpaHwGeneration enum has been modified, please update the test accordingly.");
     for (const GpaUInt32 dev_id : {kDevIdGfx10, kDevIdGfx10_3, kDevIdGfx11, kDevIdGfx12_0_0})
     {
-        LibHandle              handle                     = {};
         GpaCounterLibFuncTable gpa_counter_lib_func_table = {};
         GpaCounterContext      gpa_counter_context        = {};
-        if (LoadAndVerifyCounterLib(&handle, &gpa_counter_lib_func_table))
+        auto                   lib_guard                  = LoadAndVerifyCounterLib(&gpa_counter_lib_func_table);
+        if (lib_guard)
         {
-            GpaCounterContextHardwareInfo counter_context_hardware_info = {kAmdVendorId, dev_id, AMDTDeviceInfoUtils::kRevisionIdAny, nullptr, 0};
+            GpaCounterContextHardwareInfo counter_context_hardware_info = {device_info::kAmdVendorId, dev_id, device_info::kRevisionIdAny, nullptr, 0};
             GpaStatus                     status                        = gpa_counter_lib_func_table.GpaCounterLibOpenCounterContext(
                 kGpaApiVulkan, kGpaSessionSampleTypeDiscreteCounter, counter_context_hardware_info, kGpaOpenContextDefaultBit, &gpa_counter_context);
             EXPECT_EQ(kGpaStatusOk, status);
@@ -780,8 +842,6 @@ TEST(GpaCounterLibGetCounterInfo, TessellatorBusyCycles)
 
             status = gpa_counter_lib_func_table.GpaCounterLibCloseCounterContext(gpa_counter_context);
             EXPECT_EQ(kGpaStatusOk, status);
-
-            UnloadLib(handle);
         }
     }
 }
@@ -790,16 +850,15 @@ TEST(GpaCounterLibGetCounterInfo, TessellatorBusyCycles)
 // This derived counter uses HW counters from the GESE block.
 TEST(GpaCounterLibGetCounterInfo, VsGsVerticesIn)
 {
-    static_assert(GpaHwGeneration::kGpaHwGenerationLast == 15, "GpaHwGeneration enum has been modified, please update the test accordingly.");
     // This counter currently has issues on GFX10 and GFX10.3, so only test GFX11 and GFX12 here.
     for (const GpaUInt32 dev_id : {kDevIdGfx11, kDevIdGfx12_0_0})
     {
-        LibHandle              handle                     = {};
         GpaCounterLibFuncTable gpa_counter_lib_func_table = {};
         GpaCounterContext      gpa_counter_context        = {};
-        if (LoadAndVerifyCounterLib(&handle, &gpa_counter_lib_func_table))
+        auto                   lib_guard                  = LoadAndVerifyCounterLib(&gpa_counter_lib_func_table);
+        if (lib_guard)
         {
-            GpaCounterContextHardwareInfo counter_context_hardware_info = {kAmdVendorId, dev_id, AMDTDeviceInfoUtils::kRevisionIdAny, nullptr, 0};
+            GpaCounterContextHardwareInfo counter_context_hardware_info = {device_info::kAmdVendorId, dev_id, device_info::kRevisionIdAny, nullptr, 0};
             GpaStatus                     status                        = gpa_counter_lib_func_table.GpaCounterLibOpenCounterContext(
                 kGpaApiVulkan, kGpaSessionSampleTypeDiscreteCounter, counter_context_hardware_info, kGpaOpenContextDefaultBit, &gpa_counter_context);
             EXPECT_EQ(kGpaStatusOk, status);
@@ -824,8 +883,6 @@ TEST(GpaCounterLibGetCounterInfo, VsGsVerticesIn)
 
             status = gpa_counter_lib_func_table.GpaCounterLibCloseCounterContext(gpa_counter_context);
             EXPECT_EQ(kGpaStatusOk, status);
-
-            UnloadLib(handle);
         }
     }
 }

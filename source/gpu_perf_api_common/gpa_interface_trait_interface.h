@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Interface representing the GPA Interface Object.
@@ -30,12 +30,12 @@ public:
     /// @brief Returns the API type of the object.
     ///
     /// @return Api type of the object.
-    virtual GpaApiType GetApiType() const = 0;
+    [[nodiscard]] virtual GpaApiType GetApiType() const = 0;
 
     /// @brief Returns the type of the Object.
     ///
     /// @return Object type.
-    virtual GpaObjectType ObjectType() const = 0;
+    [[nodiscard]] virtual GpaObjectType ObjectType() const = 0;
 };
 
 #endif

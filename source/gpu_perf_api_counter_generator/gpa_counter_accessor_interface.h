@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2012-2023 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief An accessor interface for the GpaCounterGeneratorBase class.
@@ -152,14 +152,6 @@ public:
                                                 const gpa_array_view<GpaUInt64> results,
                                                 void*                           result,
                                                 const GpaHwInfo&                hardware_info) const = 0;
-
-    /// @brief Compute a software counter value.
-    ///
-    /// @param [in] software_counter_index The index of the counter (within the range of software counters) whose value is needed.
-    /// @param [in] value The value of the counter.
-    /// @param [out] result The resulting value.
-    /// @param [in] hw_info The hardware info.
-    virtual void ComputeSwCounterValue(GpaUInt32 software_counter_index, GpaUInt64 value, void* result, const GpaHwInfo* hw_info) const = 0;
 
     /// @brief Gets the counter type information based on the global counter index.
     ///

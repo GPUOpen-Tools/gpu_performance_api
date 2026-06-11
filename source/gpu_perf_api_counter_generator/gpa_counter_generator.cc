@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016-2024 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief GPUPerfAPI Counter Generator function.
@@ -9,10 +9,9 @@
 
 #include <cctype>
 
-#include "DeviceInfoUtils.h"
-
 #include "gpu_perf_api_common/gpa_hw_info.h"
 #include "gpu_perf_api_common/logging.h"
+#include "gpu_perf_api_common/utility.h"
 
 #include "gpu_perf_api_counter_generator/gpa_counter_generator_base.h"
 #include "gpu_perf_api_counter_generator/gpa_counter_generator_scheduler_manager.h"
@@ -130,18 +129,13 @@ void UpdateMaxSpmBlockEvents(BlockMap* block_map, const char* block_name, uint32
 
 GpaStatus GenerateCounters(GpaApiType             desired_api,
                            GpaSessionSampleType   sample_type,
-                           GpaUInt32              vendor_id,
-                           GpaUInt32              device_id,
-                           GpaUInt32              revision_id,
+                           const GpaHwInfo&       hw_info,
                            GpaOpenContextFlags    flags,
                            IGpaCounterAccessor**  counter_accessor_out,
                            IGpaCounterScheduler** counter_scheduler_out)
 {
-    if (nullptr == counter_accessor_out)
-    {
-        GPA_LOG_ERROR("Parameter 'counter_accessor_out' is NULL.");
-        return kGpaStatusErrorNullPointer;
-    }
+    GPA_CHECK_NULLPTR(counter_accessor_out);
+    GPA_CHECK_NULLPTR(counter_scheduler_out);
 
     assert(kGpaSessionSampleTypeSqtt != sample_type);
 
@@ -153,74 +147,41 @@ GpaStatus GenerateCounters(GpaApiType             desired_api,
         sample_type = kGpaSessionSampleTypeStreamingCounter;
     }
 
-    // Get hardware generation from device Id.
-    GDT_HW_GENERATION desired_generation = GDT_HW_GENERATION_NONE;
+    const device_info::HwGeneration desired_generation = hw_info.GetHwGeneration().value();
+    GpaStatus                       status             = kGpaStatusOk;
+    GpaCounterGeneratorBase*        tmp_accessor       = nullptr;
+    IGpaCounterScheduler*           tmp_scheduler      = nullptr;
 
-    GDT_GfxCardInfo card_info{};
-
-    if (kNvidiaVendorId == vendor_id)
+    if (!CounterGeneratorSchedulerManager::Instance().GetCounterGenerator(desired_api, sample_type, desired_generation, tmp_accessor))
     {
-        desired_generation = GDT_HW_GENERATION_NVIDIA;
-    }
-    else if (kIntelVendorId == vendor_id)
-    {
-        desired_generation = GDT_HW_GENERATION_INTEL;
-    }
-    else if (kAmdVendorId == vendor_id)
-    {
-        if (AMDTDeviceInfoUtils::GetDeviceInfo(device_id, revision_id, card_info))
-        {
-            desired_generation = card_info.m_generation;
-
-            if ((kGpaApiDirectx12 == desired_api || (kGpaApiVulkan == desired_api)) && GDT_HW_GENERATION_GFX10 > desired_generation)
-            {
-                GPA_LOG_ERROR("Desired generation is too old and no longer supported.");
-                return kGpaStatusErrorHardwareNotSupported;
-            }
-        }
-    }
-
-    if (desired_generation == GDT_HW_GENERATION_NONE)
-    {
-        GPA_LOG_ERROR("Desired generation is GDT_HW_GENERATION_NONE.");
+        GpaLogger::Instance().LogError("Requesting available counters from an unsupported API or hardware generation.");
         return kGpaStatusErrorHardwareNotSupported;
     }
 
-    GpaStatus                status        = kGpaStatusOk;
-    GpaCounterGeneratorBase* tmp_accessor  = nullptr;
-    IGpaCounterScheduler*    tmp_scheduler = nullptr;
+    const bool allow_public   = (flags & kGpaOpenContextHidePublicCountersBit) == 0;
+    const bool allow_hardware = [&flags]() -> bool {
+        const bool enable_hw_counters = (flags & kGpaOpenContextEnableHardwareCountersBit) == kGpaOpenContextEnableHardwareCountersBit;
 
-    bool ret_code = CounterGeneratorSchedulerManager::Instance()->GetCounterGenerator(desired_api, sample_type, desired_generation, tmp_accessor);
-
-    if (!ret_code)
-    {
-        GPA_LOG_ERROR("Requesting available counters from an unsupported API or hardware generation.");
-        return kGpaStatusErrorHardwareNotSupported;
-    }
-
-    bool allow_public   = (flags & kGpaOpenContextHidePublicCountersBit) == 0;
-    bool allow_hardware = (flags & kGpaOpenContextEnableHardwareCountersBit) == kGpaOpenContextEnableHardwareCountersBit;
+        // See documentation/sphinx/source/gpa_env_variables.rst for details on this environment variable.
+        const bool force_hw = gpa_util::IsEnvVarForceEnabled("GPA_EXPOSE_HW_COUNTERS");
+        return enable_hw_counters || force_hw;
+    }();
 
     tmp_accessor->SetAllowedCounters(allow_public, allow_hardware);
-    status = tmp_accessor->GenerateCounters(desired_generation, card_info.m_asicType);
+    status = tmp_accessor->GenerateCounters(desired_generation, hw_info.GetHwAsicType().value());
 
     if (status == kGpaStatusOk)
     {
         *counter_accessor_out = tmp_accessor;
 
-        if (nullptr != counter_scheduler_out)
+        if (!CounterGeneratorSchedulerManager::Instance().GetCounterScheduler(desired_api, sample_type, desired_generation, tmp_scheduler))
         {
-            ret_code = CounterGeneratorSchedulerManager::Instance()->GetCounterScheduler(desired_api, sample_type, desired_generation, tmp_scheduler);
-
-            if (!ret_code)
-            {
-                GPA_LOG_ERROR("Requesting available counters from an unsupported API or hardware generation.");
-                return kGpaStatusErrorHardwareNotSupported;
-            }
-
-            *counter_scheduler_out = tmp_scheduler;
-            tmp_scheduler->SetCounterAccessor(tmp_accessor, vendor_id, device_id, revision_id);
+            GpaLogger::Instance().LogError("Requesting available counters from an unsupported API or hardware generation.");
+            return kGpaStatusErrorHardwareNotSupported;
         }
+
+        *counter_scheduler_out = tmp_scheduler;
+        status                 = tmp_scheduler->SetCounterAccessor(tmp_accessor, hw_info);
     }
 
     return status;

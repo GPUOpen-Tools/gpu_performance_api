@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2024 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Class for VK counter generation.
@@ -15,9 +15,9 @@ GpaCounterGeneratorVkBase::GpaCounterGeneratorVkBase(GpaSessionSampleType sample
 {
 }
 
-GpaStatus GpaCounterGeneratorVkBase::GeneratePublicCounters(GDT_HW_GENERATION   desired_generation,
-                                                            GDT_HW_ASIC_TYPE    asic_type,
-                                                            GpaDerivedCounters* public_counters)
+GpaStatus GpaCounterGeneratorVkBase::GeneratePublicCounters(device_info::HwGeneration desired_generation,
+                                                            device_info::AsicType     asic_type,
+                                                            GpaDerivedCounters*       public_counters)
 {
     UNREFERENCED_PARAMETER(desired_generation);
     UNREFERENCED_PARAMETER(asic_type);
@@ -25,9 +25,9 @@ GpaStatus GpaCounterGeneratorVkBase::GeneratePublicCounters(GDT_HW_GENERATION   
     return kGpaStatusOk;
 }
 
-GpaStatus GpaCounterGeneratorVkBase::GenerateHardwareCounters(GDT_HW_GENERATION    desired_generation,
-                                                              GDT_HW_ASIC_TYPE     asic_type,
-                                                              GpaHardwareCounters* hardware_counters)
+GpaStatus GpaCounterGeneratorVkBase::GenerateHardwareCounters(device_info::HwGeneration desired_generation,
+                                                              device_info::AsicType     asic_type,
+                                                              GpaHardwareCounters*      hardware_counters)
 {
     UNREFERENCED_PARAMETER(desired_generation);
     UNREFERENCED_PARAMETER(asic_type);

@@ -1,11 +1,16 @@
 //==============================================================================
-// Copyright (c) 2016-2024 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  class to load the GPA at run-time
 //==============================================================================
 
 #include "gpu_perf_api_unit_tests/utils/gpu_perf_api_loader.h"
+#ifdef USE_DEBUG_GPA
+#include "config_Debug.h"
+#else
+#include "config_Release.h"
+#endif
 
 GpuPerfApiLoader::GpuPerfApiLoader()
 {
@@ -68,11 +73,11 @@ bool GpuPerfApiLoader::Loaded()
 }
 
 #ifdef _WIN32
-bool GpuPerfApiLoader::Load(const char* dll_path, GpaApiType api, const char** error_message)
+bool GpuPerfApiLoader::Load(GpaApiType api, const char** error_message)
 {
-    std::string dll_full_path = GetGPADllName(std::string(dll_path), api);
+    const char* dll_full_path = GpaGetFullPathToSharedLibrary(api);
 
-    h_module_ = LoadLibraryA(dll_full_path.c_str());
+    h_module_ = LoadLibraryA(dll_full_path);
 
     if (nullptr == h_module_)
     {
@@ -98,11 +103,11 @@ bool GpuPerfApiLoader::Load(const char* dll_path, GpaApiType api, const char** e
 }
 #else
 
-bool GpuPerfApiLoader::Load(const char* dll_path, GpaApiType api, const char** error_message)
+bool GpuPerfApiLoader::Load(GpaApiType api, const char** error_message)
 {
-    std::string dll_full_path = GetGPADllName(std::string(dll_path), api);
+    const char* dll_full_path = GpaGetFullPathToSharedLibrary(api);
 
-    handle_ = dlopen(dll_full_path.c_str(), RTLD_LAZY);
+    handle_ = dlopen(dll_full_path, RTLD_LAZY);
 
     if (nullptr == handle_)
     {
@@ -128,58 +133,3 @@ bool GpuPerfApiLoader::Load(const char* dll_path, GpaApiType api, const char** e
 }
 
 #endif
-
-#ifdef _WIN32
-#define LIB_PREFIX ""
-#define LIB_SUFFIX ".dll"
-#else
-#define LIB_PREFIX "lib"
-#define LIB_SUFFIX ".so"
-#endif
-
-#ifndef AMDT_PLATFORM_SUFFIX
-#ifdef PLATFORM_SUFFIX
-#define AMDT_PLATFORM_SUFFIX PLATFORM_SUFFIX
-#endif
-#endif
-
-#ifdef USE_DEBUG_GPA
-#define LIB_DEBUG_SUFFIX "-d"
-#else
-#define LIB_DEBUG_SUFFIX ""
-#endif
-
-std::string GpuPerfApiLoader::GetGPADllName(const std::string& dll_path, GpaApiType api)
-{
-    std::string dll_full_path = dll_path;
-    dll_full_path.append(LIB_PREFIX);
-
-    switch (api)
-    {
-    case kGpaApiDirectx11:
-        dll_full_path.append("GPUPerfAPIDX11");
-        break;
-
-    case kGpaApiDirectx12:
-        dll_full_path.append("GPUPerfAPIDX12");
-        break;
-
-    case kGpaApiOpengl:
-        dll_full_path.append("GPUPerfAPIGL");
-        break;
-
-    case kGpaApiVulkan:
-        dll_full_path.append("GPUPerfAPIVK");
-        break;
-
-    default:
-        assert("unknown API type");
-    }
-
-    dll_full_path.append(AMDT_PLATFORM_SUFFIX);
-    dll_full_path.append(LIB_DEBUG_SUFFIX);
-    dll_full_path.append(AMDT_BUILD_SUFFIX);
-    dll_full_path.append(LIB_SUFFIX);
-
-    return dll_full_path;
-}

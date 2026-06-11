@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2024 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Class for VK Base counter generation.
@@ -24,14 +24,14 @@ public:
 
 protected:
     /// @copydoc GpaCounterGeneratorBase::GeneratePublicCounters()
-    virtual GpaStatus GeneratePublicCounters(GDT_HW_GENERATION   desired_generation,
-                                             GDT_HW_ASIC_TYPE    asic_type,
-                                             GpaDerivedCounters* public_counters) override;
+    virtual GpaStatus GeneratePublicCounters(device_info::HwGeneration desired_generation,
+                                             device_info::AsicType     asic_type,
+                                             GpaDerivedCounters*       public_counters) override;
 
     /// @copydoc GpaCounterGeneratorBase::GenerateHardwareCounters()
-    virtual GpaStatus GenerateHardwareCounters(GDT_HW_GENERATION    desired_generation,
-                                               GDT_HW_ASIC_TYPE     asic_type,
-                                               GpaHardwareCounters* hardware_counters) override;
+    virtual GpaStatus GenerateHardwareCounters(device_info::HwGeneration desired_generation,
+                                               device_info::AsicType     asic_type,
+                                               GpaHardwareCounters*      hardware_counters) override;
 
 private:
     /// @brief Delete default constructor.

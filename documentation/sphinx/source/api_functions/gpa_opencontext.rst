@@ -41,7 +41,7 @@ Parameters
     :widths: 35, 65
 
     "``context``", "The context to open counters for. The specific type for this parameter depends on which API GPUPerfAPI is being used with. Refer to the table above for the specific type to be used."
-    "``flags``", "Flags used to initialize the context. This should be a combination of GpaOpenContext."
+    "``flags``", "Flags used to initialize the context. This should be a combination of GpaOpenContextBits values. Refer to the notes below for details on available flags."
     "``context_id``", "On successful execution of this function, this parameter will be set to a GPA-generated unique context identifier. This value can subsequently passed to any GPA function taking a GpaContextId as an input parameter."
 
 Return value

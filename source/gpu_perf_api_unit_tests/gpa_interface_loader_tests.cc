@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2025 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Unit tests for GPAInterfaceLoader.
@@ -12,8 +12,7 @@
 #include "gpu_performance_api/gpu_perf_api_interface_loader.h"
 #include "gpu_perf_api_unit_tests/utils/gpa_test_apis.h"
 
-GpaApiManager*    GpaApiManager::gpa_api_manager_ = nullptr;
-GpaFuncTableInfo* gpa_function_table_info         = NULL;
+GpaFuncTableInfo* gpa_function_table_info = nullptr;
 
 /// @brief GPA Interface Loader tests.
 class GpaInterfaceLoaderTest : public ::testing::TestWithParam<GpaApiType>
@@ -36,9 +35,6 @@ public:
     /// Tear down and cleanup test resources.
     virtual void TearDown();
 
-    /// Tear down and cleanup test resources.
-    static void TearDownTestCase();
-
     /// Run the test.
     void Run();
 
@@ -56,10 +52,6 @@ void GpaInterfaceLoaderTest::SetUp()
 }
 
 void GpaInterfaceLoaderTest::TearDown()
-{
-}
-
-void GpaInterfaceLoaderTest::TearDownTestCase()
 {
     GpaApiManager::DeleteInstance();
 }
@@ -125,6 +117,8 @@ TEST_F(GpaInterfaceLoaderTest, TestGetLibraryFileName)
 
 #endif
     }
+
+    GpaApiManager::DeleteInstance();
 }
 
 TEST_F(GpaInterfaceLoaderTest, TestGetLibraryFullPath)
@@ -157,6 +151,8 @@ TEST_F(GpaInterfaceLoaderTest, TestGetLibraryFullPath)
 
 #endif
     }
+
+    GpaApiManager::DeleteInstance();
 }
 
 #if defined(VK) && defined(GL)

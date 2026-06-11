@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2006-2024 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  Utility routines for retrieving ASIC information.

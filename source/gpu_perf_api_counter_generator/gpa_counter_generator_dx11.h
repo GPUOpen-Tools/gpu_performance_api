@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016-2024 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Class for DX11 counter generation for AMD HW.
@@ -21,19 +21,19 @@ public:
 
 protected:
     /// @copydoc GpaCounterGeneratorBase::GeneratePublicCounters()
-    GpaStatus GeneratePublicCounters(GDT_HW_GENERATION   desired_generation,
-                                     GDT_HW_ASIC_TYPE    asic_type,
-                                     GpaDerivedCounters* public_counters) override;
+    GpaStatus GeneratePublicCounters(device_info::HwGeneration desired_generation,
+                                     device_info::AsicType     asic_type,
+                                     GpaDerivedCounters*       public_counters) override;
 
     /// @copydoc GpaCounterGeneratorBase::GenerateHardwareCounters()
-    GpaStatus GenerateHardwareCounters(GDT_HW_GENERATION    desired_generation,
-                                       GDT_HW_ASIC_TYPE     asic_type,
-                                       GpaHardwareCounters* hardware_counters) override;
+    GpaStatus GenerateHardwareCounters(device_info::HwGeneration desired_generation,
+                                       device_info::AsicType     asic_type,
+                                       GpaHardwareCounters*      hardware_counters) override;
 
     /// @copydoc GpaCounterGeneratorBase::GenerateHardwareExposedCounters()
-    GpaStatus GenerateHardwareExposedCounters(GDT_HW_GENERATION    desired_generation,
-                                              GDT_HW_ASIC_TYPE     asic_type,
-                                              GpaHardwareCounters* hardware_counters) override;
+    GpaStatus GenerateHardwareExposedCounters(device_info::HwGeneration desired_generation,
+                                              device_info::AsicType     asic_type,
+                                              GpaHardwareCounters*      hardware_counters) override;
 
 private:
     /// @brief Delete default constructor.
@@ -45,7 +45,7 @@ private:
     /// @param [in] generation The generation for which counters need to be generated.
     ///
     /// @return True on success.
-    static bool GenerateInternalCounters(GpaHardwareCounters* hardware_counters, GDT_HW_GENERATION generation);
+    static bool GenerateInternalCounters(GpaHardwareCounters* hardware_counters, device_info::HwGeneration generation);
 };
 
 #endif

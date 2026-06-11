@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2012-2024 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief An interface for scheduling counters in terms of enabling, disabling, and
@@ -34,12 +34,10 @@ public:
     /// @brief Set the counter accessor that should be used when scheduling counters.
     ///
     /// @param [in] counter_accessor The counter accessor.
-    /// @param [in] vendor_id The vendor id of the GPU hardware.
-    /// @param [in] device_id The device id of the GPU hardware.
-    /// @param [in] revision_id The revision id of the GPU hardware.
+    /// @param [in] hw_info The hardware info of the GPU.
     ///
     /// @return kGpaStatusErrorNullPointer If counter_accessor is nullptr otherwise kGpaStatusOk.
-    virtual GpaStatus SetCounterAccessor(IGpaCounterAccessor* counter_accessor, GpaUInt32 vendor_id, GpaUInt32 device_id, GpaUInt32 revision_id) = 0;
+    [[nodiscard]] virtual GpaStatus SetCounterAccessor(IGpaCounterAccessor* counter_accessor, const GpaHwInfo& hw_info) = 0;
 
     /// @brief Enables a counter.
     ///

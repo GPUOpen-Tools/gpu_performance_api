@@ -20,3 +20,4 @@ This API is designed to:
    usage
    counters
    main_api
+   gpa_env_variables

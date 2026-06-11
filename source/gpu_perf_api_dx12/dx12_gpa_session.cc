@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2025 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief DX12 GPA Session implementation
@@ -102,17 +102,17 @@ GpaStatus Dx12GpaSession::ContinueSampleOnCommandList(GpaUInt32 src_sample_id, G
             }
             else
             {
-                GPA_LOG_ERROR("Unable to continue sample.");
+                GpaLogger::Instance().LogError("Unable to continue sample.");
             }
         }
         else
         {
-            GPA_LOG_ERROR("Pass doesn't exist.");
+            GpaLogger::Instance().LogError("Pass doesn't exist.");
         }
     }
     else
     {
-        GPA_LOG_ERROR("Invalid Parameter.");
+        GpaLogger::Instance().LogError("Invalid Parameter.");
     }
 
     return succeed ? kGpaStatusOk : kGpaStatusErrorFailed;
@@ -153,7 +153,7 @@ GpaStatus Dx12GpaSession::CopySecondarySamples(GpaCommandListId secondary_cmd_li
     }
     else
     {
-        GPA_LOG_ERROR("Invalid Parameter.");
+        GpaLogger::Instance().LogError("Invalid Parameter.");
     }
 
     return succeed ? kGpaStatusOk : kGpaStatusErrorFailed;
@@ -198,7 +198,7 @@ std::unique_ptr<GpaPass> Dx12GpaSession::CreateApiPass(PassIndex pass_index)
     case kGpaSessionSampleTypeSqtt:
         break;
     default:
-        GPA_LOG_ERROR("Invalid sample type.");
+        GpaLogger::Instance().LogError("Invalid sample type.");
         return nullptr;
     }
 
@@ -209,7 +209,7 @@ GpaStatus Dx12GpaSession::SqttBegin(void* command_list)
 {
     if (sqtt_started_)
     {
-        GPA_LOG_ERROR("SQTT data collection already started.");
+        GpaLogger::Instance().LogError("SQTT data collection already started.");
         return kGpaStatusErrorAlreadyEnabled;
     }
 
@@ -225,7 +225,7 @@ GpaStatus Dx12GpaSession::SqttBegin(void* command_list)
     HRESULT hr = sqtt_amd_ext_session_->Begin((ID3D12GraphicsCommandList*)command_list);
     if (FAILED(hr))
     {
-        GPA_LOG_ERROR("The driver extension is unable to begin the command list.");
+        GpaLogger::Instance().LogError("The driver extension is unable to begin the command list.");
         return kGpaStatusErrorFailed;
     }
 
@@ -234,14 +234,14 @@ GpaStatus Dx12GpaSession::SqttBegin(void* command_list)
     const AmdExtGpaSampleConfig& config = session_sample_config_.GetDriverExtSampleConfig();
     if (InvalidSqttConfig(config))
     {
-        GPA_LOG_ERROR("Sqtt wasn't properly configured.");
+        GpaLogger::Instance().LogError("Sqtt wasn't properly configured.");
         return kGpaStatusErrorFailed;
     }
 
     sqtt_driver_sample_id_ = sqtt_amd_ext_session_->BeginSample((ID3D12GraphicsCommandList*)command_list, config);
     if (kInvalidSampleIndex == sqtt_driver_sample_id_)
     {
-        GPA_LOG_ERROR("The driver extension is unable to begin sample on the command list.");
+        GpaLogger::Instance().LogError("The driver extension is unable to begin sample on the command list.");
         sqtt_amd_ext_session_->End((ID3D12GraphicsCommandList*)command_list);
         return kGpaStatusErrorFailed;
     }
@@ -255,7 +255,7 @@ GpaStatus Dx12GpaSession::SqttEnd(void* command_list)
 {
     if (!sqtt_started_)
     {
-        GPA_LOG_ERROR("SQTT data collection not started.");
+        GpaLogger::Instance().LogError("SQTT data collection not started.");
         return kGpaStatusErrorNotEnabled;
     }
 
@@ -264,7 +264,7 @@ GpaStatus Dx12GpaSession::SqttEnd(void* command_list)
     HRESULT hr = sqtt_amd_ext_session_->End((ID3D12GraphicsCommandList*)command_list);
     if (FAILED(hr))
     {
-        GPA_LOG_ERROR("The driver extension is unable to end the command list.");
+        GpaLogger::Instance().LogError("The driver extension is unable to end the command list.");
         return kGpaStatusErrorFailed;
     }
 
@@ -273,7 +273,7 @@ GpaStatus Dx12GpaSession::SqttEnd(void* command_list)
 
 bool Dx12GpaSession::FlushSession(IAmdExtGpaSession* pSession, uint32_t timeout)
 {
-    TRACE_PRIVATE_FUNCTION(GPASession::Flush);
+    GPA_TRACE_FUNCTION();
 
     bool retVal = true;
 
@@ -289,7 +289,7 @@ bool Dx12GpaSession::FlushSession(IAmdExtGpaSession* pSession, uint32_t timeout)
 
             if (std::chrono::duration_cast<std::chrono::milliseconds>(duration).count() > timeout)
             {
-                GPA_LOG_ERROR("GPA session completion timeout occurred.");
+                GpaLogger::Instance().LogError("GPA session completion timeout occurred.");
                 retVal = false;
                 break;
             }
@@ -307,13 +307,13 @@ GpaStatus Dx12GpaSession::SqttGetSampleResultSize(size_t* sample_result_size_in_
 
     if (!sqtt_started_)
     {
-        GPA_LOG_ERROR("SQTT data collection not started.");
+        GpaLogger::Instance().LogError("SQTT data collection not started.");
         return kGpaStatusErrorNotEnabled;
     }
 
     if (!FlushSession(sqtt_amd_ext_session_, flush_timeout_))
     {
-        GPA_LOG_ERROR("Failed to retrieve sample data due to timeout.");
+        GpaLogger::Instance().LogError("Failed to retrieve sample data due to timeout.");
         return kGpaStatusErrorTimeout;
     }
 
@@ -322,7 +322,7 @@ GpaStatus Dx12GpaSession::SqttGetSampleResultSize(size_t* sample_result_size_in_
     HRESULT driverResult = sqtt_amd_ext_session_->GetResults(sqtt_driver_sample_id_, sample_result_size_in_bytes, nullptr);
     if (FAILED(driverResult))
     {
-        GPA_LOG_ERROR("Failed to retrieve driver result size");
+        GpaLogger::Instance().LogError("Failed to retrieve driver result size");
         return kGpaStatusErrorFailed;
     }
 
@@ -336,13 +336,13 @@ GpaStatus Dx12GpaSession::SqttGetSampleResult(size_t sample_result_size_in_bytes
 
     if (!sqtt_started_)
     {
-        GPA_LOG_ERROR("SQTT data collection not started.");
+        GpaLogger::Instance().LogError("SQTT data collection not started.");
         return kGpaStatusErrorNotEnabled;
     }
 
     if (!FlushSession(sqtt_amd_ext_session_, flush_timeout_))
     {
-        GPA_LOG_ERROR("Failed to retrieve sample data due to timeout.");
+        GpaLogger::Instance().LogError("Failed to retrieve sample data due to timeout.");
         return kGpaStatusErrorTimeout;
     }
 
@@ -351,20 +351,20 @@ GpaStatus Dx12GpaSession::SqttGetSampleResult(size_t sample_result_size_in_bytes
     auto hr = sqtt_amd_ext_session_->GetResults(sqtt_driver_sample_id_, &expected_sample_result_size_in_bytes, nullptr);
     if (FAILED(hr))
     {
-        GPA_LOG_ERROR("Failed to retrieve driver result size");
+        GpaLogger::Instance().LogError("Failed to retrieve driver result size");
         return kGpaStatusErrorFailed;
     }
 
     if (expected_sample_result_size_in_bytes != sample_result_size_in_bytes)
     {
-        GPA_LOG_ERROR("Invalid result size");
+        GpaLogger::Instance().LogError("Invalid result size");
         return kGpaStatusErrorFailed;
     }
 
     hr = sqtt_amd_ext_session_->GetResults(sqtt_driver_sample_id_, &expected_sample_result_size_in_bytes, sqtt_results);
     if (FAILED(hr))
     {
-        GPA_LOG_ERROR("Failed to retrieve driver result set");
+        GpaLogger::Instance().LogError("Failed to retrieve driver result set");
         return kGpaStatusErrorFailed;
     }
 
@@ -377,7 +377,7 @@ GpaStatus Dx12GpaSession::SqttSpmBegin(void* command_list)
 {
     if (sqtt_started_)
     {
-        GPA_LOG_ERROR("SQTT + SPM data collection already started.");
+        GpaLogger::Instance().LogError("SQTT + SPM data collection already started.");
         return kGpaStatusErrorAlreadyEnabled;
     }
 
@@ -394,33 +394,33 @@ GpaStatus Dx12GpaSession::SqttSpmBegin(void* command_list)
     const HRESULT hr        = sqtt_amd_ext_session_->Begin(dx12_list);
     if (FAILED(hr))
     {
-        GPA_LOG_ERROR("The driver extension is unable to begin the command list.");
+        GpaLogger::Instance().LogError("The driver extension is unable to begin the command list.");
         return kGpaStatusErrorFailed;
     }
 
     auto current_pass = dynamic_cast<Dx12GpaPass*>(GetCurrentPass());
     if (current_pass == nullptr)
     {
-        GPA_LOG_ERROR("Unable to get current pass.");
+        GpaLogger::Instance().LogError("Unable to get current pass.");
         return kGpaStatusErrorFailed;
     }
 
     const AmdExtGpaSampleConfig& config = current_pass->GetAmdExtSampleConfig().GetDriverExtSampleConfig();
     if (InvalidSqttConfig(config))
     {
-        GPA_LOG_ERROR("Sqtt wasn't properly configured.");
+        GpaLogger::Instance().LogError("Sqtt wasn't properly configured.");
         return kGpaStatusErrorFailed;
     }
     if (InvalidSpmConfig(config))
     {
-        GPA_LOG_ERROR("SPM wasn't properly configured.");
+        GpaLogger::Instance().LogError("SPM wasn't properly configured.");
         return kGpaStatusErrorFailed;
     }
     sqtt_driver_sample_id_ = sqtt_amd_ext_session_->BeginSample(dx12_list, config);
 
     if (kInvalidSampleIndex == sqtt_driver_sample_id_)
     {
-        GPA_LOG_ERROR("The driver extension is unable to begin sample on the command list.");
+        GpaLogger::Instance().LogError("The driver extension is unable to begin sample on the command list.");
         sqtt_amd_ext_session_->End(dx12_list);
         return kGpaStatusErrorFailed;
     }
@@ -438,7 +438,7 @@ GpaStatus Dx12GpaSession::SqttSpmEnd(void* command_list)
 {
     if (!sqtt_started_)
     {
-        GPA_LOG_ERROR("SPM data collection not started.");
+        GpaLogger::Instance().LogError("SPM data collection not started.");
         return kGpaStatusErrorNotEnabled;
     }
 
@@ -448,7 +448,7 @@ GpaStatus Dx12GpaSession::SqttSpmEnd(void* command_list)
     const HRESULT hr = sqtt_amd_ext_session_->End(dx12_list);
     if (FAILED(hr))
     {
-        GPA_LOG_ERROR("The driver extension is unable to end the command list.");
+        GpaLogger::Instance().LogError("The driver extension is unable to end the command list.");
         return kGpaStatusErrorFailed;
     }
 
@@ -464,7 +464,7 @@ GpaStatus Dx12GpaSession::SpmSetSampleInterval(GpaUInt32 interval)
     static_assert(kMaxSpmTraceSampleInterval == 65504);
     if (interval < kMinSpmTraceSampleInterval || interval > kMaxSpmTraceSampleInterval)
     {
-        GPA_LOG_ERROR("SPM sampling interval range: [32 - 65504].");
+        GpaLogger::Instance().LogError("SPM sampling interval range: [32 - 65504].");
         return kGpaStatusErrorInvalidParameter;
     }
 
@@ -484,7 +484,7 @@ GpaStatus Dx12GpaSession::SpmBegin(void* command_list)
 {
     if (spm_started_)
     {
-        GPA_LOG_ERROR("SPM data collection already started.");
+        GpaLogger::Instance().LogError("SPM data collection already started.");
         return kGpaStatusErrorAlreadyEnabled;
     }
 
@@ -500,21 +500,21 @@ GpaStatus Dx12GpaSession::SpmBegin(void* command_list)
     HRESULT hr = spm_amd_ext_session_->Begin((ID3D12GraphicsCommandList*)command_list);
     if (FAILED(hr))
     {
-        GPA_LOG_ERROR("The driver extension is unable to begin the command list.");
+        GpaLogger::Instance().LogError("The driver extension is unable to begin the command list.");
         return kGpaStatusErrorFailed;
     }
 
     auto current_pass = dynamic_cast<Dx12GpaPass*>(GetCurrentPass());
     if (current_pass == nullptr)
     {
-        GPA_LOG_ERROR("Unable to get current pass.");
+        GpaLogger::Instance().LogError("Unable to get current pass.");
         return kGpaStatusErrorFailed;
     }
 
     const AmdExtGpaSampleConfig& config = current_pass->GetAmdExtSampleConfig().GetDriverExtSampleConfig();
     if (InvalidSpmConfig(config))
     {
-        GPA_LOG_ERROR("SPM wasn't properly configured.");
+        GpaLogger::Instance().LogError("SPM wasn't properly configured.");
         return kGpaStatusErrorFailed;
     }
 
@@ -522,7 +522,7 @@ GpaStatus Dx12GpaSession::SpmBegin(void* command_list)
 
     if (kInvalidSampleIndex == spm_driver_sample_id_)
     {
-        GPA_LOG_ERROR("The driver extension is unable to begin sample on the command list.");
+        GpaLogger::Instance().LogError("The driver extension is unable to begin sample on the command list.");
         spm_amd_ext_session_->End((ID3D12GraphicsCommandList*)command_list);
         return kGpaStatusErrorFailed;
     }
@@ -536,7 +536,7 @@ GpaStatus Dx12GpaSession::SpmEnd(void* command_list)
 {
     if (!spm_started_)
     {
-        GPA_LOG_ERROR("SPM data collection not started.");
+        GpaLogger::Instance().LogError("SPM data collection not started.");
         return kGpaStatusErrorNotEnabled;
     }
 
@@ -545,7 +545,7 @@ GpaStatus Dx12GpaSession::SpmEnd(void* command_list)
     HRESULT hr = spm_amd_ext_session_->End((ID3D12GraphicsCommandList*)command_list);
     if (FAILED(hr))
     {
-        GPA_LOG_ERROR("The driver extension is unable to end the command list.");
+        GpaLogger::Instance().LogError("The driver extension is unable to end the command list.");
         return kGpaStatusErrorFailed;
     }
 
@@ -568,7 +568,7 @@ GpaStatus Dx12GpaSession::SpmGetSampleResultSize(size_t* sample_result_size_in_b
     IAmdExtGpaSession* amd_ext_session = GetSpmSession();
     if (!FlushSession(amd_ext_session, flush_timeout_))
     {
-        GPA_LOG_ERROR("Failed to retrieve sample data due to timeout.");
+        GpaLogger::Instance().LogError("Failed to retrieve sample data due to timeout.");
         return kGpaStatusErrorTimeout;
     }
 
@@ -577,7 +577,7 @@ GpaStatus Dx12GpaSession::SpmGetSampleResultSize(size_t* sample_result_size_in_b
     HRESULT driverResult = amd_ext_session->GetResults(spm_driver_sample_id_, sample_result_size_in_bytes, nullptr);
     if (FAILED(driverResult))
     {
-        GPA_LOG_ERROR("Failed to retrieve driver result size");
+        GpaLogger::Instance().LogError("Failed to retrieve driver result size");
         return kGpaStatusErrorFailed;
     }
 
@@ -591,7 +591,7 @@ GpaStatus Dx12GpaSession::SpmGetSampleResult(size_t sample_result_size_in_bytes,
     IAmdExtGpaSession* amd_ext_session = GetSpmSession();
     if (!FlushSession(amd_ext_session, flush_timeout_))
     {
-        GPA_LOG_ERROR("Failed to retrieve sample data due to timeout.");
+        GpaLogger::Instance().LogError("Failed to retrieve sample data due to timeout.");
         return kGpaStatusErrorTimeout;
     }
 
@@ -600,20 +600,20 @@ GpaStatus Dx12GpaSession::SpmGetSampleResult(size_t sample_result_size_in_bytes,
     auto hr = amd_ext_session->GetResults(spm_driver_sample_id_, &expected_sample_result_size_in_bytes, nullptr);
     if (FAILED(hr))
     {
-        GPA_LOG_ERROR("Failed to retrieve driver result size");
+        GpaLogger::Instance().LogError("Failed to retrieve driver result size");
         return kGpaStatusErrorFailed;
     }
 
     if (expected_sample_result_size_in_bytes != sample_result_size_in_bytes)
     {
-        GPA_LOG_ERROR("Invalid result size");
+        GpaLogger::Instance().LogError("Invalid result size");
         return kGpaStatusErrorFailed;
     }
 
     hr = amd_ext_session->GetResults(spm_driver_sample_id_, &expected_sample_result_size_in_bytes, spm_results);
     if (FAILED(hr))
     {
-        GPA_LOG_ERROR("Failed to retrieve driver result set");
+        GpaLogger::Instance().LogError("Failed to retrieve driver result set");
         return kGpaStatusErrorFailed;
     }
 
@@ -630,7 +630,7 @@ GpaStatus Dx12GpaSession::SpmCalculateDerivedCounters(const GpaSpmData* spm_data
 
     if (num_derived_counters != counters_enabled * spm_data->number_of_timestamps)
     {
-        GPA_LOG_ERROR("SPM size of derived counter results doesn't match count of enabled counters * number of samples.");
+        GpaLogger::Instance().LogError("SPM size of derived counter results doesn't match count of enabled counters * number of samples.");
         return kGpaStatusErrorFailed;
     }
 
@@ -639,7 +639,7 @@ GpaStatus Dx12GpaSession::SpmCalculateDerivedCounters(const GpaSpmData* spm_data
     const auto current_pass = dynamic_cast<Dx12GpaPass*>(GetCurrentPass());
     if (current_pass == nullptr)
     {
-        GPA_LOG_ERROR("Unable to get current pass.");
+        GpaLogger::Instance().LogError("Unable to get current pass.");
         return kGpaStatusErrorFailed;
     }
 
@@ -649,7 +649,7 @@ GpaStatus Dx12GpaSession::SpmCalculateDerivedCounters(const GpaSpmData* spm_data
     // Validate that expected hardware block id's and instances match those returned by SPM
     if (spm_data->number_of_spm_counter_info != sample_config.perfCounters.numCounters)
     {
-        GPA_LOG_ERROR("SPM number of returned hardware counter info structs does not match number expected.");
+        GpaLogger::Instance().LogError("SPM number of returned hardware counter info structs does not match number expected.");
         return kGpaStatusErrorFailed;
     }
 
@@ -657,13 +657,13 @@ GpaStatus Dx12GpaSession::SpmCalculateDerivedCounters(const GpaSpmData* spm_data
     {
         if (spm_data->spm_counter_info[i].gpu_block_id != static_cast<uint32_t>(sample_config.perfCounters.pIds[i].block))
         {
-            GPA_LOG_ERROR("SPM hardware counter info order does not match expected block id.");
+            GpaLogger::Instance().LogError("SPM hardware counter info order does not match expected block id.");
             return kGpaStatusErrorFailed;
         }
 
         if (spm_data->spm_counter_info[i].gpu_block_instance != sample_config.perfCounters.pIds[i].instance)
         {
-            GPA_LOG_ERROR("SPM hardware counter info order does not match expected block instance number.");
+            GpaLogger::Instance().LogError("SPM hardware counter info order does not match expected block instance number.");
             return kGpaStatusErrorFailed;
         }
     }
@@ -706,7 +706,7 @@ GpaStatus Dx12GpaSession::SpmCalculateDerivedCounters(const GpaSpmData* spm_data
                     }
                     catch (const std::exception& e)
                     {
-                        GPA_LOG_ERROR("Exception occurred while processing SPM data: %s", e.what());
+                        GpaLogger::Instance().LogError("Exception occurred while processing SPM data: {}", e.what());
                         sample_set.push_back(0);
                     }
                 }
@@ -732,7 +732,7 @@ GpaStatus Dx12GpaSession::SpmCalculateDerivedCounters(const GpaSpmData* spm_data
                 }
                 catch (const std::exception& e)
                 {
-                    GPA_LOG_ERROR("Exception occurred while processing SPM data: %s", e.what());
+                    GpaLogger::Instance().LogError("Exception occurred while processing SPM data: {}", e.what());
                     sample_set.push_back(0);
                 }
             }
@@ -748,7 +748,7 @@ GpaStatus Dx12GpaSession::SpmCalculateDerivedCounters(const GpaSpmData* spm_data
     assert(counter_accessor != nullptr);
     if (nullptr == counter_accessor)
     {
-        GPA_LOG_DEBUG_ERROR("Accessor is unassigned.");
+        GpaLogger::Instance().LogDebugError("Accessor is unassigned.");
         return kGpaStatusErrorFailed;
     }
 
@@ -768,7 +768,7 @@ GpaStatus Dx12GpaSession::SpmCalculateDerivedCounters(const GpaSpmData* spm_data
 
         if (kGpaStatusOk != GetEnabledIndex(enabled_counter_index, &exposed_counter_index))
         {
-            GPA_LOG_ERROR("Invalid counter found while identifying enabled counter.");
+            GpaLogger::Instance().LogError("Invalid counter found while identifying enabled counter.");
             return kGpaStatusErrorIndexOutOfRange;
         }
 
@@ -782,20 +782,14 @@ GpaStatus Dx12GpaSession::SpmCalculateDerivedCounters(const GpaSpmData* spm_data
 
         if (!GetCounterSourceLocalIndex(exposed_counter_index, &source, &source_local_index))
         {
-            GPA_LOG_ERROR("Invalid counter index found while identifying counter source.");
+            GpaLogger::Instance().LogError("Invalid counter index found while identifying counter source.");
             return kGpaStatusErrorIndexOutOfRange;
         }
 
         // Perform conversion and summation of raw *_LEVEL_* counter values before evaluating the counter formula.
 
-        GDT_HW_GENERATION hw_generation;
         assert(GetParentContext() != nullptr);
         const GpaHwInfo& hw_info = GetParentContext()->GetHwInfo();
-        if (!hw_info.GetHwGeneration(hw_generation))
-        {
-            GPA_LOG_ERROR("Unable to get HW generation while calculating SPM derived counter.");
-            return kGpaStatusErrorFailed;
-        }
 
         const uint64_t max_waves_per_shader_engine = (hw_info.GetNumberSimds() * hw_info.GetWavesPerSimd()) / hw_info.GetNumberShaderEngines();
 
@@ -874,9 +868,9 @@ GpaStatus Dx12GpaSession::SpmCalculateDerivedCounters(const GpaSpmData* spm_data
                         else
                         {
                             // If the post_sum went "too" negative then return an error since the values may be too inaccurate to be trustworthy.
-                            GPA_LOG_ERROR("Detected incorrect data (%" PRId64
-                                          ") while collecting WaveDistribution or WaveOccupancyPct, please refresh that graph to try again.",
-                                          post_sum);
+                            GpaLogger::Instance().LogError(
+                                "Detected incorrect data ({}) while collecting WaveDistribution or WaveOccupancyPct, please refresh that graph to try again.",
+                                post_sum);
                             return kGpaStatusErrorFailed;
                         }
                     }
@@ -890,7 +884,7 @@ GpaStatus Dx12GpaSession::SpmCalculateDerivedCounters(const GpaSpmData* spm_data
 
         if (num_invalid_level_waves > 0)
         {
-            GPA_LOG_ERROR("Fixed up %u invalid values in Wave Distribution.", num_invalid_level_waves);
+            GpaLogger::Instance().LogError("Fixed up {} invalid values in Wave Distribution.", num_invalid_level_waves);
         }
 
         for (uint32_t current_sample = 0; current_sample < spm_data->number_of_timestamps; ++current_sample, ++dest_results)
@@ -943,7 +937,7 @@ GpaStatus Dx12GpaSession::SpmCalculateDerivedCounters(const GpaSpmData* spm_data
 
             default:
                 status = kGpaStatusErrorFailed;
-                GPA_LOG_ERROR("Unknown counter source type.");
+                GpaLogger::Instance().LogError("Unknown counter source type.");
                 assert(0);
                 break;
             }

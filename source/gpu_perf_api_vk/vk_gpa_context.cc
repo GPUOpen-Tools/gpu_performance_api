@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2025 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  GPA VK Context Definition
@@ -7,10 +7,9 @@
 
 #include "gpu_perf_api_vk/vk_gpa_context.h"
 
+#include <memory>
 #include <mutex>
 #include <assert.h>
-
-#include <DeviceInfoUtils.h>
 
 #include "gpu_perf_api_counter_generator/gpa_counter_generator.h"
 #include "gpu_perf_api_counter_generator/gpa_counter_generator_base.h"
@@ -23,13 +22,57 @@
 #include "gpu_perf_api_vk/vk_gpa_session.h"
 #include "gpu_perf_api_vk/vk_utils.h"
 
+namespace
+{
+    /// @brief Obtains the GpaFeaturesAMD data from the physical device.
+    ///
+    /// @param [in] physical_device Vulkan physical device.
+    /// @param [out] gpa_features_amd The physical device's profiling features.
+    ///
+    /// @return True if the features were queried; false otherwise.
+    bool GetPhysicalDeviceGpaFeaturesAMD(VkPhysicalDevice physical_device, VkPhysicalDeviceGpaFeaturesAMD* gpa_features_amd)
+    {
+        bool status = false;
+
+        if (nullptr == gpa_features_amd) [[unlikely]]
+        {
+            GpaLogger::Instance().LogError("Output parameter gpa_features_amd is null.");
+            return false;
+        }
+
+        if (!vk_utils::are_entry_points_initialized) [[unlikely]]
+        {
+            GpaLogger::Instance().LogError("Vulkan entrypoints are not initialized.");
+            return false;
+        }
+
+        if (nullptr == _vkGetPhysicalDeviceFeatures2KHR) [[unlikely]]
+        {
+            GpaLogger::Instance().LogError("VK_KHR_get_physical_device_properties2 extension entrypoint not available.");
+            return false;
+        }
+
+        *gpa_features_amd       = {};
+        gpa_features_amd->sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_GPA_FEATURES_AMD;
+
+        VkPhysicalDeviceFeatures2KHR features = {};
+        features.sType                        = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2_KHR;
+        features.pNext                        = gpa_features_amd;
+
+        _vkGetPhysicalDeviceFeatures2KHR(physical_device, &features);
+        status = true;
+
+        return status;
+    }
+}  // namespace
+
 VkGpaContext::VkGpaContext(const GpaVkContextOpenInfo* open_info, const GpaHwInfo& hw_info, GpaOpenContextFlags flags)
     : GpaContext(hw_info, flags)
 {
-    physical_device_        = open_info->physical_device;
-    device_                 = open_info->device;
-    amd_device_properties_  = {};
-    clock_mode_             = VK_GPA_DEVICE_CLOCK_MODE_DEFAULT_AMD;
+    physical_device_       = open_info->physical_device;
+    device_                = open_info->device;
+    amd_device_properties_ = {};
+    clock_mode_            = VK_GPA_DEVICE_CLOCK_MODE_DEFAULT_AMD;
 }
 
 VkGpaContext::~VkGpaContext()
@@ -38,25 +81,17 @@ VkGpaContext::~VkGpaContext()
 
     if (kGpaStatusOk != set_stable_clock_status)
     {
-        GPA_LOG_ERROR("Driver was unable to set stable clocks back to default.");
+        GpaLogger::Instance().LogError("Driver was unable to set stable clocks back to default.");
 #ifdef __linux__
-        GPA_LOG_MESSAGE("In Linux, make sure to run your application with root privileges.");
+        GpaLogger::Instance().LogMessage("In Linux, make sure to run your application with root privileges.");
 #endif
     }
 
-    vk_utils::ReleasePhysicalDeviceGpaPropertiesAMD(&amd_device_properties_);
-
-    auto delete_vk_session = [](IGpaSession* gpa_session) -> bool {
-        if (nullptr != gpa_session)
-        {
-            GpaUniqueObjectManager::Instance().DeleteObject(gpa_session);
-            delete gpa_session;
-        }
-
+    // ClearSessionList() destroys the owned sessions via unique_ptr. Unique-object manager wrappers are removed first.
+    IterateGpaSessionList([](IGpaSession* gpa_session) -> bool {
+        GpaUniqueObjectManager::Instance().DeleteObject(gpa_session);
         return true;
-    };
-
-    IterateGpaSessionList(delete_vk_session);
+    });
     ClearSessionList();
 }
 
@@ -68,7 +103,7 @@ GpaStatus VkGpaContext::Open()
     vk_utils::DebugReportQueueFamilyTimestampBits(physical_device_);
 #endif
 
-    if (vk_utils::GetPhysicalDeviceGpaPropertiesAMD(physical_device_, &amd_device_properties_))
+    if (GetPhysicalDeviceGpaPropertiesAMD(physical_device_, &amd_device_properties_))
     {
         // Counters are supported, set stable clocks.
         // We don't want a failure when setting stable clocks to result in a
@@ -78,9 +113,9 @@ GpaStatus VkGpaContext::Open()
 
         if (kGpaStatusOk != set_stable_clocks)
         {
-            GPA_LOG_ERROR("Driver was unable to set stable clocks for profiling.");
+            GpaLogger::Instance().LogError("Driver was unable to set stable clocks for profiling.");
 #ifdef __linux__
-            GPA_LOG_MESSAGE("In Linux, make sure to run your application with root privileges.");
+            GpaLogger::Instance().LogMessage("In Linux, make sure to run your application with root privileges.");
 #endif
         }
 
@@ -88,7 +123,7 @@ GpaStatus VkGpaContext::Open()
     }
     else
     {
-        GPA_LOG_ERROR("Unable to obtain profiler functionality from the driver / hardware.");
+        GpaLogger::Instance().LogError("Unable to obtain profiler functionality from the driver / hardware.");
         result = kGpaStatusErrorHardwareNotSupported;
     }
 
@@ -102,7 +137,7 @@ GpaStatus VkGpaContext::SetStableClocks(bool use_profiling_clocks)
     if (nullptr == _vkSetGpaDeviceClockModeAMD)
     {
         // VK_AMD_gpa_interface extension is not available.
-        GPA_LOG_ERROR("VK_AMD_gpa_interface extension is not available.");
+        GpaLogger::Instance().LogError("VK_AMD_gpa_interface extension is not available.");
         result = kGpaStatusErrorDriverNotSupported;
     }
     else
@@ -152,7 +187,7 @@ GpaStatus VkGpaContext::SetStableClocks(bool use_profiling_clocks)
 
             if (VK_SUCCESS != clock_result)
             {
-                GPA_LOG_ERROR("Failed to set ClockMode for profiling.");
+                GpaLogger::Instance().LogError("Failed to set ClockMode for profiling.");
             }
         }
     }
@@ -162,41 +197,92 @@ GpaStatus VkGpaContext::SetStableClocks(bool use_profiling_clocks)
 
 GpaSessionId VkGpaContext::CreateSession(GpaSessionSampleType sample_type)
 {
-    GpaSessionId session_id = nullptr;
+    auto          session     = std::make_unique<VkGpaSession>(this, sample_type);
+    VkGpaSession* raw_session = session.get();
 
-    VkGpaSession* session = new (std::nothrow) VkGpaSession(this, sample_type);
-
-    if (nullptr != session)
-    {
-        AddGpaSession(session);
-        session_id = reinterpret_cast<GpaSessionId>(GpaUniqueObjectManager::Instance().CreateObject(session));
-    }
-
-    return session_id;
+    AddGpaSession(std::move(session));
+    return reinterpret_cast<GpaSessionId>(GpaUniqueObjectManager::Instance().CreateObject(raw_session));
 }
 
 bool VkGpaContext::DeleteSession(GpaSessionId sessionId)
 {
-    bool is_deleted = false;
-
     std::lock_guard<std::mutex> lock_session_result(session_list_mutex_);
 
     VkGpaSession* vk_session = reinterpret_cast<VkGpaSession*>(sessionId->Object());
-    is_deleted               = DeleteVkGpaSession(vk_session);
-
-    return is_deleted;
+    return DeleteVkGpaSession(vk_session);
 }
 
 bool VkGpaContext::DeleteVkGpaSession(VkGpaSession* gpa_session)
 {
-    if (nullptr != gpa_session)
+    assert(nullptr != gpa_session);
+    GpaUniqueObjectManager::Instance().DeleteObject(gpa_session);
+    // Removing from the session list triggers destruction via unique_ptr.
+    RemoveGpaSession(gpa_session);
+    return true;
+}
+
+bool VkGpaContext::GetPhysicalDeviceGpaPropertiesAMD(VkPhysicalDevice physical_device, VkPhysicalDeviceGpaPropertiesAMD* gpa_properties_amd)
+{
+    bool status = false;
+
+    // This function is expected to be called only once during context open.
+    // Otherwise we risk having dangling pointers in the VkPhysicalDeviceGpaPropertiesAMD
+    // struct if the perf block count changes and we need to resize the storage vector.
+    if (!perf_blocks_storage_.empty()) [[unlikely]]
     {
-        RemoveGpaSession(gpa_session);
-        GpaUniqueObjectManager::Instance().DeleteObject(gpa_session);
-        delete gpa_session;
+        assert(false);
+        return false;
     }
 
-    return true;
+    if (gpa_properties_amd == nullptr) [[unlikely]]
+    {
+        assert(false);
+        return false;
+    }
+
+    VkPhysicalDeviceGpaFeaturesAMD gpa_features_amd = {};
+
+    if (GetPhysicalDeviceGpaFeaturesAMD(physical_device, &gpa_features_amd))
+    {
+        if (VK_TRUE == gpa_features_amd.perfCounters)
+        {
+            // For now it is assumed that Vk MGPU support is exposed to the app
+            // and the app always opens the device on the correct GPU.
+            // In case where MGPU support hides the GPU from the app, then
+            // we will need to use Vk MGPU extension to get the correct HW info.
+            *gpa_properties_amd       = {};
+            gpa_properties_amd->sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_GPA_PROPERTIES_AMD;
+
+            VkPhysicalDeviceProperties2KHR properties = {};
+            properties.sType                          = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2_KHR;
+            properties.pNext                          = gpa_properties_amd;
+
+            _vkGetPhysicalDeviceProperties2KHR(physical_device, &properties);
+
+            if (gpa_properties_amd->perfBlockCount > 0)
+            {
+                perf_blocks_storage_.resize(gpa_properties_amd->perfBlockCount);
+                gpa_properties_amd->pPerfBlocks = perf_blocks_storage_.data();
+
+                _vkGetPhysicalDeviceProperties2KHR(physical_device, &properties);
+                status = true;
+            }
+            else
+            {
+                GpaLogger::Instance().LogError("Active physical device does not expose any perf counter blocks.");
+            }
+        }
+        else
+        {
+            GpaLogger::Instance().LogError("Active physical device does not support performance counters.");
+        }
+    }
+    else
+    {
+        GpaLogger::Instance().LogError("Failed to get physical device features.");
+    }
+
+    return status;
 }
 
 GpaApiType VkGpaContext::GetApiType() const

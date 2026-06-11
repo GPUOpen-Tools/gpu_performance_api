@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  Vulkan utility functions declaration
@@ -14,27 +14,6 @@
 
 namespace vk_utils
 {
-    /// @brief Obtains the GpaFeaturesAMD data from the physical device.
-    ///
-    /// @param [in] vk_physical_device Vulkan physical device.
-    /// @param [out] gpa_features_amd The physical device's profiling features.
-    ///
-    /// @return True if the features were queried; false otherwise.
-    bool GetPhysicalDeviceGpaFeaturesAMD(VkPhysicalDevice vk_physical_device, VkPhysicalDeviceGpaFeaturesAMD* gpa_features_amd);
-
-    /// @brief Obtains the GpaPropertiesAMD data from the physical device.
-    ///
-    /// @param [in] vk_physical_device Vulkan physical device.
-    /// @param [out] gpa_properties_amd The physical device's profiling properties.
-    ///
-    /// @return True if the properties were queried; false otherwise.
-    bool GetPhysicalDeviceGpaPropertiesAMD(VkPhysicalDevice vk_physical_device, VkPhysicalDeviceGpaPropertiesAMD* gpa_properties_amd);
-
-    /// @brief Release memory that was allocated by GetPhysicalDeviceGpaPropertiesAMD().
-    ///
-    /// @param [in] gpa_properties_amd Pointer to the struct that contains the acquired properties.
-    void ReleasePhysicalDeviceGpaPropertiesAMD(VkPhysicalDeviceGpaPropertiesAMD* gpa_properties_amd);
-
 #ifdef _DEBUG
     /// @brief For debugging only: Prints out information about the QueueFamilyTimestamps bits.
     ///

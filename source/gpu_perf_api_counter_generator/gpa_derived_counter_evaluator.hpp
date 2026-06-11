@@ -1,12 +1,11 @@
 //==============================================================================
-// Copyright (c) 2020-2024 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Functions for evaluating derived counter formula.
 //==============================================================================
-
-#include <cinttypes>
 #include <vector>
+#include <charconv>
 
 #include "gpu_performance_api/gpu_perf_api_types.h"
 #include "gpu_perf_api_common/gpa_hw_info.h"
@@ -281,7 +280,7 @@ static GpaStatus EvaluateExpression(const char*                     expression,
 
     strcpy_s(buffer.data(), expression_len, expression);
 
-    vector<T> stack;
+    std::vector<T> stack;
     T*        write_result = reinterpret_cast<T*>(result);
 
     [[maybe_unused]] char* context = nullptr;
@@ -340,24 +339,33 @@ static GpaStatus EvaluateExpression(const char*                     expression,
         else if (*pch == '(')
         {
             // constant
-            T   constant    = static_cast<T>(0);
-            int scan_result = 0;
+            T constant = static_cast<T>(0);
+
+            // Skip the opening parenthesis
+            const char* num_start = pch + 1;
+            const char* num_end   = num_start + std::strlen(num_start);
+
+            // Find and strip the closing parenthesis
+            if (num_end > num_start && *(num_end - 1) == ')')
+            {
+                --num_end;
+            }
+
+            bool parse_ok = false;
 
             if (result_type == kGpaDataTypeFloat64)
             {
-#ifdef _LINUX
-                scan_result = sscanf(pch, "(%lf)", reinterpret_cast<GpaFloat64*>(&constant));
-#else
-                scan_result = sscanf_s(pch, "(%lf)", reinterpret_cast<GpaFloat64*>(&constant));
-#endif
+                GpaFloat64 val = 0.0;
+                auto [ptr, ec] = std::from_chars(num_start, num_end, val);
+                parse_ok       = (ec == std::errc{});
+                constant       = static_cast<T>(val);
             }
             else if (result_type == kGpaDataTypeUint64)
             {
-#ifdef _LINUX
-                scan_result = sscanf(pch, "(%" PRIu64 ")", reinterpret_cast<GpaUInt64*>(&constant));
-#else
-                scan_result = sscanf_s(pch, "(%" PRIu64 ")", reinterpret_cast<GpaUInt64*>(&constant));
-#endif
+                GpaUInt64 val  = 0;
+                auto [ptr, ec] = std::from_chars(num_start, num_end, val);
+                parse_ok       = (ec == std::errc{});
+                constant       = static_cast<T>(val);
             }
             else
             {
@@ -366,7 +374,7 @@ static GpaStatus EvaluateExpression(const char*                     expression,
                 return kGpaStatusErrorInvalidDataType;
             }
 
-            if (1 != scan_result)
+            if (!parse_ok)
             {
                 assert(false);
             }
@@ -719,20 +727,16 @@ static GpaStatus EvaluateExpression(const char*                     expression,
         }
         else
         {
-            // must be number, reference to internal counter
-            GpaUInt32 index;
-#ifdef _LINUX
-            int scan_result = sscanf(pch, "%d", &index);
-#else
-            int scan_result = sscanf_s(pch, "%d", &index);
-#endif
-            UNREFERENCED_PARAMETER(scan_result);
+            // Must be a number referencing an internal counter index.
+            GpaUInt32 index      = 0;
+            const auto [ptr, ec] = std::from_chars(pch, pch + std::strlen(pch), index);
+            const bool parse_ok  = (ec == std::errc{});
 
-            if (1 != scan_result)
+            if (!parse_ok)
             {
-                GPA_LOG_DEBUG_ERROR("Failed for expression %s", expression);
+                GpaLogger::Instance().LogDebugError("Failed for expression {}", expression);
             }
-            assert(scan_result == 1);
+            assert(parse_ok);
 
             if (index < results.size())
             {
@@ -744,7 +748,7 @@ static GpaStatus EvaluateExpression(const char*                     expression,
             {
                 // the index was invalid, so the counter result is unknown
                 assert(0);
-                GPA_LOG_ERROR("counter registerIndex in equation is out of range.");
+                GpaLogger::Instance().LogError("counter registerIndex in equation is out of range.");
                 status = kGpaStatusErrorInvalidCounterEquation;
                 break;
             }
@@ -755,7 +759,7 @@ static GpaStatus EvaluateExpression(const char*                     expression,
 
     if (stack.size() != 1)
     {
-        GPA_LOG_ERROR("Invalid formula: %s", expression);
+        GpaLogger::Instance().LogError("Invalid formula: {}", expression);
         status = kGpaStatusErrorInvalidCounterEquation;
     }
 

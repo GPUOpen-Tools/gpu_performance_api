@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2025 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief A base-class implementation of the GPA Session interface.
@@ -45,14 +45,14 @@ GpaSession::GpaSession(IGpaContext* parent_context, GpaSessionSampleType sample_
     , counter_set_changed_(false)
     , context_flags_(parent_context->GetContextFlags())
 {
-    TRACE_PRIVATE_FUNCTION(GpaSession::CONSTRUCTOR);
+    GPA_TRACE_FUNCTION();
 
     OpenCounters();
 }
 
 GpaSession::~GpaSession()
 {
-    TRACE_PRIVATE_FUNCTION(GpaSession::DESTRUCTOR);
+    GPA_TRACE_FUNCTION();
 
     std::lock_guard<std::mutex> lock_resources(gpa_session_mutex_);
 
@@ -61,11 +61,11 @@ GpaSession::~GpaSession()
     // Clean up the passes.
     for (auto const& pass : passes_)
     {
-        const GpaCommandLists pass_cmd_list = pass->GetCmdList();
+        const GpaCommandLists& pass_cmd_list = pass->GetCmdList();
 
         for (auto const& cmd_list : pass_cmd_list)
         {
-            manager.DeleteObject(cmd_list);
+            manager.DeleteObject(cmd_list.get());
         }
     }
     passes_.clear();
@@ -96,11 +96,11 @@ bool GpaSession::OpenCounters()
 
 GpaStatus GpaSession::GetNumCounters(GpaUInt32* counter_count) const
 {
-    GPA_INTERNAL_CHECK_NULL_PARAM(counter_count);
+    GPA_CHECK_NULLPTR(counter_count);
     IGpaCounterAccessor* counter_accessor = GpaContextCounterMediator::GetCounterAccessor(this);
     if (nullptr == counter_accessor)
     {
-        GPA_LOG_ERROR("Accessor is unassigned.");
+        GpaLogger::Instance().LogError("Accessor is unassigned.");
         return kGpaStatusErrorFailed;
     }
 
@@ -110,12 +110,12 @@ GpaStatus GpaSession::GetNumCounters(GpaUInt32* counter_count) const
 
 GpaStatus GpaSession::GetCounterName(GpaUInt32 index, const char** counter_name) const
 {
-    GPA_INTERNAL_CHECK_NULL_PARAM(counter_name);
+    GPA_CHECK_NULLPTR(counter_name);
 
     IGpaCounterAccessor* counter_accessor = GpaContextCounterMediator::GetCounterAccessor(this);
     if (nullptr == counter_accessor)
     {
-        GPA_LOG_ERROR("Accessor is unassigned.");
+        GpaLogger::Instance().LogError("Accessor is unassigned.");
         return kGpaStatusErrorFailed;
     }
 
@@ -125,12 +125,12 @@ GpaStatus GpaSession::GetCounterName(GpaUInt32 index, const char** counter_name)
 
 GpaStatus GpaSession::GetCounterGroup(GpaUInt32 index, const char** counter_group) const
 {
-    GPA_INTERNAL_CHECK_NULL_PARAM(counter_group);
+    GPA_CHECK_NULLPTR(counter_group);
 
     IGpaCounterAccessor* counter_accessor = GpaContextCounterMediator::GetCounterAccessor(this);
     if (nullptr == counter_accessor)
     {
-        GPA_LOG_ERROR("Accessor is unassigned.");
+        GpaLogger::Instance().LogError("Accessor is unassigned.");
         return kGpaStatusErrorFailed;
     }
 
@@ -140,12 +140,12 @@ GpaStatus GpaSession::GetCounterGroup(GpaUInt32 index, const char** counter_grou
 
 GpaStatus GpaSession::GetCounterDescription(GpaUInt32 index, const char** counter_description) const
 {
-    GPA_INTERNAL_CHECK_NULL_PARAM(counter_description);
+    GPA_CHECK_NULLPTR(counter_description);
 
     IGpaCounterAccessor* counter_accessor = GpaContextCounterMediator::GetCounterAccessor(this);
     if (nullptr == counter_accessor)
     {
-        GPA_LOG_ERROR("Accessor is unassigned.");
+        GpaLogger::Instance().LogError("Accessor is unassigned.");
         return kGpaStatusErrorFailed;
     }
 
@@ -155,12 +155,12 @@ GpaStatus GpaSession::GetCounterDescription(GpaUInt32 index, const char** counte
 
 GpaStatus GpaSession::GetCounterDataType(GpaUInt32 index, GpaDataType* counter_data_type) const
 {
-    GPA_INTERNAL_CHECK_NULL_PARAM(counter_data_type);
+    GPA_CHECK_NULLPTR(counter_data_type);
 
     IGpaCounterAccessor* counter_accessor = GpaContextCounterMediator::GetCounterAccessor(this);
     if (nullptr == counter_accessor)
     {
-        GPA_LOG_ERROR("Accessor is unassigned.");
+        GpaLogger::Instance().LogError("Accessor is unassigned.");
         return kGpaStatusErrorFailed;
     }
 
@@ -170,12 +170,12 @@ GpaStatus GpaSession::GetCounterDataType(GpaUInt32 index, GpaDataType* counter_d
 
 GpaStatus GpaSession::GetCounterUsageType(GpaUInt32 index, GpaUsageType* counter_usage_type) const
 {
-    GPA_INTERNAL_CHECK_NULL_PARAM(counter_usage_type);
+    GPA_CHECK_NULLPTR(counter_usage_type);
 
     IGpaCounterAccessor* counter_accessor = GpaContextCounterMediator::GetCounterAccessor(this);
     if (nullptr == counter_accessor)
     {
-        GPA_LOG_ERROR("Accessor is unassigned.");
+        GpaLogger::Instance().LogError("Accessor is unassigned.");
         return kGpaStatusErrorFailed;
     }
 
@@ -185,12 +185,12 @@ GpaStatus GpaSession::GetCounterUsageType(GpaUInt32 index, GpaUsageType* counter
 
 GpaStatus GpaSession::GetCounterUuid(GpaUInt32 index, GpaUuid* counter_uuid) const
 {
-    GPA_INTERNAL_CHECK_NULL_PARAM(counter_uuid);
+    GPA_CHECK_NULLPTR(counter_uuid);
 
     IGpaCounterAccessor* counter_accessor = GpaContextCounterMediator::GetCounterAccessor(this);
     if (nullptr == counter_accessor)
     {
-        GPA_LOG_ERROR("Accessor is unassigned.");
+        GpaLogger::Instance().LogError("Accessor is unassigned.");
         return kGpaStatusErrorFailed;
     }
 
@@ -200,12 +200,12 @@ GpaStatus GpaSession::GetCounterUuid(GpaUInt32 index, GpaUuid* counter_uuid) con
 
 GpaStatus GpaSession::GetCounterSampleType(GpaUInt32 index, GpaCounterSampleType* counter_sample_type) const
 {
-    GPA_INTERNAL_CHECK_NULL_PARAM(counter_sample_type);
+    GPA_CHECK_NULLPTR(counter_sample_type);
 
     IGpaCounterAccessor* counter_accessor = GpaContextCounterMediator::GetCounterAccessor(this);
     if (nullptr == counter_accessor)
     {
-        GPA_LOG_ERROR("Accessor is unassigned.");
+        GpaLogger::Instance().LogError("Accessor is unassigned.");
         return kGpaStatusErrorFailed;
     }
 
@@ -215,12 +215,12 @@ GpaStatus GpaSession::GetCounterSampleType(GpaUInt32 index, GpaCounterSampleType
 
 GpaStatus GpaSession::GetCounterIndex(const char* counter_name, GpaUInt32* counter_index) const
 {
-    GPA_INTERNAL_CHECK_NULL_PARAM(counter_index);
+    GPA_CHECK_NULLPTR(counter_index);
 
     IGpaCounterAccessor* counter_accessor = GpaContextCounterMediator::GetCounterAccessor(this);
     if (nullptr == counter_accessor)
     {
-        GPA_LOG_ERROR("Accessor is unassigned.");
+        GpaLogger::Instance().LogError("Accessor is unassigned.");
         return kGpaStatusErrorFailed;
     }
 
@@ -235,7 +235,7 @@ bool GpaSession::GetCounterSourceLocalIndex(GpaUInt32 exposed_counter_index, Gpa
     IGpaCounterAccessor* counter_accessor = GpaContextCounterMediator::GetCounterAccessor(this);
     if (counter_accessor == nullptr)
     {
-        GPA_LOG_ERROR("Accessor is unassigned.");
+        GpaLogger::Instance().LogError("Accessor is unassigned.");
         return false;
     }
 
@@ -258,20 +258,17 @@ GpaCounterSource GpaSession::GetCounterSource(GpaUInt32 internal_counter_index) 
     assert(counter_accessor != nullptr);
     if (counter_accessor == nullptr)
     {
-        GPA_LOG_ERROR("Accessor is unassigned.");
+        GpaLogger::Instance().LogError("Accessor is unassigned.");
         return GpaCounterSource::kUnknown;
     }
 
-    GpaCounterSource     source           = GpaCounterSource::kUnknown;
+    GpaCounterSource source = GpaCounterSource::kUnknown;
 
     if (nullptr != counter_accessor)
     {
         const GpaHardwareCounters& hardware_counters = counter_accessor->GetHardwareCounters();
-
-        GpaCounterGroupAccessor counter_group_accessor(hardware_counters.internal_counter_groups_,
-                                                       static_cast<unsigned int>(hardware_counters.internal_counter_groups_.size()),
-                                                       hardware_counters.additional_groups_,
-                                                       hardware_counters.additional_group_count_);
+        const auto                 additional_groups = std::span(hardware_counters.additional_groups_, hardware_counters.additional_group_count_);
+        GpaCounterGroupAccessor    counter_group_accessor(hardware_counters.internal_counter_groups_, additional_groups);
 
         counter_group_accessor.SetCounterIndex(internal_counter_index);
 
@@ -294,7 +291,7 @@ GpaStatus GpaSession::EnableCounter(GpaUInt32 index)
     if (kGpaSessionSampleTypeDiscreteCounter != sample_type_ && kGpaSessionSampleTypeStreamingCounter != sample_type_ &&
         kGpaSessionSampleTypeStreamingCounterAndSqtt != sample_type_)
     {
-        GPA_LOG_ERROR("Unable to enable counter. Session was not created with a GpaSessionSampleType value that supports counter collection.");
+        GpaLogger::Instance().LogError("Unable to enable counter. Session was not created with a GpaSessionSampleType value that supports counter collection.");
         return kGpaStatusErrorIncompatibleSampleTypes;
     }
 
@@ -322,7 +319,7 @@ GpaStatus GpaSession::EnableCounter(GpaUInt32 index)
         {
             if (1 < num_passes)
             {
-                GPA_LOG_ERROR("Unable to enable counter. Multi-pass counter sets not supported for streaming counters.");
+                GpaLogger::Instance().LogError("Unable to enable counter. Multi-pass counter sets not supported for streaming counters.");
                 status = kGpaStatusErrorNotEnabled;
             }
         }
@@ -346,16 +343,14 @@ GpaStatus GpaSession::DisableCounter(GpaUInt32 index)
         return kGpaStatusErrorSessionAlreadyStarted;
     }
 
-    // There is a bug in gcc-4.8.2 of usage of const_iterators in std::vector::erase().
-    SessionCounters::iterator counter_iter = std::find(session_counters_.begin(), session_counters_.end(), index);
+    std::lock_guard<std::mutex> lock(session_counters_mutex_);
 
-    if (counter_iter == session_counters_.cend())
+    const size_t erased_count = std::erase(session_counters_, index);
+    if (0 == erased_count)
     {
         return kGpaStatusErrorNotEnabled;
     }
 
-    std::lock_guard<std::mutex> lock(session_counters_mutex_);
-    session_counters_.erase(counter_iter);
     counter_set_changed_ = true;
     return kGpaStatusOk;
 }
@@ -475,7 +470,7 @@ GpaStatus GpaSession::GetNumRequiredPasses(GpaUInt32* num_passes)
 
         if (kGpaSessionSampleTypeStreamingCounter == sample_type_ && *num_passes > 1)
         {
-            GPA_LOG_ERROR("Streaming counters must complete in a single pass.");
+            GpaLogger::Instance().LogError("Streaming counters must complete in a single pass.");
             ret_status = kGpaStatusErrorFailed;
         }
     }
@@ -489,7 +484,7 @@ GpaStatus GpaSession::Begin()
 
     if (kGpaSessionStateStarted <= gpa_session_state_)
     {
-        GPA_LOG_ERROR("Session has already been started.");
+        GpaLogger::Instance().LogError("Session has already been started.");
         status = kGpaStatusErrorSessionAlreadyStarted;
     }
     else if (kGpaSessionSampleTypeDiscreteCounter == sample_type_ || kGpaSessionSampleTypeStreamingCounter == sample_type_ ||
@@ -498,7 +493,7 @@ GpaStatus GpaSession::Begin()
         // Verify that at least one counter is enabled.
         if (session_counters_.empty())
         {
-            GPA_LOG_ERROR("The session can't be started without any enabled counters.");
+            GpaLogger::Instance().LogError("The session can't be started without any enabled counters.");
             status = kGpaStatusErrorNoCountersEnabled;
         }
 
@@ -521,7 +516,7 @@ GpaStatus GpaSession::Begin()
 
                 if (kGpaSessionSampleTypeStreamingCounterAndSqtt == sample_type_ && pass_count != 1)
                 {
-                    GPA_LOG_ERROR("Unable to create pass for session. Sqtt + Spm sessions should only have 1 pass");
+                    GpaLogger::Instance().LogError("Unable to create pass for session. Sqtt + Spm sessions should only have 1 pass");
                     status = kGpaStatusErrorFailed;
                 }
 
@@ -535,7 +530,7 @@ GpaStatus GpaSession::Begin()
                         CounterList* pass_counter_list = GpaContextCounterMediator::GetCounterForPass(this, pass_index_iter);
                         if (pass_counter_list == nullptr)
                         {
-                            GPA_LOG_ERROR("Unable to get counter list.");
+                            GpaLogger::Instance().LogError("Unable to get counter list.");
                             status = kGpaStatusErrorNullPointer;
                             break;
                         }
@@ -557,7 +552,7 @@ GpaStatus GpaSession::Begin()
 
                     if (!success)
                     {
-                        GPA_LOG_ERROR("Unable to create passes for the session.");
+                        GpaLogger::Instance().LogError("Unable to create passes for the session.");
                         status = kGpaStatusErrorFailed;
                     }
                     else
@@ -567,7 +562,7 @@ GpaStatus GpaSession::Begin()
                 }
                 else
                 {
-                    GPA_LOG_ERROR("The session failed to get the number of required passes.");
+                    GpaLogger::Instance().LogError("The session failed to get the number of required passes.");
                     status = kGpaStatusErrorFailed;
                 }
             }
@@ -584,13 +579,13 @@ GpaStatus GpaSession::Begin()
         else
         {
             // Unable to create API specific pass object
-            GPA_LOG_ERROR("Unable to create passes for session.");
+            GpaLogger::Instance().LogError("Unable to create passes for session.");
             status = kGpaStatusErrorFailed;
         }
     }
     else
     {
-        GPA_LOG_ERROR("Unknown session type.");
+        GpaLogger::Instance().LogError("Unknown session type.");
         status = kGpaStatusErrorFailed;
     }
 
@@ -622,19 +617,19 @@ GpaStatus GpaSession::End()
             }
             else
             {
-                GPA_LOG_ERROR("Some passes have an incorrect number of samples.");
+                GpaLogger::Instance().LogError("Some passes have an incorrect number of samples.");
                 status = kGpaStatusErrorVariableNumberOfSamplesInPasses;
             }
         }
         else
         {
-            GPA_LOG_ERROR("Not all passes have been executed.");
+            GpaLogger::Instance().LogError("Not all passes have been executed.");
             status = kGpaStatusErrorNotEnoughPasses;
         }
     }
     else
     {
-        GPA_LOG_ERROR("Session has not been started.");
+        GpaLogger::Instance().LogError("Session has not been started.");
         status = kGpaStatusErrorSessionNotStarted;
     }
 
@@ -704,7 +699,7 @@ GpaCommandListId GpaSession::CreateCommandList(GpaUInt32 pass_index, void* cmd_l
     }
     else
     {
-        GPA_LOG_ERROR("Invalid pass index.");
+        GpaLogger::Instance().LogError("Invalid pass index.");
     }
 
     return ret_cmd_id;
@@ -712,7 +707,7 @@ GpaCommandListId GpaSession::CreateCommandList(GpaUInt32 pass_index, void* cmd_l
 
 GpaUInt32 GpaSession::GetSampleCount() const
 {
-    TRACE_PRIVATE_FUNCTION(GpaSession::GetSampleCount);
+    GPA_TRACE_FUNCTION();
 
     GpaUInt32 sample_count = 0;
 
@@ -729,7 +724,7 @@ GpaUInt32 GpaSession::GetSampleCount() const
 
 bool GpaSession::GetSampleIdByIndex(SampleIndex sample_index, ClientSampleId& client_sample_id) const
 {
-    TRACE_PRIVATE_FUNCTION(GpaSession::GetSampleIdByIndex);
+    GPA_TRACE_FUNCTION();
 
     std::lock_guard<std::mutex> lock_resources(gpa_session_mutex_);
 
@@ -761,7 +756,7 @@ bool GpaSession::DoesCommandListExist(GpaUInt32 pass_index, GpaCommandListId gpa
         }
         else
         {
-            GPA_LOG_ERROR("Invalid pass index.");
+            GpaLogger::Instance().LogError("Invalid pass index.");
         }
     }
 
@@ -790,7 +785,7 @@ bool GpaSession::UpdateResults()
 
         if (!are_all_passes_complete)
         {
-            GPA_LOG_DEBUG_MESSAGE("Pass is not complete.");
+            GpaLogger::Instance().LogDebugMessage("Pass is not complete.");
         }
     }
 
@@ -826,13 +821,13 @@ bool GpaSession::UpdateResults(GpaUInt32 pass_index)
             }
             else
             {
-                GPA_LOG_ERROR("Some samples in the pass have not finished.");
+                GpaLogger::Instance().LogError("Some samples in the pass have not finished.");
             }
         }
     }
     else
     {
-        GPA_LOG_ERROR("Incorrect pass index.");
+        GpaLogger::Instance().LogError("Incorrect pass index.");
     }
 
     return success;
@@ -857,7 +852,7 @@ GpaStatus GpaSession::IsPassComplete(GpaUInt32 pass_index) const
 
 bool GpaSession::IsResultReady() const
 {
-    TRACE_PRIVATE_FUNCTION(GpaSession::IsResultReady);
+    GPA_TRACE_FUNCTION();
     return kGpaSessionStateResultCollected == gpa_session_state_;
 }
 
@@ -867,7 +862,7 @@ size_t GpaSession::GetSampleResultSizeInBytes(GpaUInt32 sample_id) const
 
     if (!GpaContextCounterMediator::IsCounterSchedulingSupported(this))
     {
-        GPA_LOG_ERROR("Unable to GetSampleResultSizeInBytes, counter scheduler is invalid.");
+        GpaLogger::Instance().LogError("Unable to GetSampleResultSizeInBytes, counter scheduler is invalid.");
     }
     else if (kGpaSessionSampleTypeDiscreteCounter == sample_type_)
     {
@@ -893,17 +888,17 @@ size_t GpaSession::GetSampleResultSizeInBytes(GpaUInt32 sample_id) const
 
 GpaStatus GpaSession::GetSampleResult(GpaUInt32 sample_id, size_t sample_result_size_in_bytes, void* counter_sample_results)
 {
-    TRACE_PRIVATE_FUNCTION(GpaSession::GetSampleResult);
+    GPA_TRACE_FUNCTION();
 
     if (sample_result_size_in_bytes < GetSampleResultSizeInBytes(sample_id))
     {
-        GPA_LOG_ERROR("The value of sample_result_size_in_bytes indicates that the buffer is too small to contain the results.");
+        GpaLogger::Instance().LogError("The value of sample_result_size_in_bytes indicates that the buffer is too small to contain the results.");
         return kGpaStatusErrorReadingSampleResult;
     }
 
     if (nullptr == counter_sample_results)
     {
-        GPA_LOG_ERROR("counter_sample_results is NULL in GpaSession::GetSampleResult.");
+        GpaLogger::Instance().LogError("counter_sample_results is NULL in GpaSession::GetSampleResult.");
         return kGpaStatusErrorNullPointer;
     }
 
@@ -916,7 +911,7 @@ GpaStatus GpaSession::GetSampleResult(GpaUInt32 sample_id, size_t sample_result_
 
     if (nullptr != first_pass_sample && first_pass_sample->IsSecondary() && !first_pass_sample->IsCopied())
     {
-        GPA_LOG_ERROR("Results cannot be queried from secondary samples.");
+        GpaLogger::Instance().LogError("Results cannot be queried from secondary samples.");
         return kGpaStatusErrorSampleInSecondaryCommandList;
     }
 
@@ -924,7 +919,7 @@ GpaStatus GpaSession::GetSampleResult(GpaUInt32 sample_id, size_t sample_result_
 
     if (!Flush(kTimeout))
     {
-        GPA_LOG_ERROR("Failed to retrieve sample data due to timeout.");
+        GpaLogger::Instance().LogError("Failed to retrieve sample data due to timeout.");
         return kGpaStatusErrorTimeout;
     }
 
@@ -951,7 +946,7 @@ GpaStatus GpaSession::GetSampleResult(GpaUInt32 sample_id, size_t sample_result_
     assert(counter_accessor != nullptr);
     if (counter_accessor == nullptr)
     {
-        GPA_LOG_ERROR("Accessor is unassigned.");
+        GpaLogger::Instance().LogError("Accessor is unassigned.");
         return kGpaStatusErrorFailed;
     }
 
@@ -961,7 +956,7 @@ GpaStatus GpaSession::GetSampleResult(GpaUInt32 sample_id, size_t sample_result_
 
         if (kGpaStatusOk != GetEnabledIndex(counter_index_iter, &exposed_counter_index))
         {
-            GPA_LOG_ERROR("Invalid counter found while identifying enabled counter.");
+            GpaLogger::Instance().LogError("Invalid counter found while identifying enabled counter.");
             return kGpaStatusErrorIndexOutOfRange;
         }
 
@@ -974,7 +969,7 @@ GpaStatus GpaSession::GetSampleResult(GpaUInt32 sample_id, size_t sample_result_
 
         if (!GetCounterSourceLocalIndex(exposed_counter_index, &source, &source_local_index))
         {
-            GPA_LOG_ERROR("Invalid counter index found while identifying counter source.");
+            GpaLogger::Instance().LogError("Invalid counter index found while identifying counter source.");
             return kGpaStatusErrorIndexOutOfRange;
         }
 
@@ -999,7 +994,7 @@ GpaStatus GpaSession::GetSampleResult(GpaUInt32 sample_id, size_t sample_result_
 
                 if (result_location_iter == result_locations.end())
                 {
-                    GPA_LOG_ERROR("Could not find required counter among the results.");
+                    GpaLogger::Instance().LogError("Could not find required counter among the results.");
                     return kGpaStatusErrorReadingSampleResult;
                 }
 
@@ -1039,7 +1034,7 @@ GpaStatus GpaSession::GetSampleResult(GpaUInt32 sample_id, size_t sample_result_
 
         default:
             status = kGpaStatusErrorFailed;
-            GPA_LOG_ERROR("Unknown counter source type.");
+            GpaLogger::Instance().LogError("Unknown counter source type.");
             assert(0);
             break;
         }
@@ -1194,7 +1189,7 @@ CounterList* GpaSession::GetCountersForPass(PassIndex pass_index)
 
 bool GpaSession::Flush(uint32_t timeout)
 {
-    TRACE_PRIVATE_FUNCTION(GpaSession::Flush);
+    GPA_TRACE_FUNCTION();
 
     bool ret_val = true;
 
@@ -1210,7 +1205,7 @@ bool GpaSession::Flush(uint32_t timeout)
 
             if (std::chrono::duration_cast<std::chrono::milliseconds>(duration).count() > timeout)
             {
-                GPA_LOG_ERROR("GPA session completion timeout occurred.");
+                GpaLogger::Instance().LogError("GPA session completion timeout occurred.");
                 ret_val = false;
                 break;
             }
@@ -1276,22 +1271,22 @@ bool GpaSession::BeginSample(ClientSampleId sample_id, GpaCommandListId command_
                 }
                 else
                 {
-                    GPA_LOG_ERROR("Unable to create sample.");
+                    GpaLogger::Instance().LogError("Unable to create sample.");
                 }
             }
             else
             {
-                GPA_LOG_ERROR("Pass does not exist.");
+                GpaLogger::Instance().LogError("Pass does not exist.");
             }
         }
         else
         {
-            GPA_LOG_ERROR("Command List does not exist.");
+            GpaLogger::Instance().LogError("Command List does not exist.");
         }
     }
     else
     {
-        GPA_LOG_ERROR("Invalid Parameter.");
+        GpaLogger::Instance().LogError("Invalid Parameter.");
     }
 
     return sample_started;
@@ -1315,12 +1310,12 @@ bool GpaSession::CheckWhetherPassesAreFinishedAndConsistent() const
 
     if (!is_finished)
     {
-        GPA_LOG_ERROR("Some passes have not ended.");
+        GpaLogger::Instance().LogError("Some passes have not ended.");
     }
 
     if (!is_consistent)
     {
-        GPA_LOG_ERROR("Some passes have an incorrect number of samples.");
+        GpaLogger::Instance().LogError("Some passes have an incorrect number of samples.");
     }
 
     return is_finished && is_consistent;
@@ -1347,22 +1342,22 @@ bool GpaSession::EndSample(GpaCommandListId command_list_id)
                 }
                 else
                 {
-                    GPA_LOG_ERROR("Unable to end sample.");
+                    GpaLogger::Instance().LogError("Unable to end sample.");
                 }
             }
             else
             {
-                GPA_LOG_ERROR("Pass does not exist.");
+                GpaLogger::Instance().LogError("Pass does not exist.");
             }
         }
         else
         {
-            GPA_LOG_ERROR("Command List does not exist.");
+            GpaLogger::Instance().LogError("Command List does not exist.");
         }
     }
     else
     {
-        GPA_LOG_ERROR("Invalid Parameter.");
+        GpaLogger::Instance().LogError("Invalid Parameter.");
     }
 
     return sample_ended;

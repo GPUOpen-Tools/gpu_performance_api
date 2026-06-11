@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016-2024 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Base class for DX11 counter generation.
@@ -17,30 +17,27 @@ public:
     /// @brief Constructor.
     ///
     /// @param [in] sample_type The type of samples for which to generate counters.
-    GpaCounterGeneratorDx11Base(GpaSessionSampleType sample_type);
+    explicit GpaCounterGeneratorDx11Base(GpaSessionSampleType sample_type);
 
     /// @copydoc GpaCounterGeneratorBase::GeneratePublicCounters()
-    virtual GpaStatus GeneratePublicCounters(GDT_HW_GENERATION   desired_generation,
-                                             GDT_HW_ASIC_TYPE    asic_type,
-                                             GpaDerivedCounters* public_counters) override;
+    virtual GpaStatus GeneratePublicCounters(device_info::HwGeneration desired_generation,
+                                             device_info::AsicType     asic_type,
+                                             GpaDerivedCounters*       public_counters) override;
 
     /// @copydoc GpaCounterGeneratorBase::GenerateHardwareCounters()
-    virtual GpaStatus GenerateHardwareCounters(GDT_HW_GENERATION    desired_generation,
-                                               GDT_HW_ASIC_TYPE     asic_type,
-                                               GpaHardwareCounters* hardware_counters) override;
-
-    /// @brief Helper function to indicates whether the specified HW generation represents an AMD GPU.
-    ///
-    /// @param [in] generation The hw generation to check.
-    ///
-    /// @return True if the specified HW generation represents an AMD GPU.
-    static bool IsAmdGpu(GDT_HW_GENERATION generation);
+    virtual GpaStatus GenerateHardwareCounters(device_info::HwGeneration desired_generation,
+                                               device_info::AsicType     asic_type,
+                                               GpaHardwareCounters*      hardware_counters) override;
 
 private:
     /// @brief Delete default constructor.
     GpaCounterGeneratorDx11Base() = delete;
 
-    GpaCounterGroupDesc d3d_counter_group_ = {0, "D3D11", 0, 0, 0};  ///< Description for D3D11 counter group.
+    GpaCounterGroupDesc d3d_counter_group_ = {.group_index                  = 0,
+                                              .name                         = "D3D11",
+                                              .num_counters                 = 0,
+                                              .max_active_discrete_counters = 0,
+                                              .max_active_spm_counters      = 0};  ///< Description for D3D11 counter group.
 };
 
 #endif

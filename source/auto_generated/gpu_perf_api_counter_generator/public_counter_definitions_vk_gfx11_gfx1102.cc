@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2010-2025 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Public Counter Definitions for VK GFX11_GFX1102.
@@ -17,7 +17,7 @@
 
 namespace vk_gfx11_gfx1102
 {
-bool UpdatePublicAsicSpecificCounters(GDT_HW_GENERATION desired_generation, GDT_HW_ASIC_TYPE asic_type, GpaDerivedCounters& c)
+bool UpdatePublicAsicSpecificCounters(device_info::HwGeneration desired_generation, device_info::AsicType asic_type, GpaDerivedCounters& c)
 {
     UNREFERENCED_PARAMETER(desired_generation);
     UNREFERENCED_PARAMETER(c);  // Unreferenced if there are no ASIC specific block instance registers

@@ -1,12 +1,10 @@
-## Copyright (C) 2018-2026 Advanced Micro Devices, Inc. All rights reserved. ##
+#/ Copyright (C) Advanced Micro Devices, Inc. All rights reserved.
 
 if(NOT DEFINED GPA_OUTPUT_DIR)
     set(GPA_OUTPUT_DIR ${PROJECT_SOURCE_DIR}/build/output)
 endif()
 
 ## Set the Common Directories
-set(GPA_PUBLIC_HEADER_REL_PATH                              "include")
-set(GPA_PUBLIC_HEADER                                       "${PROJECT_SOURCE_DIR}/${GPA_PUBLIC_HEADER_REL_PATH}")
 set(GPA_SRC                                                 "${PROJECT_SOURCE_DIR}/source")
 set(GPA_SRC_COMMON_REL_PATH                                 "source/gpu_perf_api_common")
 set(GPA_SRC_COMMON                                          "${PROJECT_SOURCE_DIR}/${GPA_SRC_COMMON_REL_PATH}")

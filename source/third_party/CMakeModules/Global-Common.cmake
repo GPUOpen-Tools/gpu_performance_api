@@ -1,15 +1,9 @@
-## Copyright (C) 2018-2026 Advanced Micro Devices, Inc. All rights reserved. ##
+#/ Copyright (C) Advanced Micro Devices, Inc. All rights reserved.
 
 include(${CMAKE_CURRENT_LIST_DIR}/Global-Internal.cmake)
 
 # ProjectName must be set by each Tools project
 # ${ProjectName}
-## If CMAKE_BUILD_TYPE is not specified, we will set it to Release
-if(NOT ${CMAKE_BUILD_TYPE} STREQUAL "")
-    set(CMAKE_BUILD_TYPE ${CMAKE_BUILD_TYPE})
-else()
-    set(CMAKE_BUILD_TYPE Release)
-endif()
 
 if(NOT DEFINED AMDTPlatform)
     set(AMDTPlatform "x64")
@@ -39,32 +33,21 @@ if(NOT DEFINED AMDTBuildSuffix)
     set(AMDTBuildSuffix "")
 endif()
 
-if(NOT DEFINED AMDTCrt)
-    set(AMDTCrt "MD")
-endif()
-
 if(NOT DEFINED AMDTBuild)
     set(AMDTBuild "AMDT_PUBLIC")
 endif()
 
-## Set the global property to use folders for VS filters
+## Remove when CMake min is 3.26 where this property is ON by default.
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 ## Set additional compilation flags
-if(WIN32)
-    set(COMMON_COMPILATION_FLAGS ${COMMON_COMPILATION_FLAGS})
-else()
-    set(COMMON_COMPILATION_FLAGS ${COMMON_COMPILATION_FLAGS} -D_LINUX -fPIC)
-
-    if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-        set(COMMON_COMPILATION_FLAGS ${COMMON_COMPILATION_FLAGS} -fbracket-depth=1024)
-    endif()
+if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    set(COMMON_COMPILATION_FLAGS ${COMMON_COMPILATION_FLAGS} -fbracket-depth=1024)
 endif()
 
 ## Set Global defintions
 set(COMMON_COMPILE_DEFINITIONS  AMDT_BUILD="${AMDTBuild}"
                                 ${AMDTBuild}
-                                AMDTCRT="${AMDTCrt}"
                                 AMDT_PLATFORM_SUFFIX="${AMDTPlatformSuffix}"
                                 AMDT_PLATFORM_SUFFIX_W=L"${AMDTPlatformSuffix}"
                                 AMDT_BUILD_SUFFIX="${AMDTBuildSuffix}"
@@ -161,14 +144,6 @@ set_property(DIRECTORY PROPERTY COMPILE_OPTIONS ${COMMON_COMPILATION_FLAGS}
                                 $<$<CONFIG:RELEASE>:${COMMON_RELEASE_COMPILATION_FLAGS}>
                                 APPEND)
 
-option(GPA_ENABLE_ASAN "Enable address sanitizer")
-if (GPA_ENABLE_ASAN)
-    add_compile_options(-fsanitize=address)
-    if (NOT MSVC)
-        add_link_options(-fsanitize=address)
-    endif()
-endif()
-
 if (MSVC)
     add_compile_options(/guard:cf)
     add_link_options(/GUARD:CF)
@@ -201,6 +176,3 @@ set(ADDITIONAL_LINK_OPTIONS "")
 ## Set the debug and release postfix to the target names
 set(CMAKE_DEBUG_POSTFIX ${AMDTPlatformSuffix}-d${AMDTInternalSuffix})
 set(CMAKE_RELEASE_POSTFIX ${AMDTPlatformSuffix}${AMDTInternalSuffix})
-
-## Enable to use folders for VS filters
-set_property(GLOBAL PROPERTY USE_FOLDERS ON)

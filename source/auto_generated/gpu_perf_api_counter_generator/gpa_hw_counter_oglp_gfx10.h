@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2010-2025 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief OGLP counter definitions for GFX10.
@@ -20,7 +20,7 @@ struct GpaSqCounterGroupDesc;
 
 namespace counter_oglp_gfx10
 {
-    extern const gpa_array_view<gpa_array_view<GpaHardwareCounterDesc>> kOglpCounterGroupArrayGfx10; ///< Array of hardware counter groups for Oglp for Gfx10 family
+    extern const gpa_array_view<gpa_array_view<GpaHardwareCounterDesc>*> kOglpCounterGroupArrayGfx10; ///< Array of hardware counter groups for Oglp for Gfx10 family
     extern const gpa_array_view<GpaCounterGroupDesc>                    kHwOglpGroupsGfx10; ///< Array of counter groups for Oglp for Gfx10 family
     extern GpaCounterGroupExposedCounterDesc                            kHwOglpExposedCountersByGroupGfx10[]; ///< Array of exposed counter groups for Oglp for Gfx10 family
     extern GpaPaddedCounterDesc                                         kOglpPaddedCounterByGroupGfx10[]; ///< Array of reserved counter for Oglp for Gfx10 family
@@ -44,7 +44,7 @@ namespace counter_oglp_gfx10
 /// @param [in] asic_type The ASIC type that is currently in use.
 ///
 /// @return True if the ASIC is matched by this file and block instances are updated, otherwise false.
-inline bool OverrideMaxBlockEvents(GDT_HW_ASIC_TYPE asic_type)
+inline bool OverrideMaxBlockEvents(device_info::AsicType asic_type)
 {
     UNREFERENCED_PARAMETER(asic_type);
 

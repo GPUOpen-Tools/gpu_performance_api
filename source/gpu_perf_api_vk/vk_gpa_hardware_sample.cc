@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  Class to manage a single sample of HW counters
@@ -47,7 +47,7 @@ bool VkGpaHardwareSample::BeginRequest()
 
     if (nullptr == gpa_pass)
     {
-        GPA_LOG_ERROR("Invalid GPAPass encountered in hardware sample begin request.");
+        GpaLogger::Instance().LogError("Invalid GPAPass encountered in hardware sample begin request.");
     }
     else
     {
@@ -131,7 +131,7 @@ GpaSampleResult* VkGpaHardwareSample::PopulateSampleResults()
     {
         if (nullptr == GetSampleResultLocation()->GetAsCounterSampleResult()->GetResultBuffer())
         {
-            GPA_LOG_ERROR("Incorrect space allocated for sample result.");
+            GpaLogger::Instance().LogError("Incorrect space allocated for sample result.");
         }
         else
         {
@@ -181,7 +181,7 @@ GpaSampleResult* VkGpaHardwareSample::PopulateSampleResults()
                         }
                         else
                         {
-                            GPA_LOG_ERROR("Unknown timing counter.");
+                            GpaLogger::Instance().LogError("Unknown timing counter.");
                             GetSampleResultLocation()->GetAsCounterSampleResult()->GetResultBuffer()[i] = 0;
                         }
                     }
@@ -193,7 +193,7 @@ GpaSampleResult* VkGpaHardwareSample::PopulateSampleResults()
 
                     if (nullptr == sample_result)
                     {
-                        GPA_LOG_ERROR("Invalid GPASample encountered when populating results of continued sample.");
+                        GpaLogger::Instance().LogError("Invalid GPASample encountered when populating results of continued sample.");
                     }
                     else
                     {
@@ -209,7 +209,7 @@ GpaSampleResult* VkGpaHardwareSample::PopulateSampleResults()
             }
             else
             {
-                GPA_LOG_ERROR("Unable to get the result from the driver.");
+                GpaLogger::Instance().LogError("Unable to get the result from the driver.");
             }
         }
     }
@@ -227,7 +227,7 @@ bool VkGpaHardwareSample::CopyResult(size_t sample_data_size, void* result_buffe
 
         if (nullptr == gpa_command_list)
         {
-            GPA_LOG_ERROR("Invalid GPACommandList encountered while copying hardware counter results.");
+            GpaLogger::Instance().LogError("Invalid GPACommandList encountered while copying hardware counter results.");
         }
         else
         {
@@ -248,7 +248,7 @@ bool VkGpaHardwareSample::CopyResult(size_t sample_data_size, void* result_buffe
 
             if (nullptr == gpa_context)
             {
-                GPA_LOG_ERROR("Invalid GPAContext encountered while copying hardware counter results.");
+                GpaLogger::Instance().LogError("Invalid GPAContext encountered while copying hardware counter results.");
             }
             else
             {
@@ -256,7 +256,7 @@ bool VkGpaHardwareSample::CopyResult(size_t sample_data_size, void* result_buffe
 
                 if (VK_NULL_HANDLE == ext_session_amd)
                 {
-                    GPA_LOG_ERROR("Invalid profiling session encountered while copying results.");
+                    GpaLogger::Instance().LogError("Invalid profiling session encountered while copying results.");
                 }
                 else
                 {
@@ -282,12 +282,12 @@ bool VkGpaHardwareSample::CopyResult(size_t sample_data_size, void* result_buffe
                             }
                             else
                             {
-                                GPA_LOG_ERROR("Error occurred while getting sample results from driver.");
+                                GpaLogger::Instance().LogError("Error occurred while getting sample results from driver.");
                             }
                         }
                         else
                         {
-                            GPA_LOG_ERROR("Error occurred while getting sample result size from driver.");
+                            GpaLogger::Instance().LogError("Error occurred while getting sample result size from driver.");
                         }
                     }
                 }

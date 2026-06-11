@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2012-2025 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Helper functions for Counter Generator Unit Tests.
@@ -9,6 +9,7 @@
 
 #include <algorithm>
 #include <map>
+#include <string_view>
 
 #include "gpu_performance_api/gpu_perf_api_types.h"
 
@@ -16,54 +17,95 @@
 #include "gpu_perf_api_counter_generator/gpa_derived_counter_evaluator.hpp"
 #include "gpu_perf_api_counter_generator/gpa_split_counters_interfaces.h"
 
-#ifdef _WIN32
-const char* kCountersLibName = "GPUPerfAPICounters" AMDT_PLATFORM_SUFFIX AMDT_DEBUG_SUFFIX AMDT_BUILD_SUFFIX ".dll";
+#ifdef USE_DEBUG_GPA
+#include "config_Debug.h"
 #else
-const char* kCountersLibName = "libGPUPerfAPICounters" AMDT_PLATFORM_SUFFIX AMDT_DEBUG_SUFFIX AMDT_BUILD_SUFFIX ".so";
+#include "config_Release.h"
 #endif
 
-LibHandle LoadLib(const char* lib_name)
+namespace
+{
+    [[nodiscard]] LibHandle LoadLib(const char* lib_name)
+    {
+        LibHandle lib_handle = nullptr;
+        if (lib_name != nullptr && !std::string_view(lib_name).empty())
+        {
+#ifdef _WIN32
+            // raise an error if the library is already loaded
+            lib_handle = GetModuleHandleA(lib_name);
+            EXPECT_TRUE(lib_handle == nullptr);
+            lib_handle = LoadLibraryA(lib_name);
+#else
+            // raise an error if the library is already loaded
+            lib_handle = dlopen(lib_name, RTLD_NOLOAD);
+            EXPECT_TRUE(lib_handle == nullptr);
+            lib_handle = dlopen(lib_name, RTLD_NOW);
+#endif
+        }
+        EXPECT_TRUE(lib_handle != nullptr);
+        return lib_handle;
+    }
+
+    void UnloadLib(LibHandle lib_handle)
+    {
+#ifdef _WIN32
+        BOOL freed = FreeLibrary(lib_handle);
+        EXPECT_EQ(TRUE, freed);
+#else
+        int freed = dlclose(lib_handle);
+        EXPECT_EQ(0, freed);
+#endif
+    }
+
+    /// @brief Loads the GPUPerfAPICounterLib and populates the function table.
+    ///
+    /// Call UnloadLib on the returned LibHandle when done using the library.
+    ///
+    /// @param [out] lib_handle The populated library handle.
+    /// @param [out] fn_table The populated function table.
+    ///
+    /// @return True if the counter library could be loaded; false otherwise.
+    [[nodiscard]] bool LoadAndVerifyCounterLib(LibHandle* lib_handle, void* fn_table)
+    {
+        GpaStatus gpa_status = kGpaStatusErrorLibLoadFailed;
+
+        const char* lib_name = GpaGetFullPathToCounterLib();
+
+        *lib_handle = LoadLib(lib_name);
+        EXPECT_NE(nullptr, *lib_handle);
+
+        if (*lib_handle != nullptr)
+        {
+            GpaCounterLibGetFuncTablePtrType get_func_table_ptr =
+                reinterpret_cast<GpaCounterLibGetFuncTablePtrType>(GetEntryPoint(*lib_handle, "GpaCounterLibGetFuncTable"));
+            EXPECT_NE((GpaCounterLibGetFuncTablePtrType) nullptr, get_func_table_ptr);
+
+            if (get_func_table_ptr != nullptr)
+            {
+                gpa_status = get_func_table_ptr(fn_table);
+                EXPECT_EQ(kGpaStatusOk, gpa_status);
+            }
+
+            // If we failed to get the function table, unload the library to prevent a leak.
+            if (gpa_status != kGpaStatusOk)
+            {
+                UnloadLib(*lib_handle);
+                *lib_handle = nullptr;
+            }
+        }
+
+        return kGpaStatusOk == gpa_status;
+    }
+}  // namespace
+
+std::optional<LibHandleGuard> LoadAndVerifyCounterLib(void* fn_table)
 {
     LibHandle lib_handle = nullptr;
-    if (lib_name != NULL && strlen(lib_name) > 0)
+    if (!LoadAndVerifyCounterLib(&lib_handle, fn_table)) [[unlikely]]
     {
-#ifdef _WIN32
-        // raise an error if the library is already loaded
-        lib_handle = GetModuleHandleA(lib_name);
-        EXPECT_TRUE(lib_handle == nullptr);
-        lib_handle = LoadLibraryA(lib_name);
-#else
-        // raise an error if the library is already loaded
-        lib_handle = dlopen(lib_name, RTLD_NOLOAD);
-        EXPECT_TRUE(lib_handle == nullptr);
-        lib_handle = dlopen(lib_name, RTLD_NOW);
-#endif
+        return std::nullopt;
     }
-    EXPECT_TRUE(lib_handle != nullptr);
-    return lib_handle;
-}
-
-bool LoadAndVerifyCounterLib(LibHandle* lib_handle, void* fn_table)
-{
-    GpaStatus gpa_status = kGpaStatusErrorLibLoadFailed;
-
-    *lib_handle = LoadLib(kCountersLibName);
-    EXPECT_NE((LibHandle) nullptr, *lib_handle);
-
-    if (*lib_handle != nullptr)
-    {
-        GpaCounterLibGetFuncTablePtrType get_func_table_ptr =
-            reinterpret_cast<GpaCounterLibGetFuncTablePtrType>(GetEntryPoint(*lib_handle, "GpaCounterLibGetFuncTable"));
-        EXPECT_NE((GpaCounterLibGetFuncTablePtrType) nullptr, get_func_table_ptr);
-
-        if (get_func_table_ptr != nullptr)
-        {
-            gpa_status = get_func_table_ptr(fn_table);
-            EXPECT_EQ(kGpaStatusOk, gpa_status);
-        }
-    }
-
-    return kGpaStatusOk == gpa_status;
+    return LibHandleGuard(lib_handle);
 }
 
 // Give meaningful names to event IDs being used in several tests.
@@ -71,32 +113,25 @@ const GpaUInt32 kSqPerfSelWaves  = 4;
 const GpaUInt32 kGl1cPerfSelReq  = 14;
 const GpaUInt32 kGl2cPerfSelMiss = 43;
 
-static std::map<GpaHwGeneration, unsigned int> generation_device_map = {{kGpaHwGenerationNone, 0},
-                                                                        {kGpaHwGenerationNvidia, 0},
-                                                                        {kGpaHwGenerationIntel, 0},
-                                                                        {kGpaHwGenerationGfx6, kDevIdSI},
-                                                                        {kGpaHwGenerationGfx7, kDevIdCI},
-                                                                        {kGpaHwGenerationGfx8, kDevIdGfx8},
-                                                                        {kGpaHwGenerationGfx9, kDevIdGfx9},
-                                                                        {kGpaHwGenerationGfx10, kDevIdGfx10},
-                                                                        {kGpaHwGenerationGfx103, kDevIdGfx10_3},
-                                                                        {kGpaHwGenerationGfx11, kDevIdGfx11},
-                                                                        {kGpaHwGenerationGfx12, kDevIdGfx12_0_0},
-                                                                        {kGpaHwGenerationCdna, 0},
-                                                                        {kGpaHwGenerationCdna2, 0},
-                                                                        {kGpaHwGenerationCdna3, 0},
-                                                                        {kGpaHwGenerationCdna4, 0}};
-
-void UnloadLib(LibHandle lib_handle)
-{
-#ifdef _WIN32
-    BOOL freed = FreeLibrary(lib_handle);
-    EXPECT_EQ(TRUE, freed);
-#else
-    int freed = dlclose(lib_handle);
-    EXPECT_EQ(0, freed);
-#endif
-}
+static_assert(kGpaHwGenerationLast == 16, "Update the kGenerationToDeviceIdMap map to include the new hardware generation.");
+static const std::map<GpaHwGeneration, GpaUInt32> kGenerationToDeviceIdMap = {
+    {kGpaHwGenerationNone, 0},
+    {kGpaHwGenerationNvidia, 0},
+    {kGpaHwGenerationIntel, 0},
+    {kGpaHwGenerationGfx6, kDevIdSI},
+    {kGpaHwGenerationGfx7, kDevIdCI},
+    {kGpaHwGenerationGfx8, kDevIdGfx8},
+    {kGpaHwGenerationGfx9, kDevIdGfx9},
+    {kGpaHwGenerationGfx10, kDevIdGfx10},
+    {kGpaHwGenerationGfx103, kDevIdGfx10_3},
+    {kGpaHwGenerationGfx11, kDevIdGfx11},
+    {kGpaHwGenerationGfx12, kDevIdGfx12_0_0},
+    {kGpaHwGenerationCdna, 0},
+    {kGpaHwGenerationCdna2, 0},
+    {kGpaHwGenerationCdna3, 0},
+    {kGpaHwGenerationCdna4, 0},
+    {kGpaHwGenerationGfx115, kDevIdGfx11_5_0},
+};
 
 void* GetEntryPoint(LibHandle lib_handle, const char* entry_point_name)
 {
@@ -111,21 +146,30 @@ void* GetEntryPoint(LibHandle lib_handle, const char* entry_point_name)
     return proc_address;
 }
 
+void LibHandleGuard::Reset()
+{
+    if (handle_ != nullptr)
+    {
+        UnloadLib(handle_);
+        handle_ = nullptr;
+    }
+}
+
 void VerifyDerivedCounterCount(const GpaApiType api, GpaHwGeneration generation, const gpa_array_view<GpaCounterDesc> counter_descriptions)
 {
-    LibHandle                     lib_handle                    = nullptr;
+    GpaCounterLibFuncTable fn_table  = {};
+    auto                   lib_guard = LoadAndVerifyCounterLib(&fn_table);
+    if (!lib_guard)
+    {
+        return;
+    }
+
     const GpaCounterInfo*         counter_info                  = nullptr;
-    GpaCounterLibFuncTable        fn_table                      = {};
     GpaCounterContext             discrete_counter_context      = {};
     GpaCounterParam               counter_parameters            = {};
     GpaUInt32                     counter_index                 = 0;
     GpaCounterContextHardwareInfo counter_context_hardware_info = {
-        kAmdVendorId, generation_device_map[generation], AMDTDeviceInfoUtils::kRevisionIdAny, nullptr, 0};
-
-    if (!LoadAndVerifyCounterLib(&lib_handle, &fn_table))
-    {
-        return;
-    }
+        device_info::kAmdVendorId, kGenerationToDeviceIdMap.at(generation), device_info::kRevisionIdAny, nullptr, 0};
 
     EXPECT_EQ(kGpaStatusOk,
               fn_table.GpaCounterLibOpenCounterContext(
@@ -160,75 +204,27 @@ void VerifyDerivedCounterCount(const GpaApiType api, GpaHwGeneration generation,
     }
 
     EXPECT_EQ(kGpaStatusOk, fn_table.GpaCounterLibCloseCounterContext(discrete_counter_context));
-
-    UnloadLib(lib_handle);
 }
 
-void VerifyNotImplemented(GpaApiType api, unsigned int device_Id)
+void VerifyHardwareNotSupported(GpaApiType api, uint32_t device_id)
 {
-    LibHandle              lib_handle                 = nullptr;
     GpaCounterLibFuncTable gpa_counter_lib_func_table = {};
-
-    if (!LoadAndVerifyCounterLib(&lib_handle, &gpa_counter_lib_func_table))
+    auto                   lib_guard                  = LoadAndVerifyCounterLib(&gpa_counter_lib_func_table);
+    if (!lib_guard)
     {
         return;
     }
 
     GpaCounterContext             gpa_counter_context           = nullptr;
-    GpaCounterContextHardwareInfo counter_context_hardware_info = {kAmdVendorId, device_Id, AMDTDeviceInfoUtils::kRevisionIdAny, nullptr, 0};
-    GpaStatus                     gpa_status                    = gpa_counter_lib_func_table.GpaCounterLibOpenCounterContext(
-        api, kGpaSessionSampleTypeDiscreteCounter, counter_context_hardware_info, kGpaOpenContextDefaultBit, &gpa_counter_context);
-    EXPECT_EQ(kGpaStatusErrorHardwareNotSupported, gpa_status);
-
-    gpa_status = gpa_counter_lib_func_table.GpaCounterLibCloseCounterContext(gpa_counter_context);
-    EXPECT_EQ(kGpaStatusErrorContextNotOpen, gpa_status);
-
-    UnloadLib(lib_handle);
-}
-
-void VerifyNotImplemented(GpaApiType api, GpaHwGeneration generation)
-{
-    LibHandle              lib_handle                 = nullptr;
-    GpaCounterLibFuncTable gpa_counter_lib_func_table = {};
-
-    if (!LoadAndVerifyCounterLib(&lib_handle, &gpa_counter_lib_func_table))
-    {
-        return;
-    }
-
-    GpaCounterContext             gpa_counter_context           = nullptr;
-    GpaCounterContextHardwareInfo counter_context_hardware_info = {
-        kAmdVendorId, generation_device_map[generation], AMDTDeviceInfoUtils::kRevisionIdAny, nullptr, 0};
-    GpaStatus                     gpa_status                    = gpa_counter_lib_func_table.GpaCounterLibOpenCounterContext(
-        api, kGpaSessionSampleTypeDiscreteCounter, counter_context_hardware_info, kGpaOpenContextDefaultBit, &gpa_counter_context);
-    EXPECT_EQ(kGpaStatusErrorHardwareNotSupported, gpa_status);
-
-    gpa_status = gpa_counter_lib_func_table.GpaCounterLibCloseCounterContext(gpa_counter_context);
-    EXPECT_EQ(kGpaStatusErrorContextNotOpen, gpa_status);
-
-    UnloadLib(lib_handle);
-}
-
-void VerifyHardwareNotSupported(GpaApiType api, unsigned int device_id)
-{
-    LibHandle              lib_handle                 = nullptr;
-    GpaCounterLibFuncTable gpa_counter_lib_func_table = {};
-
-    if (!LoadAndVerifyCounterLib(&lib_handle, &gpa_counter_lib_func_table))
-    {
-        return;
-    }
-
-    GpaCounterContext             gpa_counter_context           = nullptr;
-    GpaCounterContextHardwareInfo counter_context_hardware_info = {kAmdVendorId, device_id, AMDTDeviceInfoUtils::kRevisionIdAny, nullptr, 0};
+    GpaCounterContextHardwareInfo counter_context_hardware_info = {device_info::kAmdVendorId, device_id, device_info::kRevisionIdAny, nullptr, 0};
     GpaStatus                     gpa_status                    = gpa_counter_lib_func_table.GpaCounterLibOpenCounterContext(
         api, kGpaSessionSampleTypeDiscreteCounter, counter_context_hardware_info, kGpaOpenContextDefaultBit, &gpa_counter_context);
     EXPECT_EQ(kGpaStatusErrorHardwareNotSupported, gpa_status);
 
     GpaSupportedSampleTypeInfo sample_type_info = {};
-    sample_type_info.vendor_id                  = kAmdVendorId;
+    sample_type_info.vendor_id                  = device_info::kAmdVendorId;
     sample_type_info.device_id                  = device_id;
-    sample_type_info.revision_id                = AMDTDeviceInfoUtils::kRevisionIdAny;
+    sample_type_info.revision_id                = device_info::kRevisionIdAny;
     sample_type_info.driver_info.driver_type    = kIgnoreDriver;
 
     GpaContextSampleTypeFlags supported_sample_types = {};
@@ -236,57 +232,62 @@ void VerifyHardwareNotSupported(GpaApiType api, unsigned int device_id)
     EXPECT_EQ(supported_sample_types, 0);
     EXPECT_EQ(kGpaStatusErrorHardwareNotSupported, gpa_status);
 
+    {
+        const GpaDeviceDescription device_desc = {.vendor_id = device_info::kAmdVendorId, .device_id = device_id, .revision_id = device_info::kRevisionIdAny};
+
+        GpaHwGeneration hardware_generation = kGpaHwGenerationLast;
+        gpa_status                          = gpa_counter_lib_func_table.GpaCounterLibGetHardwareGeneration(&device_desc, &hardware_generation);
+        EXPECT_EQ(hardware_generation, kGpaHwGenerationNone);
+        EXPECT_EQ(kGpaStatusErrorHardwareNotSupported, gpa_status);
+    }
+
     gpa_status = gpa_counter_lib_func_table.GpaCounterLibCloseCounterContext(gpa_counter_context);
     EXPECT_EQ(kGpaStatusErrorNullPointer, gpa_status);
-
-    UnloadLib(lib_handle);
 }
 
 void VerifyHardwareNotSupported(GpaApiType api, GpaHwGeneration generation)
 {
-    const GpaUInt32 device_id = generation_device_map[generation];
+    const GpaUInt32 device_id = kGenerationToDeviceIdMap.at(generation);
     VerifyHardwareNotSupported(api, device_id);
 }
 
 void VerifySupportedSampleTypes(GpaApiType api)
 {
-    LibHandle              handle                     = {};
     GpaCounterLibFuncTable gpa_counter_lib_func_table = {};
-
-    if (LoadAndVerifyCounterLib(&handle, &gpa_counter_lib_func_table))
-    {
-        GpaStatus                  status                = kGpaStatusOk;
-        GpaSupportedSampleTypeInfo info                  = {};
-        info.revision_id                                 = AMDTDeviceInfoUtils::kRevisionIdAny;
-        info.vendor_id                                   = kAmdVendorId;
-        info.driver_info.driver_type                     = kIgnoreDriver;
-        GpaContextSampleTypeFlags supported_sample_types = {};
-
-        // All supported device ids should pass with at least 1 supported sample type.
-        for (const GpaUInt32 device_id : kSupportedDeviceIds)
-        {
-            info.device_id = device_id;
-
-            status = gpa_counter_lib_func_table.GpaCounterLibGetSupportedSampleTypes(api, &info, &supported_sample_types);
-            EXPECT_EQ(kGpaStatusOk, status);
-            EXPECT_EQ(supported_sample_types & kGpaContextSampleTypeDiscreteCounter, 1);
-        }
-
-        UnloadLib(handle);
-    }
-}
-
-void VerifyInvalidOpenContextParameters(GpaApiType api, unsigned int device_id)
-{
-    LibHandle              lib_handle                 = nullptr;
-    GpaCounterLibFuncTable gpa_counter_lib_func_table = {};
-
-    if (!LoadAndVerifyCounterLib(&lib_handle, &gpa_counter_lib_func_table))
+    auto                   lib_guard                  = LoadAndVerifyCounterLib(&gpa_counter_lib_func_table);
+    if (!lib_guard)
     {
         return;
     }
 
-    GpaCounterContextHardwareInfo counter_context_hardware_info = {kAmdVendorId, device_id, AMDTDeviceInfoUtils::kRevisionIdAny, nullptr, 0};
+    GpaStatus                  status                = kGpaStatusOk;
+    GpaSupportedSampleTypeInfo info                  = {};
+    info.revision_id                                 = device_info::kRevisionIdAny;
+    info.vendor_id                                   = device_info::kAmdVendorId;
+    info.driver_info.driver_type                     = kIgnoreDriver;
+    GpaContextSampleTypeFlags supported_sample_types = {};
+
+    // All supported device ids should pass with at least 1 supported sample type.
+    for (const GpaUInt32 device_id : kSupportedDeviceIds)
+    {
+        info.device_id = device_id;
+
+        status = gpa_counter_lib_func_table.GpaCounterLibGetSupportedSampleTypes(api, &info, &supported_sample_types);
+        EXPECT_EQ(kGpaStatusOk, status);
+        EXPECT_EQ(supported_sample_types & kGpaContextSampleTypeDiscreteCounter, 1);
+    }
+}
+
+void VerifyInvalidOpenContextParameters(GpaApiType api, uint32_t device_id)
+{
+    GpaCounterLibFuncTable gpa_counter_lib_func_table = {};
+    auto                   lib_guard                  = LoadAndVerifyCounterLib(&gpa_counter_lib_func_table);
+    if (!lib_guard)
+    {
+        return;
+    }
+
+    GpaCounterContextHardwareInfo counter_context_hardware_info = {device_info::kAmdVendorId, device_id, device_info::kRevisionIdAny, nullptr, 0};
 
     GpaStatus gpa_status = kGpaStatusOk;
 
@@ -321,19 +322,16 @@ void VerifyInvalidOpenContextParameters(GpaApiType api, unsigned int device_id)
             EXPECT_EQ(kGpaStatusErrorNullPointer, gpa_status);
         }
     }
-
-    UnloadLib(lib_handle);
 }
 
 void VerifyCounterNames(GpaApiType                      api,
-                        unsigned int                    device_id,
+                        uint32_t                        device_id,
                         const std::vector<const char*>& expected_derived_names,
                         const std::vector<const char*>& expected_hardware_names)
 {
-    LibHandle              lib_handle                 = nullptr;
     GpaCounterLibFuncTable gpa_counter_lib_func_table = {};
-
-    if (!LoadAndVerifyCounterLib(&lib_handle, &gpa_counter_lib_func_table))
+    auto                   lib_guard                  = LoadAndVerifyCounterLib(&gpa_counter_lib_func_table);
+    if (!lib_guard)
     {
         return;
     }
@@ -352,7 +350,7 @@ void VerifyCounterNames(GpaApiType                      api,
         const std::vector<const char*>& expectedNames      = counter_combination->second;
 
         GpaCounterContext             gpa_counter_context           = nullptr;
-        GpaCounterContextHardwareInfo counter_context_hardware_info = {kAmdVendorId, device_id, AMDTDeviceInfoUtils::kRevisionIdAny, nullptr, 0};
+        GpaCounterContextHardwareInfo counter_context_hardware_info = {device_info::kAmdVendorId, device_id, device_info::kRevisionIdAny, nullptr, 0};
         GpaStatus                     gpa_status                    = gpa_counter_lib_func_table.GpaCounterLibOpenCounterContext(
             api, kGpaSessionSampleTypeDiscreteCounter, counter_context_hardware_info, open_context_flags, &gpa_counter_context);
         EXPECT_EQ(kGpaStatusOk, gpa_status);
@@ -411,10 +409,10 @@ void VerifyCounterNames(GpaApiType                      api,
         else if (num_counters <= expectedNames.size())
         {
             const char* temp_str = nullptr;
-            for (unsigned int i = 0; i < expectedNames.size(); ++i)
+            for (uint32_t i = 0; const char* expectedName : expectedNames)
             {
                 EXPECT_EQ(kGpaStatusOk, gpa_counter_lib_func_table.GpaCounterLibGetCounterName(gpa_counter_context, i, &temp_str));
-                EXPECT_STREQ(expectedNames[i], temp_str);
+                EXPECT_STREQ(expectedName, temp_str);
 
                 EXPECT_EQ(kGpaStatusOk, gpa_counter_lib_func_table.GpaCounterLibGetCounterGroup(gpa_counter_context, i, &temp_str));
                 EXPECT_NE((const char*)nullptr, temp_str);
@@ -432,29 +430,37 @@ void VerifyCounterNames(GpaApiType                      api,
                     // the format of the description used to be "#GROUP#counter description", but isn't any longer, so make sure the description does NOT start with '#'
                     EXPECT_NE('#', temp_str[0]);
                 }
+                ++i;
             }
         }
 
         gpa_status = gpa_counter_lib_func_table.GpaCounterLibCloseCounterContext(gpa_counter_context);
         EXPECT_EQ(kGpaStatusOk, gpa_status);
     }
-
-    UnloadLib(lib_handle);
 }
 
 // Verifies that GpaCounterLibOpenCounterContext() succeeds with all values of GpaOpenContextBits.
 void VerifyOpenCounterContext(GpaApiType api, GpaHwGeneration generation)
 {
-    LibHandle              lib_handle                 = nullptr;
     GpaCounterLibFuncTable gpa_counter_lib_func_table = {};
-
-    if (!LoadAndVerifyCounterLib(&lib_handle, &gpa_counter_lib_func_table))
+    auto                   lib_guard                  = LoadAndVerifyCounterLib(&gpa_counter_lib_func_table);
+    if (!lib_guard)
     {
         return;
     }
 
-    GpaCounterContextHardwareInfo counter_context_hardware_info = {
-        kAmdVendorId, generation_device_map[generation], AMDTDeviceInfoUtils::kRevisionIdAny, nullptr, 0};
+    const GpaUInt32 device_id = kGenerationToDeviceIdMap.at(generation);
+
+    GpaCounterContextHardwareInfo counter_context_hardware_info = {device_info::kAmdVendorId, device_id, device_info::kRevisionIdAny, nullptr, 0};
+
+    {
+        const GpaDeviceDescription device_desc = {.vendor_id = device_info::kAmdVendorId, .device_id = device_id, .revision_id = device_info::kRevisionIdAny};
+
+        GpaHwGeneration hardware_generation = kGpaHwGenerationLast;
+        const GpaStatus gpa_status          = gpa_counter_lib_func_table.GpaCounterLibGetHardwareGeneration(&device_desc, &hardware_generation);
+        EXPECT_EQ(hardware_generation, generation);
+        EXPECT_EQ(kGpaStatusOk, gpa_status);
+    }
 
     GpaOpenContextBits context_bits_values[] = {
         kGpaOpenContextDefaultBit,
@@ -605,8 +611,6 @@ void VerifyOpenCounterContext(GpaApiType api, GpaHwGeneration generation)
         EXPECT_LT(num_hardware_counters, num_default_and_hardware_counters);
         EXPECT_EQ(num_default_counters + num_hardware_counters, num_default_and_hardware_counters);
     }
-
-    UnloadLib(lib_handle);
 }
 
 void VerifyCounterNames(GpaApiType                      api,
@@ -614,29 +618,30 @@ void VerifyCounterNames(GpaApiType                      api,
                         const std::vector<const char*>& expectedNames,
                         const std::vector<const char*>& expected_hardware_names)
 {
-    assert(generation_device_map.size() == GDT_HW_GENERATION_LAST);
-    VerifyCounterNames(api, generation_device_map[generation], expectedNames, expected_hardware_names);
+    assert(kGenerationToDeviceIdMap.size() == static_cast<size_t>(device_info::HwGeneration::kTotalHwGenerations));
+    VerifyCounterNames(api, kGenerationToDeviceIdMap.at(generation), expectedNames, expected_hardware_names);
 }
 
-void VerifyCounterLibInterface(GpaApiType api, unsigned device_id, unsigned revision_id)
+void VerifyCounterLibInterface(GpaApiType api, uint32_t device_id, uint32_t revision_id)
 {
-    LibHandle              lib_handle                 = nullptr;
     GpaCounterLibFuncTable gpa_counter_lib_func_table = {};
-
-    if (!LoadAndVerifyCounterLib(&lib_handle, &gpa_counter_lib_func_table))
+    auto                   lib_guard                  = LoadAndVerifyCounterLib(&gpa_counter_lib_func_table);
+    if (!lib_guard)
     {
         return;
     }
 
     GpaCounterContext gpa_counter_context = nullptr;
 
-    const bool gfx11_family = (device_id == kDevIdGfx11 || device_id == kDevIdGfx11_0_3 || device_id == kDevIdGfx11_0_3B || device_id == kDevIdGfx11_5_0 ||
-                               device_id == kDevIdGfx11_5_3);
+    GpaHwGeneration            hw_generation = kGpaHwGenerationLast;
+    const GpaDeviceDescription device_desc   = {.vendor_id = device_info::kAmdVendorId, .device_id = device_id, .revision_id = device_info::kRevisionIdAny};
+    gpa_counter_lib_func_table.GpaCounterLibGetHardwareGeneration(&device_desc, &hw_generation);
+    const bool gfx11_family = (hw_generation == kGpaHwGenerationGfx11 || hw_generation == kGpaHwGenerationGfx115);
 
     {
         if (device_id == kDevIdGfx10_3)
         {
-            GpaCounterContextHardwareInfo counter_context_hardware_info = {kAmdVendorId, device_id, revision_id, nullptr, 0};
+            GpaCounterContextHardwareInfo counter_context_hardware_info = {device_info::kAmdVendorId, device_id, revision_id, nullptr, 0};
             GpaStatus                     gpa_status =
                 gpa_counter_lib_func_table.GpaCounterLibOpenCounterContext(api,
                                                                            kGpaSessionSampleTypeDiscreteCounter,
@@ -645,7 +650,7 @@ void VerifyCounterLibInterface(GpaApiType api, unsigned device_id, unsigned revi
                                                                            &gpa_counter_context);
             EXPECT_EQ(kGpaStatusOk, gpa_status);
 
-            GpaCounterParam counter_param;
+            GpaCounterParam counter_param                      = {};
             GpaUInt32       index                              = 0;
             counter_param.is_derived_counter                   = false;
             counter_param.gpa_hw_counter.gpa_hw_block          = kGpaHwBlockGl2C;
@@ -666,7 +671,7 @@ void VerifyCounterLibInterface(GpaApiType api, unsigned device_id, unsigned revi
         }
     }
     {
-        GpaCounterContextHardwareInfo counter_context_hardware_info = {kAmdVendorId, device_id, revision_id, nullptr, 0};
+        GpaCounterContextHardwareInfo counter_context_hardware_info = {device_info::kAmdVendorId, device_id, revision_id, nullptr, 0};
         GpaStatus                     gpa_status                    = gpa_counter_lib_func_table.GpaCounterLibOpenCounterContext(
             api, kGpaSessionSampleTypeDiscreteCounter, counter_context_hardware_info, kGpaOpenContextDefaultBit, &gpa_counter_context);
         EXPECT_EQ(kGpaStatusOk, gpa_status);
@@ -678,7 +683,7 @@ void VerifyCounterLibInterface(GpaApiType api, unsigned device_id, unsigned revi
 
             if (gfx11_family && (kGpaApiDirectx11 == api || kGpaApiOpengl == api || kGpaApiDirectx12 == api || kGpaApiVulkan == api))
             {
-                GpaCounterParam counter_param;
+                GpaCounterParam counter_param      = {};
                 counter_param.is_derived_counter   = true;
                 counter_param.derived_counter_name = "PSVALUInstCountKnownIssue";
                 GpaUInt32 counter_index            = 0;
@@ -688,7 +693,7 @@ void VerifyCounterLibInterface(GpaApiType api, unsigned device_id, unsigned revi
             }
             else if (device_id == kDevIdGfx10 || device_id == kDevIdGfx10_3)
             {
-                GpaCounterParam counter_param;
+                GpaCounterParam counter_param      = {};
                 counter_param.is_derived_counter   = true;
                 counter_param.derived_counter_name = "PSVALUInstCount";
                 GpaUInt32 counter_index            = 0;
@@ -700,7 +705,7 @@ void VerifyCounterLibInterface(GpaApiType api, unsigned device_id, unsigned revi
             {
                 {
                     // Graphics SQ-derived counters use a shader mask
-                    GpaCounterParam counter_param;
+                    GpaCounterParam counter_param      = {};
                     counter_param.is_derived_counter   = true;
                     counter_param.derived_counter_name = "PSVALUInstCount";
                     GpaUInt32 counter_index            = GPA_UINT32_MAX;
@@ -721,7 +726,7 @@ void VerifyCounterLibInterface(GpaApiType api, unsigned device_id, unsigned revi
                 }
 
                 {
-                    GpaCounterParam counter_param;
+                    GpaCounterParam counter_param      = {};
                     counter_param.is_derived_counter   = true;
                     counter_param.derived_counter_name = "PSTime";
                     GpaUInt32 counter_index            = 0;
@@ -752,7 +757,7 @@ void VerifyCounterLibInterface(GpaApiType api, unsigned device_id, unsigned revi
         }
     }
     {
-        GpaCounterContextHardwareInfo counter_context_hardware_info = {kAmdVendorId, device_id, revision_id, nullptr, 0};
+        GpaCounterContextHardwareInfo counter_context_hardware_info = {device_info::kAmdVendorId, device_id, revision_id, nullptr, 0};
         GpaStatus                     gpa_status                    = gpa_counter_lib_func_table.GpaCounterLibOpenCounterContext(api,
                                                                                           kGpaSessionSampleTypeDiscreteCounter,
                                                                                           counter_context_hardware_info,
@@ -761,7 +766,7 @@ void VerifyCounterLibInterface(GpaApiType api, unsigned device_id, unsigned revi
         EXPECT_EQ(kGpaStatusOk, gpa_status);
 
         {
-            GpaCounterParam counter_param;
+            GpaCounterParam counter_param    = {};
             counter_param.is_derived_counter = false;
 
             if (gfx11_family)
@@ -793,8 +798,8 @@ void VerifyCounterLibInterface(GpaApiType api, unsigned device_id, unsigned revi
 
                 if (gpa_status == kGpaStatusOk && temp_char != nullptr)
                 {
-                    GpaUInt32       index2 = 0;
-                    GpaCounterParam counter_param2;
+                    GpaUInt32       index2              = 0;
+                    GpaCounterParam counter_param2      = {};
                     counter_param2.is_derived_counter   = true;
                     counter_param2.derived_counter_name = temp_char;
                     gpa_status = gpa_counter_lib_func_table.GpaCounterLibGetCounterIndex(gpa_counter_context, &counter_param2, &index2);
@@ -817,7 +822,7 @@ void VerifyCounterLibInterface(GpaApiType api, unsigned device_id, unsigned revi
         }
 
         {
-            GpaCounterParam counter_param;
+            GpaCounterParam counter_param = {};
 
             if (gfx11_family)
             {
@@ -848,8 +853,8 @@ void VerifyCounterLibInterface(GpaApiType api, unsigned device_id, unsigned revi
                 EXPECT_EQ(kGpaStatusOk, gpa_status);
                 EXPECT_NE(temp_char, nullptr);
 
-                GpaUInt32       index2 = 0u;
-                GpaCounterParam counter_param2;
+                GpaUInt32       index2              = 0u;
+                GpaCounterParam counter_param2      = {};
                 counter_param2.is_derived_counter   = true;
                 counter_param2.derived_counter_name = temp_char;
                 const GpaCounterInfo* temp_ptr      = nullptr;
@@ -912,7 +917,7 @@ void VerifyCounterLibInterface(GpaApiType api, unsigned device_id, unsigned revi
 
         if (device_id == kDevIdGfx10)
         {
-            GpaCounterParam counter_param;
+            GpaCounterParam counter_param                      = {};
             counter_param.is_derived_counter                   = false;
             counter_param.gpa_hw_counter.gpa_hw_block          = kGpaHwBlockGl1C;
             counter_param.gpa_hw_counter.gpa_hw_block_instance = 33;  // Instance not available
@@ -935,7 +940,7 @@ void VerifyCounterLibInterface(GpaApiType api, unsigned device_id, unsigned revi
             gpa_status            = gpa_counter_lib_func_table.GpaCounterLibGetCounterName(gpa_counter_context, index, &temp_char);
             EXPECT_EQ(gpa_status, kGpaStatusOk);
 
-            GpaCounterParam counter_param2;
+            GpaCounterParam counter_param2      = {};
             counter_param2.is_derived_counter   = true;
             counter_param2.derived_counter_name = temp_char;
             GpaUInt32 index2                    = 0u;
@@ -959,7 +964,7 @@ void VerifyCounterLibInterface(GpaApiType api, unsigned device_id, unsigned revi
 
         if (device_id == kDevIdGfx10_3)
         {
-            GpaCounterParam counter_param;
+            GpaCounterParam counter_param                      = {};
             counter_param.is_derived_counter                   = false;
             counter_param.gpa_hw_counter.gpa_hw_block          = kGpaHwBlockGl2C;
             counter_param.gpa_hw_counter.gpa_hw_block_instance = 0;
@@ -978,29 +983,24 @@ void VerifyCounterLibInterface(GpaApiType api, unsigned device_id, unsigned revi
         EXPECT_EQ(kGpaStatusOk, gpa_status);
         gpa_counter_context = nullptr;
     }
-
-    UnloadLib(lib_handle);
-    lib_handle = nullptr;
 }
 
-void VerifyCounterByPassCounterLibEntry(GpaApiType api, unsigned device_id, unsigned revision_id)
+void VerifyCounterByPassCounterLibEntry(GpaApiType api, uint32_t device_id, uint32_t revision_id)
 {
-    LibHandle              lib_handle                 = nullptr;
     GpaCounterLibFuncTable gpa_counter_lib_func_table = {};
-
-    if (!LoadAndVerifyCounterLib(&lib_handle, &gpa_counter_lib_func_table))
+    auto                   lib_guard                  = LoadAndVerifyCounterLib(&gpa_counter_lib_func_table);
+    if (!lib_guard)
     {
         return;
     }
 
     GpaCounterContext gpa_counter_context = nullptr;
 
-    auto GetPassCounters = [&](GpaCounterContext gpa_counter_context,
-                               GpaUInt32         counter_count,
-                               GpaUInt32*        derived_counter_list) -> std::map<unsigned int, std::vector<unsigned int>> {
-        std::map<unsigned int, std::vector<unsigned int>> pass_counter_map;
-        GpaUInt32                                         pass_count;
-        GpaStatus                                         gpa_status =
+    auto GetPassCounters =
+        [&](GpaCounterContext gpa_counter_context, GpaUInt32 counter_count, GpaUInt32* derived_counter_list) -> std::map<uint32_t, std::vector<uint32_t>> {
+        std::map<uint32_t, std::vector<uint32_t>> pass_counter_map;
+        GpaUInt32                                 pass_count;
+        GpaStatus                                 gpa_status =
             gpa_counter_lib_func_table.GpaCounterLibGetCountersByPass(gpa_counter_context, counter_count, derived_counter_list, &pass_count, nullptr, nullptr);
 
         if (kGpaStatusOk == gpa_status)
@@ -1017,7 +1017,7 @@ void VerifyCounterByPassCounterLibEntry(GpaApiType api, unsigned device_id, unsi
                 std::vector<std::vector<GpaUInt32>> counter_indices;
                 counter_indices.reserve(pass_count);
 
-                for (unsigned int i = 0; i < pass_count; i++)
+                for (uint32_t i = 0; i < pass_count; i++)
                 {
                     const GpaUInt32 num_counters = counter_list[i];
 
@@ -1035,14 +1035,13 @@ void VerifyCounterByPassCounterLibEntry(GpaApiType api, unsigned device_id, unsi
 
                 if (kGpaStatusOk == gpa_status)
                 {
-                    for (unsigned int i = 0; i < pass_count; i++)
+                    for (uint32_t i = 0; i < pass_count; i++)
                     {
                         if (pass_counters[i].counter_indices != nullptr)
                         {
-                            std::vector<unsigned int> counter_list_vec;
-                            counter_list_vec.resize(pass_counters[i].counter_count);
-                            memcpy(counter_list_vec.data(), pass_counters[i].counter_indices, sizeof(GpaUInt32) * pass_counters[i].counter_count);
-                            pass_counter_map.insert(std::pair<unsigned int, std::vector<unsigned int>>(i, counter_list_vec));
+                            std::vector<uint32_t> counter_list_vec(pass_counters[i].counter_indices,
+                                                                   pass_counters[i].counter_indices + pass_counters[i].counter_count);
+                            pass_counter_map.emplace(i, std::move(counter_list_vec));
                         }
                     }
                 }
@@ -1052,14 +1051,14 @@ void VerifyCounterByPassCounterLibEntry(GpaApiType api, unsigned device_id, unsi
         return pass_counter_map;
     };
 
-    GpaCounterContextHardwareInfo counter_context_hardware_info = {kAmdVendorId, device_id, revision_id, nullptr, 0};
+    GpaCounterContextHardwareInfo counter_context_hardware_info = {device_info::kAmdVendorId, device_id, revision_id, nullptr, 0};
     GpaStatus                     gpa_status                    = gpa_counter_lib_func_table.GpaCounterLibOpenCounterContext(api,
                                                                                       kGpaSessionSampleTypeDiscreteCounter,
                                                                                       counter_context_hardware_info,
                                                                                       kGpaOpenContextDefaultBit | kGpaOpenContextEnableHardwareCountersBit,
                                                                                       &gpa_counter_context);
 
-    GpaCounterParam counter_param;
+    GpaCounterParam counter_param = {};
 
     counter_param.is_derived_counter   = true;
     counter_param.derived_counter_name = "GPUTime";
@@ -1075,9 +1074,13 @@ void VerifyCounterByPassCounterLibEntry(GpaApiType api, unsigned device_id, unsi
     EXPECT_EQ(kGpaStatusOk, gpa_status);
     EXPECT_GT(gpu_busy_index, 0);
 
-    if (device_id == kDevIdGfx11)
+    GpaHwGeneration            hw_generation = kGpaHwGenerationLast;
+    const GpaDeviceDescription device_desc   = {.vendor_id = device_info::kAmdVendorId, .device_id = device_id, .revision_id = device_info::kRevisionIdAny};
+    gpa_counter_lib_func_table.GpaCounterLibGetHardwareGeneration(&device_desc, &hw_generation);
+    const bool gfx11_family = (hw_generation == kGpaHwGenerationGfx11 || hw_generation == kGpaHwGenerationGfx115);
+    if (gfx11_family)
     {
-        // On Gfx11, the previous SQ block was renamed to SQG, and the actual underlying SQ blocks were introduced as SQWGP.
+        // On Gfx11+, the previous SQ block was renamed to SQG, and the actual underlying SQ blocks were introduced as SQWGP.
         // This test is intended to ensure that we can access the SQ_PERF_SEL_WAVES event, which is now on the SQWGP blocks.
         counter_param.is_derived_counter                   = false;
         counter_param.gpa_hw_counter.gpa_hw_block          = kGpaHwBlockSqWgp;
@@ -1097,9 +1100,9 @@ void VerifyCounterByPassCounterLibEntry(GpaApiType api, unsigned device_id, unsi
     GpaUInt32 sq_counter_index;
     gpa_status = gpa_counter_lib_func_table.GpaCounterLibGetCounterIndex(gpa_counter_context, &counter_param, &sq_counter_index);
 
-    std::map<unsigned int, std::vector<std::string>> pass_counter_names;
+    std::map<uint32_t, std::vector<std::string>> pass_counter_names;
 
-    if (device_id == kDevIdGfx11)
+    if (gfx11_family)
     {
         pass_counter_names = {{0, {"CPF_PERF_SEL_CPF_STAT_BUSY", "CPF_PERF_SEL_ALWAYS_COUNT", "SQWGP_PS0_SQ_PERF_SEL_WAVES"}},
                               {1, {"GPUTime_BOTTOM_TO_BOTTOM_DURATION"}}};
@@ -1116,13 +1119,13 @@ void VerifyCounterByPassCounterLibEntry(GpaApiType api, unsigned device_id, unsi
 
     if (kGpaStatusOk == gpa_status)
     {
-        GpaUInt32                                         derived_counter_list[] = {gpu_time_counter_index, gpu_busy_index, sq_counter_index};
-        std::map<unsigned int, std::vector<unsigned int>> pass_counter_map       = GetPassCounters(gpa_counter_context, 3, derived_counter_list);
+        GpaUInt32                                 derived_counter_list[] = {gpu_time_counter_index, gpu_busy_index, sq_counter_index};
+        std::map<uint32_t, std::vector<uint32_t>> pass_counter_map       = GetPassCounters(gpa_counter_context, 3, derived_counter_list);
 
-        unsigned int pass_iter = 0;
+        uint32_t pass_iter = 0;
         for (auto iter = pass_counter_map.cbegin(); iter != pass_counter_map.cend(); ++iter)
         {
-            unsigned counter_index_iter = 0u;
+            uint32_t counter_index_iter = 0u;
             for (auto counter_iter = iter->second.cbegin(); counter_iter != iter->second.cend(); ++counter_iter)
             {
                 const char* counter_name;
@@ -1137,70 +1140,135 @@ void VerifyCounterByPassCounterLibEntry(GpaApiType api, unsigned device_id, unsi
     gpa_status = gpa_counter_lib_func_table.GpaCounterLibCloseCounterContext(gpa_counter_context);
     EXPECT_EQ(kGpaStatusOk, gpa_status);
     gpa_counter_context = nullptr;
-
-    UnloadLib(lib_handle);
-    lib_handle = nullptr;
 }
 
-void VerifyPassCount(GpaApiType api, unsigned int device_id, const std::vector<unsigned int>& counters_to_enable, unsigned int expected_num_passes)
+void VerifyCountersInPass(GpaApiType                                                              api,
+                          uint32_t                                                                device_id,
+                          const std::vector<uint32_t>&                                            counters_to_enable,
+                          const std::vector<std::vector<uint32_t>>&                               expected_hw_counters_per_pass,
+                          const std::map<uint32_t, std::map<uint32_t, GpaCounterResultLocation>>& expected_result_location)
 {
-    LibHandle              lib_handle                 = nullptr;
-    GpaCounterLibFuncTable gpa_counter_lib_func_table = {};
-
-    if (!LoadAndVerifyCounterLib(&lib_handle, &gpa_counter_lib_func_table))
+    GpaCounterLibFuncTable fn_table  = {};
+    auto                   lib_guard = LoadAndVerifyCounterLib(&fn_table);
+    if (!lib_guard)
     {
         return;
     }
 
-    GpaCounterContext             gpa_counter_context           = nullptr;
-    GpaCounterContextHardwareInfo counter_context_hardware_info = {kAmdVendorId, device_id, AMDTDeviceInfoUtils::kRevisionIdAny, nullptr, 0};
-    GpaStatus                     gpa_status                    = gpa_counter_lib_func_table.GpaCounterLibOpenCounterContext(
-        api, kGpaSessionSampleTypeDiscreteCounter, counter_context_hardware_info, kGpaOpenContextDefaultBit, &gpa_counter_context);
-    EXPECT_EQ(kGpaStatusOk, gpa_status);
+    GpaCounterContext             counter_context               = {};
+    GpaCounterContextHardwareInfo counter_context_hardware_info = {device_info::kAmdVendorId, device_id, device_info::kRevisionIdAny, nullptr, 0};
 
-    GpaUInt32 pass_count = 0u;
-    gpa_status           = gpa_counter_lib_func_table.GpaCounterLibGetPassCount(
-        gpa_counter_context, counters_to_enable.data(), static_cast<GpaUInt32>(counters_to_enable.size()), &pass_count);
-    EXPECT_EQ(expected_num_passes, pass_count);
+    EXPECT_EQ(kGpaStatusOk,
+              fn_table.GpaCounterLibOpenCounterContext(
+                  api, kGpaSessionSampleTypeDiscreteCounter, counter_context_hardware_info, kGpaOpenContextDefaultBit, &counter_context));
 
-    gpa_status = gpa_counter_lib_func_table.GpaCounterLibCloseCounterContext(gpa_counter_context);
-    EXPECT_EQ(kGpaStatusOk, gpa_status);
+    if (counter_context != nullptr)
+    {
+        GpaUInt32 num_public_counters = 0;
+        EXPECT_EQ(kGpaStatusOk, fn_table.GpaCounterLibGetNumCounters(counter_context, &num_public_counters));
 
-    UnloadLib(lib_handle);
-}
+        GpaUInt32 actual_pass_count = 0;
+        EXPECT_EQ(kGpaStatusOk,
+                  fn_table.GpaCounterLibGetCountersByPass(
+                      counter_context, static_cast<GpaUInt32>(counters_to_enable.size()), counters_to_enable.data(), &actual_pass_count, nullptr, nullptr));
+        EXPECT_EQ(expected_hw_counters_per_pass.size(), actual_pass_count) << "Unexpected number of passes returned by the library." << std::endl;
 
-void VerifyCountersInPass(GpaApiType                                                                      api,
-                          unsigned int                                                                    device_id,
-                          const std::vector<unsigned int>&                                                counter_to_enable,
-                          const std::vector<std::vector<unsigned int>>&                                   expected_hw_counters_per_pass,
-                          const std::map<unsigned int, std::map<unsigned int, GpaCounterResultLocation>>& expected_result_location)
-{
-    LibHandle lib_handle = LoadLib(kCountersLibName);
-    ASSERT_NE((LibHandle) nullptr, lib_handle);
-    UNREFERENCED_PARAMETER(api);
-    UNREFERENCED_PARAMETER(device_id);
-    UNREFERENCED_PARAMETER(counter_to_enable);
-    UNREFERENCED_PARAMETER(expected_hw_counters_per_pass);
-    UNREFERENCED_PARAMETER(expected_result_location);
+        if (actual_pass_count == expected_hw_counters_per_pass.size())
+        {
+            std::vector<GpaUInt32> actual_num_counters_per_pass(actual_pass_count, 0);
+            EXPECT_EQ(kGpaStatusOk,
+                      fn_table.GpaCounterLibGetCountersByPass(counter_context,
+                                                              static_cast<GpaUInt32>(counters_to_enable.size()),
+                                                              counters_to_enable.data(),
+                                                              &actual_pass_count,
+                                                              actual_num_counters_per_pass.data(),
+                                                              nullptr));
 
-    UnloadLib(lib_handle);
-}
+            // Allocate storage for per-pass counter indices.
+            std::vector<std::vector<GpaUInt32>> counter_indices_storage(actual_pass_count);
+            std::vector<GpaPassCounter>         actual_pass_counters(actual_pass_count);
 
-void VerifyCounterCalculation(GpaApiType                           api,
-                              unsigned int                         device_id,
-                              char*                                counter_name,
-                              const std::vector<const GpaUInt64*>& sample_results,
-                              GpaFloat64                           expected_result)
-{
-    LibHandle lib_handle = LoadLib(kCountersLibName);
-    ASSERT_NE((LibHandle) nullptr, lib_handle);
-    UNREFERENCED_PARAMETER(api);
-    UNREFERENCED_PARAMETER(device_id);
-    UNREFERENCED_PARAMETER(counter_name);
-    UNREFERENCED_PARAMETER(sample_results);
-    UNREFERENCED_PARAMETER(expected_result);
+            for (GpaUInt32 i = 0; i < actual_pass_count; ++i)
+            {
+                counter_indices_storage[i].resize(actual_num_counters_per_pass[i], 0);
+                actual_pass_counters[i].pass_index      = i;
+                actual_pass_counters[i].counter_count   = actual_num_counters_per_pass[i];
+                actual_pass_counters[i].counter_indices = counter_indices_storage[i].data();
+            }
 
-    UnloadLib(lib_handle);
+            EXPECT_EQ(kGpaStatusOk,
+                      fn_table.GpaCounterLibGetCountersByPass(counter_context,
+                                                              static_cast<GpaUInt32>(counters_to_enable.size()),
+                                                              counters_to_enable.data(),
+                                                              &actual_pass_count,
+                                                              actual_num_counters_per_pass.data(),
+                                                              actual_pass_counters.data()));
+
+            // Verify per-pass counter indices.
+            for (size_t pass = 0; pass < actual_pass_count; ++pass)
+            {
+                EXPECT_EQ(actual_num_counters_per_pass[pass], expected_hw_counters_per_pass[pass].size())
+                    << "Unexpected number of counters in pass " << pass << "." << std::endl;
+
+                if (actual_num_counters_per_pass[pass] == expected_hw_counters_per_pass[pass].size())
+                {
+                    for (size_t index = 0; index < expected_hw_counters_per_pass[pass].size(); ++index)
+                    {
+                        const GpaUInt32 raw_counter_index = actual_pass_counters[pass].counter_indices[index];
+                        EXPECT_GE(raw_counter_index, num_public_counters)
+                            << "Counter index " << raw_counter_index << " in pass " << pass << ", index " << index
+                            << " is less than the number of public counters (" << num_public_counters
+                            << "); expected a hardware counter index offset by the public counter count." << std::endl;
+                        if (raw_counter_index >= num_public_counters)
+                        {
+                            const GpaUInt32 actual_hw_counter_index = raw_counter_index - num_public_counters;
+                            EXPECT_EQ(actual_hw_counter_index, expected_hw_counters_per_pass[pass][index])
+                                << "Counters in unexpected locations at pass " << pass << ", index " << index << "." << std::endl;
+                        }
+                    }
+                }
+            }
+
+            // Verify that the *expected* result-location metadata is self-consistent with the expected hardware
+            // counters per pass and the actual number of passes reported by the library.
+            // For each public counter present in the expected-result-location map, each expected result location
+            // must reference a valid pass and offset within that pass. This check validates only the internal
+            // consistency of the expectation data provided by the test, not any result-location mapping
+            // produced by the library or the completeness of the expectation map.
+            for (const auto& [public_counter_index, location_map] : expected_result_location)
+            {
+                EXPECT_FALSE(location_map.empty()) << "Expected result locations for public counter " << public_counter_index << " should not be empty."
+                                                   << std::endl;
+
+                for (const auto& [hw_counter_index, result_location] : location_map)
+                {
+                    const GpaUInt16 pass   = result_location.pass_index_;
+                    const GpaUInt16 offset = result_location.offset_;
+
+                    EXPECT_LT(pass, actual_pass_count) << "Result location for public counter " << public_counter_index << " references pass " << pass
+                                                       << " but only " << actual_pass_count << " passes exist." << std::endl;
+
+                    if (pass < actual_pass_count)
+                    {
+                        EXPECT_LT(offset, expected_hw_counters_per_pass[pass].size())
+                            << "Result location for public counter " << public_counter_index << " references offset " << offset << " in pass " << pass
+                            << " but that pass only has " << expected_hw_counters_per_pass[pass].size() << " counters." << std::endl;
+
+                        // Verify the hardware counter index in the result location matches what is actually scheduled in that pass/offset.
+                        if (offset < expected_hw_counters_per_pass[pass].size())
+                        {
+                            EXPECT_EQ(hw_counter_index, expected_hw_counters_per_pass[pass][offset])
+                                << "Result location for public counter " << public_counter_index << " at pass " << pass << ", offset " << offset
+                                << " expects hw counter " << hw_counter_index << " but found " << expected_hw_counters_per_pass[pass][offset] << "."
+                                << std::endl;
+                        }
+                    }
+                }
+            }
+        }
+
+        EXPECT_EQ(kGpaStatusOk, fn_table.GpaCounterLibCloseCounterContext(counter_context));
+    }
 }
 
 void VerifyCounterFormula(const gpa_array_view<GpaCounterDesc> public_counters)
@@ -1228,4 +1296,45 @@ void VerifyCounterFormula(const gpa_array_view<GpaCounterDesc> public_counters)
         const GpaStatus gpa_status   = EvaluateExpression<GpaFloat64>(desc.equation, &final_result, results, desc.data_type, dummy_hardware_info);
         EXPECT_EQ(kGpaStatusOk, gpa_status);
     }
+}
+
+GpaFloat64 GetCounterCalculation(GpaApiType api, uint32_t device_id, const char* counter_name, std::span<const GpaUInt64> sample_results)
+{
+    // Technically -1.0f could be a valid result, but it is unlikely, as we try to ensure the counter results are always positive values.
+    // Any actual error that would cause this value to get returned would get reported somewhere below, so this is fine to use as a default.
+    GpaFloat64 actual_result = -1.0f;
+
+    GpaCounterLibFuncTable fn_table  = {};
+    auto                   lib_guard = LoadAndVerifyCounterLib(&fn_table);
+    if (!lib_guard)
+    {
+        return actual_result;
+    }
+
+    GpaCounterContext             counter_context               = {};
+    GpaCounterContextHardwareInfo counter_context_hardware_info = {device_info::kAmdVendorId, device_id, device_info::kRevisionIdAny, nullptr, 0};
+    GpaStatus                     gpa_status                    = fn_table.GpaCounterLibOpenCounterContext(
+        api, kGpaSessionSampleTypeDiscreteCounter, counter_context_hardware_info, kGpaOpenContextDefaultBit, &counter_context);
+    EXPECT_EQ(kGpaStatusOk, gpa_status);
+
+    if (counter_context != nullptr)
+    {
+        GpaUInt32       counter_index      = 0;
+        GpaCounterParam counter_param      = {};
+        counter_param.is_derived_counter   = true;
+        counter_param.derived_counter_name = counter_name;
+
+        GpaStatus get_counter_index_status = fn_table.GpaCounterLibGetCounterIndex(counter_context, &counter_param, &counter_index);
+        EXPECT_EQ(kGpaStatusOk, get_counter_index_status);
+        if (kGpaStatusOk == get_counter_index_status)
+        {
+            GpaStatus compute_derived_counter_result_status = fn_table.GpaCounterLibComputeDerivedCounterResult(
+                counter_context, counter_index, sample_results.data(), static_cast<GpaUInt32>(sample_results.size()), &actual_result);
+            EXPECT_EQ(kGpaStatusOk, compute_derived_counter_result_status);
+        }
+
+        EXPECT_EQ(kGpaStatusOk, fn_table.GpaCounterLibCloseCounterContext(counter_context));
+    }
+
+    return actual_result;
 }

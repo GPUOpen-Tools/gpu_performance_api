@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016-2025 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  Manages a set of derived counters.
@@ -10,6 +10,7 @@
 
 #include <assert.h>
 
+#include <memory>
 #include <vector>
 
 #include "gpu_performance_api/gpu_perf_api_counters.h"
@@ -53,8 +54,20 @@ public:
     /// Delete the default constructor. This helps ensure the members have valid information.
     GpaDerivedCounterInfoClass() = delete;
 
+    /// @brief Move constructor.
+    GpaDerivedCounterInfoClass(GpaDerivedCounterInfoClass&&) = default;
+
+    /// @brief Move assignment operator.
+    GpaDerivedCounterInfoClass& operator=(GpaDerivedCounterInfoClass&&) = default;
+
+    /// @brief Delete copy constructor.
+    GpaDerivedCounterInfoClass(const GpaDerivedCounterInfoClass&) = delete;
+
+    /// @brief Delete copy assignment operator.
+    GpaDerivedCounterInfoClass& operator=(const GpaDerivedCounterInfoClass&) = delete;
+
     /// @brief Destructor.
-    ~GpaDerivedCounterInfoClass();
+    ~GpaDerivedCounterInfoClass() = default;
 
     /// @brief Returns the derived counter info.
     ///
@@ -83,9 +96,10 @@ private:
     /// @return True upon success otherwise false.
     bool InitializeDerivedCounterHardwareInfo(const IGpaCounterAccessor* gpa_counter_accessor);
 
-    GpaCounterInfo*           counter_info_              = {};  ///< Derived counter info for the counter.
-    bool                      derived_counter_info_init_ = {};  ///< Flag indicating derive counter is initialized.
-    std::vector<GpaHwCounter> hw_counter_info_list_;            ///< List of gpa hardware counter.
+    std::unique_ptr<GpaCounterInfo>        counter_info_;                    ///< Derived counter info for the counter.
+    std::unique_ptr<GpaDerivedCounterInfo> derived_counter_info_storage_;    ///< Storage for the GpaDerivedCounterInfo.
+    bool                                   derived_counter_info_init_ = {};  ///< Flag indicating derive counter is initialized.
+    std::vector<GpaHwCounter>              hw_counter_info_list_;            ///< List of gpa hardware counter.
 };
 
 /// @brief The set of available derived counters.
@@ -232,14 +246,6 @@ public:
                                                   gpa_array_view<GpaUInt32> internal_counters_required,
                                                   const char*               compute_expression);
 
-    /// @brief Adds a derived counter to the set of available counters.
-    ///
-    /// @param [in] derived_counter the derived counter to add.
-    virtual void AddDerivedCounter(GpaDerivedCounterInfoClass& derived_counter)
-    {
-        derived_counter_list_.push_back(derived_counter);
-    }
-
     /// @brief Get the counter at the specified index.
     ///
     /// @param [in] index The index of the requested counter.
@@ -291,9 +297,9 @@ public:
     }
 
 protected:
-    vector<GpaDerivedCounterInfoClass> derived_counter_list_;  ///< The set of available derived counters.
-    GpaSessionSampleType               sample_type_;           ///< Sample type
-    bool                               counters_generated_;    ///< Indicates that the derived counters have been generated.
+    std::vector<GpaDerivedCounterInfoClass> derived_counter_list_;  ///< The set of available derived counters.
+    GpaSessionSampleType                    sample_type_;           ///< Sample type
+    bool                                    counters_generated_;    ///< Indicates that the derived counters have been generated.
 };
 
 #endif

@@ -1,11 +1,13 @@
 //==============================================================================
-// Copyright (c) 2018-2025 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief GL GPA Pass Object Implementation.
 //==============================================================================
 
 #include "gpu_perf_api_gl/gl_gpa_pass.h"
+
+#include <memory>
 
 #include "gpu_perf_api_counter_generator/gpa_hardware_counters.h"
 
@@ -37,7 +39,7 @@ GlGpaPass::GlGpaPass(IGpaSession* gpa_session, PassIndex pass_index, GpaCounterS
                 assert(counter_accessor != nullptr);
                 if (counter_accessor == nullptr)
                 {
-                    GPA_LOG_ERROR("Invalid counter accessor. Disabling all counters in pass.");
+                    GpaLogger::Instance().LogError("Invalid counter accessor. Disabling all counters in pass.");
                     for (size_t i = 0; i < pass_counters->size(); ++i)
                     {
                         CounterIndex counter_index = pass_counters->at(i);
@@ -48,59 +50,54 @@ GlGpaPass::GlGpaPass(IGpaSession* gpa_session, PassIndex pass_index, GpaCounterS
                 }
 
                 const GpaHardwareCounters& hardware_counters = counter_accessor->GetHardwareCounters();
-                for (size_t i = 0; i < pass_counters->size(); ++i)
+                for (const CounterIndex counter_index : *pass_counters)
                 {
-                    CounterIndex counter_index = pass_counters->at(i);
-
                     const GpaHardwareCounterDescExt* counter = counter_accessor->GetHardwareCounterExt(counter_index);
                     assert(counter != nullptr);
                     if (counter == nullptr)
                     {
-                        GPA_LOG_ERROR("Invalid counter index (%u) in pass. It will be disabled.", counter_index);
+                        GpaLogger::Instance().LogError("Invalid counter index ({}) in pass. It will be disabled.", counter_index);
                         DisableCounterForPass(counter_index);
                         continue;
                     }
+
+                    GpaUInt32              group_index           = counter->group_index;
+                    [[maybe_unused]] GLint last_counter_in_group = 0;
+                    GLuint                 group_instance        = 0;
+
+                    if (group_index < static_cast<GpaUInt32>(hardware_counters.internal_counter_groups_.size()))
+                    {
+                        last_counter_in_group = static_cast<GLint>(hardware_counters.internal_counter_groups_[group_index].num_counters);
+                        group_instance        = static_cast<GLuint>(hardware_counters.internal_counter_groups_[group_index].block_instance);
+                    }
                     else
                     {
-                        unsigned int group_index = counter->group_index;
-
-                        GLint  last_counter_in_group = 0;
-                        GLuint group_instance        = 0;
-
-                        if (group_index < static_cast<unsigned int>(hardware_counters.internal_counter_groups_.size()))
-                        {
-                            last_counter_in_group = static_cast<GLint>(hardware_counters.internal_counter_groups_[group_index].num_counters);
-                            group_instance        = static_cast<GLuint>(hardware_counters.internal_counter_groups_[group_index].block_instance);
-                        }
-                        else
-                        {
-                            last_counter_in_group = static_cast<GLint>(
-                                hardware_counters.additional_groups_[group_index - hardware_counters.counter_groups_array_.size()].num_counters);
-                            group_instance = static_cast<GLuint>(
-                                hardware_counters.additional_groups_[group_index - hardware_counters.counter_groups_array_.size()].block_instance);
-                        }
-
-                        assert(counter->hardware_counters->counter_index_in_group <= static_cast<unsigned int>(last_counter_in_group));
-                        UNREFERENCED_PARAMETER(last_counter_in_group);
-
-                        // If the block instance to enable does not exist on this hardware, then disable the counter in this pass.
-                        // This will basically just fake the result as returning 0.
-                        if (reinterpret_cast<GlGpaContext*>(GetGpaSession()->GetParentContext())->GetNumInstances(counter->group_id_driver) <= group_instance)
-                        {
-                            DisableCounterForPass(counter_index);
-                            continue;
-                        }
-
-                        // Handle the padded counters that may not exist on certain hardware (based on version-specific register spec files).
-                        if (reinterpret_cast<GlGpaContext*>(GetGpaSession()->GetParentContext())->GetMaxEventId(counter->group_id_driver) <=
-                            counter->hardware_counters->counter_index_in_group)
-                        {
-                            DisableCounterForPass(counter_index);
-                            continue;
-                        }
-
-                        EnableCounterForPass(counter_index);
+                        last_counter_in_group =
+                            static_cast<GLint>(hardware_counters.additional_groups_[group_index - hardware_counters.counter_groups_array_.size()].num_counters);
+                        group_instance = static_cast<GLuint>(
+                            hardware_counters.additional_groups_[group_index - hardware_counters.counter_groups_array_.size()].block_instance);
                     }
+
+                    assert(counter->hardware_counters->counter_index_in_group <= static_cast<unsigned int>(last_counter_in_group));
+
+                    // If the block instance to enable does not exist on this hardware, then disable the counter in this pass.
+                    // This will basically just fake the result as returning 0.
+                    const GpaUInt32 num_hw_instances = reinterpret_cast<GlGpaContext*>(GetGpaSession()->GetParentContext())->GetNumInstances(counter->group_id_driver);
+                    if (num_hw_instances <= group_instance)
+                    {
+                        DisableCounterForPass(counter_index);
+                        continue;
+                    }
+
+                    // Handle the padded counters that may not exist on certain hardware (based on version-specific register spec files).
+                    if (reinterpret_cast<GlGpaContext*>(GetGpaSession()->GetParentContext())->GetMaxEventId(counter->group_id_driver) <=
+                        counter->hardware_counters->counter_index_in_group)
+                    {
+                        DisableCounterForPass(counter_index);
+                        continue;
+                    }
+
+                    EnableCounterForPass(counter_index);
                 }
             }
         }
@@ -115,22 +112,9 @@ GlGpaPass::~GlGpaPass()
     }
 }
 
-GpaSample* GlGpaPass::CreateApiSpecificSample(IGpaCommandList* cmd_list, GpaSampleType sample_type, ClientSampleId sampleId)
+std::unique_ptr<GpaSample> GlGpaPass::CreateApiSpecificSample(IGpaCommandList* cmd_list, GpaSampleType sample_type, ClientSampleId sampleId)
 {
-    GpaSample* ret_sample = nullptr;
-
-    GlGpaSample* gl_gpa_sample = new (std::nothrow) GlGpaSample(this, cmd_list, sample_type, sampleId);
-
-    if (nullptr == gl_gpa_sample)
-    {
-        GPA_LOG_ERROR("Unable to allocate memory for the sample.");
-    }
-    else
-    {
-        ret_sample = gl_gpa_sample;
-    }
-
-    return ret_sample;
+    return std::make_unique<GlGpaSample>(this, cmd_list, sample_type, sampleId);
 }
 
 bool GlGpaPass::ContinueSample(ClientSampleId src_sample_id, IGpaCommandList* primary_gpa_cmd_list)
@@ -141,13 +125,12 @@ bool GlGpaPass::ContinueSample(ClientSampleId src_sample_id, IGpaCommandList* pr
     return false;
 }
 
-IGpaCommandList* GlGpaPass::CreateApiSpecificCommandList(void* cmd, CommandListId command_list_id, GpaCommandListType cmd_type)
+std::unique_ptr<IGpaCommandList> GlGpaPass::CreateApiSpecificCommandList(void* cmd, CommandListId command_list_id, GpaCommandListType cmd_type)
 {
     UNREFERENCED_PARAMETER(cmd);
     UNREFERENCED_PARAMETER(cmd_type);
 
-    GlGpaCommandList* ret_cmd_list = new (std::nothrow) GlGpaCommandList(GetGpaSession(), this, command_list_id);
-    return ret_cmd_list;
+    return std::make_unique<GlGpaCommandList>(GetGpaSession(), this, command_list_id);
 }
 
 bool GlGpaPass::EndSample(IGpaCommandList* cmd_list)
@@ -257,7 +240,7 @@ bool GlGpaPass::InitializeCounters(const GlPerfMonitorId& gl_perf_monitor_id)
         assert(counter_accessor != nullptr);
         if (counter_accessor == nullptr)
         {
-            GPA_LOG_ERROR("Unable to get the counter accessor.");
+            GpaLogger::Instance().LogError("Unable to get the counter accessor.");
             return false;
         }
 
@@ -345,7 +328,8 @@ bool GlGpaPass::InitializeCounters(const GlPerfMonitorId& gl_perf_monitor_id)
                 ogl_utils::CheckForGlError("glGetPerfMonitorCounterStringAMD failed to get the counter name.");
             }
 
-            GPA_LOG_ERROR("Failed to enable counter '%s' from group '%s' instance %d.", counter_name.data(), group_name.data(), counter->group_id_driver);
+            GpaLogger::Instance().LogError(
+                "Failed to enable counter '{}' from group '{}' instance {}.", counter_name.data(), group_name.data(), counter->group_id_driver);
         }
 
         return is_counter_enabled;

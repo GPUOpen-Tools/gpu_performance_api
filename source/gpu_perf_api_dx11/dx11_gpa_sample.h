@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  DX11 GPA Sample Header
@@ -7,6 +7,8 @@
 
 #ifndef GPU_PERF_API_DX11_DX11_GPA_SAMPLE_H_
 #define GPU_PERF_API_DX11_DX11_GPA_SAMPLE_H_
+
+#include <vector>
 
 #include "gpu_perf_api_common/gpa_sample.h"
 
@@ -60,8 +62,8 @@ private:
     /// @brief Release the non-GPA resources of the sample.
     void ReleaseSampleResources();
 
-    IAmdDxExtPerfExperiment* amd_dx_ext_perf_experiment_;  ///< The experiment related to this sample.
-    IAmdDxExtPerfCounter**   amd_dx_ext_perf_counters_;    ///< The collection of active performance counters.
+    IAmdDxExtPerfExperiment*           amd_dx_ext_perf_experiment_;  ///< The experiment related to this sample.
+    std::vector<IAmdDxExtPerfCounter*> amd_dx_ext_perf_counters_;    ///< The collection of active performance counters.
 
     /// Time-stamp queries are treated as much like regular counters as possible to minimize code impact, and maximize shared code.
     /// Special case processing added where required.

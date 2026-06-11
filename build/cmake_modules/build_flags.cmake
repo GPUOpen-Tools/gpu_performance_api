@@ -1,25 +1,8 @@
-## Copyright (C) 2018-2026 Advanced Micro Devices, Inc. All rights reserved. ##
+#/ Copyright (C) Advanced Micro Devices, Inc. All rights reserved.
 
-## GPA has only Debug and Release
-set(CMAKE_CONFIGURATION_TYPES Debug Release)
-
-if(NOT DEFINED usingscript)
-    set(usingscript OFF CACHE BOOL "Turn on to indicate CMake is called using script" FORCE)
-endif()
-
-if(${usingscript})
-    # Config control variable
-    if(NOT DEFINED build-debug)
-        set(build-debug OFF CACHE BOOL "Turn on to generate debug config of the project")
-    endif()
-
-    if(NOT WIN32)
-        if(${build-debug})
-            set(CMAKE_BUILD_TYPE debug)
-        else()
-            set(CMAKE_BUILD_TYPE release)
-        endif()
-    endif()
+get_cmake_property(GPA_IS_MULTI_CONFIG GENERATOR_IS_MULTI_CONFIG)
+if(GPA_IS_MULTI_CONFIG)
+    set(CMAKE_CONFIGURATION_TYPES Debug Release) ## GPA has only Debug and Release
 endif()
 
 set(GPA_ALL_OPEN_SOURCE ON)
@@ -63,9 +46,4 @@ endif()
 # Sphinx documentation
 if(NOT DEFINED skipdocs)
     set(skipdocs OFF CACHE BOOL "Turn on to skip sphinx documentation in the build" FORCE)
-endif()
-
-# Default Output directory
-if(NOT DEFINED USE_DEFAULT_OUTPUT_DIRECTORY)
-    set(USE_DEFAULT_OUTPUT_DIRECTORY ON)
 endif()

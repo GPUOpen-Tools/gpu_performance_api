@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  DX11 GPA Pass Object Header
@@ -31,13 +31,13 @@ public:
     Dx11GpaPass(IGpaSession* gpa_session, PassIndex pass_index, GpaCounterSource counter_source, CounterList* pass_counters);
 
     /// @copydoc GpaPass::CreateApiSpecificSample(IGpaCommandList*, GpaSampleType, ClientSampleId)
-    GpaSample* CreateApiSpecificSample(IGpaCommandList* cmd_list, GpaSampleType sample_type, ClientSampleId sample_id) override final;
+    std::unique_ptr<GpaSample> CreateApiSpecificSample(IGpaCommandList* cmd_list, GpaSampleType sample_type, ClientSampleId sample_id) override final;
 
     /// @copydoc GpaPass::ContinueSample(ClientSampleId, IGpaCommandList*)
     bool ContinueSample(ClientSampleId src_sample_id, IGpaCommandList* primary_gpa_cmd_list) override final;
 
     /// @copydoc GpaPass::CreateApiSpecificCommandList(void*, CommandListId, GpaCommandListType)
-    IGpaCommandList* CreateApiSpecificCommandList(void* cmd, CommandListId command_list_id, GpaCommandListType cmd_type) override final;
+    std::unique_ptr<IGpaCommandList> CreateApiSpecificCommandList(void* cmd, CommandListId command_list_id, GpaCommandListType cmd_type) override final;
 
     /// @copydoc GpaPass::EndSample(IGpacommandList)
     bool EndSample(IGpaCommandList* cmd_list) override final;

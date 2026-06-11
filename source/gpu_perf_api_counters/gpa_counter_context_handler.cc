@@ -1,11 +1,14 @@
 //==============================================================================
-// Copyright (c) 2020-2024 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  Implements Gpa counter context related functionality.
 //==============================================================================
 
 #include "gpa_counter_context_handler.h"
+
+#include <memory>
+
 #include "gpa_counter_generator_scheduler_manager.h"
 #include "gpa_counter_generator.h"
 
@@ -84,7 +87,7 @@ GpaCounterContextHandler::GpaCounterContextHandler(const GpaApiType&            
             case kGpaHardwareAttributePeakVerticesPerClock:
             case kGpaHardwareAttributePeakPrimitivesPerClock:
             case kGpaHardwareAttributePeakPixelsPerClock:
-                GPA_LOG_DEBUG_MESSAGE("Unused attributes");
+                GpaLogger::Instance().LogDebugMessage("Unused attributes");
             }
         }
     }
@@ -94,34 +97,25 @@ bool GpaCounterContextHandler::InitCounters(GpaDriverInfo const& driver_info)
 {
     if (!initialized_)
     {
-        if (gpa_hw_info_.UpdateDeviceInfoBasedOnDeviceId(gpa_api_type_, driver_info))
+        if (gpa_hw_info_.IsUnsupportedDevice(gpa_api_type_, driver_info))
         {
-            if (gpa_hw_info_.IsUnsupportedDeviceId(gpa_api_type_, driver_info))
+            return false;
+        }
+
+        if (gpa_hw_info_.UpdateDeviceInfoBasedOnDeviceDescription())
+        {
+            // If this is SQTT, there's no counter scheduler or accessor.
+            assert(sample_type_ != kGpaSessionSampleTypeSqtt);
+
+            const GpaStatus status =
+                GenerateCounters(gpa_api_type_, sample_type_, gpa_hw_info_, gpa_open_context_flags_, &gpa_counter_accessor_, &gpa_counter_scheduler_);
+
+            assert(gpa_counter_accessor_ != nullptr);
+            assert(gpa_counter_scheduler_ != nullptr);
+
+            if (kGpaStatusOk == status)
             {
-                return false;
-            }
-
-            GpaUInt32 vendorId;
-            GpaUInt32 deviceId;
-            GpaUInt32 revisionId;
-
-            if (gpa_hw_info_.GetVendorId(vendorId) && gpa_hw_info_.GetDeviceId(deviceId) && gpa_hw_info_.GetRevisionId(revisionId))
-            {
-                // If this is SQTT, there's no counter scheduler or accessor.
-                assert(sample_type_ != kGpaSessionSampleTypeSqtt);
-
-                const GpaStatus status = GenerateCounters(
-                    gpa_api_type_,
-                    sample_type_,
-                    vendorId, deviceId, revisionId, gpa_open_context_flags_, &gpa_counter_accessor_, &gpa_counter_scheduler_);
-
-                assert(gpa_counter_accessor_ != nullptr);
-                assert(gpa_counter_scheduler_ != nullptr);
-
-                if (kGpaStatusOk == status)
-                {
-                    initialized_ = true;
-                }
+                initialized_ = true;
             }
         }
     }
@@ -154,48 +148,20 @@ IGpaCounterScheduler* GpaCounterContextHandler::GetCounterScheduler() const
     return nullptr;
 }
 
-_GpaCounterContext::_GpaCounterContext(GpaCounterContextHandler* gpa_counter_context)
-    : gpa_counter_context_handler(gpa_counter_context)
+_GpaCounterContext::_GpaCounterContext(std::unique_ptr<GpaCounterContextHandler> gpa_counter_context)
+    : gpa_counter_context_handler(std::move(gpa_counter_context))
 {
 }
 
 GpaCounterContextHandler* _GpaCounterContext::operator->() const
 {
-    return gpa_counter_context_handler;
+    return gpa_counter_context_handler.get();
 }
 
-_GpaCounterContext::~_GpaCounterContext()
+GpaCounterContextManager& GpaCounterContextManager::Instance()
 {
-    gpa_counter_context_handler = nullptr;
-}
-
-GpaCounterContextManager* GpaCounterContextManager::Instance()
-{
-    if (nullptr == gpa_counter_context_manager_)
-    {
-        gpa_counter_context_manager_ = new (std::nothrow) GpaCounterContextManager();
-    }
-
-    return gpa_counter_context_manager_;
-}
-
-void GpaCounterContextManager::DeleteInstanceIfZero()
-{
-    if (gpa_counter_context_manager_->gpa_counter_context_map_.size() == 0)
-    {
-        DeleteInstance();
-    }
-}
-
-void GpaCounterContextManager::DeleteInstance()
-{
-    delete gpa_counter_context_manager_;
-    gpa_counter_context_manager_ = nullptr;
-}
-
-GpaCounterContextManager::~GpaCounterContextManager()
-{
-    CloseAllContext();
+    static GpaCounterContextManager instance;
+    return instance;
 }
 
 GpaStatus GpaCounterContextManager::OpenCounterContext(const GpaApiType&                    api_type,
@@ -207,34 +173,18 @@ GpaStatus GpaCounterContextManager::OpenCounterContext(const GpaApiType&        
 {
     Init(api_type, sample_type);
 
-    GpaCounterContextHandler* gpa_new_counter_context =
-        new (std::nothrow) GpaCounterContextHandler(api_type,
-            sample_type,
-            gpa_counter_context_hardware_info, context_flags);
+    auto gpa_new_counter_context = std::make_unique<GpaCounterContextHandler>(api_type, sample_type, gpa_counter_context_hardware_info, context_flags);
 
-    if (nullptr != gpa_new_counter_context)
+    if (gpa_new_counter_context->InitCounters(driver_info))
     {
-        if (gpa_new_counter_context->InitCounters(driver_info))
-        {
-            GpaCounterContext gpa_counter_context_ret = new (std::nothrow) _GpaCounterContext(gpa_new_counter_context);
-
-            if (nullptr != gpa_counter_context_ret)
-            {
-                gpa_counter_context_map_.insert(std::pair<GpaCounterContext, GpaApiType>(gpa_counter_context_ret, api_type));
-                *gpa_counter_context = gpa_counter_context_ret;
-                return kGpaStatusOk;
-            }
-
-            *gpa_counter_context = nullptr;
-            delete gpa_new_counter_context;
-            return kGpaStatusErrorFailed;
-        }
-
-        delete gpa_new_counter_context;
-        return kGpaStatusErrorHardwareNotSupported;
+        auto              gpa_counter_context_struct = std::make_unique<_GpaCounterContext>(std::move(gpa_new_counter_context));
+        GpaCounterContext raw_context                = gpa_counter_context_struct.get();
+        gpa_counter_context_map_.emplace(raw_context, CounterContextEntry{std::move(gpa_counter_context_struct), api_type});
+        *gpa_counter_context = raw_context;
+        return kGpaStatusOk;
     }
 
-    return kGpaStatusErrorFailed;
+    return kGpaStatusErrorHardwareNotSupported;
 }
 
 const IGpaCounterAccessor* GpaCounterContextManager::GetCounterAccessor(const GpaCounterContext gpa_counter_context)
@@ -266,11 +216,8 @@ GpaStatus GpaCounterContextManager::CloseCounterContext(const GpaCounterContext 
     auto iter = gpa_counter_context_map_.find(gpa_counter_context);
     if (iter != gpa_counter_context_map_.end())
     {
-        GpaCounterContext counter_context = iter->first;
-        delete counter_context->gpa_counter_context_handler;
-        delete counter_context;
-        counter_context = nullptr;
-        gpa_counter_context_map_.erase(gpa_counter_context);
+        // Erasing from the map destroys the owned unique_ptr, which destroys the counter context.
+        gpa_counter_context_map_.erase(iter);
         return kGpaStatusOk;
     }
 
@@ -289,53 +236,40 @@ bool GpaCounterContextManager::IsCounterContextOpen(GpaCounterContext gpa_counte
 
 void GpaCounterContextManager::Init(const GpaApiType& api_type, const GpaSessionSampleType sample_type)
 {
-    if (gpa_counter_scheduler_map_.empty())
-    {
-        gpa_counter_scheduler_map_.insert(std::pair<GpaApiType, IGpaCounterScheduler*>(kGpaApiDirectx11, nullptr));
-        gpa_counter_scheduler_map_.insert(std::pair<GpaApiType, IGpaCounterScheduler*>(kGpaApiDirectx12, nullptr));
-        gpa_counter_scheduler_map_.insert(std::pair<GpaApiType, IGpaCounterScheduler*>(kGpaApiOpengl, nullptr));
-        gpa_counter_scheduler_map_.insert(std::pair<GpaApiType, IGpaCounterScheduler*>(kGpaApiVulkan, nullptr));
-    }
-
-    if (gpa_counter_accessor_map_.empty())
-    {
-        gpa_counter_accessor_map_.insert(std::pair<GpaApiType, IGpaCounterAccessor*>(kGpaApiDirectx11, nullptr));
-        gpa_counter_accessor_map_.insert(std::pair<GpaApiType, IGpaCounterAccessor*>(kGpaApiDirectx12, nullptr));
-        gpa_counter_accessor_map_.insert(std::pair<GpaApiType, IGpaCounterAccessor*>(kGpaApiOpengl, nullptr));
-        gpa_counter_accessor_map_.insert(std::pair<GpaApiType, IGpaCounterAccessor*>(kGpaApiVulkan, nullptr));
-    }
-
     InitCounterAccessor(api_type, sample_type);
     InitCounterScheduler(api_type, sample_type);
 }
 
 void GpaCounterContextManager::InitCounterAccessor(const GpaApiType& api_type, const GpaSessionSampleType sample_type)
 {
-    if (nullptr != gpa_counter_accessor_map_[api_type])
+    if (auto sample_iter = gpa_counter_accessor_map_.find(sample_type); sample_iter != gpa_counter_accessor_map_.end())
     {
-        return;
+        if (auto api_iter = sample_iter->second.find(api_type); api_iter != sample_iter->second.end() && api_iter->second != nullptr)
+        {
+            return;
+        }
     }
 
     switch (api_type)
     {
     case kGpaApiDirectx11:
 #ifdef ENABLE_GPA_DX11
-        gpa_counter_accessor_map_[kGpaApiDirectx11] = new GpaCounterGeneratorDx11(sample_type);
+        gpa_counter_accessor_map_[sample_type][kGpaApiDirectx11] = std::make_unique<GpaCounterGeneratorDx11>(sample_type);
 #endif
         break;
     case kGpaApiDirectx12:
 #ifdef ENABLE_GPA_DX12
-        gpa_counter_accessor_map_[kGpaApiDirectx12] = new GpaCounterGeneratorDx12(sample_type);
+        gpa_counter_accessor_map_[sample_type][kGpaApiDirectx12] = std::make_unique<GpaCounterGeneratorDx12>(sample_type);
 #endif
         break;
     case kGpaApiOpengl:
 #ifdef ENABLE_GPA_GL
-        gpa_counter_accessor_map_[kGpaApiOpengl] = new GpaCounterGeneratorGl(sample_type);
+        gpa_counter_accessor_map_[sample_type][kGpaApiOpengl] = std::make_unique<GpaCounterGeneratorGl>(sample_type);
 #endif
         break;
     case kGpaApiVulkan:
 #ifdef ENABLE_GPA_VK
-        gpa_counter_accessor_map_[kGpaApiVulkan] = new GpaCounterGeneratorVk(sample_type);
+        gpa_counter_accessor_map_[sample_type][kGpaApiVulkan] = std::make_unique<GpaCounterGeneratorVk>(sample_type);
 #endif
         break;
     default:
@@ -345,59 +279,37 @@ void GpaCounterContextManager::InitCounterAccessor(const GpaApiType& api_type, c
 
 void GpaCounterContextManager::InitCounterScheduler(const GpaApiType& api_type, const GpaSessionSampleType sample_type)
 {
-    if (nullptr != gpa_counter_scheduler_map_[api_type])
+    if (auto sample_iter = gpa_counter_scheduler_map_.find(sample_type); sample_iter != gpa_counter_scheduler_map_.end())
     {
-        return;
+        if (auto api_iter = sample_iter->second.find(api_type); api_iter != sample_iter->second.end() && api_iter->second != nullptr)
+        {
+            return;
+        }
     }
 
     switch (api_type)
     {
     case kGpaApiDirectx11:
 #ifdef ENABLE_GPA_DX11
-        gpa_counter_scheduler_map_[kGpaApiDirectx11] = new GpaCounterSchedulerDx11(sample_type);
+        gpa_counter_scheduler_map_[sample_type][kGpaApiDirectx11] = std::make_unique<GpaCounterSchedulerDx11>(sample_type);
 #endif
         break;
     case kGpaApiDirectx12:
 #ifdef ENABLE_GPA_DX12
-        gpa_counter_scheduler_map_[kGpaApiDirectx12] = new GpaCounterSchedulerDx12(sample_type);
+        gpa_counter_scheduler_map_[sample_type][kGpaApiDirectx12] = std::make_unique<GpaCounterSchedulerDx12>(sample_type);
 #endif
         break;
     case kGpaApiOpengl:
 #ifdef ENABLE_GPA_GL
-        gpa_counter_scheduler_map_[kGpaApiOpengl] = new GpaCounterSchedulerGl(sample_type);
+        gpa_counter_scheduler_map_[sample_type][kGpaApiOpengl] = std::make_unique<GpaCounterSchedulerGl>(sample_type);
 #endif
         break;
     case kGpaApiVulkan:
 #ifdef ENABLE_GPA_VK
-        gpa_counter_scheduler_map_[kGpaApiVulkan] = new GpaCounterSchedulerVk(sample_type);
+        gpa_counter_scheduler_map_[sample_type][kGpaApiVulkan] = std::make_unique<GpaCounterSchedulerVk>(sample_type);
 #endif
         break;
     default:
         break;
     }
-}
-
-void GpaCounterContextManager::CloseAllContext()
-{
-    for (auto iter = gpa_counter_context_map_.begin(); iter != gpa_counter_context_map_.end(); ++iter)
-    {
-        GpaCounterContext counter_context = iter->first;
-        delete counter_context->gpa_counter_context_handler;
-        delete counter_context;
-    }
-    gpa_counter_context_map_.clear();
-
-    for (auto iter = gpa_counter_accessor_map_.begin(); iter != gpa_counter_accessor_map_.end(); ++iter)
-    {
-        IGpaCounterAccessor* counter_accessor = iter->second;
-        delete counter_accessor;
-    }
-    gpa_counter_accessor_map_.clear();
-
-    for (auto iter = gpa_counter_scheduler_map_.begin(); iter != gpa_counter_scheduler_map_.end(); ++iter)
-    {
-        IGpaCounterScheduler* counter_scheduler = iter->second;
-        delete counter_scheduler;
-    }
-    gpa_counter_scheduler_map_.clear();
 }

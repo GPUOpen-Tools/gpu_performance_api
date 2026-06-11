@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2024 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Class for VK counter generation.
@@ -40,41 +40,23 @@ public:
 
 protected:
     /// @copydoc GpaCounterGeneratorBase::GeneratePublicCounters()
-    virtual GpaStatus GeneratePublicCounters(GDT_HW_GENERATION   desired_generation,
-                                             GDT_HW_ASIC_TYPE    asic_type,
-                                             GpaDerivedCounters* public_counters) override;
+    virtual GpaStatus GeneratePublicCounters(device_info::HwGeneration desired_generation,
+                                             device_info::AsicType     asic_type,
+                                             GpaDerivedCounters*       public_counters) override;
 
     /// @copydoc GpaCounterGeneratorBase::GenerateHardwareCounters()
-    virtual GpaStatus GenerateHardwareCounters(GDT_HW_GENERATION    desired_generation,
-                                               GDT_HW_ASIC_TYPE     asic_type,
-                                               GpaHardwareCounters* hardware_counters) override;
+    virtual GpaStatus GenerateHardwareCounters(device_info::HwGeneration desired_generation,
+                                               device_info::AsicType     asic_type,
+                                               GpaHardwareCounters*      hardware_counters) override;
 
     /// @copydoc GpaCounterGeneratorBase::GenerateHardwareExposedCounters()
-    GpaStatus GenerateHardwareExposedCounters(GDT_HW_GENERATION    desired_generation,
-                                              GDT_HW_ASIC_TYPE     asic_type,
-                                              GpaHardwareCounters* hardware_counters) override;
+    GpaStatus GenerateHardwareExposedCounters(device_info::HwGeneration desired_generation,
+                                              device_info::AsicType     asic_type,
+                                              GpaHardwareCounters*      hardware_counters) override;
 
 private:
     /// @brief Delete default constructor.
     GpaCounterGeneratorVk() = delete;
-
-    /// @brief Checks if the given hw generation represents an AMD GPU.
-    ///
-    /// @param [in] generation The hardware generation to check.
-    ///
-    /// @return True if the hardware generation represents and AMD GPU.
-    static bool IsAmdGpu(GDT_HW_GENERATION generation);
-
-    /// @brief Logic inside this function is based on the AmdExtGpuBlock enum in AmdExtGpaInterface in DXCP driver.
-    ///
-    /// The driver gives each block an ID, but ignores the instance. GPA treats each instance as a different
-    /// block, so we need to translate.
-    ///
-    /// @param [in] generation The generation whose block id needs to be calculated.
-    /// @param [in] group The group for which the block id needs to be calculated.
-    ///
-    /// @return The block id according to the driver.
-    static GpaUInt32 CalculateBlockIdVk(GDT_HW_GENERATION generation, const GpaCounterGroupDesc& group);
 
     /// @brief Generates internal counters.
     ///
@@ -82,7 +64,7 @@ private:
     /// @param [in] generation The generation for which counters need to be generated.
     ///
     /// @return True on success.
-    static bool GenerateInternalCounters(GpaHardwareCounters* hardware_counters, GDT_HW_GENERATION generation);
+    static bool GenerateInternalCounters(GpaHardwareCounters* hardware_counters, device_info::HwGeneration generation);
 };
 
 #endif

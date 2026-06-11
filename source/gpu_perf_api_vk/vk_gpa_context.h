@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2025 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  GPA VK Context declarations
@@ -9,6 +9,7 @@
 #define GPU_PERF_API_VK_VK_GPA_CONTEXT_H_
 
 #include <mutex>
+#include <vector>
 
 #include "gpu_perf_api_common/gpa_context.h"
 
@@ -81,10 +82,19 @@ private:
     /// @return True if operation is successful otherwise false.
     bool DeleteVkGpaSession(VkGpaSession* vk_gpa_session);
 
-    mutable std::mutex               session_list_mutex_;     ///< Mutex to ensure the m_sessionList doesn't change while being accessed.
-    VkPhysicalDevice                 physical_device_;        ///< The physical device on which the device was created.
-    VkDevice                         device_;                 ///< The device queries and counters are created on.
-    VkPhysicalDeviceGpaPropertiesAMD amd_device_properties_;  ///< Physical Device properties exposed by the AMD GPA Extension.
-    VkGpaDeviceClockModeAMD          clock_mode_;             ///< GPU Clock mode.
+    /// @brief Obtains the GpaPropertiesAMD data from the physical device.
+    ///
+    /// @param [in] vk_physical_device Vulkan physical device.
+    /// @param [out] gpa_properties_amd The physical device's profiling properties.
+    ///
+    /// @return True if the properties were queried; false otherwise.
+    bool GetPhysicalDeviceGpaPropertiesAMD(VkPhysicalDevice vk_physical_device, VkPhysicalDeviceGpaPropertiesAMD* gpa_properties_amd);
+
+    mutable std::mutex                       session_list_mutex_;     ///< Mutex to ensure the m_sessionList doesn't change while being accessed.
+    VkPhysicalDevice                         physical_device_;        ///< The physical device on which the device was created.
+    VkDevice                                 device_;                 ///< The device queries and counters are created on.
+    VkPhysicalDeviceGpaPropertiesAMD         amd_device_properties_;  ///< Physical Device properties exposed by the AMD GPA Extension.
+    std::vector<VkGpaPerfBlockPropertiesAMD> perf_blocks_storage_;    ///< Storage for perf block properties data.
+    VkGpaDeviceClockModeAMD                  clock_mode_;             ///< GPU Clock mode.
 };
 #endif

@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016-2025 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  Interfaces used for counter splitting.
@@ -9,10 +9,15 @@
 #define GPU_PERF_API_COUNTER_GENERATOR_COMMON_GPA_SPLIT_COUNTERS_INTERFACES_H_
 
 #include <algorithm>
+#include <cstdint>
 #include <list>
+#include <limits>
 #include <map>
 #include <set>
+#include <type_traits>
 #include <vector>
+#include <optional>
+#include <span>
 
 #ifdef DEBUG_PUBLIC_COUNTER_SPLITTER
 #include <sstream>
@@ -22,7 +27,7 @@
 #include "gpu_perf_api_common/logging.h"
 
 /// @brief Enum to represent the different SQ shader stages.
-enum GpaSqShaderStage
+enum GpaSqShaderStage : uint8_t
 {
     kSqAll,          ///< All stages.
     kSqEs,           ///< ES Stage.
@@ -47,30 +52,26 @@ struct GpaSqCounterGroupDesc
 struct GpaCounterPass
 {
     /// The counters assigned to a profile pass.
-    std::vector<unsigned int> pass_counter_list;
+    std::vector<uint32_t> pass_counter_list;
 };
-
-/// Typedef for a list of counter passes.
-typedef std::list<GpaCounterPass> GpaCounterPassList;
 
 /// @brief Stores the number of counters from each block that are used in a particular pass.
 struct PerPassData
 {
     /// The list of counters used from each HW block. Map from group index to list of counters.
-    std::map<unsigned int, std::vector<GpaUInt32>> num_used_counters_per_block;
+    std::map<uint32_t, std::vector<GpaUInt32>> num_used_counters_per_block;
 };
 
 /// @brief Stores the counter indices for hardware counters.
 struct GpaHardwareCounterIndices
 {
-    unsigned int public_index;    ///< The index of the hardware counter as exposed by GPUPerfAPI (first hw counter is after all public counters).
-    unsigned int hardware_index;  ///< The 0-based index of the hardware counter.
+    uint32_t public_index;    ///< The index of the hardware counter as exposed by GPUPerfAPI (first hw counter is after all public counters).
+    uint32_t hardware_index;  ///< The 0-based index of the hardware counter.
 };
 
 /// @brief Records where to locate the results of a counter query in session requests.
-class GpaCounterResultLocation
+struct GpaCounterResultLocation
 {
-public:
     GpaUInt16 pass_index_;  ///< Index of the pass.
     GpaUInt16 offset_;      ///< Offset within pass ( 0 is first counter ).
 };
@@ -88,32 +89,32 @@ public:
     /// @brief Sets the counter index of which to get the group and counter Id.
     ///
     /// @param [in] index The counter index.
-    virtual void SetCounterIndex(unsigned int index) = 0;
+    virtual void SetCounterIndex(uint32_t index) = 0;
 
     /// @brief Get the 0-based group index of the internal counter.
     ///
     /// @return The group index.
-    virtual unsigned int GroupIndex() const = 0;
+    [[nodiscard]] virtual uint32_t GroupIndex() const = 0;
 
     /// @brief Get the 0-based counter index of the internal counter.
     ///
     /// @return The counter index.
-    virtual unsigned int CounterIndex() const = 0;
+    [[nodiscard]] virtual uint32_t CounterIndex() const = 0;
 
     /// @brief Get the hardware counter bool.
     ///
     /// @return True if the counter is a hardware counter.
-    virtual bool IsHwCounter() const = 0;
+    [[nodiscard]] virtual bool IsHwCounter() const = 0;
 
     /// @brief Get the global group group index (the full index of the software groups that come after the hardware groups).
     ///
     /// @return The total number of groups.
-    virtual unsigned int GlobalGroupIndex() const = 0;
+    [[nodiscard]] virtual uint32_t GlobalGroupIndex() const = 0;
 
     /// @brief Get the global counter index.
     ///
     /// @return The global counter index.
-    virtual unsigned int GetGlobalCounterIndex() const = 0;
+    [[nodiscard]] virtual uint32_t GetGlobalCounterIndex() const = 0;
 };
 
 /// @brief Interface for a class that can split public and internal counters into separate passes.
@@ -126,48 +127,40 @@ public:
     /// @param [in] eop_time_counter_indices Set of End Of Pipeline timestamp counter indices.
     /// @param [in] top_time_counter_indices Set of Top Of Pipeline timestamp counter indices.
     /// @param [in] max_sq_counters The maximum number of counters that can be simultaneously enabled on the SQ block.
-    /// @param [in] num_sq_groups The number of SQ counter groups.
-    /// @param [in] sq_counter_block_info The list of SQ counter groups.
-    /// @param [in] num_isolated_from_sq_groups The number of counter groups that must be isolated from SQ counter groups.
-    /// @param [in] isolated_from_sq_groups The list of counter groups that must be isolated from SQ counter groups.
-    IGpaSplitCounters(const std::set<unsigned int>& timestamp_block_ids,
-                      const std::set<unsigned int>& eop_time_counter_indices,
-                      const std::set<unsigned int>& top_time_counter_indices,
-                      unsigned int                  max_sq_counters,
-                      unsigned int                  num_sq_groups,
-                      GpaSqCounterGroupDesc*        sq_counter_block_info,
-                      unsigned int                  num_isolated_from_sq_groups,
-                      const unsigned int*           isolated_from_sq_groups)
+    /// @param [in] sq_counter_block_info The span of SQ counter groups.
+    /// @param [in] isolated_from_sq_groups The span of counter groups that must be isolated from SQ counter groups.
+    IGpaSplitCounters(const std::set<uint32_t>&              timestamp_block_ids,
+                      const std::set<uint32_t>&              eop_time_counter_indices,
+                      const std::set<uint32_t>&              top_time_counter_indices,
+                      uint8_t                                max_sq_counters,
+                      std::span<const GpaSqCounterGroupDesc> sq_counter_block_info,
+                      std::span<const uint32_t>              isolated_from_sq_groups)
         : timestamp_block_ids_(timestamp_block_ids)
         , eop_time_counter_indices_(eop_time_counter_indices)
         , top_time_counter_indices_(top_time_counter_indices)
         , max_sq_counters_(max_sq_counters)
     {
-        for (unsigned int i = 0; i < num_sq_groups; i++)
+        for (const auto& sq_group : sq_counter_block_info)
         {
-            sq_counter_index_map_[sq_counter_block_info[i].group_index] = sq_counter_block_info[i];
-            sq_shader_stage_group_map_[sq_counter_block_info[i].sq_shader_stage].push_back(sq_counter_block_info[i].group_index);
+            sq_counter_index_map_[sq_group.group_index] = sq_group;
+            sq_shader_stage_group_map_[sq_group.sq_shader_stage].push_back(sq_group.group_index);
 
             // We need to isolate stage-specific SQ counters from various texture blocks that are also
             // affected by the shader stage mask in SQ.
-            if (sq_counter_block_info[i].sq_shader_stage != kSqAll)
+            if (sq_group.sq_shader_stage != kSqAll)
             {
-                isolated_sq_counter_index_set_.insert(sq_counter_block_info[i].group_index);
+                isolated_sq_counter_index_set_.insert(sq_group.group_index);
             }
         }
 
-        for (uint32_t i = 0; i < num_isolated_from_sq_groups; ++i)
+        for (const uint32_t group_index : isolated_from_sq_groups)
         {
-            isolated_from_sq_group_index_set_.insert(isolated_from_sq_groups[i]);
+            isolated_from_sq_group_index_set_.insert(group_index);
         }
     }
 
     /// @brief Virtual destructor.
-    virtual ~IGpaSplitCounters()
-    {
-        sq_counter_index_map_.clear();
-        sq_shader_stage_group_map_.clear();
-    }
+    virtual ~IGpaSplitCounters() = default;
 
     /// @brief Splits counters into multiple passes.
     ///
@@ -175,52 +168,50 @@ public:
     /// @param [in] internal_counters_to_schedule Additional internal counters that need to be scheduled (used by internal builds).
     /// @param [in] counter_group_accessor A class to access the internal counters.
     /// @param [in] max_counters_per_group The maximum number of counters that can be enabled in a single pass on each HW block or SW group.
-    /// @param [out] num_scheduled_counters Indicates the total number of internal counters that were assigned to a pass.
     /// @param [out] pass_partitions The resulting set of passes that the counters were split into.
     ///
     /// @return A GpaStatus code indicating if the counters could be scheduled successfully.
-    virtual GpaStatus SplitCounters(const std::vector<const GpaDerivedCounterInfoClass*>& public_counters_to_split,
-                                    const std::vector<GpaHardwareCounterIndices>&         internal_counters_to_schedule,
-                                    IGpaCounterGroupAccessor*                             counter_group_accessor,
-                                    const std::vector<unsigned int>&                      max_counters_per_group,
-                                    unsigned int&                                         num_scheduled_counters,
-                                    std::list<GpaCounterPass>&                            pass_partitions) = 0;
+    [[nodiscard]] virtual GpaStatus SplitCounters(const std::vector<const GpaDerivedCounterInfoClass*>& public_counters_to_split,
+                                                  const std::vector<GpaHardwareCounterIndices>&         internal_counters_to_schedule,
+                                                  IGpaCounterGroupAccessor*                             counter_group_accessor,
+                                                  const std::vector<uint32_t>&                          max_counters_per_group,
+                                                  std::list<GpaCounterPass>&                            pass_partitions) = 0;
 
-    /// @brief Get the counter result locations.
+    /// @brief Avoid making a copy of the map by swapping it with the output parameter.
     ///
-    /// @return The map of counter result locations.
-    std::map<unsigned int, std::map<unsigned int, GpaCounterResultLocation>> GetCounterResultLocations() const
+    /// @param [out] counter_result_location_map The map of counter result locations.
+    void SwapCounterResultLocations(std::map<uint32_t, std::map<uint32_t, GpaCounterResultLocation>>& counter_result_location_map)
     {
-        return counter_result_location_map_;
+        counter_result_location_map_.swap(counter_result_location_map);
     }
 
 protected:
-    std::set<unsigned int> timestamp_block_ids_;       ///< Set of timestamp block id's.
-    std::set<unsigned int> eop_time_counter_indices_;  ///< Set of EOP timestamp counter indices
-    std::set<unsigned int> top_time_counter_indices_;  ///< Set of TOP timestamp counter indices
+    const std::set<uint32_t>& timestamp_block_ids_;       ///< Reference to set of timestamp block id's.
+    const std::set<uint32_t>& eop_time_counter_indices_;  ///< Reference to set of EOP timestamp counter indices
+    const std::set<uint32_t>& top_time_counter_indices_;  ///< Reference to set of TOP timestamp counter indices
 
-    unsigned int max_sq_counters_;  ///< The maximum number of counters that can be enabled in the SQ group.
+    uint8_t max_sq_counters_ = 0;  ///< The maximum number of counters that can be enabled in a single pass in the SQ group.
 
-    std::map<GpaUInt32, GpaSqCounterGroupDesc>       sq_counter_index_map_;       ///< Map from group index to the SQ counter group description for that group.
-    std::map<GpaSqShaderStage, vector<unsigned int>> sq_shader_stage_group_map_;  ///< Map from shader stage to the list of SQ groups for that stage.
-    std::set<GpaUInt32>                              isolated_sq_counter_index_set_;     ///< Set of isolated SQ counter groups.
-    std::set<GpaUInt32>                              isolated_from_sq_group_index_set_;  ///< Set of groups that must be isolated from isolated SQ groups.
+    std::map<GpaUInt32, GpaSqCounterGroupDesc>        sq_counter_index_map_;       ///< Map from group index to the SQ counter group description for that group.
+    std::map<GpaSqShaderStage, std::vector<uint32_t>> sq_shader_stage_group_map_;  ///< Map from shader stage to the list of SQ groups for that stage.
+    std::set<GpaUInt32>                               isolated_sq_counter_index_set_;     ///< Set of isolated SQ counter groups.
+    std::set<GpaUInt32>                               isolated_from_sq_group_index_set_;  ///< Set of groups that must be isolated from isolated SQ groups.
 
     /// A map between a public counter index and the set of hardware counters that compose the public counter.
     /// For each hardware counter, there is a map from the hardware counter to the counter result location (pass and offset) for that specific counter.
     /// Multiple public counters may be enabled which require the same hardware counter, but the hardware counter may be profiled in multiple passes so
     /// that the public counters will be consistent. This complex set of maps allows us to find the correct pass and offset for the instance of a
     /// hardware counter that is required for a specific public counter.
-    std::map<unsigned int, std::map<unsigned int, GpaCounterResultLocation>> counter_result_location_map_;
+    std::map<uint32_t, std::map<uint32_t, GpaCounterResultLocation>> counter_result_location_map_;
 
     /// @brief Determines whether the indicated block id is a timestamp block id.
     ///
     /// @param [in] block_id The block id to check.
     ///
     /// @return True if the block id is a timestamp block id.
-    bool IsTimestampBlockId(unsigned int block_id)
+    [[nodiscard]] bool IsTimestampBlockId(uint32_t block_id) const
     {
-        return timestamp_block_ids_.find(block_id) != timestamp_block_ids_.end();
+        return timestamp_block_ids_.contains(block_id);
     }
 
     /// @brief Determines whether the indicated counter index is a timestamp counter.
@@ -228,7 +219,7 @@ protected:
     /// @param [in] counter_index The counter index to check.
     ///
     /// @return True if the counter index is a timestamp counter.
-    bool IsTimeCounterIndex(unsigned int counter_index)
+    [[nodiscard]] bool IsTimeCounterIndex(uint32_t counter_index) const
     {
         return IsBottomToBottomTimeCounterIndex(counter_index) || IsTopToBottomTimeCounterIndex(counter_index);
     }
@@ -238,9 +229,9 @@ protected:
     /// @param counter_index The counter index to check.
     ///
     /// @return True if the counter index is a Bottom-To-Bottom timestamp counter.
-    bool IsBottomToBottomTimeCounterIndex(unsigned int counter_index)
+    [[nodiscard]] bool IsBottomToBottomTimeCounterIndex(uint32_t counter_index) const
     {
-        return eop_time_counter_indices_.find(counter_index) != eop_time_counter_indices_.end();
+        return eop_time_counter_indices_.contains(counter_index);
     }
 
     /// @brief Determines whether the indicated counter index is a Top-to-Bottom timestamp counter.
@@ -248,9 +239,9 @@ protected:
     /// @param counter_index The counter index to check.
     ///
     /// @return True if the counter index is a Top-to-Bottom timestamp counter.
-    bool IsTopToBottomTimeCounterIndex(unsigned int counter_index)
+    [[nodiscard]] bool IsTopToBottomTimeCounterIndex(uint32_t counter_index) const
     {
-        return top_time_counter_indices_.find(counter_index) != top_time_counter_indices_.end();
+        return top_time_counter_indices_.contains(counter_index);
     }
 
     /// @brief Adds a counter result location.
@@ -259,18 +250,25 @@ protected:
     /// @param [in] hardware_counter_index The index of a particular hardware counter that makes up the public counter specified by publicCounterIndex.
     /// @param [in] pass_index The index of the pass in which the counter is scheduled.
     /// @param [in] offset The offset of the result within that pass.
-    void AddCounterResultLocation(unsigned int public_counter_index, unsigned int hardware_counter_index, unsigned int pass_index, unsigned int offset)
+    void AddCounterResultLocation(uint32_t public_counter_index, uint32_t hardware_counter_index, uint32_t pass_index, size_t offset)
     {
-        GpaCounterResultLocation location = {};
-        location.offset_                  = static_cast<GpaUInt16>(offset);
-        location.pass_index_              = static_cast<GpaUInt16>(pass_index);
+        if (offset > std::numeric_limits<GpaUInt16>::max() || pass_index > std::numeric_limits<GpaUInt16>::max()) [[unlikely]]
+        {
+            assert(0);
+            return;
+        }
+
+        const GpaCounterResultLocation location = {
+            .pass_index_ = static_cast<GpaUInt16>(pass_index),
+            .offset_     = static_cast<GpaUInt16>(offset),
+        };
 
         counter_result_location_map_[public_counter_index][hardware_counter_index] = location;
 #ifdef DEBUG_PUBLIC_COUNTER_SPLITTER
         std::stringstream ss;
         ss << "Result location for public counter: " << public_counter_index << ", hardwarecounter: " << hardware_counter_index << " is offset: " << offset
            << " in pass: " << pass_index;
-        GPA_LOG_DEBUG_COUNTER_DEFS(ss.str().c_str());
+        GpaLogger::Instance().LogDebugCounterDefs("{}", ss.str());
 #endif
     }
 
@@ -279,33 +277,25 @@ protected:
     /// @param [in] array The vector to scan.
     /// @param [in] element The item to search for.
     ///
-    /// @retval -1 if the vector does not contain the element.
-    /// @return The index of the element if the vector does contain it.
-    template <class T>
-    int VectorContains(const vector<T>& array, const T& element)
+    /// @return The index of the element if the vector contains it; otherwise `std::nullopt`.
+    [[nodiscard]] std::optional<size_t> VectorContains(std::span<const uint32_t> array, const uint32_t element)
     {
-        int array_size = static_cast<int>(array.size());
-
-        for (int i = 0; i < array_size; i++)
+        if (const auto it = std::ranges::find(array, element); it != array.end())
         {
-            if (array[i] == element)
-            {
-                return i;
-            }
+            return std::distance(array.begin(), it);
         }
-
-        return -1;
-    };
+        return std::nullopt;
+    }
 
     /// @brief Tests to see if the counter group is an isolated SQ counter group.
     ///
     /// @param [in] counter_group_accessor The counter accessor that describes the counter that needs to be scheduled.
     ///
     /// @return True if a counter is an isolated SQ group counter.
-    bool IsIsolatedSqCounterGroup(const IGpaCounterGroupAccessor* counter_group_accessor) const
+    [[nodiscard]] bool IsIsolatedSqCounterGroup(const IGpaCounterGroupAccessor* counter_group_accessor) const
     {
-        unsigned int group_index = counter_group_accessor->GlobalGroupIndex();
-        return isolated_sq_counter_index_set_.find(group_index) != isolated_sq_counter_index_set_.end();
+        const uint32_t group_index = counter_group_accessor->GlobalGroupIndex();
+        return isolated_sq_counter_index_set_.contains(group_index);
     }
 
     /// @brief Tests to see if the counter group must be isolated from the isolated SQ counter groups.
@@ -313,10 +303,10 @@ protected:
     /// @param [in] counter_group_accessor The counter accessor that describes the counter that needs to be scheduled.
     ///
     /// @return True if a counter must be isolated from isolated SQ group counters.
-    bool IsCounterGroupIsolatedFromIsolatedSqCounterGroup(const IGpaCounterGroupAccessor* counter_group_accessor) const
+    [[nodiscard]] bool IsCounterGroupIsolatedFromIsolatedSqCounterGroup(const IGpaCounterGroupAccessor* counter_group_accessor) const
     {
-        unsigned int group_index = counter_group_accessor->GlobalGroupIndex();
-        return isolated_from_sq_group_index_set_.find(group_index) != isolated_from_sq_group_index_set_.end();
+        const uint32_t group_index = counter_group_accessor->GlobalGroupIndex();
+        return isolated_from_sq_group_index_set_.contains(group_index);
     }
 
     /// @brief Tests to see if the enabled counters include one of those in the parameter set.
@@ -325,18 +315,18 @@ protected:
     /// @param [in] counter_set List of counter groups to check for in the enabled set.
     ///
     /// @return True if a counter enabled in the current pass is a member of the validation set.
-    bool EnabledCounterGroupsContain(const PerPassData& current_pass_data, const std::set<uint32_t>& counter_set) const
+    [[nodiscard]] bool EnabledCounterGroupsContain(const PerPassData& current_pass_data, const std::set<uint32_t>& counter_set) const
     {
         for (const auto& group_entry : current_pass_data.num_used_counters_per_block)
         {
             // Is the counter group in the list of interest?
-            if (counter_set.find(group_entry.first) == counter_set.end())
+            if (!counter_set.contains(group_entry.first))
             {
                 continue;
             }
 
             // Check if any counters are scheduled on it.
-            if (group_entry.second.size())
+            if (!group_entry.second.empty())
             {
                 return true;
             }
@@ -351,7 +341,7 @@ protected:
     /// @param [in] current_pass_data The counters enabled on each block in the current pass.
     ///
     /// @return True if the counter is compatible with counters already scheduled on the current pass.
-    bool CheckCountersAreCompatible(const IGpaCounterGroupAccessor* counter_group_accessor, const PerPassData& current_pass_data) const
+    [[nodiscard]] bool CheckCountersAreCompatible(const IGpaCounterGroupAccessor* counter_group_accessor, const PerPassData& current_pass_data) const
     {
         // SQ counters cannot be scheduled on the same pass as TCC/TA/TCP/TCA/TD counters (and vice versa).
 
@@ -373,9 +363,7 @@ protected:
     /// @param [in] num_required_passes The number of passes that must be available in the arrays.
     /// @param [in,out] pass_partitions The list to add additional pass partitions.
     /// @param [in,out] num_used_counters_per_pass_per_block The list to which additional used counter info should be added.
-    void AddNewPassInfo(unsigned int               num_required_passes,
-                        std::list<GpaCounterPass>* pass_partitions,
-                        std::list<PerPassData>*    num_used_counters_per_pass_per_block)
+    void AddNewPassInfo(uint32_t num_required_passes, std::list<GpaCounterPass>* pass_partitions, std::list<PerPassData>* num_used_counters_per_pass_per_block)
     {
         while (pass_partitions->size() < num_required_passes)
         {
@@ -394,22 +382,22 @@ protected:
     /// @param [in] max_counters_per_group Contains the maximum number of counters allowed on each block in a single pass.
     ///
     /// @return True if a counter can be added; false if not.
-    bool CanCounterBeAdded(const IGpaCounterGroupAccessor*  counter_group_accessor,
-                           PerPassData&                     current_pass_data,
-                           const std::vector<unsigned int>& max_counters_per_group)
+    [[nodiscard]] bool CanCounterBeAdded(const IGpaCounterGroupAccessor* counter_group_accessor,
+                                         PerPassData&                    current_pass_data,
+                                         const std::vector<uint32_t>&    max_counters_per_group) const
     {
-        unsigned int group_index          = counter_group_accessor->GlobalGroupIndex();
-        size_t       new_group_used_count = 1;
+        uint32_t group_index          = counter_group_accessor->GlobalGroupIndex();
+        size_t   new_group_used_count = 1;
 
         if (current_pass_data.num_used_counters_per_block.count(group_index) > 0)
         {
             new_group_used_count += current_pass_data.num_used_counters_per_block[group_index].size();
         }
 
-        unsigned int group_limit = max_counters_per_group[group_index];
+        uint32_t group_limit = max_counters_per_group[group_index];
         if (group_limit == 0)
         {
-            GPA_LOG_DEBUG_ERROR("Group(%d) counter limit is zero.", group_index);
+            GpaLogger::Instance().LogDebugError("Group({}) counter limit is zero.", group_index);
             return false;
         }
 
@@ -423,40 +411,42 @@ protected:
     /// @param [in] max_sq_counters The maximum number of simultaneous counters allowed on the SQ block.
     ///
     /// @return True if a counter can be added to the block specified by blockIndex; false if the counter cannot be scheduled.
-    bool CheckForSQCounters(const IGpaCounterGroupAccessor* counter_group_accessor, PerPassData& current_pass_data, unsigned int max_sq_counters)
+    [[nodiscard]] bool CheckForSQCounters(const IGpaCounterGroupAccessor* counter_group_accessor,
+                                          const PerPassData&              current_pass_data,
+                                          uint8_t                         max_sq_counters) const
     {
-        unsigned int group_index   = counter_group_accessor->GlobalGroupIndex();
-        unsigned int counter_index = counter_group_accessor->CounterIndex();
+        const uint32_t group_index   = counter_group_accessor->GlobalGroupIndex();
+        const uint32_t counter_index = counter_group_accessor->CounterIndex();
 
-        if (sq_counter_index_map_.count(group_index) == 0)
+        const auto sq_it = sq_counter_index_map_.find(group_index);
+        if (sq_it == sq_counter_index_map_.end())
         {
-            // This counter is not an SQ counter so return true.
             return true;
         }
 
-        GpaSqCounterGroupDesc sq_counter_group = sq_counter_index_map_[group_index];
-        vector<unsigned int>  groups           = sq_shader_stage_group_map_[sq_counter_group.sq_shader_stage];  // Groups for this stage.
+        const GpaSqCounterGroupDesc& sq_counter_group = sq_it->second;
+        const std::vector<uint32_t>& groups           = sq_shader_stage_group_map_.at(sq_counter_group.sq_shader_stage);  // Groups for this stage.
 
-        vector<unsigned int> this_stage_counters;
+        std::vector<uint32_t> this_stage_counters;
+        this_stage_counters.reserve(max_sq_counters);
 
         // Check if this counter has already been added (either via the current or a different shader engine).
-        for (vector<unsigned int>::const_iterator it = groups.begin(); it != groups.end(); ++it)
+        for (uint32_t g : groups)
         {
-            unsigned int this_group_index = sq_counter_index_map_[*it].group_index;
+            uint32_t this_group_index = sq_counter_index_map_.at(g).group_index;
 
             if (current_pass_data.num_used_counters_per_block.count(this_group_index) > 0)
             {
-                for (unsigned int i = 0; i < current_pass_data.num_used_counters_per_block[this_group_index].size(); i++)
+                for (uint32_t i = 0; i < current_pass_data.num_used_counters_per_block.at(this_group_index).size(); i++)
                 {
-                    unsigned int                         cur_counter = current_pass_data.num_used_counters_per_block[this_group_index][i];
-                    vector<unsigned int>::const_iterator it2         = std::find(this_stage_counters.begin(), this_stage_counters.end(), cur_counter);
+                    const uint32_t cur_counter = current_pass_data.num_used_counters_per_block.at(this_group_index).at(i);
 
-                    if (it2 == this_stage_counters.end())
+                    if (std::ranges::find(this_stage_counters, cur_counter) == this_stage_counters.end())
                     {
                         this_stage_counters.push_back(cur_counter);
                     }
 
-                    if (current_pass_data.num_used_counters_per_block[this_group_index][i] == counter_index)
+                    if (current_pass_data.num_used_counters_per_block.at(this_group_index).at(i) == counter_index)
                     {
                         // This counter was already added via a different shader engine so allow it here.
                         return true;
@@ -472,19 +462,25 @@ protected:
         }
 
         // Check that no counters from other stages are enabled.
-
-        for (unsigned int i = kSqAll; i <= kSqLast; i++)
+        for (std::underlying_type_t<GpaSqShaderStage> i = kSqAll; i <= kSqLast; ++i)
         {
-            if (static_cast<GpaSqShaderStage>(i) == sq_counter_group.sq_shader_stage)
+            const auto stage = static_cast<GpaSqShaderStage>(i);
+
+            if (stage == sq_counter_group.sq_shader_stage)
             {
                 continue;
             }
 
-            for (vector<unsigned int>::const_iterator it = sq_shader_stage_group_map_[static_cast<GpaSqShaderStage>(i)].begin();
-                 it != sq_shader_stage_group_map_[static_cast<GpaSqShaderStage>(i)].end();
-                 ++it)
+            auto stage_it = sq_shader_stage_group_map_.find(stage);
+            if (stage_it == sq_shader_stage_group_map_.end())
             {
-                if (!current_pass_data.num_used_counters_per_block[*it].empty())
+                continue;
+            }
+
+            for (const uint32_t group : stage_it->second)
+            {
+                auto block_it = current_pass_data.num_used_counters_per_block.find(group);
+                if (block_it != current_pass_data.num_used_counters_per_block.end() && !block_it->second.empty())
                 {
                     return false;
                 }
@@ -502,9 +498,9 @@ protected:
     /// @param [in] current_pass_counters List of counters in current pass.
     ///
     /// @return True if the counter passes this check (not a timestamp, or it is a timestamp and can be added); false if the counter is a timestamp and cannot be added.
-    bool CheckForTimestampCounters(const IGpaCounterGroupAccessor* counter_group_accessor, const GpaCounterPass& current_pass_counters)
+    [[nodiscard]] bool CheckForTimestampCounters(const IGpaCounterGroupAccessor* counter_group_accessor, const GpaCounterPass& current_pass_counters) const
     {
-        unsigned int block_index = counter_group_accessor->GlobalGroupIndex();
+        const uint32_t block_index = counter_group_accessor->GlobalGroupIndex();
 
         // If this is not a gpuTime counter, it can potentially be added.
         if (!IsTimestampBlockId(block_index))

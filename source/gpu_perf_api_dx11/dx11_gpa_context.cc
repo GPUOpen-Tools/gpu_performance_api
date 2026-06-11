@@ -1,11 +1,13 @@
 //==============================================================================
-// Copyright (c) 2017-2025 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  GPA DX11 Context Implementation
 //==============================================================================
 
 #include "gpu_perf_api_dx11/dx11_gpa_context.h"
+
+#include <memory>
 
 #include "gpu_perf_api_common/gpa_unique_object.h"
 
@@ -37,7 +39,7 @@ Dx11GpaContext::~Dx11GpaContext()
 
     if (kGpaStatusOk != set_stable_clocks_status)
     {
-        GPA_LOG_ERROR("Driver was unable to set stable clocks back to default.");
+        GpaLogger::Instance().LogError("Driver was unable to set stable clocks back to default.");
     }
 
     if (nullptr != dx_ext_pe_)
@@ -60,25 +62,12 @@ Dx11GpaContext::~Dx11GpaContext()
 
 GpaSessionId Dx11GpaContext::CreateSession(GpaSessionSampleType sample_type)
 {
-    GpaSessionId ret_session_id = nullptr;
+    auto            new_dx11_gpa_session = std::make_unique<Dx11GpaSession>(this, sample_type);
+    Dx11GpaSession* raw_session          = new_dx11_gpa_session.get();
 
-    Dx11GpaSession* new_dx11_gpa_session = new (std::nothrow) Dx11GpaSession(this, sample_type);
+    AddGpaSession(std::move(new_dx11_gpa_session));
 
-    if (nullptr == new_dx11_gpa_session)
-    {
-        GPA_LOG_ERROR("Unable to allocate memory for the session.");
-    }
-    else
-    {
-        AddGpaSession(new_dx11_gpa_session);
-
-        if (nullptr != new_dx11_gpa_session)
-        {
-            ret_session_id = reinterpret_cast<GpaSessionId>(GpaUniqueObjectManager::Instance().CreateObject(new_dx11_gpa_session));
-        }
-    }
-
-    return ret_session_id;
+    return reinterpret_cast<GpaSessionId>(GpaUniqueObjectManager::Instance().CreateObject(raw_session));
 }
 
 bool Dx11GpaContext::DeleteSession(GpaSessionId session_id)
@@ -93,9 +82,9 @@ bool Dx11GpaContext::DeleteSession(GpaSessionId session_id)
 
         if (GetIndex(dx11_gpa_session, &index))
         {
-            RemoveGpaSession(dx11_gpa_session);
             GpaUniqueObjectManager::Instance().DeleteObject(session_id);
-            delete dx11_gpa_session;
+            // Removing from the session list triggers destruction via unique_ptr.
+            RemoveGpaSession(dx11_gpa_session);
             success = true;
         }
     }
@@ -114,14 +103,14 @@ bool Dx11GpaContext::Initialize()
 
     if (!InitializeProfileAMDExtension())
     {
-        GPA_LOG_ERROR("Unable to initialize AMD profile extension for DX11.");
+        GpaLogger::Instance().LogError("Unable to initialize AMD profile extension for DX11.");
     }
     else
     {
         GpaStatus set_stable_clocks_status = SetStableClocks(true);
         if (kGpaStatusOk != set_stable_clocks_status)
         {
-            GPA_LOG_ERROR("Driver was unable to set stable clocks for profiling.");
+            GpaLogger::Instance().LogError("Driver was unable to set stable clocks for profiling.");
         }
 
         // Even if the stable clocks could not be set, this is considered successful.
@@ -233,11 +222,11 @@ bool Dx11GpaContext::InitializeProfileAMDExtension()
 {
     bool success = true;
 
-    PFNAmdDxExtCreate11 dx11_extension_func = Dx11GpaImplementor::Instance()->GetAmdExtFuncPointer();
+    PFNAmdDxExtCreate11 dx11_extension_func = Dx11GpaImplementor::Instance().GetAmdExtFuncPointer();
 
     if (nullptr == dx11_extension_func)
     {
-        GPA_LOG_ERROR("AMD extension function is not initialized.");
+        GpaLogger::Instance().LogError("AMD extension function is not initialized.");
         success = false;
     }
     else
@@ -247,7 +236,7 @@ bool Dx11GpaContext::InitializeProfileAMDExtension()
 
         if (FAILED(hr))
         {
-            GPA_LOG_ERROR("Unable to create DX11 extension.");
+            GpaLogger::Instance().LogError("Unable to create DX11 extension.");
             success = false;
         }
         else
@@ -258,7 +247,7 @@ bool Dx11GpaContext::InitializeProfileAMDExtension()
             {
                 dx_ext_->Release();
                 dx_ext_ = nullptr;
-                GPA_LOG_ERROR("Unable to initialize because the driver does not support the PerfProfile extension.");
+                GpaLogger::Instance().LogError("Unable to initialize because the driver does not support the PerfProfile extension.");
                 success = false;
             }
             else
@@ -267,7 +256,7 @@ bool Dx11GpaContext::InitializeProfileAMDExtension()
 
                 if (PE_OK != dx_ext_pe_->GetGpuCaps(active_gpu, &gpu_caps_))
                 {
-                    GPA_LOG_ERROR("Unable to get device capabilities from the driver.");
+                    GpaLogger::Instance().LogError("Unable to get device capabilities from the driver.");
                     success = false;
                 }
 
@@ -286,7 +275,7 @@ bool Dx11GpaContext::InitializeProfileAMDExtension()
                     else
                     {
                         block_info_init_[gpu_block_iter] = false;
-                        GPA_LOG_DEBUG_ERROR("Failed to retrieve block counter info, block info will not be set on this iteration.");
+                        GpaLogger::Instance().LogDebugError("Failed to retrieve block counter info, block info will not be set on this iteration.");
                     }
                 }
             }
@@ -301,7 +290,7 @@ GpaStatus Dx11GpaContext::SetStableClocks(bool use_profiling_clocks)
     // Only use Stable PState feature if driver supports at least extension version 3.
     if (gpu_caps_.version < 3)
     {
-        GPA_LOG_ERROR("DX11 stable clock extension is not available.");
+        GpaLogger::Instance().LogError("DX11 stable clock extension is not available.");
         return kGpaStatusErrorDriverNotSupported;
     }
 
@@ -348,7 +337,7 @@ GpaStatus Dx11GpaContext::SetStableClocks(bool use_profiling_clocks)
         const PE_RESULT status = dx_ext_pe_->SetClockMode(clock_mode, nullptr);
         if (status != PE_OK)
         {
-            GPA_LOG_ERROR("Failed to set ClockMode for profiling.");
+            GpaLogger::Instance().LogError("Failed to set ClockMode for profiling.");
 
             result = kGpaStatusErrorFailed;
         }

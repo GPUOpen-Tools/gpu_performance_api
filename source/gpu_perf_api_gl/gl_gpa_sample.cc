@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2018-2024 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  GL GPA Sample Implementation
@@ -53,7 +53,7 @@ bool GlGpaSample::UpdateResults()
 
                 if (elapsed_time.count() > timeout)
                 {
-                    GPA_LOG_ERROR("Failed to collect counter data due to elapsed timeout.");
+                    GpaLogger::Instance().LogError("Failed to collect counter data due to elapsed timeout.");
                     break;
                 }
             }

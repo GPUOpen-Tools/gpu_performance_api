@@ -1,4 +1,4 @@
-## Copyright (C) 2019-2026 Advanced Micro Devices, Inc. All rights reserved. ##
+#/ Copyright (C) Advanced Micro Devices, Inc. All rights reserved.
 
 set(GPA_PROJECT_NAME GPUPerfAPICounterGenerator-Common)
 set(ProjectName ${GPA_PROJECT_NAME})
@@ -7,7 +7,6 @@ include(${GPA_CMAKE_MODULES_DIR}/common.cmake)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 include_directories(${GPA_SRC}
-                    ${GPA_PUBLIC_HEADER}
                     ${ADDITIONAL_COUNTER_DIR_INCLUDE})
 
 set(COUNTER_GENERATOR_VS_FILTER CounterGenerators)
@@ -46,7 +45,8 @@ if(NOT DEFINED COUNTER_DIR)
 endif()
 
 if(EXISTS ${GPA_AUTOGEN_SRC_COUNTER_GENERATOR})
-    include(${GPA_AUTOGEN_SRC_COUNTER_GENERATOR}/gpa_hw_counter.cmake)
+    file(GLOB HW_COUNTER_HEADERS CONFIGURE_DEPENDS
+        ${GPA_AUTOGEN_SRC_COUNTER_GENERATOR}/gpa_hw_counter_gfx*.h)
 endif()
 
 set(HARDWARE_COUNTER_SRC ${HW_COUNTER_HEADERS}
@@ -55,7 +55,8 @@ set(HARDWARE_COUNTER_SRC ${HW_COUNTER_HEADERS}
 set(HARDWARE_EXPOSED_COUNTER ${HW_EXPOSED_COUNTER_HEADERS} ${HW_EXPOSED_COUNTER_SRC})
 
 if(EXISTS ${AUTOGEN_COUNTER_DIR})
-    include(${AUTOGEN_COUNTER_DIR}/gpa_hw_counter.cmake)
+    file(GLOB HW_COUNTER_SRC CONFIGURE_DEPENDS
+        ${AUTOGEN_COUNTER_DIR}/gpa_hw_counter_gfx*_*.cc)
 endif()
 
 set(HARDWARE_COUNTER_SRC ${HARDWARE_COUNTER_SRC} ${HW_COUNTER_SRC})
@@ -68,11 +69,8 @@ set(DERIVED_COUNTER_SRC
     gpa_derived_counter.cc)
 
 set(COUNTER_SPLITTING_ALGO_HEADERS
-    gpa_split_counter_factory.h
     gpa_split_counters_consolidated.h
-    gpa_split_counters_interfaces.h
-    gpa_split_counters_max_per_pass.h
-    gpa_split_counters_one_per_pass.h)
+    gpa_split_counters_interfaces.h)
 
 set(COUNTER_HEADERS
     gpa_hardware_counters.h)
@@ -106,14 +104,12 @@ if(WIN32)
     source_group("Source Files" FILES ${COUNTER_HEADERS})
 endif()
 
-if(WIN32)
-    add_compile_options(/bigobj)
- else()
-     add_compile_options(-Wno-write-strings)
- endif()
-
 add_library(${GPA_PROJECT_NAME} ${SOURCES})
 target_link_libraries(${GPA_PROJECT_NAME} PUBLIC
-                      AMD::device_info
-                      AMD::tsingleton)
+    AMD::device_info
+    AMD::GPUPerfAPI-Headers
+)
+if (MSVC)
+    target_compile_options(${GPA_PROJECT_NAME} PRIVATE /bigobj)
+endif()
 target_include_directories(${GPA_PROJECT_NAME} PUBLIC ${ADDITIONAL_INCLUDE_DIRECTORIES})

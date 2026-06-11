@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016-2024 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Class for counter scheduling for VK.
@@ -17,17 +17,9 @@ public:
     /// @brief Constructor.
     ///
     /// @param [in] sample_type The type of samples for which to schedule counters.
-    GpaCounterSchedulerVk(GpaSessionSampleType sample_type);
+    explicit GpaCounterSchedulerVk(GpaSessionSampleType sample_type);
 
-protected:
-    /// @copydoc GpaCounterSchedulerBase::GetPreferredSplittingAlgorithm()
-    ///
-    /// For Vulkan, the preferred splitting algorithm is the consolidated one.
-    /// This keeps the overall number of passes down to a reasonable number, but splits the counters up
-    /// in a manner that allows them to be more consistent.
-    virtual GpaCounterSplitterAlgorithm GetPreferredSplittingAlgorithm() const override;
-
-private:
+    /// @brief Delete default constructor.
     GpaCounterSchedulerVk() = delete;
 };
 

@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2025 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  Declares Vk Entrypoints
@@ -51,24 +51,24 @@ extern PFN_vkResetGpaSessionAMD          _vkResetGpaSessionAMD;           ///< V
 extern PFN_vkCmdCopyGpaSessionResultsAMD _vkCmdCopyGpaSessionResultsAMD;  ///< Vulkan entrypoint.
 
 /// Macro to get a procedure address from a Vulkan instance.
-#define VK_GET_INSTANCE_PROC_ADDR(func)                                                         \
-    if (result)                                                                                 \
-    {                                                                                           \
-        result &= (nullptr != (_##func = (PFN_##func)_vkGetInstanceProcAddr(instance, #func))); \
-        if (!result)                                                                            \
-        {                                                                                       \
-            GPA_LOG_ERROR("Unable to initialize Instance entry point " #func ".");              \
-        }                                                                                       \
+#define VK_GET_INSTANCE_PROC_ADDR(func)                                                             \
+    if (result)                                                                                     \
+    {                                                                                               \
+        result &= (nullptr != (_##func = (PFN_##func)_vkGetInstanceProcAddr(instance, #func)));     \
+        if (!result)                                                                                \
+        {                                                                                           \
+            GpaLogger::Instance().LogError("Unable to initialize Instance entry point " #func "."); \
+        }                                                                                           \
     }
 /// Macro to get a procedure address from a Vulkan device.
-#define VK_GET_DEVICE_PROC_ADDR(func)                                                       \
-    if (result)                                                                             \
-    {                                                                                       \
-        result &= (nullptr != (_##func = (PFN_##func)_vkGetDeviceProcAddr(device, #func))); \
-        if (!result)                                                                        \
-        {                                                                                   \
-            GPA_LOG_ERROR("Unable to initialize Device entry point " #func ".");            \
-        }                                                                                   \
+#define VK_GET_DEVICE_PROC_ADDR(func)                                                             \
+    if (result)                                                                                   \
+    {                                                                                             \
+        result &= (nullptr != (_##func = (PFN_##func)_vkGetDeviceProcAddr(device, #func)));       \
+        if (!result)                                                                              \
+        {                                                                                         \
+            GpaLogger::Instance().LogError("Unable to initialize Device entry point " #func "."); \
+        }                                                                                         \
     }
 
 namespace vk_utils

@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2025 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  Declares Vk Entrypoints
@@ -9,7 +9,7 @@
 
 #include "gpu_perf_api_common/gpa_common_defs.h"
 
-#ifdef _LINUX
+#ifndef _WIN32
 #include <dlfcn.h>
 #endif
 
@@ -91,7 +91,7 @@ bool vk_utils::InitializeVkEntryPoints(VkInstance                instance,
 
             if (nullptr == vulkan_module)
             {
-                GPA_LOG_ERROR("Failed to get handle to Vulkan Loader.");
+                GpaLogger::Instance().LogError("Failed to get handle to Vulkan Loader.");
                 return false;
             }
 
@@ -130,7 +130,7 @@ bool vk_utils::InitializeVkEntryPoints(VkInstance                instance,
 
             if (!result)
             {
-                GPA_LOG_ERROR("Required VK Extension 'VK_KHR_get_physical_device_properties2' is not enabled.");
+                GpaLogger::Instance().LogError("Required VK Extension 'VK_KHR_get_physical_device_properties2' is not enabled.");
                 return false;
             }
         }
@@ -178,7 +178,7 @@ bool vk_utils::InitializeVkEntryPoints(VkInstance                instance,
 
             if (!result)
             {
-                GPA_LOG_ERROR("Required VK Extension 'VK_AMD_gpa_interface' is not enabled.");
+                GpaLogger::Instance().LogError("Required VK Extension 'VK_AMD_gpa_interface' is not enabled.");
                 return false;
             }
 

@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2011-2025 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  A class for managing hardware information.
@@ -13,14 +13,10 @@
 #include <string>
 #include <vector>
 
-#include "DeviceInfo.h"
+#include "device_info.hpp"
 
 #include "gpu_performance_api/gpu_perf_api_types.h"
 #include "gpu_performance_api/gpu_perf_api_counters.h"
-
-static const int kAmdVendorId    = 0x1002;  ///< The AMD vendor ID.
-static const int kNvidiaVendorId = 0x10DE;  ///< The Nvidia vendor ID.
-static const int kIntelVendorId  = 0x8086;  ///< The Intel vendor ID.
 
 /// @brief Stores information about the hardware installed in the machine.
 class GpaHwInfo
@@ -50,7 +46,10 @@ public:
     /// @brief Sets the hardware generation that the device belongs to.
     ///
     /// @param [in] generation The hardware generation.
-    void SetHwGeneration(const GDT_HW_GENERATION& generation);
+    void SetHwGeneration(device_info::HwGeneration generation)
+    {
+        generation_ = generation;
+    }
 
     /// Sets the device name
     ///
@@ -110,7 +109,7 @@ public:
     /// @brief Gets the number of shader engines.
     ///
     /// @return The number of shader engines.
-    GpaUInt32 GetNumberShaderEngines() const
+    [[nodiscard]] GpaUInt32 GetNumberShaderEngines() const
     {
         return num_shader_engines_;
     }
@@ -118,7 +117,7 @@ public:
     /// @brief Gets the number of shader arrays.
     ///
     /// @return The number of shader arrays.
-    GpaUInt32 GetNumberShaderArrays() const
+    [[nodiscard]] GpaUInt32 GetNumberShaderArrays() const
     {
         return num_shader_arrays_;
     }
@@ -126,7 +125,7 @@ public:
     /// @brief Gets the number of SIMDs.
     ///
     /// @return The number of SIMDs.
-    GpaUInt32 GetNumberSimds() const
+    [[nodiscard]] GpaUInt32 GetNumberSimds() const
     {
         return num_simd_;
     }
@@ -134,7 +133,7 @@ public:
     /// @brief Gets the number of Compute Units.
     ///
     /// @return The number of Compute Units.
-    GpaUInt32 GetNumberCus() const
+    [[nodiscard]] GpaUInt32 GetNumberCus() const
     {
         return num_cu_;
     }
@@ -142,7 +141,7 @@ public:
     /// @brief Gets the max number of waves per SIMD.
     ///
     /// @return the number of waves per SIMD.
-    GpaUInt32 GetWavesPerSimd() const
+    [[nodiscard]] GpaUInt32 GetWavesPerSimd() const
     {
         return num_waves_per_simd_;
     }
@@ -150,7 +149,7 @@ public:
     /// @brief Calculate the max wave slots
     ///
     /// @return The maximum number of wave slots
-    GpaUInt32 GetMaxWaveSlots() const
+    [[nodiscard]] GpaUInt32 GetMaxWaveSlots() const
     {
         return num_simd_ * num_waves_per_simd_;
     }
@@ -158,7 +157,7 @@ public:
     /// @brief Gets the max number of VGPRs.
     ///
     /// @return The number of VGPRs.
-    GpaUInt32 GetTotalVgprs() const
+    [[nodiscard]] GpaUInt32 GetTotalVgprs() const
     {
         return num_vgpr_;
     }
@@ -166,15 +165,39 @@ public:
     /// @brief Gets the total size of LDS memory on the GPU
     ///
     /// @return The number of LDS bytes
-    std::optional<GpaUInt32> GetTotalLdsBytes() const
+    [[nodiscard]] std::optional<GpaUInt32> GetTotalLdsBytes() const
     {
         return num_lds_bytes_;
+    }
+
+    /// @brief Gets the max number of SQ counters.
+    ///
+    /// @return The number of SQ counters. Will never be 0, but may be std::nullopt if the information is not available.
+    [[nodiscard]] std::optional<uint8_t> GetMaxSqCounters() const
+    {
+        return max_sq_counters_;
+    }
+
+    /// @brief Gets the hardware generation.
+    ///
+    /// @return The hardware generation.
+    [[nodiscard]] std::optional<device_info::HwGeneration> GetHwGeneration() const
+    {
+        return generation_;
+    }
+
+    /// @brief Gets the ASIC type.
+    ///
+    /// @return The ASIC type.
+    [[nodiscard]] std::optional<device_info::AsicType> GetHwAsicType() const
+    {
+        return asic_type_;
     }
 
     /// @brief Gets the number of clocks per primitive.
     ///
     /// @return The number of clocks per primitive.
-    GpaUInt32 GetSuClocksPrim() const
+    [[nodiscard]] GpaUInt32 GetSuClocksPrim() const
     {
         return su_clock_prim_;
     }
@@ -182,9 +205,18 @@ public:
     /// @brief Gets the number of primitive pipes.
     ///
     /// @return The number of primitive pipes.
-    GpaUInt32 GetNumberPrimPipes() const
+    [[nodiscard]] GpaUInt32 GetNumberPrimPipes() const
     {
         return num_prim_pipes_;
+    }
+
+    [[nodiscard]] std::optional<device_info::AdapterId> GetDeviceDescription() const
+    {
+        if (device_id_set_ && vendor_id_set_ && revision_id_set_)
+        {
+            return device_info::AdapterId{.vendor_id = vendor_id_, .device_id = device_id_, .revision_id = revision_id_};
+        }
+        return std::nullopt;
     }
 
     /// @brief Gets the revision ID.
@@ -192,63 +224,56 @@ public:
     /// @param [out] id The revision ID.
     ///
     /// @return True if the revision ID is available; false otherwise.
-    bool GetRevisionId(GpaUInt32& id) const;
+    [[nodiscard]] bool GetRevisionId(GpaUInt32& id) const;
 
     /// @brief Gets the device ID.
     ///
     /// @param [out] id The device ID.
     ///
     /// @return True if the device ID is available; false otherwise.
-    bool GetDeviceId(GpaUInt32& id) const;
+    [[nodiscard]] bool GetDeviceId(GpaUInt32& id) const;
 
     /// @brief Checks if the current card is unsupported based on the device ID and graphics API.
     ///
     /// @param [in] api The API being used.
     ///
     /// @return True if the current device is unsupported.
-    bool IsUnsupportedDeviceId(const GpaApiType api, GpaDriverInfo const& driver_info) const;
+    [[nodiscard]] bool IsUnsupportedDevice(const GpaApiType api, GpaDriverInfo const& driver_info) const;
 
     /// @brief Gets the vendor ID.
     ///
     /// @param [out] vendor_id The vendor ID.
     ///
     /// @return True if the vendor ID is available; false otherwise.
-    bool GetVendorId(GpaUInt32& vendor_id) const;
+    [[nodiscard]] bool GetVendorId(GpaUInt32& vendor_id) const;
 
     /// @brief Gets the device name.
     ///
     /// @param [out] device_name The device name.
     ///
     /// @return True if the device name is available; false otherwise.
-    bool GetDeviceName(const char*& device_name) const;
+    [[nodiscard]] bool GetDeviceName(const char*& device_name) const;
 
     /// @brief Get the GPU index in the system.
     ///
     /// @param [out] gpu_index The GPU index in the system.
     ///
     /// @return True if the gpu index is available, false otherwise.
-    bool GetGpuIndex(unsigned int& gpu_index) const;
-
-    /// @brief Gets the hardware generation.
-    ///
-    /// @param [out] gen The HW generation.
-    ///
-    /// @return True if the HW generation is available; false otherwise.
-    bool GetHwGeneration(GDT_HW_GENERATION& gen) const;
+    [[nodiscard]] bool GetGpuIndex(unsigned int& gpu_index) const;
 
     /// @brief Gets the ASIC type.
     ///
     /// @param [out] type The ASIC type.
     ///
     /// @return True if the ASIC type is available; false otherwise.
-    bool GetHwAsicType(GDT_HW_ASIC_TYPE& type) const;
+    [[nodiscard]] bool GetHwAsicType(device_info::AsicType& type) const;
 
     /// @brief Gets the timestamp clock frequency.
     ///
     /// @param [out] timestamp_frequency timestamp frequency.
     ///
     /// @return The clock frequency.
-    bool GetTimeStampFrequency(GpaUInt64& timestamp_frequency) const
+    [[nodiscard]] bool GetTimeStampFrequency(GpaUInt64& timestamp_frequency) const
     {
         timestamp_frequency = timestamp_frequency_;
         return timestamp_frequency_set_;
@@ -258,57 +283,16 @@ public:
     ///
     /// Sets devInfo and sets DeviceName and HWGeneration if not previously set.
     ///
-    /// @param [in] api The API being used.
-    ///
     /// @return True if HW should be supported and information is obtained correctly.
-    bool UpdateDeviceInfoBasedOnDeviceId(const GpaApiType api, GpaDriverInfo const& driver_info);
-
-    /// @brief Uses the device id and name to assign a revision id.
-    ///
-    /// Will assign zero if it cannot find a matching device.
-    ///
-    /// @return true if HW should be supported and information is obtained correctly.
-    bool UpdateRevisionIdBasedOnDeviceIdAndName();
-
-    /// @brief Uses the asic type and name to assign a device and revision id.
-    ///
-    /// Will leave device id alone and assign AMDTDeviceInfoUtils::kRevisionIdAny if it cannot find a matching device.
-    ///
-    /// @param [in] asic_type The asic Type.
-    ///
-    /// @return True if HW should be supported and information is obtained correctly.
-    bool UpdateDeviceInfoBasedOnAsicTypeAndName(GDT_HW_ASIC_TYPE asic_type);
+    [[nodiscard]] bool UpdateDeviceInfoBasedOnDeviceDescription();
 
     /// @brief Check if the current hardware is AMD hardware.
     ///
     /// @return True if the current hardware is AMD hardware.
-    bool IsAmd() const
+    [[nodiscard]] bool IsAmd() const
     {
-        return vendor_id_set_ && kAmdVendorId == vendor_id_;
+        return vendor_id_set_ && device_info::kAmdVendorId == vendor_id_;
     };
-
-    /// @brief Check if the current hardware is Nvidia hardware.
-    ///
-    /// @return True if the current hardware is Nvidia hardware.
-    bool IsNvidia() const
-    {
-        return vendor_id_set_ && kNvidiaVendorId == vendor_id_;
-    };
-
-    /// @brief Check if the current hardware is Intel hardware.
-    ///
-    /// @return True if the current hardware is Intel hardware.
-    bool IsIntel() const
-    {
-        return vendor_id_set_ && kIntelVendorId == vendor_id_;
-    };
-
-    /// @brief Check whether the hardware infos are same or not.
-    ///
-    /// @param [in] other_hw_info Hardware info.
-    ///
-    /// @return True if both hardware info are same otherwise false.
-    bool operator==(const GpaHwInfo& other_hw_info) const;
 
 private:
     GpaUInt32 device_id_     = {};  ///< The device ID.
@@ -323,11 +307,8 @@ private:
     std::string device_name_     = {};  ///< The device name.
     bool        device_name_set_ = {};  ///< Indicates if the device name has been set.
 
-    unsigned int gpu_index_     = {};  ///< Index of the GPU in the system.
-    bool         gpu_index_set_ = {};  ///< Indicates the GPU index has been set.
-
-    GDT_HW_GENERATION generation_     = GDT_HW_GENERATION_NONE;  ///< The hardware generation.
-    bool              generation_set_ = {};                      ///< Indicates if the hardware generation has been set.
+    GpaUInt32 gpu_index_     = {};  ///< Index of the GPU in the system.
+    bool      gpu_index_set_ = {};  ///< Indicates the GPU index has been set.
 
     GpaUInt64 timestamp_frequency_     = 1;   ///< The frequency of the time stamp clock.
     bool      timestamp_frequency_set_ = {};  ///< Indicates if the timestamp frequency has been set.
@@ -340,8 +321,6 @@ private:
 
     GpaUInt32 num_waves_per_simd_     = {};  ///< Maximum number of waves per SIMD.
     bool      num_waves_per_simd_set_ = {};  ///< Indicates the WavesPerSimd has been set.
-
-    GDT_HW_ASIC_TYPE asic_type_ = GDT_ASIC_TYPE_NONE;  ///< Indicates the ASIC type of this device.
 
     GpaUInt32 num_shader_engines_     = {};  ///< Number of shader engines.
     bool      num_shader_engines_set_ = {};  ///< Indicates if the shader engines has been set.
@@ -358,7 +337,13 @@ private:
     GpaUInt32 num_vgpr_     = {};  ///< Maximum number of VGPRs.
     bool      num_vgpr_set_ = {};  ///< Indicates the number of VGPRs has been set.
 
-    std::optional<GpaUInt32> num_lds_bytes_ = {};  ///< Amount of LDS memory available
+    std::optional<GpaUInt32> num_lds_bytes_;  ///< Amount of LDS memory available
+
+    std::optional<uint8_t> max_sq_counters_;  ///< Max number of SQ counters, used for counter scheduling.
+
+    std::optional<device_info::AsicType> asic_type_;  ///< Indicates the ASIC type of this device.
+
+    std::optional<device_info::HwGeneration> generation_;  ///< The hardware generation of the device.
 };
 
 #endif

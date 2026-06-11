@@ -1,4 +1,4 @@
-## Copyright (C) 2018-2026 Advanced Micro Devices, Inc. All rights reserved. ##
+#/ Copyright (C) Advanced Micro Devices, Inc. All rights reserved.
 
 find_program(SPHINX_EXECUTABLE sphinx-build)
 if(NOT SPHINX_EXECUTABLE)

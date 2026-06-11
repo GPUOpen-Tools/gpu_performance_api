@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2025 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Common GPA Implementor.
@@ -26,7 +26,7 @@ GpaStatus GpaImplementor::Initialize(GpaInitializeFlags flags)
 
     if (kGpaInitializeDefaultBit != flags && kGpaInitializeSimultaneousQueuesEnableBit != flags && kGpaInitializeEnableSqttBit != flags)
     {
-        GPA_LOG_ERROR("Invalid flags passed to GpaInitialize.");
+        GpaLogger::Instance().LogError("Invalid flags passed to GpaInitialize.");
         gpa_status = kGpaStatusErrorInvalidParameter;
     }
     else
@@ -41,20 +41,15 @@ GpaStatus GpaImplementor::Initialize(GpaInitializeFlags flags)
     return gpa_status;
 }
 
-GpaStatus GpaImplementor::Destroy()
+void GpaImplementor::Destroy()
 {
-    GpaStatus gpa_status = kGpaStatusErrorGpaNotInitialized;
-
     if (is_initialized_)
     {
         is_initialized_ = false;
-        gpa_status = kGpaStatusOk;
         GpaContextCounterMediator::Clear();
         session_info_map_.clear();
         app_context_info_gpa_context_map_.clear();
     }
-
-    return gpa_status;
 }
 
 GpaStatus GpaImplementor::OpenContext(void* context, GpaOpenContextFlags flags, GpaContextId* gpa_context_id)
@@ -84,7 +79,7 @@ GpaStatus GpaImplementor::OpenContext(void* context, GpaOpenContextFlags flags, 
 
     if (1 < num_clock_modes)
     {
-        GPA_LOG_ERROR("More than one clock mode specified.");
+        GpaLogger::Instance().LogError("More than one clock mode specified.");
         return kGpaStatusErrorInvalidParameter;
     }
 
@@ -94,41 +89,40 @@ GpaStatus GpaImplementor::OpenContext(void* context, GpaOpenContextFlags flags, 
 
     if (!DoesContextInfoExist(context))
     {
-        GpaHwInfo hw_info;
-
         const GpaDriverInfo driver_info = GpaQueryDriverInfo();
         if (!IsDriverSupported(context))
         {
             // Driver not supported, logging error.
-            GPA_LOG_ERROR("Driver not supported.");
+            GpaLogger::Instance().LogError("Driver not supported.");
             return kGpaStatusErrorDriverNotSupported;
         }
 
+        GpaHwInfo hw_info = {};
         if (IsDeviceSupported(context, flags, driver_info, &hw_info) != kGpaStatusOk)
         {
-            GPA_LOG_ERROR("Device not supported.");
+            GpaLogger::Instance().LogError("Device not supported.");
             gpa_status = kGpaStatusErrorHardwareNotSupported;
         }
         else
         {
-            IGpaContext* new_gpa_context = nullptr;
-            new_gpa_context              = OpenApiContext(context, hw_info, flags);
+            std::unique_ptr<IGpaContext> new_gpa_context = OpenApiContext(context, hw_info, flags);
 
             if (nullptr != new_gpa_context)
             {
-                *gpa_context_id = reinterpret_cast<GpaContextId>(GpaUniqueObjectManager::Instance().CreateObject(new_gpa_context));
-                app_context_info_gpa_context_map_.insert(GpaDeviceIdentifierGpaContextPair(GetDeviceIdentifierFromContextInfo(context), new_gpa_context));
+                IGpaContext* raw_context = new_gpa_context.get();
+                *gpa_context_id          = reinterpret_cast<GpaContextId>(GpaUniqueObjectManager::Instance().CreateObject(raw_context));
+                app_context_info_gpa_context_map_.emplace(GetDeviceIdentifierFromContextInfo(context), std::move(new_gpa_context));
             }
             else
             {
-                GPA_LOG_ERROR("Failed to open API-specific GPA Context.");
+                GpaLogger::Instance().LogError("Failed to open API-specific GPA Context.");
                 gpa_status = kGpaStatusErrorFailed;
             }
         }
     }
     else
     {
-        GPA_LOG_ERROR("Context is already open.");
+        GpaLogger::Instance().LogError("Context is already open.");
         gpa_status = kGpaStatusErrorContextAlreadyOpen;
     }
 
@@ -151,7 +145,7 @@ GpaStatus GpaImplementor::CloseContext(GpaContextId gpa_context_id)
 
         for (auto iter = app_context_info_gpa_context_map_.begin(); !is_found && iter != app_context_info_gpa_context_map_.end(); ++iter)
         {
-            if (iter->second == gpa_context)
+            if (iter->second.get() == gpa_context)
             {
                 is_found   = true;
                 found_iter = iter;
@@ -160,26 +154,29 @@ GpaStatus GpaImplementor::CloseContext(GpaContextId gpa_context_id)
 
         if (is_found)
         {
-            if (CloseApiContext(gpa_context))
+            // Extract ownership from the map and transfer it to CloseApiContext, which destroys the context.
+            std::unique_ptr<IGpaContext> owned_context = std::move(found_iter->second);
+            app_context_info_gpa_context_map_.erase(found_iter);
+
+            if (!CloseApiContext(std::move(owned_context)))
             {
-                app_context_info_gpa_context_map_.erase(found_iter);
-                GpaUniqueObjectManager::Instance().DeleteObject(gpa_context_id);
-            }
-            else
-            {
-                GPA_LOG_DEBUG_ERROR("Unable to close the API-level GPA context.");
+                GpaLogger::Instance().LogDebugError("Unable to close the API-level GPA context.");
                 gpa_status = kGpaStatusErrorFailed;
             }
+
+            // CloseApiContext always destroys the context (via unique_ptr), so always clean up
+            // the GpaContextId to prevent the unique object manager from holding a dangling reference.
+            GpaUniqueObjectManager::Instance().DeleteObject(gpa_context_id);
         }
         else
         {
-            GPA_LOG_ERROR("Unable to close the GPAContext: context not found.");
+            GpaLogger::Instance().LogError("Unable to close the GPAContext: context not found.");
             gpa_status = kGpaStatusErrorInvalidParameter;
         }
     }
     else
     {
-        GPA_LOG_ERROR("Invalid context supplied.");
+        GpaLogger::Instance().LogError("Invalid context supplied.");
         gpa_status = kGpaStatusErrorInvalidParameter;
     }
 
@@ -272,34 +269,68 @@ GpaStatus GpaImplementor::IsDeviceSupported(GpaContextInfoPtr    context_info,
                                             GpaDriverInfo const& driver_info,
                                             GpaHwInfo*           hw_info) const
 {
-    GpaHwInfo    api_hw_info;
+    GpaHwInfo api_hw_info;
 
-    if (!GetHwInfoFromApi(context_info, flags, api_hw_info))
+    if (const GpaStatus status = GetHwInfoFromApi(context_info, flags, api_hw_info); status != kGpaStatusOk)
     {
-        GPA_LOG_ERROR("Unable to get hardware information from the API.");
-        return kGpaStatusErrorFailed;
+        GpaLogger::Instance().LogError("Unable to get hardware information from the API.");
+        return status;
     }
 
     const GpaApiType api = GetApiType();
 
-    if (api_hw_info.IsAmd())
+    if (api_hw_info.IsUnsupportedDevice(api, driver_info))
     {
-        // Checking for AMD GPUs that are not supported by GPA for one reason or another.
-        if (api_hw_info.IsUnsupportedDeviceId(api, driver_info))
-        {
-            GPA_LOG_ERROR("The current hardware does not properly support GPUPerfAPI.");
-            return kGpaStatusErrorHardwareNotSupported;
-        }
+        GpaLogger::Instance().LogError("The current hardware does not properly support GPUPerfAPI.");
+        return kGpaStatusErrorHardwareNotSupported;
+    }
 
-        const bool device_info_ok = api_hw_info.UpdateDeviceInfoBasedOnDeviceId(api, driver_info);
+    if (!api_hw_info.UpdateDeviceInfoBasedOnDeviceDescription())
+    {
+        // If this fails, then the hardware must not be supported because we don't know enough about it.
+        GpaLogger::Instance().LogError("Cannot update device information.");
+        return kGpaStatusErrorHardwareNotSupported;
+    }
 
-        if (!device_info_ok)
+    // Warn about driver versions older than 26.20 which have known issues. Only emit
+    // here (context-open path) to avoid false positives from offline/counter-lib queries that call
+    // CalculateSupportedSampleTypes without ever setting the clock mode.
+#ifdef _WIN32
+    if (driver_info.driver_type == kAmdProprietaryDriver)
+    {
+        // NOTE: The GpaDriverInfo version aren't the same as the Adrenalin version numbers.
+        // We have to correlate them to know which driver versions have the known issues.
+        // The minimum version that contains the fixes is Adrenalin 26.7.1, which corresponds to 26.20.
+        constexpr GpaUInt32 kMinMajorVersion = 26;
+        constexpr GpaUInt32 kMinMinorVersion = 20;
+        if (driver_info.major < kMinMajorVersion || (driver_info.major == kMinMajorVersion && driver_info.minor < kMinMinorVersion))
         {
-            // If this fails, then the hardware must not be supported because we don't know enough about it.
-            GPA_LOG_ERROR("Cannot update device information.");
-            return kGpaStatusErrorHardwareNotSupported;
+            const auto hw_generation = api_hw_info.GetHwGeneration();
+            if (hw_generation.has_value() && *hw_generation == device_info::HwGeneration::kGfx12)
+            {
+                GpaLogger::Instance().LogMessage(
+                    "Update to newer driver to avoid sporadic TDRs on RDNA4 hardware! Please update to Adrenalin 26.7.1 or newer.");
+            }
+
+            // Don't alert the user about clock mode issues if they aren't planning to set anything.
+            if ((flags & kGpaOpenContextClockModeNoneBit) == 0)
+            {
+                if (api == kGpaApiDirectx12)
+                {
+                    // DX12 doesn't currently have a way to register clock mode failures.
+                    GpaLogger::Instance().LogMessage(
+                        "If you are experiencing instability after several profiling iterations or a crash, it may be related to a known issue with your "
+                        "current driver. Please update to Adrenalin 26.7.1 or newer.");
+                }
+                else
+                {
+                    GpaLogger::Instance().LogMessage(
+                        "If you see 'Failed to set ClockMode for profiling' in your logs please update to Adrenalin 26.7.1 or newer.");
+                }
+            }
         }
     }
+#endif
 
     // Give the API-specific implementation a chance to verify that the hardware is supported.
     const GpaStatus status = VerifyApiHwSupport(context_info, flags, api_hw_info) ? kGpaStatusOk : kGpaStatusErrorFailed;
@@ -316,9 +347,4 @@ bool GpaImplementor::IsDriverSupported(GpaContextInfoPtr context_info) const
 {
     UNREFERENCED_PARAMETER(context_info);
     return true;
-}
-
-bool GpaImplementor::CompareHwInfo(const GpaHwInfo& first, const GpaHwInfo& second) const
-{
-    return first == second;
 }

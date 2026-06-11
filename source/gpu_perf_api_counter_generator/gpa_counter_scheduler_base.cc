@@ -1,15 +1,15 @@
 //==============================================================================
-// Copyright (c) 2016-2025 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Base Class for counter scheduling.
 //==============================================================================
 
 #include <list>
+#include <limits>
+#include <memory>
 #include <sstream>
 #include <vector>
-
-#include "DeviceInfoUtils.h"
 
 #include "gpu_perf_api_common/logging.h"
 
@@ -17,15 +17,10 @@
 #include "gpu_perf_api_counter_generator/gpa_counter_scheduler_interface.h"
 #include "gpu_perf_api_counter_generator/gpa_counter_generator_base.h"
 #include "gpu_perf_api_counter_generator/gpa_counter_group_accessor.h"
+#include "gpu_perf_api_counter_generator/gpa_split_counters_consolidated.h"
 
 GpaCounterSchedulerBase::GpaCounterSchedulerBase(GpaSessionSampleType sample_type)
-    : counter_accessor_(nullptr)
-    , vendor_id_(0)
-    , device_id_(0)
-    , revision_id_(0)
-    , counter_selection_changed_(false)
-    , pass_index_(0)
-    , sample_type_(sample_type)
+    : sample_type_(sample_type)
 {
 }
 
@@ -37,18 +32,18 @@ void GpaCounterSchedulerBase::Reset()
     counter_selection_changed_ = false;
 }
 
-GpaStatus GpaCounterSchedulerBase::SetCounterAccessor(IGpaCounterAccessor* counter_accessor, GpaUInt32 vendor_id, GpaUInt32 device_id, GpaUInt32 revision_id)
+GpaStatus GpaCounterSchedulerBase::SetCounterAccessor(IGpaCounterAccessor* counter_accessor, const GpaHwInfo& hw_info)
 {
     if (nullptr == counter_accessor)
     {
-        GPA_LOG_ERROR("Parameter 'counter_accessor' is NULL.");
+        GpaLogger::Instance().LogError("Parameter 'counter_accessor' is NULL.");
         return kGpaStatusErrorNullPointer;
     }
 
     counter_accessor_ = counter_accessor;
-    vendor_id_        = vendor_id;
-    device_id_        = device_id;
-    revision_id_      = revision_id;
+
+    // We only need to get the device info that is relevant to counter scheduling, which is currently just the number of max SQ counters.
+    num_sq_max_counters_ = hw_info.GetMaxSqCounters().value();
 
     // Make sure there are enough bits to track the enabled counters.
     enabled_public_counter_bits_.resize(counter_accessor->GetNumCounters());
@@ -64,21 +59,16 @@ GpaUInt32 GpaCounterSchedulerBase::GetNumEnabledCounters() const
 
 GpaStatus GpaCounterSchedulerBase::EnableCounter(GpaUInt32 index)
 {
-// See if the counter is already enabled.
-#pragma region Check using only enabled_public_indices_
-//   for (gpa_uint32 i = 0; i < (gpa_uint32)enabled_public_indices_.size(); i++)
-//   {
-//      if (enabled_public_indices_[i] == index)
-//      {
-//         return kGpaStatusErrorAlreadyEnabled;
-//      }
-//   }
-#pragma endregion
-    if (enabled_public_counter_bits_[index])
+    if (index >= enabled_public_counter_bits_.size()) [[unlikely]]
+    {
+        return kGpaStatusErrorIndexOutOfRange;
+    }
+
+    if (enabled_public_counter_bits_[index]) [[unlikely]]
     {
         // We will log this as a debug message rather than an error at this point,
         // this error will be reported to the logger from the caller.
-        GPA_LOG_DEBUG_MESSAGE("Counter index %d has already been enabled.", index);
+        GpaLogger::Instance().LogDebugMessage("Counter index {} has already been enabled.", index);
         return kGpaStatusErrorAlreadyEnabled;
     }
 
@@ -106,7 +96,7 @@ GpaStatus GpaCounterSchedulerBase::DisableCounter(GpaUInt32 index)
         }
     }
 
-    GPA_LOG_ERROR("Counter index %d was not previously enabled, so it could not be disabled.", index);
+    GpaLogger::Instance().LogError("Counter index {} was not previously enabled, so it could not be disabled.", index);
     return kGpaStatusErrorNotEnabled;
 }
 
@@ -122,8 +112,8 @@ GpaStatus GpaCounterSchedulerBase::GetEnabledIndex(GpaUInt32 enabled_index, GpaU
 {
     if (enabled_index >= static_cast<GpaUInt32>(enabled_public_indices_.size()))
     {
-        GPA_LOG_ERROR(
-            "Parameter 'enabled_index' is %u but must be less than the number of enabled counters (%zu)", enabled_index, enabled_public_indices_.size());
+        GpaLogger::Instance().LogError(
+            "Parameter 'enabled_index' is {} but must be less than the number of enabled counters ({})", enabled_index, enabled_public_indices_.size());
         return kGpaStatusErrorIndexOutOfRange;
     }
 
@@ -136,8 +126,8 @@ GpaStatus GpaCounterSchedulerBase::IsCounterEnabled(GpaUInt32 counter_index) con
 {
     if (counter_index >= enabled_public_counter_bits_.size())
     {
-        GPA_LOG_ERROR(
-            "Parameter 'counter_index' is %u but must be less than the number of enabled counters (%zu)", counter_index, enabled_public_counter_bits_.size());
+        GpaLogger::Instance().LogError(
+            "Parameter 'counter_index' is {} but must be less than the number of enabled counters ({})", counter_index, enabled_public_counter_bits_.size());
         return kGpaStatusErrorIndexOutOfRange;
     }
 
@@ -147,7 +137,7 @@ GpaStatus GpaCounterSchedulerBase::IsCounterEnabled(GpaUInt32 counter_index) con
     }
     else
     {
-        GPA_LOG_MESSAGE("Parameter 'counter_index' (%d) is not an enabled counter.", counter_index);
+        GpaLogger::Instance().LogMessage("Parameter 'counter_index' ({}) is not an enabled counter.", counter_index);
         return kGpaStatusErrorCounterNotFound;
     }
 
@@ -184,16 +174,23 @@ GpaStatus GpaCounterSchedulerBase::IsCounterEnabled(GpaUInt32 counter_index) con
 GpaStatus GpaCounterSchedulerBase::GetNumRequiredPasses(GpaUInt32* num_required_passes_out)
 {
     assert(num_required_passes_out != nullptr);
+    if (num_required_passes_out == nullptr) [[unlikely]]
+    {
+        return kGpaStatusErrorNullPointer;
+    }
+
     *num_required_passes_out = 0;
 
+    // Calculating the number of required passes is a costly operation,
+    // so if the counter selection hasn't changed since the last time we calculated it, we can just return the previously calculated value.
     if (!counter_selection_changed_)
     {
+        assert(pass_partitions_.size() < std::numeric_limits<GpaUInt32>::max());
         *num_required_passes_out = static_cast<GpaUInt32>(pass_partitions_.size());
         return kGpaStatusOk;
     }
 
     GpaCounterGeneratorBase* counter_generator_base = reinterpret_cast<GpaCounterGeneratorBase*>(counter_accessor_);
-
     if (nullptr == counter_generator_base)
     {
         return kGpaStatusErrorFailed;
@@ -201,79 +198,55 @@ GpaStatus GpaCounterSchedulerBase::GetNumRequiredPasses(GpaUInt32* num_required_
 
     const GpaHardwareCounters& hw_counters = counter_generator_base->GetHardwareCounters();
 
-    unsigned int num_sq_max_counters = 0;
-
-    GDT_DeviceInfo device_info = {};
-
-    if (AMDTDeviceInfoUtils::GetDeviceInfo(device_id_, revision_id_, device_info))
-    {
-        num_sq_max_counters = static_cast<unsigned int>(device_info.m_nNumSQMaxCounters);
-    }
-
-    std::unique_ptr<IGpaSplitCounters> splitter = GpaSplitCounterFactory::GetNewCounterSplitter(GetPreferredSplittingAlgorithm(),
-                                                                                                hw_counters.timestamp_block_ids_,
-                                                                                                hw_counters.eop_time_counter_indices_,
-                                                                                                hw_counters.top_time_counter_indices_,
-                                                                                                num_sq_max_counters,
-                                                                                                hw_counters.sq_group_count_,
-                                                                                                hw_counters.sq_counter_groups_,
-                                                                                                hw_counters.isolated_group_count_,
-                                                                                                hw_counters.isolated_groups_);
-
-    if (nullptr == splitter)
-    {
-        GPA_LOG_ERROR("Failed to create a counter splitting algorithm.");
-        return kGpaStatusErrorFailed;
-    }
-
     // Build the list of counters to split.
     std::vector<const GpaDerivedCounterInfoClass*> public_counters_to_split;
-    std::vector<GpaHardwareCounterIndices>         internal_counters_to_schedule;
+    public_counters_to_split.reserve(enabled_public_indices_.size());
 
-    for (std::vector<GpaUInt32>::const_iterator counter_iter = enabled_public_indices_.cbegin(); counter_iter != enabled_public_indices_.cend(); ++counter_iter)
+    std::vector<GpaHardwareCounterIndices> internal_counters_to_schedule;
+    internal_counters_to_schedule.reserve(enabled_public_indices_.size());
+
+    for (const uint32_t index : enabled_public_indices_)
     {
-        GpaCounterSourceInfo info = counter_accessor_->GetCounterSourceInfo(*counter_iter);
+        const GpaCounterSourceInfo info = counter_accessor_->GetCounterSourceInfo(index);
 
         switch (info.counter_source)
         {
         case GpaCounterSource::kPublic:
         {
-            public_counters_to_split.push_back(counter_accessor_->GetPublicCounter(*counter_iter));
+            public_counters_to_split.push_back(counter_accessor_->GetPublicCounter(index));
             break;
         }
-
         case GpaCounterSource::kHardware:
         {
-            // Hardware counter.
             constexpr uint32_t kCounterSourceHardware = static_cast<uint32_t>(GpaCounterSource::kHardware);
-            const GpaUInt32    required_counter       = std::get<kCounterSourceHardware>(counter_accessor_->GetInternalCountersRequired(*counter_iter));
+            const GpaUInt32    hardware_index         = std::get<kCounterSourceHardware>(counter_accessor_->GetInternalCountersRequired(index));
 
-            GpaHardwareCounterIndices indices = {};
-            indices.public_index              = *counter_iter;
-            indices.hardware_index            = required_counter;
-            internal_counters_to_schedule.push_back(indices);
+            internal_counters_to_schedule.push_back(GpaHardwareCounterIndices{.public_index = index, .hardware_index = hardware_index});
 
             break;
         }
-
-        case GpaCounterSource::kUnknown:
-        default:
+        [[unlikely]] case GpaCounterSource::kUnknown:
+            [[fallthrough]];
+        [[unlikely]] default:
         {
-            // Do something sensible.
-            GPA_LOG_ERROR("UNKNOWN_COUNTER.");
+            GpaLogger::Instance().LogError("Counter index {} has an unknown source, cannot be scheduled.", index);
             return kGpaStatusErrorFailed;
         }
         }
     }
 
     // Build the list of max counters per group (includes both hardware and software groups).
-    std::vector<unsigned int> max_counters_per_group;
+    std::vector<uint32_t> max_counters_per_group;
 
     // Create space for the number of HW groups.
     max_counters_per_group.reserve(hw_counters.internal_counter_groups_.size() + hw_counters.additional_group_count_);
 
+    std::unique_ptr<IGpaSplitCounters> splitter;
+
     // Set max events
-    if (kGpaSessionSampleTypeDiscreteCounter == sample_type_)
+    switch (sample_type_)
+    {
+    case kGpaSessionSampleTypeDiscreteCounter:
     {
         // Add the HW groups maxes.
         const unsigned int num_groups = static_cast<unsigned int>(hw_counters.internal_counter_groups_.size());
@@ -282,8 +255,8 @@ GpaStatus GpaCounterSchedulerBase::GetNumRequiredPasses(GpaUInt32* num_required_
             auto count = hw_counters.internal_counter_groups_[i].max_active_discrete_counters;
             if (count == 0)
             {
-                GPA_LOG_MESSAGE(
-                    "Caution: Hardware counter group '%s' has zero for max_active_discrete_counters. This hardware block is not available for profiling.",
+                GpaLogger::Instance().LogMessage(
+                    "Caution: Hardware counter group '{}' has zero for max_active_discrete_counters. This hardware block is not available for profiling.",
                     hw_counters.internal_counter_groups_[i].name);
             }
             max_counters_per_group.push_back(count);
@@ -295,15 +268,25 @@ GpaStatus GpaCounterSchedulerBase::GetNumRequiredPasses(GpaUInt32* num_required_
             auto count = hw_counters.additional_groups_[i].max_active_discrete_counters;
             if (count == 0)
             {
-                GPA_LOG_MESSAGE(
-                    "Caution: Hardware counter additional group '%s' has zero for max_active_discrete_counters. This hardware block is not available for "
+                GpaLogger::Instance().LogMessage(
+                    "Caution: Hardware counter additional group '{}' has zero for max_active_discrete_counters. This hardware block is not available for "
                     "profiling.",
                     hw_counters.additional_groups_[i].name);
             }
             max_counters_per_group.push_back(count);
         }
+
+        splitter = std::make_unique<GpaSplitCountersConsolidated<kGpaSessionSampleTypeDiscreteCounter>>(
+            hw_counters.timestamp_block_ids_,
+            hw_counters.eop_time_counter_indices_,
+            hw_counters.top_time_counter_indices_,
+            num_sq_max_counters_,
+            std::span(hw_counters.sq_counter_groups_, hw_counters.sq_group_count_),
+            std::span(hw_counters.isolated_groups_, hw_counters.isolated_group_count_));
+
+        break;
     }
-    else if (kGpaSessionSampleTypeStreamingCounter == sample_type_)
+    case kGpaSessionSampleTypeStreamingCounter:
     {
         // Add the HW groups max's.
         const unsigned int num_groups = static_cast<unsigned int>(hw_counters.internal_counter_groups_.size());
@@ -319,32 +302,45 @@ GpaStatus GpaCounterSchedulerBase::GetNumRequiredPasses(GpaUInt32* num_required_
             auto count = hw_counters.additional_groups_[i].max_active_spm_counters;
             max_counters_per_group.push_back(count);
         }
+
+        splitter = std::make_unique<GpaSplitCountersConsolidated<kGpaSessionSampleTypeStreamingCounter>>(
+            hw_counters.timestamp_block_ids_,
+            hw_counters.eop_time_counter_indices_,
+            hw_counters.top_time_counter_indices_,
+            num_sq_max_counters_,
+            std::span(hw_counters.sq_counter_groups_, hw_counters.sq_group_count_),
+            std::span(hw_counters.isolated_groups_, hw_counters.isolated_group_count_));
+
+        break;
     }
-    else
+    [[unlikely]] case kGpaSessionSampleTypeSqtt:
+        [[fallthrough]];
+    [[unlikely]] case kGpaSessionSampleTypeStreamingCounterAndSqtt:
+        [[fallthrough]];
+    [[unlikely]] case kGpaSessionSampleTypeLast:
+        [[fallthrough]];
+    default:
     {
-        GPA_LOG_ERROR("Invalid counter scheduler sample type.");
+        GpaLogger::Instance().LogError("Invalid counter scheduler sample type.");
         return kGpaStatusErrorFailed;
     }
+    }
 
-    GpaCounterGroupAccessor accessor(hw_counters.internal_counter_groups_,
-                                     static_cast<GpaUInt32>(hw_counters.internal_counter_groups_.size()),
-                                     hw_counters.additional_groups_,
-                                     hw_counters.additional_group_count_);
+    const auto additional_groups_span = std::span(hw_counters.additional_groups_, hw_counters.additional_group_count_);
 
-    unsigned int num_internal_counters_scheduled = 0;
+    GpaCounterGroupAccessor accessor(hw_counters.internal_counter_groups_, additional_groups_span);
 
-    const GpaStatus split_status = splitter->SplitCounters(public_counters_to_split,
-                                                     internal_counters_to_schedule,
-                                                     reinterpret_cast<IGpaCounterGroupAccessor*>(&accessor),
-                                                     max_counters_per_group,
-                                                     num_internal_counters_scheduled,
-                                                     pass_partitions_);
-    if (split_status == kGpaStatusOk)
+    const GpaStatus split_status =
+        splitter->SplitCounters(public_counters_to_split, internal_counters_to_schedule, &accessor, max_counters_per_group, pass_partitions_);
+
+    if (split_status == kGpaStatusOk) [[likely]]
     {
-        counter_result_location_map_ = splitter->GetCounterResultLocations();
+        splitter->SwapCounterResultLocations(counter_result_location_map_);
 
         counter_selection_changed_ = false;
-        *num_required_passes_out   = static_cast<GpaUInt32>(pass_partitions_.size());
+
+        assert(pass_partitions_.size() < std::numeric_limits<GpaUInt32>::max());
+        *num_required_passes_out = static_cast<GpaUInt32>(pass_partitions_.size());
     }
 
     return split_status;

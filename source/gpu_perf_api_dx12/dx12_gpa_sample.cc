@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2025 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  DX12 GPA Sample implementation
@@ -90,7 +90,7 @@ GpaSampleResult* Dx12GpaSample::PopulateSampleResult()
         HRESULT driver_result = result_session->GetResults(GetDriverSampleId(), &sample_data_bytes, nullptr);
         if (FAILED(driver_result))
         {
-            GPA_LOG_ERROR("Failed to retrieve driver result size");
+            GpaLogger::Instance().LogError("Failed to retrieve driver result size");
             return nullptr;
         }
 
@@ -159,7 +159,7 @@ GpaSampleResult* Dx12GpaSample::PopulateSampleResult()
                         }
                         else
                         {
-                            GPA_LOG_ERROR("Unknown timing counter.");
+                            GpaLogger::Instance().LogError("Unknown timing counter.");
                             GetSampleResultLocation()->GetAsCounterSampleResult()->GetResultBuffer()[i] = 0;
                         }
                     }
@@ -169,10 +169,18 @@ GpaSampleResult* Dx12GpaSample::PopulateSampleResult()
                 {
                     GpaSampleResult* sample_result = reinterpret_cast<Dx12GpaSample*>(GetContinuingSample())->PopulateSampleResult();
 
-                    for (size_t counter_iter = 0; counter_iter < GetPass()->GetEnabledCounterCount(); counter_iter++)
+                    if (sample_result != nullptr)
                     {
-                        GetSampleResultLocation()->GetAsCounterSampleResult()->GetResultBuffer()[counter_iter] +=
-                            sample_result->GetAsCounterSampleResult()->GetResultBuffer()[counter_iter];
+                        for (size_t counter_iter = 0; counter_iter < GetPass()->GetEnabledCounterCount(); counter_iter++)
+                        {
+                            GetSampleResultLocation()->GetAsCounterSampleResult()->GetResultBuffer()[counter_iter] +=
+                                sample_result->GetAsCounterSampleResult()->GetResultBuffer()[counter_iter];
+                        }
+                    }
+                    else
+                    {
+                        GpaLogger::Instance().LogError("Failed to populate sample result from continuing sample.");
+                        return nullptr;
                     }
                 }
 
@@ -180,12 +188,12 @@ GpaSampleResult* Dx12GpaSample::PopulateSampleResult()
             }
             else
             {
-                GPA_LOG_ERROR("Unable to get the result from the driver.");
+                GpaLogger::Instance().LogError("Unable to get the result from the driver.");
             }
         }
         else
         {
-            GPA_LOG_ERROR("Incorrect space allocated for sample result.");
+            GpaLogger::Instance().LogError("Incorrect space allocated for sample result.");
         }
     }
 
@@ -220,7 +228,7 @@ bool Dx12GpaSample::CopyResult(size_t sample_data_size, void* result_buffer) con
 
             if (nullptr == result_session)
             {
-                GPA_LOG_ERROR("Invalid profiling session encountered while copying results.");
+                GpaLogger::Instance().LogError("Invalid profiling session encountered while copying results.");
             }
             else
             {
@@ -242,12 +250,12 @@ bool Dx12GpaSample::CopyResult(size_t sample_data_size, void* result_buffer) con
                         }
                         else
                         {
-                            GPA_LOG_ERROR("Error occurred while getting sample results from driver.");
+                            GpaLogger::Instance().LogError("Error occurred while getting sample results from driver.");
                         }
                     }
                     else
                     {
-                        GPA_LOG_ERROR("Error occurred while getting sample result size from driver.");
+                        GpaLogger::Instance().LogError("Error occurred while getting sample result size from driver.");
                     }
                 }
             }

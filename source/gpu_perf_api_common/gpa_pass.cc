@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2025 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  GPA Pass Object Implementation.
@@ -8,6 +8,7 @@
 #include "gpu_perf_api_common/gpa_pass.h"
 
 #include <algorithm>
+#include <memory>
 
 #include "gpu_perf_api_counter_generator/gpa_hardware_counters.h"
 
@@ -60,25 +61,15 @@ GpaPass::GpaPass(IGpaSession* gpa_session, PassIndex pass_index, GpaCounterSourc
 
 GpaPass::~GpaPass()
 {
-    gpa_cmd_list_mutex_.lock();
-
-    for (auto it = gpa_cmd_lists_.begin(); it != gpa_cmd_lists_.end(); ++it)
     {
-        delete (*it);
+        std::scoped_lock lock(gpa_cmd_list_mutex_);
+        gpa_cmd_lists_.clear();
     }
 
-    gpa_cmd_lists_.clear();
-    gpa_cmd_list_mutex_.unlock();
-
-    std::lock_guard<std::mutex> lock(samples_unordered_map_mutex_);
-
-    for (auto sample_pair : samples_unordered_map_)
     {
-        GpaSample* sample = sample_pair.second;
-        delete sample;
+        std::scoped_lock lock(samples_unordered_map_mutex_);
+        samples_unordered_map_.clear();
     }
-
-    samples_unordered_map_.clear();
 }
 
 GpaCounterSource GpaPass::GetCounterSource() const
@@ -97,9 +88,10 @@ GpaSample* GpaPass::GetSampleByIdNotThreadSafe(ClientSampleId client_sample_id) 
 {
     GpaSample* ret_val = nullptr;
 
-    if (samples_unordered_map_.find(client_sample_id) != samples_unordered_map_.end())
+    auto it = samples_unordered_map_.find(client_sample_id);
+    if (it != samples_unordered_map_.end())
     {
-        ret_val = samples_unordered_map_.at(client_sample_id);
+        ret_val = it->second.get();
     }
 
     return ret_val;
@@ -109,10 +101,12 @@ GpaSample* GpaPass::CreateAndBeginSample(ClientSampleId client_sample_id, IGpaCo
 {
     std::lock_guard<std::mutex> lock(samples_unordered_map_mutex_);
 
-    GpaSample* sample = nullptr;
+    GpaSample* ret_sample = nullptr;
 
     if (!DoesSampleExistNotThreadSafe(client_sample_id))
     {
+        std::unique_ptr<GpaSample> sample;
+
         if (is_sqtt_pass_)
         {
             sample = CreateApiSpecificSample(gpa_cmd_list, GpaSampleType::kSqtt, client_sample_id);
@@ -128,28 +122,28 @@ GpaSample* GpaPass::CreateAndBeginSample(ClientSampleId client_sample_id, IGpaCo
 
         if (nullptr != sample)
         {
-            if (!gpa_cmd_list->BeginSample(client_sample_id, sample))
+            if (!gpa_cmd_list->BeginSample(client_sample_id, sample.get()))
             {
-                GPA_LOG_ERROR("Unable to begin sample in pass.");
-                delete sample;
-                sample = nullptr;
+                GpaLogger::Instance().LogError("Unable to begin sample in pass.");
+                // sample destroyed when unique_ptr goes out of scope.
             }
             else
             {
-                samples_unordered_map_.insert(std::pair<ClientSampleId, GpaSample*>(client_sample_id, sample));
+                ret_sample = sample.get();
+                samples_unordered_map_.emplace(client_sample_id, std::move(sample));
             }
         }
         else
         {
-            GPA_LOG_ERROR("Unable to create sample.");
+            GpaLogger::Instance().LogError("Unable to create sample.");
         }
     }
     else
     {
-        GPA_LOG_ERROR("Sample Id already exists.");
+        GpaLogger::Instance().LogError("Sample Id already exists.");
     }
 
-    return sample;
+    return ret_sample;
 }
 
 bool GpaPass::ContinueSample(ClientSampleId src_sample_id, IGpaCommandList* primary_gpa_cmd_list)
@@ -189,21 +183,20 @@ bool GpaPass::ContinueSample(ClientSampleId src_sample_id, IGpaCommandList* prim
                 {
                     GpaSampleType sample_type = (GpaCounterSource::kHardware == GetCounterSource()) ? GpaSampleType::kHardware : GpaSampleType::kSoftware;
                     // We don't need to add this sample to the sample map as it will be linked to the parent sample.
-                    GpaSample* new_sample = CreateApiSpecificSample(primary_gpa_cmd_list, sample_type, src_sample_id);
+                    std::unique_ptr<GpaSample> new_sample = CreateApiSpecificSample(primary_gpa_cmd_list, sample_type, src_sample_id);
 
                     if (nullptr != new_sample)
                     {
-                        if (!primary_gpa_cmd_list->BeginSample(src_sample_id, new_sample))
+                        if (!primary_gpa_cmd_list->BeginSample(src_sample_id, new_sample.get()))
                         {
-                            GPA_LOG_ERROR("Unable to begin continued sample in pass.");
-                            delete new_sample;
-                            new_sample = nullptr;
+                            GpaLogger::Instance().LogError("Unable to begin continued sample in pass.");
+                            // new_sample destroyed when unique_ptr goes out of scope.
                         }
                         else
                         {
                             parent_sample->SetAsContinuedByClient();
                             // Link the sample to the parent sample.
-                            parent_sample->LinkContinuingSample(new_sample);
+                            parent_sample->LinkContinuingSample(std::move(new_sample));
 
                             success = true;
                         }
@@ -211,20 +204,20 @@ bool GpaPass::ContinueSample(ClientSampleId src_sample_id, IGpaCommandList* prim
                 }
                 else
                 {
-                    GPA_LOG_ERROR(
+                    GpaLogger::Instance().LogError(
                         "Unable to continue sample: Either the specified command list has already been closed or the previous sample has not been closed.");
                 }
             }
             else
             {
-                GPA_LOG_ERROR(
+                GpaLogger::Instance().LogError(
                     "Unable to continue sample: The specified command list must be a secondary command list and it must be different than the parent sample's "
                     "command list.");
             }
         }
         else
         {
-            GPA_LOG_ERROR("Unable to continue sample: The specified sample id was not found in this pass.");
+            GpaLogger::Instance().LogError("Unable to continue sample: The specified sample id was not found in this pass.");
         }
     }
 
@@ -233,12 +226,14 @@ bool GpaPass::ContinueSample(ClientSampleId src_sample_id, IGpaCommandList* prim
 
 IGpaCommandList* GpaPass::CreateCommandList(void* cmd_list, GpaCommandListType cmd_type)
 {
-    IGpaCommandList* ret_cmd_list = CreateApiSpecificCommandList(cmd_list, command_list_counter_, cmd_type);
+    std::unique_ptr<IGpaCommandList> new_cmd_list = CreateApiSpecificCommandList(cmd_list, command_list_counter_, cmd_type);
     command_list_counter_++;
+
+    IGpaCommandList* ret_cmd_list = new_cmd_list.get();
 
     if (nullptr != ret_cmd_list)
     {
-        AddCommandList(ret_cmd_list);
+        AddCommandList(std::move(new_cmd_list));
     }
 
     return ret_cmd_list;
@@ -399,7 +394,7 @@ GpaStatus GpaPass::GetResult(ClientSampleId client_sample_id, CounterIndex inter
 
     if (sample_iter == samples_unordered_map_.cend())
     {
-        GPA_LOG_ERROR("Invalid SampleId supplied while getting pass results.");
+        GpaLogger::Instance().LogError("Invalid SampleId supplied while getting pass results.");
         status = kGpaStatusErrorInvalidParameter;
     }
     else
@@ -410,14 +405,14 @@ GpaStatus GpaPass::GetResult(ClientSampleId client_sample_id, CounterIndex inter
         {
             if (!sample_iter->second->GetResult(counter_index_within_sample, result_buffer))
             {
-                GPA_LOG_ERROR("Failed to get counter result within pass.");
+                GpaLogger::Instance().LogError("Failed to get counter result within pass.");
                 status = kGpaStatusErrorFailed;
             }
         }
         else if (skipped_counter_list_.find(internal_counter_index) == skipped_counter_list_.end())
         {
             // We didn't skip the counter, so we wrongly think it was in this pass.
-            GPA_LOG_ERROR("Failed to find internal counter index within pass counters.");
+            GpaLogger::Instance().LogError("Failed to find internal counter index within pass counters.");
             status = kGpaStatusErrorInvalidParameter;
         }
     }
@@ -451,7 +446,7 @@ bool GpaPass::DoesCommandListExist(IGpaCommandList* gpa_cmd_list) const
 
     for (auto const_iter = gpa_cmd_lists_.cbegin(); !exists && const_iter != gpa_cmd_lists_.cend(); ++const_iter)
     {
-        if (*const_iter == gpa_cmd_list)
+        if (const_iter->get() == gpa_cmd_list)
         {
             exists = true;
         }
@@ -544,10 +539,10 @@ const IGpaCounterAccessor* GpaPass::GetSessionContextCounterAccessor() const
     return GpaContextCounterMediator::GetCounterAccessor(GetGpaSession());
 }
 
-void GpaPass::AddCommandList(IGpaCommandList* gpa_command_list)
+void GpaPass::AddCommandList(std::unique_ptr<IGpaCommandList> gpa_command_list)
 {
     std::lock_guard<std::mutex> lock_cmd_list(gpa_cmd_list_mutex_);
-    gpa_cmd_lists_.push_back(gpa_command_list);
+    gpa_cmd_lists_.push_back(std::move(gpa_command_list));
 }
 
 void GpaPass::LockCommandListMutex() const
@@ -560,13 +555,12 @@ void GpaPass::UnlockCommandListMutex() const
     gpa_cmd_list_mutex_.unlock();
 }
 
-void GpaPass::AddClientSample(ClientSampleId sample_id, GpaSample* gpa_sample)
+void GpaPass::AddClientSample(ClientSampleId sample_id, std::unique_ptr<GpaSample> gpa_sample)
 {
-    samples_unordered_map_mutex_.lock();
-    samples_unordered_map_.insert(std::pair<ClientSampleId, GpaSample*>(sample_id, gpa_sample));
+    std::scoped_lock lock(samples_unordered_map_mutex_);
+    samples_unordered_map_.emplace(sample_id, std::move(gpa_sample));
     unsigned int internal_sample_id = gpa_internal_sample_counter_.fetch_add(1);
     client_gpa_samples_map_.insert(std::pair<unsigned int, unsigned int>(internal_sample_id, sample_id));
-    samples_unordered_map_mutex_.unlock();
 }
 
 void GpaPass::IteratePassCounterList(const std::function<bool(const CounterIndex& counter_index)>& function) const

@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2010-2025 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  Defines the data types and enumerations used by GPUPerfAPI.
@@ -266,7 +266,7 @@ typedef enum
     kGpaApiLast                       ///< Marker indicating last element.
 } GpaApiType;
 
-/// @brief This enum needs to be kept up to date with GDT_HW_GENERATION in DeviceInfo.h.
+/// @brief Hardware generations supported by GPUPerfAPI.
 typedef enum
 {
     kGpaHwGenerationNone,                                   ///< Undefined hw generation.
@@ -287,7 +287,9 @@ typedef enum
     kGpaHwGenerationCdna3,                                  ///< CDNA 3
     kGpaHwGenerationGfx12,                                  ///< GFX IP 12.
     kGpaHwGenerationCdna4,                                  ///< CDNA 4
-    kGpaHwGenerationLast                                    ///< Marker indicating last element.
+    kGpaHwGenerationGfx115,                                 ///< GFX IP 11.5. NOTE: Out of chronological order — GFX 11.5 belongs between GFX 11 and GFX 12,
+                                                            ///< but was added after GFX 12 and CDNA 4 were already assigned values. Moving it would break ABI.
+    kGpaHwGenerationLast  ///< Marker indicating last element.
 } GpaHwGeneration;
 
 /// @brief Command list / command buffer types.
@@ -322,9 +324,9 @@ typedef GpaFlags GpaContextSampleTypeFlags;
 /// @brief Session Sample types -- used by the client to tell GPUPerfAPI which sample types will be created for a session.
 typedef enum
 {
-    kGpaSessionSampleTypeDiscreteCounter,          ///< Discrete counters sample type -- discrete counters provide a single value per workload measured.
-    kGpaSessionSampleTypeStreamingCounter,         ///< Streaming counters sample type -- streaming counters provide interval-based multiple values per workload measured.
-    kGpaSessionSampleTypeSqtt,                     ///< SQTT sample type -- provides detailed wave-level SQTT information per workload measured. For some driver stacks, the SQTT-data may be wrapped in an RGP-file format.
+    kGpaSessionSampleTypeDiscreteCounter,  ///< Discrete counters sample type -- discrete counters provide a single value per workload measured.
+    kGpaSessionSampleTypeStreamingCounter,  ///< Streaming counters sample type -- streaming counters provide interval-based multiple values per workload measured.
+    kGpaSessionSampleTypeSqtt,  ///< SQTT sample type -- provides detailed wave-level SQTT information per workload measured. For some driver stacks, the SQTT-data may be wrapped in an RGP-file format.
     kGpaSessionSampleTypeStreamingCounterAndSqtt,  ///< Streaming counters and SQTT are enabled.
     kGpaSessionSampleTypeLast                      ///< Marker indicating last element.
 } GpaSessionSampleType;

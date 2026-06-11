@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2012-2024 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief GPUPerfAPI Counter Generator function.
@@ -19,9 +19,7 @@
 ///
 /// @param [in] desired_api The API to generate counters for.
 /// @param [in] sample_type The type of samples to generate counters for. kGpaSessionSampleTypeSqtt is an invalid sample type.
-/// @param [in] vendor_id The vendor id to generate counters for.
-/// @param [in] device_id The device id to generate counters for.
-/// @param [in] revision_id The revision id to generate counters for.
+/// @param [in] hw_info The hardware information of the GPU for which counters should be generated.
 /// @param [in] flags Flags used to initialize the context. Should be a combination of GpaOpenContextBits.
 /// @param [in,out] counter_accessor_out Address of a counter accessor pointer which will be set to the necessary counter accessor.
 /// @param [in,out] counter_scheduler_out Address of a counter scheduler pointer which will be set to the necessary counter scheduler.
@@ -33,9 +31,7 @@
 /// @retval kGpaStatusOk If the desired API and generation are supported.
 GpaStatus GenerateCounters(GpaApiType             desired_api,
                            GpaSessionSampleType   sample_type,
-                           GpaUInt32              vendor_id,
-                           GpaUInt32              device_id,
-                           GpaUInt32              revision_id,
+                           const GpaHwInfo&       hw_info,
                            GpaOpenContextFlags    flags,
                            IGpaCounterAccessor**  counter_accessor_out,
                            IGpaCounterScheduler** counter_scheduler_out);

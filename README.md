@@ -10,13 +10,14 @@ is used by [AMD Radeon GPU Profiler](https://github.com/GPUOpen-Tools/radeon_gpu
 * [System Requirements](#system-requirements)
 * [Cloning the Repository](#cloning-the-repository)
 * [Source Code Directory Layout](#source-code-directory-layout)
+* [Style and Format Change](#style-and-format-change)
 * [Documentation](#documentation)
 * [Raw Hardware Counters](#raw-hardware-counters)
-* [Known Issues](#known-issues)
+* [Pipeline-Based Counter Nomenclature](#pipeline-based-counter-nomenclature)
 * [Building the Source Code](build.md)
 * [License](LICENSE.txt)
 * [Release Notes](RELEASE_NOTES.txt)
-* [Style and Format Change](#Style-and-Format-Change)
+* [Known Issues](#known-issues)
 
 ## Downloads
 Prebuilt binaries can be downloaded from the Releases page: https://github.com/GPUOpen-Tools/gpu_performance_api/releases.
@@ -30,28 +31,32 @@ Prebuilt binaries can be downloaded from the Releases page: https://github.com/G
 * Provides access to some raw hardware counters. See [Raw Hardware Counters](#raw-hardware-counters) for more information.
 
 ### Transitioning from GPA 3.x to 4.0
-#### Summary
+
 The main change in GPA 4.0 is that the counters are no longer exposed via the GpaContext and are now exposed by the GpaSession. There are now two different sets of counters, depending on the GpaSessionSampleType that is passed in when creating the session.
 Not all hardware and not all rendering APIs support all the `GpaSessionSampleTypes`, so after creating the GpaContext you should call `GpaGetSupportedSampleTypes(..)` to query which GpaSessionSampleTypes are supported on the given configuration.
 Users of the GPU Performance API should still only be looking for the `kGpaSessionSampleTypeDiscreteCounter` sample type. No support will be provided for the other sample types. Once the GpaSession is created, you can then use `GpaGetNumCounters(..)` and all
 of the `GpaGetCounter*(..)` entrypoints to query information about the available counters.
 
-Below you will find an example of a likely subset of GPA 3.x series of API calls, and then a similar series of calls using the modified GPA 4.0 entrypoints. Note that no error checking is being done here for sake of clarity.
+Below you will find an example of a likely subset of GPA 3.x series of API calls, and then a similar series of calls using the modified GPA 4.0 entrypoints.
 
-#### Example of GPA 3.x Usage
+<details>
+<summary>Example of GPA 3.x Usage</summary>
+
 ```c++
 GpaContextId context = nullptr;
-GpaOpenContext(api_context, kGpaOpenContextDefaultBit, &context);
+if (GpaOpenContext(api_context, kGpaOpenContextDefaultBit, &context) != kGpaStatusOk)
+    return false;
 GpaUInt32 num_counters = 0;
-GpaGetNumCounters(context, &num_counters);
+if (GpaGetNumCounters(context, &num_counters) != kGpaStatusOk)
+    return false;
 for (GpaUInt32 i = 0; i < num_counters; ++i)
 {
-    const char* name = nullptr;
-    GpaUInt32 index = 0;
-    const char* description = nullptr;
-    GpaDataType data_type = kGpaDataTypeLast;
-    GpaUsageType usage_type = kGpaUsageTypeLast;
-    GpaUuid uuid = {};
+    const char*          name        = nullptr;
+    GpaUInt32            index       = 0;
+    const char*          description = nullptr;
+    GpaDataType          data_type   = kGpaDataTypeLast;
+    GpaUsageType         usage_type  = kGpaUsageTypeLast;
+    GpaUuid              uuid        = {};
     GpaCounterSampleType sample_type = kGpaCounterSampleTypeDiscrete;
 
     GpaGetCounterName(context, i, &name);
@@ -65,45 +70,56 @@ for (GpaUInt32 i = 0; i < num_counters; ++i)
     assert(sample_type == kGpaCounterSampleTypeDiscrete);
 }
 GpaSessionId session = nullptr;
-GpaCreateSession(context, kGpaContextSampleTypeDiscreteCounter, &session);
+if (GpaCreateSession(context, kGpaSessionSampleTypeDiscreteCounter, &session) != kGpaStatusOk)
+    return false;
 GpaUInt32 desired_counter_index = 0;
-GpaEnableCounter(session, desired_counter_index);
-GpaBeginSession(session);
+if (GpaEnableCounter(session, desired_counter_index) != kGpaStatusOk)
+    return false;
+if (GpaBeginSession(session) != kGpaStatusOk)
+    return false;
 ```
 
-#### Example of equivalent GPA 4.X Usage
+</details>
+
+<details>
+<summary>Example of equivalent GPA 4.X Usage</summary>
+
 ```c++
 GpaContextId context = nullptr;
-GpaOpenContext(api_context, kGpaOpenContextDefaultBit, &context);
+if (GpaOpenContext(api_context, kGpaOpenContextDefaultBit, &context) != kGpaStatusOk)
+    return false;
 
 // These next two lines and the following conditional ensure that discrete
 // counters are supported by the GpaContext for the current hardware and
 // driver. In general the GpaOpenContext call above will report an error
 // if the hardware and driver are not supported at all, but in some rare cases
 // the discrete counters may not be supported while other sample types are.
-GpaContextSampleTypeFlags supported_sample_types = kGpaSessionSampleTypeLast;
-GpaGetSupportedSampleTypes(context, &supported_sample_types);
+GpaContextSampleTypeFlags supported_sample_types = 0;
+if (GpaGetSupportedSampleTypes(context, &supported_sample_types) != kGpaStatusOk)
+    return false;
 
-if (supported_sample_types & kGpaSessionSampleTypeDiscreteCounter != 0)
+if ((supported_sample_types & kGpaContextSampleTypeDiscreteCounter) != 0)
 {
     // The set of available counters are now dependent on the SampleType being
     // collected within the session, so the session must now be created prior
     // to querying for the available counters.
     GpaSessionId session = nullptr;
-    GpaCreateSession(context, kGpaContextSampleTypeDiscreteCounter, &session);
+    if (GpaCreateSession(context, kGpaSessionSampleTypeDiscreteCounter, &session) != kGpaStatusOk)
+        return false;
 
     // The GpaSessionId is now supplied into GpaGetNumCounters() to get the
     // number of discrete counters that are available.
     GpaUInt32 num_counters = 0;
-    GpaGetNumCounters(session, &num_counters);
+    if (GpaGetNumCounters(session, &num_counters) != kGpaStatusOk)
+        return false;
     for (GpaUInt32 i = 0; i < num_counters; ++i)
     {
-        const char* name = nullptr;
-        GpaUInt32 index = 0;
-        const char* description = nullptr;
-        GpaDataType data_type = kGpaDataTypeLast;
-        GpaUsageType usage_type = kGpaUsageTypeLast;
-        GpaUuid uuid = {};
+        const char*          name        = nullptr;
+        GpaUInt32            index       = 0;
+        const char*          description = nullptr;
+        GpaDataType          data_type   = kGpaDataTypeLast;
+        GpaUsageType         usage_type  = kGpaUsageTypeLast;
+        GpaUuid              uuid        = {};
         GpaCounterSampleType sample_type = kGpaCounterSampleTypeDiscrete;
 
         // These next set of counter querying entrypoints now take in
@@ -119,10 +135,14 @@ if (supported_sample_types & kGpaSessionSampleTypeDiscreteCounter != 0)
         assert(sample_type == kGpaCounterSampleTypeDiscrete);
     }
     GpaUInt32 desired_counter_index = 0;
-    GpaEnableCounter(session, desired_counter_index);
-    GpaBeginSession(session);
+    if (GpaEnableCounter(session, desired_counter_index) != kGpaStatusOk)
+        return false;
+    if (GpaBeginSession(session) != kGpaStatusOk)
+        return false;
 }
 ```
+
+</details>
 
 ## System Requirements
 * An AMD Radeon GPU or APU based on Graphics IP version 10 and newer.
@@ -132,6 +152,11 @@ if (supported_sample_types & kGpaSessionSampleTypeDiscreteCounter != 0)
 * Radeon GPUs or APUs based on Graphics IP version 6 and 7 are no longer supported by GPUPerfAPI. Please use an older version ([3.3](https://github.com/GPUOpen-Tools/gpu_performance_api/releases/tag/v3.3)) with older hardware.
 * Windows 10 or 11.
 * Ubuntu (22.04 and later) and CentOS/RHEL (7 and later) distributions.
+
+## Cloning the Repository
+```
+git clone https://github.com/GPUOpen-Tools/gpu_performance_api.git
+```
 
 ## Source Code Directory Layout
 * [build](build) -- contains build scripts and cmake build modules
@@ -151,6 +176,11 @@ if (supported_sample_types & kGpaSessionSampleTypeDiscreteCounter != 0)
 * [source/public_counter_compiler](source/public_counter_compiler) -- source code for a tool to generate C++ code for public counters from text files defining the counters.
 * [source/public_counter_compiler_input_files](source/public_counter_compiler_input_files) -- input files that can be fed as input to the PublicCounterCompiler tool
 * [source/third_party](source/third_party) -- third-party files that are included as part of the GPUPerfAPI repo
+
+## Style and Format Change
+GPUPerfAPI source code uses clang-format based on the [Google C++ style guide](https://google.github.io/styleguide/cppguide.html).
+
+Please refer to the .clang-format file in the repository root for detailed information.
 
 ## Documentation
 The documentation for GPUPerfAPI can be found in each [GitHub release](https://github.com/GPUOpen-Tools/gpu_performance_api/releases). In the release .zip file or .tgz file, there
@@ -175,13 +205,21 @@ It was discovered that the improvements introduced in Vega, RDNA, and RDNA2 arch
 
 ## Known Issues
 
-### Unable to set clock mode on Windows after Nth time (N ~= 50)
-After a large number of consecutive profiling sessions (typically around 50), the GPU Performance API (GPA) may become unable to configure the GPU clock mode on Windows systems.
+### No Inter-Process Synchronization on Non-Windows Platforms
 
-This behavior has been traced to an issue in the AMD Windows kernel‑mode driver. The only known workaround is to restart the system when this condition occurs.
+AMD GPU performance counters are a global shared resource on the hardware — there is no hardware-level isolation between processes accessing them. On Windows, GPA uses a named mutex to provide inter-process synchronization, helping ensure that only one application accesses the GPU performance counters at a time. However, this inter-process mutex is not currently implemented on other platforms. As a result, if multiple processes attempt to collect GPU performance counters simultaneously on these platforms, the counter results may be incorrect or corrupted, and in some cases it could lead to undefined behavior. Users should ensure that only a single process is using GPA to collect GPU performance counters at any given time.
 
-### Intermittent TDR Events on RDNA4 GPUs
-During profiling on AMD RDNA4‑based graphics hardware, users may encounter sporadic Timeout Detection and Recovery (TDR) events. AMD is actively investigating the root cause and working on a fix.
+### AMD Radeon(TM) RX 5000 Series TDRs
+This is a driver regression affecting Adrenalin driver versions newer than `25.9.1`.
+Users facing TDRs with `RX 5000 Series` cards should use `Adrenalin 25.9.1` or an earlier driver version as a workaround.
+
+Link to latest working driver:
+* https://www.amd.com/en/resources/support-articles/release-notes/RN-RAD-WIN-25-9-1.html
+
+### Unable to set clock mode after abnormal application exit or many sessions
+After a large number of consecutive profiling sessions (typically around 50), the GPU Performance API (GPA) may become unable to configure the GPU clock mode on Windows systems. This can also occur when an application exits unexpectedly (crash, task manager termination, or early return) without restoring the clock mode to its default state.
+
+This behavior has been traced to an issue in the AMD Windows kernel‑mode driver. This should be resolved by `Adrenalin 26.7.1` and newer drivers.
 
 ### GPA doesn't support MESA on Linux
 GPA is only compatible with AMD's Pro and Open Source drivers.
@@ -205,7 +243,3 @@ By default this file is only modifiable by root, so the application being profil
 
 ### Profiling Bundles
 Profiling bundles in DirectX12 and Vulkan is not working properly. It is recommended to remove those GPA Samples from your application, or move the calls out of the bundle for profiling.
-
-## Style and Format Change
-The source code of GPUPerfAPI is formatted to follow the Google C++ Style Guide https://google.github.io/styleguide/cppguide.html.
-Please refer to the .clang-format file in the root directory of the product for additional style information.

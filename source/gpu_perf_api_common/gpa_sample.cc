@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  GPA Sample Implementation.
@@ -18,8 +18,6 @@ GpaSample::GpaSample(GpaPass* gpa_pass, IGpaCommandList* gpa_cmd_list, GpaSample
     , client_sample_id_(client_sample_id)
     , driver_sample_id_(0)
     , gpa_sample_state_(GpaSampleState::kInitialized)
-    , sample_result_(nullptr)
-    , continuing_sample_(nullptr)
     , is_opened_(false)
     , is_closed_by_client_(false)
     , is_continued_by_client_(false)
@@ -85,12 +83,12 @@ bool GpaSample::GetResult(CounterIndex counter_index_in_sample, GpaUInt64* count
             }
             else
             {
-                GPA_LOG_ERROR("Counter Index out of range.");
+                GpaLogger::Instance().LogError("Counter Index out of range.");
             }
         }
         else
         {
-            GPA_LOG_ERROR("Either the sample is not completed or the result buffer is invalid.");
+            GpaLogger::Instance().LogError("Either the sample is not completed or the result buffer is invalid.");
         }
     }
 
@@ -118,11 +116,11 @@ void GpaSample::AllocateSampleResultSpace()
     {
         if (GpaSampleType::kSqtt == gpa_sample_type_ || GpaSampleType::kSpm == gpa_sample_type_)
         {
-            sample_result_ = new (std::nothrow) GpaTraceSampleResult();
+            sample_result_ = std::make_unique<GpaTraceSampleResult>();
         }
         else
         {
-            sample_result_ = new (std::nothrow) GpaCounterSampleResult(gpa_pass_->GetEnabledCounterCount());
+            sample_result_ = std::make_unique<GpaCounterSampleResult>(gpa_pass_->GetEnabledCounterCount());
         }
     }
 }
@@ -144,12 +142,12 @@ GpaSampleState GpaSample::GetGpaSampleState() const
 
 GpaSampleResult* GpaSample::GetSampleResultLocation() const
 {
-    return sample_result_;
+    return sample_result_.get();
 }
 
 GpaSample* GpaSample::GetContinuingSample() const
 {
-    return continuing_sample_;
+    return continuing_sample_.get();
 }
 
 GPA_THREAD_SAFE_FUNCTION bool GpaSample::SetAsClosedByClient()
@@ -164,7 +162,7 @@ GPA_THREAD_SAFE_FUNCTION bool GpaSample::SetAsClosedByClient()
     }
     else
     {
-        GPA_LOG_ERROR("Sample has already been continued by client.");
+        GpaLogger::Instance().LogError("Sample has already been continued by client.");
     }
 
     return success;
@@ -184,7 +182,7 @@ bool GpaSample::SetAsCopied()
     }
     else
     {
-        GPA_LOG_ERROR("Sample has already been copied by client.");
+        GpaLogger::Instance().LogError("Sample has already been copied by client.");
     }
 
     return success;
@@ -217,7 +215,7 @@ GPA_THREAD_SAFE_FUNCTION bool GpaSample::SetAsContinuedByClient()
     }
     else
     {
-        GPA_LOG_ERROR("Sample has already been closed by client.");
+        GpaLogger::Instance().LogError("Sample has already been closed by client.");
     }
 
     return success;
@@ -243,7 +241,7 @@ void GpaSample::MarkAsCompleted()
 
 bool GpaSample::IsSampleContinuing() const
 {
-    return nullptr != continuing_sample_;
+    return nullptr != continuing_sample_.get();
 }
 
 IGpaCommandList* GpaSample::GetCmdList() const
@@ -251,7 +249,7 @@ IGpaCommandList* GpaSample::GetCmdList() const
     return gpa_cmd_list_;
 }
 
-bool GpaSample::LinkContinuingSample(GpaSample* continuing_sample)
+bool GpaSample::LinkContinuingSample(std::unique_ptr<GpaSample> continuing_sample)
 {
     std::lock_guard<std::recursive_mutex> lock(continue_sample_mutex_);
 
@@ -262,9 +260,9 @@ bool GpaSample::LinkContinuingSample(GpaSample* continuing_sample)
 
     bool success = true;
 
-    if (nullptr != continuing_sample_)
+    if (nullptr != continuing_sample_.get())
     {
-        success &= continuing_sample_->LinkContinuingSample(continuing_sample);
+        success &= continuing_sample_->LinkContinuingSample(std::move(continuing_sample));
     }
     else
     {
@@ -272,10 +270,11 @@ bool GpaSample::LinkContinuingSample(GpaSample* continuing_sample)
         if (continuing_sample->gpa_cmd_list_ == gpa_cmd_list_)
         {
             success = false;
+            // continuing_sample destroyed when unique_ptr goes out of scope.
         }
         else
         {
-            continuing_sample_ = continuing_sample;
+            continuing_sample_ = std::move(continuing_sample);
             success            = true;
         }
     }
@@ -286,14 +285,4 @@ bool GpaSample::LinkContinuingSample(GpaSample* continuing_sample)
 GpaPass* GpaSample::GetPass() const
 {
     return gpa_pass_;
-}
-
-GpaSample::~GpaSample()
-{
-    if (nullptr != continuing_sample_)
-    {
-        delete continuing_sample_;
-    }
-
-    delete sample_result_;
 }

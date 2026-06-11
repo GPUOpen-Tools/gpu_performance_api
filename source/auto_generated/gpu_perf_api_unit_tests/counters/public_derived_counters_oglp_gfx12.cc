@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2015-2025 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief PublicCounterDefinitions for OGLP GFX12  for testing.
@@ -752,7 +752,7 @@ const GpaCounterDesc kOglpGfx12PublicCounters[kOglpGfx12PublicCounterCount] = {
     "CBMemRead",
     "ColorBuffer",
     "Number of bytes read from the color buffer.",
-    "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16,(32),*",
+    "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16,(256),*",
     16,
     kGpaDataTypeFloat64,
     kGpaUsageTypeBytes,
@@ -763,7 +763,7 @@ const GpaCounterDesc kOglpGfx12PublicCounters[kOglpGfx12PublicCounterCount] = {
     "CBMemWritten",
     "ColorBuffer",
     "Number of bytes written to the color buffer.",
-    "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16,(32),*",
+    "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16,(256),*",
     16,
     kGpaDataTypeFloat64,
     kGpaUsageTypeBytes,

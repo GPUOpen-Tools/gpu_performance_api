@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  Internal class to support profiling GPA calls themselves.
@@ -127,9 +127,13 @@ void Profiler::Stop()
     is_active_ = false;
 }
 
+static std::mutex gpa_profiler_mutex;
+
 bool Profiler::EnterFunction(const char* function_name)
 {
     UNREFERENCED_PARAMETER(function_name);
+
+    const std::scoped_lock<std::mutex> lock(gpa_profiler_mutex);
 
     __int64 start_timestamp = __rdtsc();
 
@@ -149,6 +153,8 @@ bool Profiler::EnterFunction(const char* function_name)
 
 bool Profiler::LeaveFunction(const char* function_name)
 {
+    const std::scoped_lock<std::mutex> lock(gpa_profiler_mutex);
+
     __int64 end_timestamp = __rdtsc();
 
     // Ignore any profiling calls when not active.

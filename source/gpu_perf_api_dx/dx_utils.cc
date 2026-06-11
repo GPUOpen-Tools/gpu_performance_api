@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2015-2020 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  Common DX utility function implementations
@@ -13,7 +13,7 @@ GpaStatus DxGetAdapterDesc(IUnknown* device, DXGI_ADAPTER_DESC& adapter_desc)
 
     if (nullptr == device)
     {
-        GPA_LOG_ERROR("NULL device.");
+        GpaLogger::Instance().LogError("NULL device.");
         status = kGpaStatusErrorNullPointer;
     }
     else
@@ -23,7 +23,7 @@ GpaStatus DxGetAdapterDesc(IUnknown* device, DXGI_ADAPTER_DESC& adapter_desc)
 
         if (FAILED(hr) || (nullptr == dxgi_device))
         {
-            GPA_LOG_ERROR("Unable to get IDXGIDevice1 interface from ID3D11Device.");
+            GpaLogger::Instance().LogError("Unable to get IDXGIDevice1 interface from ID3D11Device.");
             status = kGpaStatusErrorFailed;
         }
         else
@@ -33,7 +33,7 @@ GpaStatus DxGetAdapterDesc(IUnknown* device, DXGI_ADAPTER_DESC& adapter_desc)
 
             if (FAILED(hr) || (nullptr == adapter))
             {
-                GPA_LOG_ERROR("Unable to get Adapter from IDXGIDevice1.");
+                GpaLogger::Instance().LogError("Unable to get Adapter from IDXGIDevice1.");
                 status = kGpaStatusErrorFailed;
             }
             else
@@ -43,7 +43,7 @@ GpaStatus DxGetAdapterDesc(IUnknown* device, DXGI_ADAPTER_DESC& adapter_desc)
 
                 if (S_OK != hr)
                 {
-                    GPA_LOG_ERROR("Could not get adapter description, hardware cannot be supported.");
+                    GpaLogger::Instance().LogError("Could not get adapter description, hardware cannot be supported.");
                     status = kGpaStatusErrorHardwareNotSupported;
                 }
 

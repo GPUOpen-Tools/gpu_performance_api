@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2023 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Vulkan GPA Command List Object Implementation
@@ -78,7 +78,7 @@ bool VkGpaCommandList::BeginCommandListRequest()
             }
             else
             {
-                GPA_LOG_ERROR("Unable to reset extension for new command list.");
+                GpaLogger::Instance().LogError("Unable to reset extension for new command list.");
             }
         }
         else
@@ -93,7 +93,7 @@ bool VkGpaCommandList::BeginCommandListRequest()
             }
             else
             {
-                GPA_LOG_ERROR("Failed to create a session on the AMD GPA Extension.");
+                GpaLogger::Instance().LogError("Failed to create a session on the AMD GPA Extension.");
             }
         }
 
@@ -108,7 +108,7 @@ bool VkGpaCommandList::BeginCommandListRequest()
             }
             else
             {
-                GPA_LOG_ERROR("Unable to open command list for sampling.");
+                GpaLogger::Instance().LogError("Unable to open command list for sampling.");
             }
         }
     }
@@ -134,7 +134,7 @@ bool VkGpaCommandList::EndCommandListRequest()
         }
         else
         {
-            GPA_LOG_DEBUG_ERROR("AMD extension is unable to end the command list.");
+            GpaLogger::Instance().LogDebugError("AMD extension is unable to end the command list.");
         }
     }
 
@@ -163,7 +163,7 @@ bool VkGpaCommandList::IsResultReady() const
 
     if (nullptr == gpa_context)
     {
-        GPA_LOG_ERROR("Invalid profiling session encountered when checking for available results.");
+        GpaLogger::Instance().LogError("Invalid profiling session encountered when checking for available results.");
     }
     else
     {

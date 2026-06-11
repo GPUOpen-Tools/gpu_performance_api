@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016-2024 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  Base Class for counter scheduling.
@@ -9,8 +9,6 @@
 #define GPU_PERF_API_COUNTER_GENERATOR_COMMON_GPA_COUNTER_SCHEDULER_BASE_H_
 
 #include "gpu_perf_api_counter_generator/gpa_counter_scheduler_interface.h"
-#include "gpu_perf_api_counter_generator/gpa_split_counter_factory.h"
-
 /// @brief Base Class for counter scheduling.
 class GpaCounterSchedulerBase : public IGpaCounterScheduler
 {
@@ -18,7 +16,10 @@ public:
     /// @brief Constructor
     ///
     /// @param [in] sample_type The type of samples for which to schedule counters.
-    GpaCounterSchedulerBase(GpaSessionSampleType sample_type);
+    explicit GpaCounterSchedulerBase(GpaSessionSampleType sample_type);
+
+    /// @brief Delete default constructor.
+    GpaCounterSchedulerBase() = delete;
 
     /// @brief Destructor.
     virtual ~GpaCounterSchedulerBase() = default;
@@ -27,7 +28,7 @@ public:
     void Reset() override;
 
     /// @copydoc IGpaCounterScheduler::SetCounterAccessor()
-    GpaStatus SetCounterAccessor(IGpaCounterAccessor* counter_accessor, GpaUInt32 vendor_id, GpaUInt32 device_id, GpaUInt32 revision_id) override;
+    [[nodiscard]] GpaStatus SetCounterAccessor(IGpaCounterAccessor* counter_accessor, const GpaHwInfo& hw_info) override;
 
     /// @copydoc IGpaCounterScheduler::GetNumEnabledCounters()
     GpaUInt32 GetNumEnabledCounters() const override;
@@ -81,11 +82,6 @@ public:
     }
 
 protected:
-    /// @brief Gets the preferred counter splitting algorithm.
-    ///
-    /// @return the preferred counter splitting algorithm.
-    virtual GpaCounterSplitterAlgorithm GetPreferredSplittingAlgorithm() const = 0;
-
     /// @brief Helper function to disable a counter.
     ///
     /// @param [in] index The index of the counter to disable.
@@ -123,16 +119,10 @@ protected:
     std::map<DerivedCounterIndex, CounterResultLocationMap> counter_result_location_map_;
 
     /// The counter accessor used by the scheduler.
-    IGpaCounterAccessor* counter_accessor_;
+    IGpaCounterAccessor* counter_accessor_ = {};
 
-    /// The vendor id used by the scheduler.
-    GpaUInt32 vendor_id_;
-
-    /// The device id used by the scheduler.
-    GpaUInt32 device_id_;
-
-    /// The revision id used by the scheduler.
-    GpaUInt32 revision_id_;
+    /// Max number of SQ counters for the device, used for splitting counters into passes.
+    uint8_t num_sq_max_counters_ = {};
 
     /// This must be maintained in parallel with enabled_public_counter_bits_ - both are views of the list of active counters
     /// enabled_public_indices_ as a list of indices, enabled_public_counter_bits_ as a random access bool array.
@@ -143,21 +133,17 @@ protected:
     std::vector<bool> enabled_public_counter_bits_;
 
     /// Records whether or not the counter selection changed since GPA_BeginSampling was last called.
-    bool counter_selection_changed_;
+    bool counter_selection_changed_ = {};
 
     /// List of passes, which are identified by a list of counter indices which are in that pass.
     /// Populated when GetNumRequiredPasses is called.
-    GpaCounterPassList pass_partitions_;
+    std::list<GpaCounterPass> pass_partitions_;
 
     /// As the profile is happening, this tracks the current pass.
-    unsigned int pass_index_;
+    unsigned int pass_index_ = {};
 
     /// Context sample type to generate counters for.
-    GpaSessionSampleType sample_type_;
-
-private:
-    /// @brief Delete default constructor.
-    GpaCounterSchedulerBase() = delete;
+    GpaSessionSampleType sample_type_ = {};
 };
 
 #endif

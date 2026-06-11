@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2010-2025 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Public Counter Definitions for DX11 GFX12.
@@ -3757,7 +3757,7 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                true,
                                false,
                                kHardwareCounters,
-                               "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16,(32),*",
+                               "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16,(256),*",
                                "84b531d8-a1f8-7f49-7c27-7bc97801f1e6");
     }
     { // Index:68
@@ -3787,7 +3787,7 @@ void AutoDefinePublicDerivedCountersDx11Gfx12(GpaDerivedCounters& c)
                                true,
                                false,
                                kHardwareCounters,
-                               "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16,(32),*",
+                               "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16,(256),*",
                                "550f8ff8-60b6-a6bf-87d0-25ac9e87de70");
     }
     { // Index:69

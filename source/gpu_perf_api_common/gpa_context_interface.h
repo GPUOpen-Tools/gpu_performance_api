@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2025 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Interface representing the GPA context.
@@ -7,6 +7,8 @@
 
 #ifndef GPU_PERF_API_COMMON_GPA_CONTEXT_INTERFACE_H_
 #define GPU_PERF_API_COMMON_GPA_CONTEXT_INTERFACE_H_
+
+#include <optional>
 
 #include "gpu_performance_api/gpu_perf_api_types.h"
 
@@ -59,17 +61,7 @@ public:
     /// @brief Gets a mask of the sample types supported by this context.
     ///
     /// @return The mask of the sample types supported by this context.
-    virtual GpaContextSampleTypeFlags GetSupportedSampleTypes() const = 0;
-
-    /// @brief Check to see if public counters should be exposed.
-    ///
-    /// @return True if public counters should be exposed; false otherwise.
-    virtual bool ArePublicCountersExposed() const = 0;
-
-    /// @brief Check to see if hardware counters should be exposed.
-    ///
-    /// @return True if hardware counters should be exposed; false otherwise.
-    virtual bool AreHardwareCountersExposed() const = 0;
+    [[nodiscard]] virtual std::optional<GpaContextSampleTypeFlags> GetSupportedSampleTypes() const = 0;
 
     /// @brief Returns the hardware info.
     ///

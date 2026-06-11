@@ -1,4 +1,4 @@
-## Copyright (C) 2025-2026 Advanced Micro Devices, Inc. All rights reserved. ##
+#/ Copyright (C) Advanced Micro Devices, Inc. All rights reserved.
 
 add_library(amd_d3d_extensions INTERFACE)
 add_library(AMD::d3dExtensions ALIAS amd_d3d_extensions)

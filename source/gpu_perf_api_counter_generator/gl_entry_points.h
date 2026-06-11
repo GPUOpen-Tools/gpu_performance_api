@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016-2024 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief GL entry points.
@@ -23,7 +23,7 @@
 
 #endif
 
-#ifdef _LINUX
+#ifdef __linux__
 
 #define GET_PROC_ADDRESS_TYPE glXGetProcAddressARB
 #define GET_PROC_ADDRESS_FUNC _glXGetProcAddressARB
@@ -36,14 +36,15 @@
 
 #endif
 
-#ifdef _LINUX
+#ifdef _WIN32
+#include <windows.h>
+#define LOAD_SYMBOL GetProcAddress
+#else
 #include <dlfcn.h>
 #define LOAD_SYMBOL dlsym
-#else
-#define LOAD_SYMBOL GetProcAddress
 #endif
 
-#ifdef WIN32
+#ifdef _WIN32
 typedef HMODULE LibHandle;
 #define GET_CONTEXT_PROC_ADDRESS(f, type, name) (f) = reinterpret_cast<type>(ogl_utils::GET_PROC_ADDRESS_FUNC(name));
 #else
@@ -189,14 +190,9 @@ namespace ogl_utils
     /// @return True upon successful otherwise false.
     bool InitContextGlAmdPerfMonitor2ExtensionFunctions();
 
-    /// @brief Delete objects that are no longer needed.
-    void Cleanup();
-
     extern const char* kAmdRendererString;            ///< AMD Renderer string.
     extern const char* kRadeonRendererString;         ///< Radeon Renderer string.
     extern const char* kAtiRendererString;            ///< ATI Renderer string (legacy).
-    extern const char* kNvidiaRendererString;         ///< NVIDIA Renderer string.
-    extern const char* kIntelRendererString;          ///< Intel Renderer string.
     extern bool        are_gl_functions_initialized;  ///< Flag indicating if the GL extensions and functions have been initialized.
     extern LibHandle   gl_lib_handle;                 ///< Handle to the GL lib.
 

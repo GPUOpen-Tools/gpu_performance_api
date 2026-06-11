@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2018-2025 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief GPA Context Counter Mediator Implementation.
@@ -57,44 +57,35 @@ GpaStatus GpaContextCounterMediator::GenerateCounters(const IGpaSession* gpa_ses
         return kGpaStatusErrorFailed;
     }
 
-    GpaStatus             ret_status        = kGpaStatusOk;
+    GpaStatus                  ret_status  = kGpaStatusOk;
+    const GpaSessionSampleType sample_type = gpa_session->GetSampleType();
+
+    // Sqtt has no counters to generate.
+    if (sample_type == kGpaSessionSampleTypeSqtt)
+    {
+        return ret_status;
+    }
+
+    const GpaHwInfo&      hw_info           = gpa_context->GetHwInfo();
     IGpaCounterAccessor*  counter_accessor  = nullptr;
     IGpaCounterScheduler* counter_scheduler = nullptr;
-    const GpaHwInfo&      hw_info           = gpa_context->GetHwInfo();
+    ret_status                              = ::GenerateCounters(gpa_context->GetApiType(), sample_type, hw_info, flags, &counter_accessor, &counter_scheduler);
 
-    GpaUInt32 vendor_id;
-    GpaUInt32 device_id;
-    GpaUInt32 revision_id;
-
-    if (hw_info.GetVendorId(vendor_id) && hw_info.GetDeviceId(device_id) && hw_info.GetRevisionId(revision_id))
+    if (kGpaStatusOk == ret_status)
     {
-        const GpaSessionSampleType sample_type = gpa_session->GetSampleType();
+        assert(counter_accessor != nullptr);
+        assert(counter_scheduler != nullptr);
 
-        // Sqtt has no counters to generate.
-        if (sample_type == kGpaSessionSampleTypeSqtt)
+        const GpaContextStatus context_status = {.counter_scheduler = counter_scheduler, .counter_accessor = counter_accessor};
+
+        if (kGpaStatusOk == counter_scheduler->SetCounterAccessor(counter_accessor, hw_info))
         {
-            return ret_status;
+            session_info_map->insert(std::make_pair(gpa_session, context_status));
         }
-
-        ret_status =
-            ::GenerateCounters(gpa_context->GetApiType(), sample_type, vendor_id, device_id, revision_id, flags, &counter_accessor, &counter_scheduler);
-
-        if (kGpaStatusOk == ret_status)
+        else
         {
-            assert(counter_accessor != nullptr);
-            assert(counter_scheduler != nullptr);
-
-            const GpaContextStatus context_status = {.counter_scheduler = counter_scheduler, .counter_accessor = counter_accessor};
-
-            if (kGpaStatusOk == counter_scheduler->SetCounterAccessor(counter_accessor, vendor_id, device_id, revision_id))
-            {
-                session_info_map->insert(std::make_pair(gpa_session, context_status));
-            }
-            else
-            {
-                ret_status = kGpaStatusErrorFailed;
-                GPA_LOG_ERROR("Failed to set counter accessor.");
-            }
+            ret_status = kGpaStatusErrorFailed;
+            GpaLogger::Instance().LogError("Failed to set counter accessor.");
         }
     }
     else

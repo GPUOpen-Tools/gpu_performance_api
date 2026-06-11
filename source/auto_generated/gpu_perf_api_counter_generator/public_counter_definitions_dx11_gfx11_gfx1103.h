@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2010-2025 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Public Counter Definitions for DX11 GFX11_GFX1103.
@@ -22,7 +22,7 @@ namespace dx11_gfx11_gfx1103
     /// @param [in] c Derived counters instance.
     ///
     /// @return True if the ASIC matched one available, and derivedCounters was updated.
-    extern bool UpdatePublicAsicSpecificCounters(GDT_HW_GENERATION desired_generation, GDT_HW_ASIC_TYPE asic_type, GpaDerivedCounters& c);
+    extern bool UpdatePublicAsicSpecificCounters(device_info::HwGeneration desired_generation, device_info::AsicType asic_type, GpaDerivedCounters& c);
 
 }  // namespace dx11_gfx11_gfx1103
 

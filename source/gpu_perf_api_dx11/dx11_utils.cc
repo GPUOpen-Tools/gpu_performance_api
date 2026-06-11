@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2015-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  DX11 utility function implementation
@@ -53,7 +53,7 @@ bool dx11_utils::IsFeatureLevelSupported(ID3D11Device* d3d11_device)
     // DX9 feature level is not supported.
     if (level == D3D_FEATURE_LEVEL_9_1 || level == D3D_FEATURE_LEVEL_9_2 || level == D3D_FEATURE_LEVEL_9_3)
     {
-        GPA_LOG_ERROR("GPUPerfAPI does not support D3D_FEATURE_LEVEL_9_1, _9_2, and _9_3.");
+        GpaLogger::Instance().LogError("GPUPerfAPI does not support D3D_FEATURE_LEVEL_9_1, _9_2, and _9_3.");
         is_supported = false;
     }
 
@@ -99,7 +99,7 @@ bool dx11_utils::GetTimestampFrequency(ID3D11Device* d3d11_device, UINT64& times
 
                     if (FAILED(data_ready))
                     {
-                        GPA_LOG_ERROR("Call to ID3D11DeviceContext::GetData failed.");
+                        GpaLogger::Instance().LogError("Call to ID3D11DeviceContext::GetData failed.");
                         return false;
                     }
 
@@ -119,17 +119,17 @@ bool dx11_utils::GetTimestampFrequency(ID3D11Device* d3d11_device, UINT64& times
             }
             else
             {
-                GPA_LOG_ERROR("GetTimestampFrequency Immediate Context is NULL.");
+                GpaLogger::Instance().LogError("GetTimestampFrequency Immediate Context is NULL.");
             }
         }
         else
         {
-            GPA_LOG_ERROR("GetTimestampFrequency Call to ID3D11Device::CreateQuery failed.");
+            GpaLogger::Instance().LogError("GetTimestampFrequency Call to ID3D11Device::CreateQuery failed.");
         }
     }
     else
     {
-        GPA_LOG_ERROR("GetTimestampFrequency DX11 Device is NULL.");
+        GpaLogger::Instance().LogError("GetTimestampFrequency DX11 Device is NULL.");
     }
 
     return success;

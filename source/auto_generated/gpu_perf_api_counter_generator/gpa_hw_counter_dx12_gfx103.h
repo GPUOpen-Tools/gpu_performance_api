@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2010-2025 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief DX12 counter definitions for GFX103.
@@ -26,7 +26,7 @@ struct GpaSqCounterGroupDesc;
 
 namespace counter_dx12_gfx103
 {
-    extern const gpa_array_view<gpa_array_view<GpaHardwareCounterDesc>> kDx12CounterGroupArrayGfx103; ///< Array of hardware counter groups for Dx12 for Gfx103 family
+    extern const gpa_array_view<gpa_array_view<GpaHardwareCounterDesc>*> kDx12CounterGroupArrayGfx103; ///< Array of hardware counter groups for Dx12 for Gfx103 family
     extern const gpa_array_view<GpaCounterGroupDesc>                    kHwDx12GroupsGfx103; ///< Array of counter groups for Dx12 for Gfx103 family
     extern GpaCounterGroupExposedCounterDesc                            kHwDx12ExposedCountersByGroupGfx103[]; ///< Array of exposed counter groups for Dx12 for Gfx103 family
     extern GpaPaddedCounterDesc                                         kDx12PaddedCounterByGroupGfx103[]; ///< Array of reserved counter for Dx12 for Gfx103 family
@@ -52,7 +52,7 @@ namespace counter_dx12_gfx103
 /// @param [in] asic_type The ASIC type that is currently in use.
 ///
 /// @return True if the ASIC is matched by this file and block instances are updated, otherwise false.
-inline bool OverrideMaxBlockEvents(GDT_HW_ASIC_TYPE asic_type)
+inline bool OverrideMaxBlockEvents(device_info::AsicType asic_type)
 {
     UNREFERENCED_PARAMETER(asic_type);
 

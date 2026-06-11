@@ -1,4 +1,4 @@
-## Copyright (C) 2025-2026 Advanced Micro Devices, Inc. All rights reserved. ##
+#/ Copyright (C) Advanced Micro Devices, Inc. All rights reserved.
 
 add_subdirectory(gpu_perf_api_common)
 add_subdirectory(gpu_perf_api_counter_generator)
@@ -18,11 +18,8 @@ if(WIN32)
         message(STATUS "Skipping DX12 in the build")
     endif()
 
-    if(MSVC_IDE)
-        if(NOT ${skipcsharp})
-            add_subdirectory(public_counter_compiler)
-        endif()
-        add_subdirectory(public_counter_compiler_input_files)
+    if(MSVC_IDE AND NOT ${skipcsharp})
+        add_subdirectory(codegen)
     endif()
 endif()
 

@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2015-2025 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  GPA Vk API implementation
@@ -8,8 +8,9 @@
 #include "gpu_perf_api_vk/vk_gpa_implementor.h"
 
 #include <cassert>
+#include <memory>
 
-#include "DeviceInfoUtils.h"
+#include "device_info.hpp"
 
 #include "gpu_performance_api/gpu_perf_api_vk.h"
 
@@ -25,45 +26,28 @@
 #include "gpu_perf_api_vk/vk_includes.h"
 #include "gpu_perf_api_vk/vk_utils.h"
 
-static GpaCounterGeneratorVk* generator_vk = nullptr;  ///< Static instance of VK generator.
-static GpaCounterSchedulerVk* scheduler_vk = nullptr;  ///< Static instance of VK scheduler.
-
-IGpaImplementor* CreateImplementor()
+namespace
 {
-    generator_vk = new GpaCounterGeneratorVk(kGpaSessionSampleTypeDiscreteCounter);
-    scheduler_vk = new GpaCounterSchedulerVk(kGpaSessionSampleTypeDiscreteCounter);
+    std::unique_ptr<GpaCounterGeneratorVk> generator_vk;  ///< Static instance of VK generator.
+    std::unique_ptr<GpaCounterSchedulerVk> scheduler_vk;  ///< Static instance of VK scheduler.
+}  // namespace
 
+IGpaImplementor& CreateImplementor()
+{
+    generator_vk = std::make_unique<GpaCounterGeneratorVk>(kGpaSessionSampleTypeDiscreteCounter);
+    scheduler_vk = std::make_unique<GpaCounterSchedulerVk>(kGpaSessionSampleTypeDiscreteCounter);
     return VkGpaImplementor::Instance();
 }
 
-void DestroyImplementor(IGpaImplementor* impl)
+void DestroyImplementor()
 {
-    if (generator_vk != nullptr)
-    {
-        delete generator_vk;
-        generator_vk = nullptr;
-    }
-
-    if (scheduler_vk != nullptr)
-    {
-        delete scheduler_vk;
-        scheduler_vk = nullptr;
-    }
-
-    if (nullptr != impl)
-    {
-        VkGpaImplementor::DeleteInstance();
-    }
+    generator_vk.reset();
+    scheduler_vk.reset();
 }
 
-GpaApiType VkGpaImplementor::GetApiType() const
+GpaStatus VkGpaImplementor::GetHwInfoFromApi(const GpaContextInfoPtr context_info, GpaOpenContextFlags flags, GpaHwInfo& hw_info) const
 {
-    return kGpaApiVulkan;
-}
-
-bool VkGpaImplementor::GetHwInfoFromApi(const GpaContextInfoPtr context_info, GpaOpenContextFlags flags, GpaHwInfo& hw_info) const
-{
-    bool is_succeeded = false;
+    GpaStatus status = kGpaStatusErrorHardwareNotSupported;
 
     if (nullptr != context_info)
     {
@@ -99,7 +83,7 @@ bool VkGpaImplementor::GetHwInfoFromApi(const GpaContextInfoPtr context_info, Gp
 
                     VkPhysicalDeviceGpaProperties2AMD physical_device_properties2 = {};
                     physical_device_properties2.sType                             = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_GPA_PROPERTIES2_AMD;
-                    physical_device_properties2.revisionId                        = AMDTDeviceInfoUtils::kRevisionIdAny;
+                    physical_device_properties2.revisionId                        = device_info::kRevisionIdAny;
                     physical_device_properties2.pNext                             = &shader_core_properties_amd;
 
                     VkPhysicalDeviceProperties2KHR physical_device_properties = {};
@@ -112,126 +96,94 @@ bool VkGpaImplementor::GetHwInfoFromApi(const GpaContextInfoPtr context_info, Gp
 
                     if (vk_utils::GetTimestampFrequency(vk_context_info->physical_device, freq))
                     {
-                        // We have almost all information to fill the hardware info.
+                        hw_info.SetVendorId(physical_device_properties.properties.vendorID);
+                        hw_info.SetDeviceId(physical_device_properties.properties.deviceID);
+                        hw_info.SetRevisionId(physical_device_properties2.revisionId);
 
-                        GpaUInt32 vendor_id       = physical_device_properties.properties.vendorID;
-                        GpaUInt32 device_id       = physical_device_properties.properties.deviceID;
-                        uint32_t  device_revision = physical_device_properties2.revisionId;
+                        const std::string adapter_name(physical_device_properties.properties.deviceName);
 
-                        std::string       adapter_name(physical_device_properties.properties.deviceName);
-                        GDT_HW_GENERATION hardware_generation = GDT_HW_GENERATION_NONE;
-
-                        if (kNvidiaVendorId == vendor_id)
+                        if (const std::optional<device_info::CardInfo> card_info = device_info::GetCardInfo(hw_info.GetDeviceDescription().value());
+                            card_info.has_value())
                         {
-                            hardware_generation = GDT_HW_GENERATION_NVIDIA;
-                        }
-                        else if (kIntelVendorId == vendor_id)
-                        {
-                            hardware_generation = GDT_HW_GENERATION_INTEL;
-                        }
-                        else if (kAmdVendorId == vendor_id)
-                        {
-                            GDT_GfxCardInfo card_info = {};
+                            hw_info.SetDeviceName(adapter_name.c_str());
+                            hw_info.SetHwGeneration(card_info->generation);
+                            hw_info.SetTimeStampFrequency(freq);
 
-                            if (AMDTDeviceInfoUtils::GetDeviceInfo(device_id, device_revision, card_info))
+                            status = kGpaStatusOk;
+
+                            const uint32_t num_shader_engines = shader_core_properties_amd.shaderEngineCount;
+                            hw_info.SetNumberShaderEngines(num_shader_engines);
+                            if (num_shader_engines == 0)
                             {
-                                hardware_generation = card_info.m_generation;
-
-                                // GPA Vk requires GFX10 or above.
-                                if (GDT_HW_GENERATION_GFX10 > hardware_generation)
-                                {
-                                    GPA_LOG_ERROR("Hardware not supported.");
-                                }
-                                else
-                                {
-                                    hw_info.SetDeviceName(adapter_name.c_str());
-                                    hw_info.SetVendorId(vendor_id);
-                                    hw_info.SetDeviceId(device_id);
-                                    hw_info.SetRevisionId(device_revision);
-                                    hw_info.SetHwGeneration(hardware_generation);
-                                    hw_info.SetTimeStampFrequency(freq);
-
-                                    is_succeeded = true;
-
-                                    const uint32_t num_shader_engines = shader_core_properties_amd.shaderEngineCount;
-                                    hw_info.SetNumberShaderEngines(num_shader_engines);
-                                    if (num_shader_engines == 0)
-                                    {
-                                        GPA_LOG_ERROR("Vulkan returned invalid number of shader engines.");
-                                        is_succeeded = false;
-                                    }
-
-                                    const uint32_t num_total_shader_arrays = shader_core_properties_amd.shaderArraysPerEngineCount * num_shader_engines;
-                                    hw_info.SetNumberShaderArrays(num_total_shader_arrays);
-                                    if (num_total_shader_arrays == 0)
-                                    {
-                                        GPA_LOG_ERROR("Vulkan returned invalid number of shader arrays.");
-                                        is_succeeded = false;
-                                    }
-
-                                    const uint32_t num_total_compute_units = shader_core_properties_2_amd.activeComputeUnitCount;
-                                    hw_info.SetNumberCus(num_total_compute_units);
-                                    if (num_total_compute_units == 0)
-                                    {
-                                        GPA_LOG_ERROR("Vulkan returned invalid number of active compute units.");
-                                        is_succeeded = false;
-                                    }
-
-                                    const uint32_t num_total_simds = shader_core_properties_amd.simdPerComputeUnit * num_total_compute_units;
-                                    hw_info.SetNumberSimds(num_total_simds);
-                                    if (num_total_simds == 0)
-                                    {
-                                        GPA_LOG_ERROR("Vulkan returned invalid number of SIMDs.");
-                                        is_succeeded = false;
-                                    }
-
-                                    // NOTE: Vulkan is the only driver that allows us to query vgprsPerSimd from the driver itself.
-                                    // All other APIs utilize device_info as the source of truth.
-                                    const uint32_t num_total_vgprs = shader_core_properties_amd.vgprsPerSimd * num_total_simds;
-                                    hw_info.SetNumberVgprs(num_total_vgprs);
-                                    if (num_total_vgprs == 0)
-                                    {
-                                        GPA_LOG_ERROR("Vulkan returned invalid number of VGPRs.");
-                                        is_succeeded = false;
-                                    }
-                                }
+                                GpaLogger::Instance().LogError("Vulkan returned invalid number of shader engines.");
+                                status = kGpaStatusErrorHardwareNotSupported;
                             }
-                            else
+
+                            const uint32_t num_total_shader_arrays = shader_core_properties_amd.shaderArraysPerEngineCount * num_shader_engines;
+                            hw_info.SetNumberShaderArrays(num_total_shader_arrays);
+                            if (num_total_shader_arrays == 0)
                             {
-                                GPA_LOG_ERROR("Unable to get device info from AMDTDeviceInfoUtils.");
+                                GpaLogger::Instance().LogError("Vulkan returned invalid number of shader arrays.");
+                                status = kGpaStatusErrorHardwareNotSupported;
+                            }
+
+                            const uint32_t num_total_compute_units = shader_core_properties_2_amd.activeComputeUnitCount;
+                            hw_info.SetNumberCus(num_total_compute_units);
+                            if (num_total_compute_units == 0)
+                            {
+                                GpaLogger::Instance().LogError("Vulkan returned invalid number of active compute units.");
+                                status = kGpaStatusErrorHardwareNotSupported;
+                            }
+
+                            const uint32_t num_total_simds = shader_core_properties_amd.simdPerComputeUnit * num_total_compute_units;
+                            hw_info.SetNumberSimds(num_total_simds);
+                            if (num_total_simds == 0)
+                            {
+                                GpaLogger::Instance().LogError("Vulkan returned invalid number of SIMDs.");
+                                status = kGpaStatusErrorHardwareNotSupported;
+                            }
+
+                            // NOTE: Vulkan is the only driver that allows us to query vgprsPerSimd from the driver itself.
+                            // All other APIs utilize device_info as the source of truth.
+                            const uint32_t num_total_vgprs = shader_core_properties_amd.vgprsPerSimd * num_total_simds;
+                            hw_info.SetNumberVgprs(num_total_vgprs);
+                            if (num_total_vgprs == 0)
+                            {
+                                GpaLogger::Instance().LogError("Vulkan returned invalid number of VGPRs.");
+                                status = kGpaStatusErrorHardwareNotSupported;
                             }
                         }
                         else
                         {
-                            GPA_LOG_ERROR("Unknown Device.");
+                            GpaLogger::Instance().LogError("Unable to get device info from device_info library.");
                         }
                     }
                     else
                     {
-                        GPA_LOG_ERROR("Unable to get timestamp frequency.");
+                        GpaLogger::Instance().LogError("Unable to get timestamp frequency.");
                     }
                 }
                 else
                 {
-                    GPA_LOG_ERROR("Device is not supported for profiling.");
+                    GpaLogger::Instance().LogError("Device is not supported for profiling.");
                 }
             }
             else
             {
-                GPA_LOG_ERROR("Unable to initialize Vulkan entrypoints.");
+                GpaLogger::Instance().LogError("Unable to initialize Vulkan entrypoints.");
             }
         }
         else
         {
-            GPA_LOG_ERROR("Unable to open context. Necessary member of 'context' is NULL.");
+            GpaLogger::Instance().LogError("Unable to open context. Necessary member of 'context' is NULL.");
         }
     }
     else
     {
-        GPA_LOG_ERROR("Unable to proceed. Parameter 'context' is NULL.");
+        GpaLogger::Instance().LogError("Unable to proceed. Parameter 'context' is NULL.");
     }
 
-    return is_succeeded;
+    return status;
 }
 
 bool VkGpaImplementor::VerifyApiHwSupport(const GpaContextInfoPtr context_info, GpaOpenContextFlags flags, const GpaHwInfo& hardware_info) const
@@ -240,12 +192,12 @@ bool VkGpaImplementor::VerifyApiHwSupport(const GpaContextInfoPtr context_info, 
     UNREFERENCED_PARAMETER(hardware_info);
     if (nullptr != context_info)
     {
-        PFN_vkGetDeviceProcAddr   get_device_proc_addr = NULL;    ///< The vulkan device proc query.
+        PFN_vkGetDeviceProcAddr   get_device_proc_addr   = NULL;  ///< The vulkan device proc query.
         PFN_vkGetInstanceProcAddr get_instance_proc_addr = NULL;  ///< The vulkan instance proc query.
 
         if (flags & kGpaOpenContextVkUseInfoType2)
         {
-            get_device_proc_addr = (reinterpret_cast<GpaVkContextOpenInfo2*>(context_info))->get_device_proc_addr;
+            get_device_proc_addr   = (reinterpret_cast<GpaVkContextOpenInfo2*>(context_info))->get_device_proc_addr;
             get_instance_proc_addr = (reinterpret_cast<GpaVkContextOpenInfo2*>(context_info))->get_instance_proc_addr;
         }
 
@@ -260,17 +212,17 @@ bool VkGpaImplementor::VerifyApiHwSupport(const GpaContextInfoPtr context_info, 
             }
             else
             {
-                GPA_LOG_ERROR("Unable to initialize Vulkan entrypoints.");
+                GpaLogger::Instance().LogError("Unable to initialize Vulkan entrypoints.");
             }
         }
         else
         {
-            GPA_LOG_ERROR("Unable to open context. Necessary member of 'context' is NULL.");
+            GpaLogger::Instance().LogError("Unable to open context. Necessary member of 'context' is NULL.");
         }
     }
     else
     {
-        GPA_LOG_ERROR("Unable to proceed. Parameter 'context' is NULL.");
+        GpaLogger::Instance().LogError("Unable to proceed. Parameter 'context' is NULL.");
     }
 
     return is_supported;
@@ -291,10 +243,10 @@ bool VkGpaImplementor::IsCopySecondarySampleSupported() const
     return true;
 }
 
-IGpaContext* VkGpaImplementor::OpenApiContext(GpaContextInfoPtr context_info, const GpaHwInfo& hardware_info, GpaOpenContextFlags flags)
+std::unique_ptr<IGpaContext> VkGpaImplementor::OpenApiContext(GpaContextInfoPtr context_info, const GpaHwInfo& hardware_info, GpaOpenContextFlags flags)
 {
-    IGpaContext*          gpa_context     = nullptr;
-    GpaVkContextOpenInfo* vk_context_info = static_cast<GpaVkContextOpenInfo*>(context_info);
+    std::unique_ptr<IGpaContext> gpa_context;
+    GpaVkContextOpenInfo*        vk_context_info = static_cast<GpaVkContextOpenInfo*>(context_info);
 
     if (VK_NULL_HANDLE != vk_context_info->instance && VK_NULL_HANDLE != vk_context_info->physical_device && VK_NULL_HANDLE != vk_context_info->device)
     {
@@ -302,57 +254,44 @@ IGpaContext* VkGpaImplementor::OpenApiContext(GpaContextInfoPtr context_info, co
 
         if (vk_utils::IsDeviceSupportedForProfiling(vk_context_info->physical_device))
         {
-            VkGpaContext* vk_gpa_context = new (std::nothrow) VkGpaContext(vk_context_info, hardware_info, flags);
+            auto vk_gpa_context = std::make_unique<VkGpaContext>(vk_context_info, hardware_info, flags);
 
-            if (nullptr != vk_gpa_context)
+            GpaStatus status = vk_gpa_context->Open();
+
+            if (kGpaStatusOk == status && vk_gpa_context->IsOpen())
             {
-                GpaStatus status = vk_gpa_context->Open();
-
-                if (kGpaStatusOk == status && vk_gpa_context->IsOpen())
-                {
-                    gpa_context = vk_gpa_context;
-                }
-                else
-                {
-                    delete vk_gpa_context;
-                    GPA_LOG_ERROR("Unable to open a context.");
-                }
+                gpa_context = std::move(vk_gpa_context);
             }
             else
             {
-                GPA_LOG_ERROR("Unable to allocate memory for the context.");
+                GpaLogger::Instance().LogError("Unable to open a context.");
             }
         }
         else
         {
-            GPA_LOG_ERROR("Unable to open a context, device is not supported.");
+            GpaLogger::Instance().LogError("Unable to open a context, device is not supported.");
         }
     }
     else
     {
-        GPA_LOG_ERROR("Unable to open context. Necessary member of 'context' is NULL.");
+        GpaLogger::Instance().LogError("Unable to open context. Necessary member of 'context' is NULL.");
     }
 
     return gpa_context;
 }
 
-bool VkGpaImplementor::CloseApiContext(IGpaContext* context)
+bool VkGpaImplementor::CloseApiContext(std::unique_ptr<IGpaContext> context)
 {
     assert(context);
 
-    GpaStatus set_default_clocks_result = kGpaStatusOk;
-
-    if (nullptr != context)
+    VkGpaContext*   vk_gpa_context            = reinterpret_cast<VkGpaContext*>(context.get());
+    const GpaStatus set_default_clocks_result = vk_gpa_context->SetStableClocks(false);
+    if (set_default_clocks_result != kGpaStatusOk)
     {
-        VkGpaContext* vk_gpa_context = reinterpret_cast<VkGpaContext*>(context);
-        set_default_clocks_result    = vk_gpa_context->SetStableClocks(false);
-        if (set_default_clocks_result != kGpaStatusOk)
-        {
-            assert(!"Unable to set clocks back to default");
-            GPA_LOG_ERROR("Unable to set clocks back to default");
-        }
-        delete vk_gpa_context;
+        assert(!"Unable to set clocks back to default");
+        GpaLogger::Instance().LogError("Unable to set clocks back to default");
     }
+    // context destroyed when unique_ptr goes out of scope.
 
     return set_default_clocks_result == kGpaStatusOk;
 }

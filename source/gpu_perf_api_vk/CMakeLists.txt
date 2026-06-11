@@ -1,4 +1,4 @@
-## Copyright (C) 2018-2026 Advanced Micro Devices, Inc. All rights reserved. ##
+#/ Copyright (C) Advanced Micro Devices, Inc. All rights reserved.
 
 set(GPA_PROJECT_NAME GPUPerfAPIVK)
 set(ProjectName ${GPA_PROJECT_NAME})
@@ -9,7 +9,6 @@ INCLUDE_ADDITIONAL_MODULE()
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 include_directories(${ADDITIONAL_INCLUDE_DIRECTORIES}
-                    ${GPA_PUBLIC_HEADER}
                     ${GPA_SRC}
                     ${GPA_SRC_COMMON}
                     ${GPA_SRC_COUNTER_GENERATOR}
@@ -23,7 +22,6 @@ add_library(GPUPerfAPIVK MODULE)
 add_lint_passes(GPUPerfAPIVK)
 target_sources(GPUPerfAPIVK PRIVATE
     ${GPA_SRC_COMMON}/gpa_function_exports.def
-    ${GPA_PUBLIC_HEADER}/gpu_performance_api/gpu_perf_api_vk.h
     vk_entry_points.h
     vk_gpa_command_list.h
     vk_gpa_context.h
@@ -52,7 +50,7 @@ target_link_libraries(GPUPerfAPIVK PRIVATE
     ${GPA_COMMON_LINK_NO_ARCHIVE_FLAG}
     GPUPerfAPICounterGenerator-VK
     AMD::device_info
-    AMD::tsingleton
+    AMD::GPUPerfAPI-Headers
 )
 
 ADD_LINKER_FLAGS()

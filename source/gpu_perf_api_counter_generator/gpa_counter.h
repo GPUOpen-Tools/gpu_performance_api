@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Definitions for GPA counters.
@@ -40,9 +40,6 @@ struct GpaHardwareCounterDesc
     const char* name;                    ///< Name of the counter.
     const char* group;                   ///< Group containing the counter.
     const char* description;             ///< Description of the counter.
-    GpaDataType type;                    ///< Data type.
-    GpaUInt64   min;                     ///< Min possible value.
-    GpaUInt64   max;                     ///< Max possible value.
 };
 
 /// @brief Contains all information pertaining to an internal counter group (aka a hardware block instance).
@@ -54,20 +51,6 @@ struct GpaCounterGroupDesc
     GpaUInt32   num_counters;                  ///< Number of counters in the group.
     GpaUInt32   max_active_discrete_counters;  ///< Max number of discrete counters that can be active in this group in a single pass.
     GpaUInt32   max_active_spm_counters;       ///< Max number of SPM counters that can be active in this group in a single pass.
-};
-
-const int kMaxSoftwareCounterNameLength        = 20;  ///< Maximum length for a software counter name.
-const int kMaxSoftwareCounterGroupLength       = 20;  ///< Maximum length for a software counter group name.
-const int kMaxSoftwareCounterDescriptionLength = 86;  ///< Maximum length for a software counter description.
-
-/// @brief Contains all information pertaining to a software counter
-struct GpaSoftwareCounterDesc
-{
-    GpaUInt64   counter_index_in_group;                             ///< 0-based index of counter within the group.
-    char        name[kMaxSoftwareCounterNameLength];                ///< Name of the counter.
-    char        group[kMaxSoftwareCounterGroupLength];              ///< Group of the counter.
-    char        description[kMaxSoftwareCounterDescriptionLength];  ///< Description of the counter.
-    GpaDataType type;                                               ///< Data type.
 };
 
 /// @brief Generates a counter's UUID for hardware and software counters.

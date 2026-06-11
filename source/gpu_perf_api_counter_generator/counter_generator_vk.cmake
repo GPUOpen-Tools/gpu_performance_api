@@ -1,4 +1,4 @@
-## Copyright (C) 2018-2026 Advanced Micro Devices, Inc. All rights reserved. ##
+#/ Copyright (C) Advanced Micro Devices, Inc. All rights reserved.
 
 set(GPA_PROJECT_NAME GPUPerfAPICounterGenerator-VK)
 set(ProjectName ${GPA_PROJECT_NAME})
@@ -21,8 +21,14 @@ set(COUNTER_SCHEDULER_SRC_VK
     gpa_counter_scheduler_vk.cc)
 
 if(EXISTS ${GPA_AUTOGEN_SRC_COUNTER_GENERATOR})
-    include(${GPA_AUTOGEN_SRC_COUNTER_GENERATOR}/gpa_hw_counter_vk.cmake)
-    include(${GPA_AUTOGEN_SRC_COUNTER_GENERATOR}/public_counter_definitions_vk.cmake)
+    file(GLOB HW_COUNTER_HEADERS_VK CONFIGURE_DEPENDS
+        ${GPA_AUTOGEN_SRC_COUNTER_GENERATOR}/gpa_hw_counter_vk_gfx*.h)
+    file(GLOB HW_COUNTER_SRC_VK CONFIGURE_DEPENDS
+        ${GPA_AUTOGEN_SRC_COUNTER_GENERATOR}/gpa_hw_counter_vk_gfx*.cc)
+    file(GLOB PUBLIC_COUNTER_DEF_HEADERS_VK CONFIGURE_DEPENDS
+        ${GPA_AUTOGEN_SRC_COUNTER_GENERATOR}/public_counter_definitions_vk_gfx*.h)
+    file(GLOB PUBLIC_COUNTER_DEF_SRC_VK CONFIGURE_DEPENDS
+        ${GPA_AUTOGEN_SRC_COUNTER_GENERATOR}/public_counter_definitions_vk_gfx*.cc)
 
     set(API_HEADER_FILES ${HW_COUNTER_HEADERS_VK} ${PUBLIC_COUNTER_DEF_HEADERS_VK} ${ADDITIONAL_COUNTER_DEF_HEADERS_VK})
     set(API_SOURCE_FILES ${HW_COUNTER_SRC_VK} ${PUBLIC_COUNTER_DEF_SRC_VK} ${ADDITIONAL_COUNTER_DEF_SRC_VK})
@@ -43,12 +49,6 @@ set(SOURCES ${COUNTER_GENERATOR_HEADERS_VK}
             ${API_HEADER_FILES}
             ${API_SOURCE_FILES}
             ${ADDITIONAL_COUNTERS_VK})
-
-if(WIN32)
-    add_compile_options(/bigobj)
- else()
-     add_compile_options(-Wno-write-strings)
- endif()
 
 ADD_STATIC_LIBRARY(${GPA_PROJECT_NAME} ${SOURCES})
 ADD_LINKER_FLAGS()

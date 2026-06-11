@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2012-2025 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Interface to access to the available counters in GPUPerfAPI.
@@ -25,7 +25,7 @@
 #else
 #define GPU_PERF_API_COUNTERS_DECL __declspec(dllimport)
 #endif
-#else  //_LINUX
+#else
 #define GPU_PERF_API_COUNTERS_DECL extern
 #endif
 #endif
@@ -244,6 +244,14 @@ typedef struct _GpaSupportedSampleTypeInfo
     GpaUInt32     revision_id;  ///< Revision Id.
     GpaDriverInfo driver_info;  ///< The type / version of the driver
 } GpaSupportedSampleTypeInfo;
+
+/// A set of information about the GPU to determine offline capabilities / HW information
+typedef struct _GpaDeviceDescription
+{
+    GpaUInt32 vendor_id;    ///< Vendor Id.
+    GpaUInt32 device_id;    ///< Device Id.
+    GpaUInt32 revision_id;  ///< Revision Id.
+} GpaDeviceDescription;
 
 /// @brief Gets the GPA Counter lib version.
 ///
@@ -482,14 +490,19 @@ GPU_PERF_API_COUNTERS_DECL GpaStatus GpaCounterLibGetPassCount(const GpaCounterC
 /// Typedef for GpaCounterLibGetPassCount function pointer.
 typedef GpaStatus (*GpaCounterLibGetPassCountPtrType)(const GpaCounterContext, const GpaUInt32*, GpaUInt32, GpaUInt32*);
 
-/// @brief For a given set of counters, get information on how the corresponding hardware counters are scheduled into passes
+/// @brief For a given set of counters, get information on how the corresponding hardware counters are scheduled into passes.
+///
+/// This function is designed to be called in multiple steps:
+/// 1. Call with counter_by_pass_list and gpa_pass_counters set to null to get the number of passes in pass_count.
+/// 2. Allocate counter_by_pass_list with pass_count elements, then call again to get the number of counters per pass.
+/// 3. Allocate gpa_pass_counters and their counter_indices arrays using the sizes from counter_by_pass_list, then call again to populate them.
 ///
 /// @param [in] gpa_virtual_context Unique identifier of the opened virtual context.
-/// @param [in] gpa_counter_count number of counters.
-/// @param [in] gpa_counter_indices indices of the counters to be enabled.
-/// @param [in, out] pass_count contains number of passes required for given set of counters if counter_by_pass_list is null, otherwise represents size of the input counter_by_pass_list array.
-/// @param [out] counter_by_pass_list list containing number of counters in each pass. Use this to allocate memory for the counter values.
-/// @param [out] gpa_pass_counters list containing number of counters in each pass. Use this to allocate memory for the counter values.
+/// @param [in] gpa_counter_count The number of counters in the gpa_counter_indices array.
+/// @param [in] gpa_counter_indices Array of counter indices to be enabled. Must not be null.
+/// @param [in, out] pass_count If counter_by_pass_list is null, then this will be populated with the number of passes required for the given set of counters; otherwise represents the size of the input counter_by_pass_list array. Must not be null.
+/// @param [out] counter_by_pass_list An array of pass_count elements that will be populated with the number of counters in each pass. May be null to query pass_count only. Use these values to allocate the counter_indices arrays within gpa_pass_counters.
+/// @param [out] gpa_pass_counters An array of pass_count elements that will be populated with the counter indices in each pass. May be null. Each element's counter_indices must point to a pre-allocated array of sufficient size (as indicated by counter_by_pass_list).
 ///
 /// @return The GPA result status of the operation. kGpaStatusOk is returned if the operation is successful.
 GPU_PERF_API_COUNTERS_DECL GpaStatus GpaCounterLibGetCountersByPass(const GpaCounterContext gpa_virtual_context,
@@ -499,7 +512,7 @@ GPU_PERF_API_COUNTERS_DECL GpaStatus GpaCounterLibGetCountersByPass(const GpaCou
                                                                     GpaUInt32*              counter_by_pass_list,
                                                                     GpaPassCounter*         gpa_pass_counters);
 
-/// Typedef for GpaCounterLibGetPassCount function pointer.
+/// Typedef for GpaCounterLibGetCountersByPass function pointer.
 typedef GpaStatus (*GpaCounterLibGetCountersByPassPtrType)(const GpaCounterContext, GpaUInt32, const GpaUInt32*, GpaUInt32*, GpaUInt32*, GpaPassCounter*);
 
 /// @brief Gets the supported context sample type(s) for the given API, hardware, and driver.
@@ -539,26 +552,38 @@ GPU_PERF_API_COUNTERS_DECL GpaStatus GpaCounterlibComputeDerivedSpmCounterResult
 typedef GpaStatus (
     *GpaCounterlibComputeDerivedSpmCounterResultsPtrType)(const GpaCounterContext, const GpaSpmData*, const GpaUInt64, const GpaUInt32*, GpaFloat64*);
 
-#define GPA_COUNTER_LIB_FUNC(X)                 \
-    X(GpaCounterLibGetVersion)                  \
-    X(GpaCounterLibGetFuncTable)                \
-    X(GpaCounterLibOpenCounterContext)          \
-    X(GpaCounterLibCloseCounterContext)         \
-    X(GpaCounterLibGetNumCounters)              \
-    X(GpaCounterLibGetCounterName)              \
-    X(GpaCounterLibGetCounterIndex)             \
-    X(GpaCounterLibGetCounterGroup)             \
-    X(GpaCounterLibGetCounterDescription)       \
-    X(GpaCounterLibGetCounterDataType)          \
-    X(GpaCounterLibGetCounterUsageType)         \
-    X(GpaCounterLibGetCounterUuid)              \
-    X(GpaCounterLibGetCounterSampleType)        \
-    X(GpaCounterLibGetCounterInfo)              \
-    X(GpaCounterLibComputeDerivedCounterResult) \
-    X(GpaCounterLibGetPassCount)                \
-    X(GpaCounterLibGetCountersByPass)           \
-    X(GpaCounterLibGetSupportedSampleTypes)     \
-    X(GpaCounterlibComputeDerivedSpmCounterResults)
+/// @brief Gets the hardware generation for the given device description. Device must be supported by GpaCounterLib.
+///
+/// @param [in] device_description Struct containing the device information.
+/// @param [out] hardware_generation The hardware generation of the device.
+///
+/// @return The GPA result status of the operation. kGpaStatusOk is returned if the operation is successful.
+GPU_PERF_API_COUNTERS_DECL GpaStatus GpaCounterLibGetHardwareGeneration(const GpaDeviceDescription* device_description, GpaHwGeneration* hardware_generation);
+
+/// Typedef for GpaCounterLibGetHardwareGeneration function pointer.
+typedef GpaStatus (*GpaCounterLibGetHardwareGenerationPtrType)(const GpaDeviceDescription* device_description, GpaHwGeneration* hardware_generation);
+
+#define GPA_COUNTER_LIB_FUNC(X)                     \
+    X(GpaCounterLibGetVersion)                      \
+    X(GpaCounterLibGetFuncTable)                    \
+    X(GpaCounterLibOpenCounterContext)              \
+    X(GpaCounterLibCloseCounterContext)             \
+    X(GpaCounterLibGetNumCounters)                  \
+    X(GpaCounterLibGetCounterName)                  \
+    X(GpaCounterLibGetCounterIndex)                 \
+    X(GpaCounterLibGetCounterGroup)                 \
+    X(GpaCounterLibGetCounterDescription)           \
+    X(GpaCounterLibGetCounterDataType)              \
+    X(GpaCounterLibGetCounterUsageType)             \
+    X(GpaCounterLibGetCounterUuid)                  \
+    X(GpaCounterLibGetCounterSampleType)            \
+    X(GpaCounterLibGetCounterInfo)                  \
+    X(GpaCounterLibComputeDerivedCounterResult)     \
+    X(GpaCounterLibGetPassCount)                    \
+    X(GpaCounterLibGetCountersByPass)               \
+    X(GpaCounterLibGetSupportedSampleTypes)         \
+    X(GpaCounterlibComputeDerivedSpmCounterResults) \
+    X(GpaCounterLibGetHardwareGeneration)
 
 /// GPA counter library function table.
 typedef struct _GpaCounterLibFuncTable

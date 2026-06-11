@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016-2025 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Manages a set of derived counters.
@@ -96,16 +96,6 @@ GpaDerivedCounterInfoClass::GpaDerivedCounterInfoClass(unsigned int             
 #endif
 }
 
-GpaDerivedCounterInfoClass::~GpaDerivedCounterInfoClass()
-{
-    if (nullptr != counter_info_)
-    {
-        delete counter_info_->gpa_derived_counter;
-    }
-
-    delete counter_info_;
-}
-
 bool GpaDerivedCounterInfoClass::InitializeDerivedCounterHardwareInfo(const IGpaCounterAccessor* gpa_counter_accessor)
 {
     bool counter_init = false;
@@ -118,30 +108,29 @@ bool GpaDerivedCounterInfoClass::InitializeDerivedCounterHardwareInfo(const IGpa
         }
         else
         {
-            counter_info_->gpa_derived_counter = new (std::nothrow) GpaDerivedCounterInfo();
+            derived_counter_info_storage_ = std::make_unique<GpaDerivedCounterInfo>();
 
-            if (nullptr != counter_info_->gpa_derived_counter)
+            counter_info_->gpa_derived_counter = derived_counter_info_storage_.get();
+
+            const GpaHardwareCounters& hardware_counters = gpa_counter_accessor->GetHardwareCounters();
+
+            for (const GpaUInt32 internal_counter : internal_counters_required_)
             {
-                const GpaHardwareCounters& hardware_counters = gpa_counter_accessor->GetHardwareCounters();
-
-                for (const GpaUInt32 internal_counter : internal_counters_required_)
+                GpaHwCounter hw_counter;
+                if (hardware_counters.GetHardwareInfo(internal_counter, hw_counter))
                 {
-                    GpaHwCounter hw_counter;
-                    if (hardware_counters.GetHardwareInfo(internal_counter, hw_counter))
-                    {
-                        hw_counter_info_list_.push_back(hw_counter);
-                    }
+                    hw_counter_info_list_.push_back(hw_counter);
                 }
+            }
 
-                if (!hw_counter_info_list_.empty())
-                {
-                    assert(internal_counters_required_.size() == hw_counter_info_list_.size());
-                    counter_info_->is_derived_counter                        = true;
-                    counter_info_->gpa_derived_counter->gpa_hw_counter_count = static_cast<GpaUInt32>(internal_counters_required_.size());
-                    counter_info_->gpa_derived_counter->counter_usage_type   = usage_type_;
-                    counter_info_->gpa_derived_counter->gpa_hw_counters      = hw_counter_info_list_.data();
-                    counter_init                                             = true;
-                }
+            if (!hw_counter_info_list_.empty())
+            {
+                assert(internal_counters_required_.size() == hw_counter_info_list_.size());
+                counter_info_->is_derived_counter                        = true;
+                counter_info_->gpa_derived_counter->gpa_hw_counter_count = static_cast<GpaUInt32>(internal_counters_required_.size());
+                counter_info_->gpa_derived_counter->counter_usage_type   = usage_type_;
+                counter_info_->gpa_derived_counter->gpa_hw_counters      = hw_counter_info_list_.data();
+                counter_init                                             = true;
             }
         }
     }
@@ -153,9 +142,9 @@ GpaCounterInfo* GpaDerivedCounterInfoClass::GetCounterInfo(const IGpaCounterAcce
 {
     if (nullptr == counter_info_)
     {
-        counter_info_ = new (std::nothrow) GpaCounterInfo();
+        counter_info_ = std::make_unique<GpaCounterInfo>();
 
-        if (nullptr != counter_info_ && InitializeDerivedCounterHardwareInfo(gpa_counter_accessor))
+        if (InitializeDerivedCounterHardwareInfo(gpa_counter_accessor))
         {
             derived_counter_info_init_ = true;
         }
@@ -163,7 +152,7 @@ GpaCounterInfo* GpaDerivedCounterInfoClass::GetCounterInfo(const IGpaCounterAcce
 
     if (derived_counter_info_init_)
     {
-        return counter_info_;
+        return counter_info_.get();
     }
 
     return nullptr;
@@ -234,7 +223,7 @@ void GpaDerivedCounters::UpdateAsicSpecificDerivedCounter(const char*           
     // Errors aside, the counter will not be found if it's not supported on the ASIC.
     // e.g.: there's a discrete counter version, but not an SPM version.
     {
-        GPA_LOG_MESSAGE("Warning: unable to find counter for ASIC-specific update:%s . This may be an unsupported SPM counter.", counter_name);
+        GpaLogger::Instance().LogMessage("Warning: unable to find counter for ASIC-specific update: {}. This may be an unsupported SPM counter.", counter_name);
     }
 }
 
@@ -257,7 +246,7 @@ GpaStatus GpaDerivedCounters::ComputeCounterValue(GpaUInt32                     
     const char* compute_expression = derived_counter_list_[counter_index].compute_expression_;
     if (nullptr == compute_expression)
     {
-        GPA_LOG_ERROR("Unable to compute counter value: no equation specified.");
+        GpaLogger::Instance().LogError("Unable to compute counter value: no equation specified.");
         return kGpaStatusErrorInvalidCounterEquation;
     }
 
@@ -280,7 +269,7 @@ GpaStatus GpaDerivedCounters::ComputeCounterValue(GpaUInt32                     
     else
     {
         // Derived counter type not recognized or not currently supported.
-        GPA_LOG_ERROR("Unable to compute counter value: unrecognized derived counter type.");
+        GpaLogger::Instance().LogError("Unable to compute counter value: unrecognized derived counter type.");
         assert(false);
         return kGpaStatusErrorInvalidDataType;
     }

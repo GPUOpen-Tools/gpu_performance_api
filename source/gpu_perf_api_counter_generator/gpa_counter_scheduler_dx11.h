@@ -1,8 +1,8 @@
 //==============================================================================
-// Copyright (c) 2016-2024 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
-/// @brief Base class to handle the scheduling of the D3D Query counters.
+/// @brief Class for counter scheduling for DX11.
 //==============================================================================
 
 #ifndef GPU_PERF_API_COUNTER_GENERATOR_DX11_GPA_COUNTER_SCHEDULER_DX11_H_
@@ -10,14 +10,14 @@
 
 #include "gpu_perf_api_counter_generator/gpa_counter_scheduler_base.h"
 
-/// @brief Base class to handle the scheduling of the D3D Query counters.
+/// @brief Class for counter scheduling for DX11.
 class GpaCounterSchedulerDx11 : public GpaCounterSchedulerBase
 {
 public:
     /// @brief Constructor
     ///
     /// @param [in] sample_type The type of samples for which to schedule counters.
-    GpaCounterSchedulerDx11(GpaSessionSampleType sample_type);
+    explicit GpaCounterSchedulerDx11(GpaSessionSampleType sample_type);
 
     /// @copydoc GpaCounterSchedulerBase::EnableCounter()
     virtual GpaStatus EnableCounter(GpaUInt32 index) override;
@@ -28,15 +28,6 @@ public:
     /// @copydoc GpaCounterSchedulerBase::DisableAllCounters()
     virtual void DisableAllCounters() override;
 
-protected:
-    /// @copydoc GpaCounterSchedulerBase::GetPreferredSplittingAlgorithm()
-    ///
-    /// For DirectX 11, the preferred splitting algorithm is the consolidated one.
-    /// This keeps the overall number of passes down to a reasonable number, but splits the counters up
-    /// in a manner that allows them to be more consistent.
-    virtual GpaCounterSplitterAlgorithm GetPreferredSplittingAlgorithm() const override;
-
-private:
     /// @brief Delete default constructor.
     GpaCounterSchedulerDx11() = delete;
 };

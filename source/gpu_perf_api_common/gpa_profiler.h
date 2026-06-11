@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  Internal class to support profiling GPA calls themselves.
@@ -50,6 +50,7 @@
 
 #include <map>
 #include <mutex>
+#include <source_location>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -57,7 +58,10 @@
 // These macros refer to a singleton profiling object defined in GPAProfiler.cpp
 
 /// Macro to use a scope-bound object to profile a function.
-#define PROFILE_FUNCTION(func) ScopeProfile temp_scope_profile_object(#func)
+#define GPA_PROFILE_FUNCTION()             \
+    ScopeProfile temp_scope_profile_object \
+    {                                      \
+    }
 
 /// Macro to begin profiling a section.
 #define BEGIN_PROFILE_SECTION(func) (profiler_singleton.EnterFunction(#func))
@@ -134,12 +138,10 @@ extern Profiler profiler_singleton;
 class ScopeProfile
 {
 public:
-    ScopeProfile(const char* function_name)
+    ScopeProfile(const std::source_location location = std::source_location::current())
+        : function_name_(location.function_name())
     {
-        gpa_profiler_mutex_.lock();
-        function_name_ = function_name;
-        profiler_singleton.EnterFunction(function_name);
-        gpa_profiler_mutex_.unlock();
+        profiler_singleton.EnterFunction(function_name_);
     }
 
     ~ScopeProfile()
@@ -148,14 +150,13 @@ public:
     }
 
 protected:
-    const char* function_name_;
-    std::mutex  gpa_profiler_mutex_;
+    const char* function_name_ = nullptr;
 };
 
 #else
 
 /// Macro to use a scope-bound object to profile a function.
-#define PROFILE_FUNCTION(func)
+#define GPA_PROFILE_FUNCTION()
 
 /// Macro to begin profiling a section.
 #define BEGIN_PROFILE_SECTION(func)

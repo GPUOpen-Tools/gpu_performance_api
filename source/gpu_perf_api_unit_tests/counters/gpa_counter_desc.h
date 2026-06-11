@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2014-2023 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief GpaCounterDesc declaration.

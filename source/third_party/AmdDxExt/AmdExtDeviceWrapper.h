@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2018 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  This file contains a wrapper implementation for the IAmdExtD3DDevice1

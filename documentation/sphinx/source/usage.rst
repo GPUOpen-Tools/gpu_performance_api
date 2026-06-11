@@ -13,30 +13,38 @@ Transitioning from GPA 3.x to 4.0
 
 Summary
 ^^^^^^^
-The main change in GPA 4.0 is that the counters are no longer exposed via the GpaContext and are now exposed by the GpaSession. There are now two different sets of counters, depending on the ``GpaSessionSampleType`` that is passed in when creating the session.
-Not all hardware and not all rendering APIs support all the ``GpaSessionSampleTypes``, so after creating the GpaContext you should call ``GpaGetSupportedSampleTypes(..)`` to query which GpaSessionSampleTypes are supported on the given configuration.
-Users of the GPU Performance API should still only be looking for the ``kGpaSessionSampleTypeDiscreteCounter`` sample type. No support will be provided for the other sample types. Once the GpaSession is created, you can then use ``GpaGetNumCounters(..)`` and all
-of the ``GpaGetCounter*(..)`` entrypoints to query information about the available counters.
+The main change in GPA 4.0 is that the counters are no longer exposed via the GpaContext and are now
+exposed by the GpaSession. There are now two different sets of counters, depending on the
+``GpaSessionSampleType`` that is passed in when creating the session.
+Not all hardware and not all rendering APIs support all the ``GpaSessionSampleTypes``, so after creating the
+GpaContext you should call ``GpaGetSupportedSampleTypes(..)`` to query which GpaSessionSampleTypes are
+supported on the given configuration.
+Users of the GPU Performance API should still only be looking for the ``kGpaSessionSampleTypeDiscreteCounter``
+sample type. No support will be provided for the other sample types. Once the GpaSession is created, you can
+then use ``GpaGetNumCounters(..)`` and all of the ``GpaGetCounter*(..)`` entrypoints to query information about
+the available counters.
 
-Below you will find an example of a likely subset of GPA 3.x series of API calls, and then a similar series of calls using the modified GPA 4.0 entrypoints. Note that no error checking is being done here for sake of clarity.
+Below you will find an example of a likely subset of GPA 3.x series of API calls, and then a similar series of
+calls using the modified GPA 4.0 entrypoints.
 
 Example of GPA 3.x Usage
 ^^^^^^^^^^^^^^^^^^^^^^^^
 .. code-block:: c++
 
     GpaContextId context = nullptr;
-    GpaOpenContext(api_context, kGpaOpenContextDefaultBit, &context);
+    if (GpaOpenContext(api_context, kGpaOpenContextDefaultBit, &context) != kGpaStatusOk)
+        return false;
     GpaUInt32 num_counters = 0;
-    GpaGetNumCounters(context, &num_counters);
+    if (GpaGetNumCounters(context, &num_counters) != kGpaStatusOk)
+        return false;
     for (GpaUInt32 i = 0; i < num_counters; ++i)
     {
-        const char* name = nullptr;
-        GpaUInt32 index = 0;
-        const char* description = nullptr;
-        const char* group = nullptr;
-        GpaDataType data_type = kGpaDataTypeLast;
-        GpaUsageType usage_type = kGpaUsageTypeList;
-        GpaUuid uuid = {};
+        const char*          name        = nullptr;
+        GpaUInt32            index       = 0;
+        const char*          description = nullptr;
+        GpaDataType          data_type   = kGpaDataTypeLast;
+        GpaUsageType         usage_type  = kGpaUsageTypeLast;
+        GpaUuid              uuid        = {};
         GpaCounterSampleType sample_type = kGpaCounterSampleTypeDiscrete;
 
         GpaGetCounterName(context, i, &name);
@@ -50,10 +58,13 @@ Example of GPA 3.x Usage
         assert(sample_type == kGpaCounterSampleTypeDiscrete);
     }
     GpaSessionId session = nullptr;
-    GpaCreateSession(context, kGpaContextSampleTypeDiscreteCounter, &session);
+    if (GpaCreateSession(context, kGpaSessionSampleTypeDiscreteCounter, &session) != kGpaStatusOk)
+        return false;
     GpaUInt32 desired_counter_index = 0;
-    GpaEnableCounter(session, desired_counter_index);
-    GpaBeginSession(session);
+    if (GpaEnableCounter(session, desired_counter_index) != kGpaStatusOk)
+        return false;
+    if (GpaBeginSession(session) != kGpaStatusOk)
+        return false;
     ...
 
 Example of Similar GPA 4.0 Usage
@@ -63,35 +74,38 @@ Comments are added in the code below to explain the new code changes.
 .. code-block:: c++
 
     GpaContextId context = nullptr;
-    GpaOpenContext(api_context, kGpaOpenContextDefaultBit, &context);
+    if (GpaOpenContext(api_context, kGpaOpenContextDefaultBit, &context) != kGpaStatusOk)
+        return false;
 
     // These next two lines and the following conditional ensure that discrete counters are supported
     // by the GpaContext for the current hardware and driver. In general the GpaOpenContext call above
     // will report an error if the hardware and driver are not supported at all, but in some rare cases
     // the discrete counters may not be supported while other sample types are supported.
-    GpaContextSampleTypeFlags supported_sample_types = kGpaSessionSampleTypeLast;
-    GpaGetSupportedSampleTypes(context, &supported_sample_types);
+    GpaContextSampleTypeFlags supported_sample_types = 0;
+    if (GpaGetSupportedSampleTypes(context, &supported_sample_types) != kGpaStatusOk)
+        return false;
 
-    if (supported_sample_types & kGpaSessionSampleTypeDiscreteCounter != 0)
+    if ((supported_sample_types & kGpaContextSampleTypeDiscreteCounter) != 0)
     {
         // The set of available counters are now dependent on the SampleType being collected within
         // the session, so the session must now be created prior to querying for the available counters.
         GpaSessionId session = nullptr;
-        GpaCreateSession(context, kGpaContextSampleTypeDiscreteCounter, &session);
+        if (GpaCreateSession(context, kGpaSessionSampleTypeDiscreteCounter, &session) != kGpaStatusOk)
+            return false;
 
         // The GpaSessionId is now supplied into GpaGetNumCounters() to get the number
         // of discrete counters that are available.
         GpaUInt32 num_counters = 0;
-        GpaGetNumCounters(session, &num_counters);
+        if (GpaGetNumCounters(session, &num_counters) != kGpaStatusOk)
+            return false;
         for (GpaUInt32 i = 0; i < num_counters; ++i)
         {
-            const char* name = nullptr;
-            GpaUInt32 index = 0;
-            const char* description = nullptr;
-            const char* group = nullptr;
-            GpaDataType data_type = kGpaDataTypeLast;
-            GpaUsageType usage_type = kGpaUsageTypeList;
-            GpaUuid uuid = {};
+            const char*          name        = nullptr;
+            GpaUInt32            index       = 0;
+            const char*          description = nullptr;
+            GpaDataType          data_type   = kGpaDataTypeLast;
+            GpaUsageType         usage_type  = kGpaUsageTypeLast;
+            GpaUuid              uuid        = {};
             GpaCounterSampleType sample_type = kGpaCounterSampleTypeDiscrete;
 
             // These next set of counter querying entrypoints now take in a GpaSessionId
@@ -107,8 +121,10 @@ Comments are added in the code below to explain the new code changes.
             assert(sample_type == kGpaCounterSampleTypeDiscrete);
         }
         GpaUInt32 desired_counter_index = 0;
-        GpaEnableCounter(session, desired_counter_index);
-        GpaBeginSession(session);
+        if (GpaEnableCounter(session, desired_counter_index) != kGpaStatusOk)
+            return false;
+        if (GpaBeginSession(session) != kGpaStatusOk)
+            return false;
         ...
     }
 
@@ -143,7 +159,7 @@ To use the GPUPerfAPI library:
 
 * Get the address of the ``GpaGetFuncTable`` function
 
-  * On Windows, use ``GetProcAddres``
+  * On Windows, use ``GetProcAddress``
   * On Linux, use ``dlsym``
 
 * Call GpaGetFuncTable to get a table of function pointers for each API.
@@ -159,9 +175,11 @@ initialize the DirectX 12 version of GPA:
 
     #include "gpu_performance_api/gpu_perf_api_interface_loader.h"
 
-    #ifdef __cplusplus
-    GpaApiManager* GpaApiManager::gpa_api_manager_ = nullptr;
-    #endif
+    // Required for older versions of GPA (before 4.4). This can be removed in GPA 4.4 and later.
+    // #ifdef __cplusplus
+    // GpaApiManager* GpaApiManager::gpa_api_manager_ = nullptr;
+    // #endif
+
     GpaFuncTableInfo* gpa_function_table_info = nullptr;
     GpaFunctionTable* gpa_function_table      = nullptr;
 
@@ -239,7 +257,7 @@ Opening and Closing a Context
 After initializing a GPUPerfAPI instance and after the necessary API-specific
 construct has been created, a context can be opened using the GpaOpenContext
 function. Once a context is open you can query information about the hardware
-device, including the supported sample types, and create and begin a session. 
+device, including the supported sample types, and create and begin a session.
 After you are done using GPUPerfAPI, you should close the context.
 
 The following methods can be used to open and close contexts:

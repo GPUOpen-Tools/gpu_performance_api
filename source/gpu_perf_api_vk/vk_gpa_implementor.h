@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  VK GPA Implementation declarations
@@ -8,60 +8,74 @@
 #ifndef GPU_PERF_API_VK_VK_GPA_IMPLEMENTOR_H_
 #define GPU_PERF_API_VK_VK_GPA_IMPLEMENTOR_H_
 
-#include "TSingleton.h"
-
 #include "gpu_perf_api_common/gpa_implementor.h"
 
 #include "gpu_perf_api_vk/vk_gpa_context.h"
 
 /// @brief Class for Vulkan GPA Implementation.
-class VkGpaImplementor : public GpaImplementor, public TSingleton<VkGpaImplementor>
+class VkGpaImplementor final : public GpaImplementor
 {
 public:
-    /// @copydoc IGpaInterfaceTrait::GetAPIType()
-    GpaApiType GetApiType() const override;
+    /// @brief Singleton instance accessor.
+    ///
+    /// @return The singleton instance of the VkGpaImplementor.
+    [[nodiscard]] static VkGpaImplementor& Instance()
+    {
+        static VkGpaImplementor instance;
+        return instance;
+    }
+
+    /// @brief Deleted copy constructor. Use Instance() to get the singleton instance.
+    VkGpaImplementor(const VkGpaImplementor&) = delete;
+    /// @brief Deleted copy assignment operator. Use Instance() to get the singleton instance.
+    void operator=(const VkGpaImplementor&) = delete;
+    /// @brief Deleted move constructor. Use Instance() to get the singleton instance.
+    VkGpaImplementor(VkGpaImplementor&&) = delete;
+    /// @brief Deleted move assignment operator. Use Instance() to get the singleton instance.
+    void operator=(VkGpaImplementor&&) = delete;
+
+    /// @copydoc IGpaInterfaceTrait::GetApiType()
+    [[nodiscard]] GpaApiType GetApiType() const override
+    {
+        return kGpaApiVulkan;
+    }
 
     /// @copydoc GpaImplementor::GetHwInfoFromApi(const GpaContextInfoPtr, GpaHwInfo&)
-    bool GetHwInfoFromApi(const GpaContextInfoPtr context_info, GpaOpenContextFlags flags, GpaHwInfo& hardware_info) const override final;
+    [[nodiscard]] GpaStatus GetHwInfoFromApi(const GpaContextInfoPtr context_info, GpaOpenContextFlags flags, GpaHwInfo& hardware_info) const override;
 
     /// @copydoc GpaImplementor::VerifyApiHwSupport(const GpaContextInfoPtr, const GpaHwInfo&)
-    bool VerifyApiHwSupport(const GpaContextInfoPtr context_info, GpaOpenContextFlags flags, const GpaHwInfo& hardware_info) const override final;
+    [[nodiscard]] bool VerifyApiHwSupport(const GpaContextInfoPtr context_info, GpaOpenContextFlags flags, const GpaHwInfo& hardware_info) const override;
 
     /// @copydoc IGpaImplementor::IsCommandListRequired()
-    bool IsCommandListRequired() const override;
+    [[nodiscard]] bool IsCommandListRequired() const override;
 
     /// @copydoc IGpaImplementor::IsContinueSampleOnCommandListSupported()
-    bool IsContinueSampleOnCommandListSupported() const override;
+    [[nodiscard]] bool IsContinueSampleOnCommandListSupported() const override;
 
     /// @copydoc IGpaImplementor::IsCopySecondarySampleSupported()
-    bool IsCopySecondarySampleSupported() const override;
+    [[nodiscard]] bool IsCopySecondarySampleSupported() const override;
 
 private:
-    friend class TSingleton<VkGpaImplementor>;
-
     /// @brief Constructor.
-    VkGpaImplementor(){};
+    VkGpaImplementor() = default;
 
     /// @brief Destructor.
-    ~VkGpaImplementor(){};
-
-    // @brief Deleted copy constructor.
-    VkGpaImplementor(const VkGpaImplementor&) = delete;
-
-    // @brief Deleted assignment operator.
-    void operator=(const VkGpaImplementor&) = delete;
+    ~VkGpaImplementor() override
+    {
+        Destroy();
+    }
 
     /// @brief Stores the instance that this GPA implementation is using.
-    VkInstance vk_instance_;
+    VkInstance vk_instance_ = VK_NULL_HANDLE;
 
     /// @copydoc GpaImplementor::OpenApiContext()
-    IGpaContext* OpenApiContext(GpaContextInfoPtr context_info, const GpaHwInfo& hw_info, GpaOpenContextFlags flags) override final;
+    [[nodiscard]] std::unique_ptr<IGpaContext> OpenApiContext(GpaContextInfoPtr context_info, const GpaHwInfo& hw_info, GpaOpenContextFlags flags) override;
 
     /// @copydoc GpaImplementor::CloseApiContext()
-    [[nodiscard]] bool CloseApiContext(IGpaContext* context) override final;
+    [[nodiscard]] bool CloseApiContext(std::unique_ptr<IGpaContext> context) override;
 
     /// @copydoc GpaImplementor::GetDeviceIdentifierFromContextInfo()
-    GpaDeviceIdentifier GetDeviceIdentifierFromContextInfo(GpaContextInfoPtr context_info) const override final;
+    [[nodiscard]] GpaDeviceIdentifier GetDeviceIdentifierFromContextInfo(GpaContextInfoPtr context_info) const override;
 };
 
 #endif

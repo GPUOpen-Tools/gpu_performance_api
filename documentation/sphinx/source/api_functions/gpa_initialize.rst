@@ -32,7 +32,7 @@ Return value
     :header: "Return value", "Description"
     :widths: 35, 65
 
-    "kGpaStatusOk", "GPA was destroyed."
+    "kGpaStatusOk", "GPA was initialized."
     "kGpaStatusErrorGpaAlreadyInitialized", "GpaInitialize was already called."
     "kGpaStatusErrorInvalidParameter", "The ``flags`` parameter has an invalid value."
     "kGpaStatusErrorException", "Exception occurred."

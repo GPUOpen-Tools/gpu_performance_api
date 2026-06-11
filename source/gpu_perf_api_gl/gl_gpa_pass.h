@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2018-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  GL GPA Pass Object Header
@@ -56,13 +56,13 @@ public:
     ~GlGpaPass();
 
     /// @copydoc GpaPass::CreateApiSpecificSample()
-    GpaSample* CreateApiSpecificSample(IGpaCommandList* cmd_list, GpaSampleType sample_type, ClientSampleId sample_id) override final;
+    std::unique_ptr<GpaSample> CreateApiSpecificSample(IGpaCommandList* cmd_list, GpaSampleType sample_type, ClientSampleId sample_id) override final;
 
     /// @copydoc GpaPass::ContinueSample()
     bool ContinueSample(ClientSampleId src_sample_id, IGpaCommandList* primary_gpa_cmd_list) override final;
 
     /// @copydoc GpaPass::CreateApiSpecificCommandList()
-    IGpaCommandList* CreateApiSpecificCommandList(void* cmd, CommandListId command_list_id, GpaCommandListType cmd_type) override final;
+    std::unique_ptr<IGpaCommandList> CreateApiSpecificCommandList(void* cmd, CommandListId command_list_id, GpaCommandListType cmd_type) override final;
 
     /// @copydoc GpaPass::EndSample()
     bool EndSample(IGpaCommandList* cmd_list) override final;

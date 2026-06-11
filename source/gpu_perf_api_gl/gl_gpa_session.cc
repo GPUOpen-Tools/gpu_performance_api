@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2018-2024 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief GL GPA Session Implementation
@@ -22,7 +22,7 @@ GlGpaSession::GlGpaSession(IGpaContext* parent_context, GpaSessionSampleType sam
     {
         if (!gl_gpa_context->ValidateAndUpdateGlCounters(this))
         {
-            GPA_LOG_ERROR("Failed to validate the available counters.");
+            GpaLogger::Instance().LogError("Failed to validate the available counters.");
             assert(!"Failed to validate the available counters.");
         }
     }

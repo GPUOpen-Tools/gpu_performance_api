@@ -1,4 +1,4 @@
-/* Copyright (C) 2014-2026 Advanced Micro Devices, Inc. All rights reserved. */
+// Copyright (C) Advanced Micro Devices, Inc. All rights reserved.
 /**
  **********************************************************************************************************************
  * @file  vk_amd_gpa_interface.h

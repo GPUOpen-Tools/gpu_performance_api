@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016-2023 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Logging utility.
@@ -8,282 +8,335 @@
 #ifndef GPU_PERF_API_COMMON_LOGGING_H_
 #define GPU_PERF_API_COMMON_LOGGING_H_
 
-#ifdef _WIN32
-#include <Windows.h>
-#endif
-
-#ifdef _LINUX
-#include <pthread.h>
-#include <string.h>
-
-#define EnterCriticalSection pthread_mutex_lock
-#define LeaveCriticalSection pthread_mutex_unlock
-#include <stdarg.h>
-#include <stdio.h>
-#endif
-
+#include <array>
+#include <cassert>
+#include <source_location>
 #include <string>
 #include <sstream>
 #include <mutex>
 #include <map>
 #include <thread>
 #include <fstream>
-
-#include "TSingleton.h"
+#include <format>
+#include <string_view>
+#include <optional>
 
 #include "gpu_performance_api/gpu_perf_api_function_types.h"
 #include "gpu_performance_api/gpu_perf_api_types.h"
+#include "gpu_perf_api_common/utility.h"
 
-#define ENABLE_TRACING 1  ///< Macro to determine if tracing is enabled.
-
-#if ENABLE_TRACING
-#undef TRACE_FUNCTION
-/// Macro for tracing function calls.
-#define TRACE_FUNCTION(func) ScopeTrace temp_scope_trace_object(#func)  ///< Macro used for tracing functions.
-#undef TRACE_PRIVATE_FUNCTION
-#undef TRACE_PRIVATE_FUNCTION_WITH_ARGS
-/// Macro for tracing private function calls.
-#define TRACE_PRIVATE_FUNCTION(func)                 ///< Macro used for tracing private functions.
-#define TRACE_PRIVATE_FUNCTION_WITH_ARGS(func, ...)  ///< Macro used for tracing private function with parameters.
-#else                                                // disable trace functions.
-#undef TRACE_FUNCTION
-#define TRACE_FUNCTION(func)  ///< Macro used for tracing functions.
-#undef TRACE_PRIVATE_FUNCTION
-#define TRACE_PRIVATE_FUNCTION(func)                 ///< Macro used for tracing private functions.
-#define TRACE_PRIVATE_FUNCTION_WITH_ARGS(func, ...)  ///< Macro used for tracing private function with parameters.
+/// @brief Macro for tracing function calls using a scope-bound object.
+///
+/// When GPA_ENABLE_TRACING is enabled, this macro creates a ScopeTrace object
+/// that automatically logs function entry in its constructor and function exit
+/// in its destructor. The function name is captured via std::source_location.
+#ifdef GPA_TRACE_FUNCTION
+#undef GPA_TRACE_FUNCTION
 #endif
 
-#ifdef __GNUC__
-#define GPA_ATTRIBUTE_PRINTF(msg, args) __attribute__((format(printf, msg, args)))
+#define GPA_ENABLE_TRACING 1  ///< Macro to determine if tracing is enabled.
+
+#if GPA_ENABLE_TRACING
+#define GPA_TRACE_FUNCTION() ScopeTrace temp_scope_trace_object{}
 #else
-#define GPA_ATTRIBUTE_PRINTF(msg, args)
+#define GPA_TRACE_FUNCTION()
 #endif
 
 /// @brief Internal GPA logger function.
+///
+/// Logs messages to an internal log file for debugging purposes.
+/// This is used as the default internal logger and is called in addition
+/// to the user-supplied callback when internal logging is enabled.
 ///
 /// @param [in] log_type Logging type.
 /// @param [in] log_msg Logging message.
 extern void GpaInternalLogger(GpaLoggingType log_type, const char* log_msg);
 
-#define GPA_INTERNAL_LOG(func, ...)                                                                              \
-    std::stringstream log_additional_message;                                                                    \
-    log_additional_message << "ThreadId: " << std::this_thread::get_id() << " " << #func << ": " << __VA_ARGS__; \
-    GpaInternalLogger(kGpaLoggingInternal, log_additional_message.str().c_str());
+#define GPA_INTERNAL_LOG(...)                                                                                                                                  \
+    do                                                                                                                                                         \
+    {                                                                                                                                                          \
+        std::stringstream log_additional_message;                                                                                                              \
+        log_additional_message << "ThreadId: " << std::this_thread::get_id() << " " << std::source_location::current().function_name() << ": " << __VA_ARGS__; \
+        GpaInternalLogger(kGpaLoggingInternal, log_additional_message.str().c_str());                                                                          \
+    } while (0)
 
-/// @brief Passes log messages of various types to a user-supplied callback function
-/// if the user has elected to receive messages of that particular type.
-class GpaLogger : public TSingleton<GpaLogger>
+/// @brief Thread-safe singleton logger that passes log messages of various types
+/// to a user-supplied callback function.
+///
+/// Messages are only forwarded if the user has elected to receive messages of
+/// that particular type via SetLoggingCallback. All logging methods use
+/// std::format for compile-time format string validation and type-safe formatting.
+class GpaLogger
 {
 public:
+    /// @brief Deleted copy constructor to enforce singleton pattern.
+    GpaLogger(const GpaLogger&) = delete;
+
+    /// @brief Deleted move constructor to enforce singleton pattern.
+    GpaLogger(GpaLogger&&) = delete;
+
+    /// @brief Deleted copy assignment operator to enforce singleton pattern.
+    void operator=(const GpaLogger&) = delete;
+
+    /// @brief Deleted move assignment operator to enforce singleton pattern.
+    void operator=(GpaLogger&&) = delete;
+
+    /// @brief Returns the singleton instance of the GpaLogger.
+    ///
+    /// Uses a function-local static variable for thread-safe lazy initialization.
+    /// The instance is never explicitly destroyed; it lives until program termination.
+    ///
+    /// @return Reference to the singleton GpaLogger instance.
+    [[nodiscard]] static GpaLogger& Instance()
+    {
+        static GpaLogger logger;
+        return logger;
+    }
+
     /// @brief Sets the type of message the user would like to be informed of and a pointer to the callback function.
+    ///        SetLoggingCallback must not be called concurrently with logging!
+    ///        Otherwise ShouldLog will not be thread safe. This is a tradeoff to allow for more
+    ///        efficient logging when the callback is set, since we won't need to acquire a lock
+    ///        in ShouldLog to check if the callback is set or not.
     ///
     /// @param [in] logging_type The type of messages to pass on to the callback function.
     /// @param [in] logging_callback A pointer to the callback function.
     void SetLoggingCallback(GpaLoggingType logging_type, GpaLoggingCallbackPtrType logging_callback);
 
-    /// @brief Passes the supplied message to the callback function if the user has accepted that type of message.
+    /// @brief Logs a formatted error message with compile-time format string validation.
     ///
-    /// @param [in] log_type The type of message being supplied.
-    /// @param [in] log_message The message to pass along.
-    void Log(GpaLoggingType log_type, const char* log_message);
-
-    /// @brief Passes the supplied formatted message to the callback function if the user has accepted that type of message.
-    ///
-    /// @param [in] type The type of message being supplied.
-    /// @param [in] msg_fmt The message to format.
-    /// @param [in] args Variable arguments supplied for the message.
-    void Logfv(GpaLoggingType type, const char* msg_fmt, va_list args)
+    /// @param [in] fmt The format string.
+    /// @param [in] args The format arguments.
+    template <class... Args>
+    void LogError(std::format_string<Args...> fmt, Args&&... args)
     {
-        // If the supplied message type is among those that the user wants be notified of,
-        // then pass the message along.
-        if (type & logging_type_)
+        constexpr GpaLoggingType kLogType = kGpaLoggingError;
+        if (ShouldLog(kLogType)) [[unlikely]]
         {
-            EnterCriticalSection(&lock_handle);
-
-            // Format string.
-            char    buffer[1024 * 5];
-            buffer[0] = '\0';
-#ifdef WIN32
-            vsnprintf_s(buffer, sizeof(buffer), msg_fmt, args);
-#else
-            vsnprintf(buffer, sizeof(buffer), msg_fmt, args);
-#endif
-            Log(type, buffer);
-
-            LeaveCriticalSection(&lock_handle);
+            Log(kLogType, fmt, std::forward<Args>(args)...);
         }
     }
 
-    /// @brief Passes the supplied formatted message to the callback function if the user has accepted that type of message.
+    /// @brief Logs a formatted message with compile-time format string validation.
     ///
-    /// @param [in] type The type of message being supplied.
-    /// @param [in] msg_fmt The message to format.
-    void Logf(GpaLoggingType type, const char* msg_fmt, ...) GPA_ATTRIBUTE_PRINTF(3, 4)
+    /// @param [in] fmt The format string.
+    /// @param [in] args The format arguments.
+    template <class... Args>
+    void LogMessage(std::format_string<Args...> fmt, Args&&... args)
     {
-        va_list args;
-        va_start(args, msg_fmt);
-        Logfv(type, msg_fmt, args);
-        va_end(args);
+        constexpr GpaLoggingType kLogType = kGpaLoggingMessage;
+        if (ShouldLog(kLogType)) [[unlikely]]
+        {
+            Log(kLogType, fmt, std::forward<Args>(args)...);
+        }
     }
 
-    /// @brief Logs an error message.
+    /// @brief Logs a formatted trace message with compile-time format string validation.
     ///
-    /// @param [in] msg_fmt The message to format and pass along.
-    inline void LogError(const char* msg_fmt, ...) GPA_ATTRIBUTE_PRINTF(2, 3)
+    /// @param [in] fmt The format string.
+    /// @param [in] args The format arguments.
+    template <class... Args>
+    void LogTrace(std::format_string<Args...> fmt, Args&&... args)
     {
-        va_list args;
-        va_start(args, msg_fmt);
-        Logfv(kGpaLoggingError, msg_fmt, args);
-        va_end(args);
+        constexpr GpaLoggingType kLogType = kGpaLoggingTrace;
+        if (ShouldLog(kLogType)) [[unlikely]]
+        {
+            Log(kLogType, fmt, std::forward<Args>(args)...);
+        }
     }
 
-    /// @brief Logs an informational message.
+    /// @brief Logs a formatted debug message with compile-time format string validation.
     ///
-    /// @param [in] msg_fmt The message to format and pass along.
-    inline void LogMessage(const char* msg_fmt, ...) GPA_ATTRIBUTE_PRINTF(2, 3)
+    /// @param [in] fmt The format string.
+    /// @param [in] args The format arguments.
+    template <class... Args>
+    void LogDebugMessage(std::format_string<Args...> fmt, Args&&... args)
     {
-        va_list args;
-        va_start(args, msg_fmt);
-        Logfv(kGpaLoggingMessage, msg_fmt, args);
-        va_end(args);
+        constexpr GpaLoggingType kLogType = kGpaLoggingDebugMessage;
+        if (ShouldLog(kLogType)) [[unlikely]]
+        {
+            Log(kLogType, fmt, std::forward<Args>(args)...);
+        }
     }
 
-    /// @brief Logs a trace message.
+    /// @brief Logs a formatted debug error message with compile-time format string validation.
     ///
-    /// @param [in] msg_fmt The message to format and pass along.
-    inline void LogTrace(const char* msg_fmt, ...) GPA_ATTRIBUTE_PRINTF(2, 3)
+    /// @param [in] fmt The format string.
+    /// @param [in] args The format arguments.
+    template <class... Args>
+    void LogDebugError(std::format_string<Args...> fmt, Args&&... args)
     {
-        va_list args;
-        va_start(args, msg_fmt);
-        Logfv(kGpaLoggingTrace, msg_fmt, args);
-        va_end(args);
+        constexpr GpaLoggingType kLogType = kGpaLoggingDebugError;
+        if (ShouldLog(kLogType)) [[unlikely]]
+        {
+            Log(kLogType, fmt, std::forward<Args>(args)...);
+        }
     }
 
-    /// @brief Logs a formatted message in internal builds; does nothing in release.
+    /// @brief Logs a formatted debug trace message with compile-time format string validation.
     ///
-    /// @param [in] msg_fmt The message to format and pass along.
-    void LogDebugMessage(const char* msg_fmt, ...) GPA_ATTRIBUTE_PRINTF(2, 3)
+    /// @param [in] fmt The format string.
+    /// @param [in] args The format arguments.
+    template <class... Args>
+    void LogDebugTrace(std::format_string<Args...> fmt, Args&&... args)
     {
-        va_list args;
-        va_start(args, msg_fmt);
-        Logfv(kGpaLoggingDebugMessage, msg_fmt, args);
-        va_end(args);
+        constexpr GpaLoggingType kLogType = kGpaLoggingDebugTrace;
+        if (ShouldLog(kLogType)) [[unlikely]]
+        {
+            Log(kLogType, fmt, std::forward<Args>(args)...);
+        }
     }
 
-    /// @brief Logs a formatted error message in debug builds; does nothing in release.
+    /// @brief Logs a formatted debug counter definition message with compile-time format string validation.
     ///
-    /// @param [in] msg_fmt The message to format and pass along.
-    void LogDebugError(const char* msg_fmt, ...) GPA_ATTRIBUTE_PRINTF(2, 3)
+    /// @param [in] fmt The format string.
+    /// @param [in] args The format arguments.
+    template <class... Args>
+    void LogDebugCounterDefs(std::format_string<Args...> fmt, Args&&... args)
     {
-        va_list args;
-        va_start(args, msg_fmt);
-        Logfv(kGpaLoggingDebugError, msg_fmt, args);
-        va_end(args);
-    }
-
-    /// @brief Logs a formatted error message in debug builds; does nothing in release.
-    ///
-    /// @param [in] msg_fmt The message to format and pass along.
-    void LogDebugTrace(const char* msg_fmt, ...) GPA_ATTRIBUTE_PRINTF(2, 3)
-    {
-        va_list args;
-        va_start(args, msg_fmt);
-        Logfv(kGpaLoggingDebugTrace, msg_fmt, args);
-        va_end(args);
-    }
-
-    /// @brief Logs a formatted message in internal builds; does nothing in public builds.
-    ///
-    /// @param [in] msg_fmt The message to format and pass along.
-    void LogDebugCounterDefs(const char* msg_fmt, ...) GPA_ATTRIBUTE_PRINTF(2, 3)
-    {
-        va_list args;
-        va_start(args, msg_fmt);
-        Logfv(kGpaLoggingDebugCounterDefinitions, msg_fmt, args);
-        va_end(args);
+        constexpr GpaLoggingType kLogType = kGpaLoggingDebugCounterDefinitions;
+        if (ShouldLog(kLogType)) [[unlikely]]
+        {
+            Log(kLogType, fmt, std::forward<Args>(args)...);
+        }
     }
 
     /// @brief Checks whether the tracing is enabled or not.
     ///
     /// @return True if either tracing or debug tracing is enabled otherwise false.
-    bool IsTracingEnabled() const
+    [[nodiscard]] bool IsTracingEnabled() const
     {
-        if (nullptr != logging_callback_)
-        {
-            return logging_type_ & kGpaLoggingTrace || logging_type_ & kGpaLoggingDebugTrace;
-        }
-
-        return false;
+        return ShouldLog(kGpaLoggingTrace) || ShouldLog(kGpaLoggingDebugTrace);
     }
 
+#ifdef _DEBUG
     /// Internal logging file stream.
     std::fstream internal_logging_file_stream_;
 
     /// Internal logging file.
     std::string internal_log_file_name_;
+#endif
 
 protected:
     /// User selected logging type that defines what messages they want to be notified of.
-    GpaLoggingType logging_type_;
+    GpaLoggingType logging_type_ = kGpaLoggingNone;
 
     /// User-supplied callback function.
-    GpaLoggingCallbackPtrType logging_callback_;
+    GpaLoggingCallbackPtrType logging_callback_ = nullptr;
 
     /// Internal logger of GPA for debugging purposes.
     GpaLoggingCallbackPtrType gpa_internal_logger_ = GpaInternalLogger;
 
-    /// Mutex for internal logging flag.
-    std::mutex internal_logging_mutex_;
+    /// Lock for thread-safe access.
+    std::recursive_mutex lock_handle_;
 
-    /// Internal logging flag.
-    bool enable_internal_logging_;
-
-#ifdef _WIN32
-    CRITICAL_SECTION lock_handle;  ///< Lock for thread-safe access.
-#endif
-
-#ifdef _LINUX
-    pthread_mutex_t lock_handle;  ///< Lock for thread-safe access.
-#endif
 private:
-    friend TSingleton<GpaLogger>;
+    /// @brief Must be called before Log to check if the log type is enabled and a callback is set.
+    /// @param log_type Logging type to check.
+    /// @return Whether the message should be logged or not.
+    [[nodiscard]] bool ShouldLog(GpaLoggingType log_type) const noexcept
+    {
+        // Assume that most of the time, the log type won't be enabled, so check that first to avoid acquiring a lock unnecessarily.
+        if ((log_type & logging_type_) == 0) [[likely]]
+        {
+            return false;
+        }
+        return (logging_callback_ != nullptr);
+    }
 
+    /// @brief Logs a formatted message with compile-time format string validation.
+    ///
+    /// @param [in] log_type The type of message being supplied.
+    /// @param [in] fmt The format string.
+    /// @param [in] args The format arguments.
+    template <class... Args>
+    void Log(GpaLoggingType log_type, std::format_string<Args...> fmt, Args&&... args)
+    {
+        // Users must call ShouldLog before calling Log to ensure the log type is enabled and a callback is set.
+        // This assert serves as a safeguard to prevent misuse of the Log function.
+        assert(ShouldLog(log_type));
+
+        const std::scoped_lock<std::recursive_mutex> lock(lock_handle_);
+
+        // Use a small stack buffer to avoid heap allocation for short messages.
+        constexpr std::size_t              kStackBufferSize = 512;
+        std::array<char, kStackBufferSize> stack_buffer     = {};
+
+        auto result = std::format_to_n(stack_buffer.data(), stack_buffer.size() - 1, fmt, std::forward<Args>(args)...);
+
+        // Set to true to enable internal logging in addition to user callback.
+        constexpr bool kEnableInternalLogging = false;
+
+        // 99.9% of the time, the message will fit in the stack buffer.
+        if (result.size < static_cast<std::ptrdiff_t>(stack_buffer.size())) [[likely]]
+        {
+            *result.out = '\0';
+            logging_callback_(log_type, stack_buffer.data());
+
+            if constexpr (kEnableInternalLogging)
+            {
+                gpa_internal_logger_(log_type, stack_buffer.data());
+            }
+        }
+        else [[unlikely]]
+        {
+            // Fallback for large messages — format once directly into a string.
+            const std::string formatted_message = std::format(fmt, std::forward<Args>(args)...);
+            logging_callback_(log_type, formatted_message.c_str());
+
+            if constexpr (kEnableInternalLogging)
+            {
+                gpa_internal_logger_(log_type, formatted_message.c_str());
+            }
+        }
+    }
+
+#ifdef _DEBUG
+    GpaLogger()
+    {
+        // NOTE: If multiple processes are running GPA at the same time,
+        // they will overwrite each other's internal log file.
+        // This is not a concern since internal logging is only enabled in debug builds,
+        // which are not expected to be used by end-users or run concurrently.
+        if (std::string current_module_path; gpa_util::GetCurrentModulePath(current_module_path))
+        {
+            internal_log_file_name_ = current_module_path + "GPA-Internal-Log.txt";
+            // Open the file stream for internal logging.
+            // Use truncation to ensure a new log file is created each time.
+            constexpr auto kMode = std::ios_base::out | std::ios_base::trunc;
+            internal_logging_file_stream_.open(internal_log_file_name_.c_str(), kMode);
+        }
+    }
+#else
     /// @brief Default constructor.
-    GpaLogger();
+    GpaLogger() = default;
+#endif
 
-    /// @brief Virtual destructor.
-    virtual ~GpaLogger();
-
-    /// @brief Don't allow the singleton to be copies.
-    GpaLogger(const GpaLogger&) = delete;
-
-    /// @brief Don't allow the singleton to be assigned.
-    void operator=(const GpaLogger&) = delete;
+    /// @brief Destructor.
+    ~GpaLogger() = default;
 };
 
-// define C-style functions for simplified logging.
-/// Macro for logging.
-#define GPA_LOG GpaLogger::Instance()->Log
-/// Macro for logging of errors.
-#define GPA_LOG_ERROR GpaLogger::Instance()->LogError
-/// Macro for logging of messages.
-#define GPA_LOG_MESSAGE GpaLogger::Instance()->LogMessage
-/// Macro for logging of trace items.
-#define GPA_LOG_TRACE GpaLogger::Instance()->LogTrace
-
-/// Macro for debug logging of messages.
-#define GPA_LOG_DEBUG_MESSAGE GpaLogger::Instance()->LogDebugMessage
-/// Macro for debug logging of errors.
-#define GPA_LOG_DEBUG_ERROR GpaLogger::Instance()->LogDebugError
-/// Macro for debug logging of trace items.
-#define GPA_LOG_DEBUG_TRACE GpaLogger::Instance()->LogDebugTrace
-/// Macro for debug logging of counter definitions.
-#define GPA_LOG_DEBUG_COUNTER_DEFS GpaLogger::Instance()->LogDebugCounterDefs
-
 /// @brief Utility class for tracing the start and end of functions.
-class GpaTracer : public TSingleton<GpaTracer>
+class GpaTracer
 {
 public:
+    /// @brief Gets the instance of the GpaTracer.
+    ///
+    /// @return The instance of the GpaTracer.
+    [[nodiscard]] static GpaTracer* Instance()
+    {
+        static GpaTracer tracer;  ///< GPA Tracer instance.
+        return &tracer;
+    }
+
+    /// @brief Don't allow singleton copies.
+    GpaTracer(const GpaTracer&) = delete;
+    GpaTracer(GpaTracer&&)      = delete;
+
+    /// @brief Don't allow singleton assignment elsewhere.
+    void operator=(const GpaTracer&) = delete;
+    void operator=(GpaTracer&&)      = delete;
+
     /// @brief Should be called when a function is entered.
     ///
     /// @param [in] function_name The function that is being entered.
@@ -302,26 +355,18 @@ public:
     void OutputFunctionData(const char* data);
 
 private:
-    friend TSingleton<GpaTracer>;
-
     /// @brief Default constructor.
-    GpaTracer();
-
-    /// @brief Don't allow singleton copies.
-    GpaTracer(const GpaTracer&) = delete;
-
-    /// @brief Don't allow singleton assignment elsewhere.
-    void operator=(const GpaTracer&) = delete;
+    GpaTracer() = default;
 
     /// @brief Returns the pointer to the tab counter.
     ///
     /// @param [out] current_thread_id Thread id of the caller.
     ///
     /// @return Pointer to the tab counter.
-    std::map<std::thread::id, int32_t>::iterator GetTabCounter(std::thread::id* current_thread_id);
+    [[nodiscard]] std::map<std::thread::id, int32_t>::iterator GetTabCounter(std::thread::id* current_thread_id);
 
     /// Indicates whether to only show the top level of functions (true), or also show nested function calls (false).
-    bool top_level_only_;
+    bool top_level_only_ = true;
 
     /// Mutex for the thread and tab counter map.
     std::mutex tracer_mutex_;
@@ -338,15 +383,20 @@ class ScopeTrace
 public:
     /// @brief Constructor which calls GPATracer::EnterFunction.
     ///
-    /// @param [in] trace_function The function which is being traced.
-    ScopeTrace(const char* trace_function);
+    /// @param [in] location The source location of the function being traced.
+    ScopeTrace(const std::source_location location = std::source_location::current());
+
+    ScopeTrace(const ScopeTrace&)            = delete;
+    ScopeTrace(ScopeTrace&&)                 = delete;
+    ScopeTrace& operator=(const ScopeTrace&) = delete;
+    ScopeTrace& operator=(ScopeTrace&&)      = delete;
 
     /// @brief Destructor which calls GPATracer::LeaveFunction.
     ~ScopeTrace();
 
 protected:
     /// Stores the function being traced.
-    std::string trace_function_;
+    const char* function_name_ = nullptr;
 };
 
 #endif

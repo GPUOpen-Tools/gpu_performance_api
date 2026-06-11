@@ -1,18 +1,15 @@
 //==============================================================================
-// Copyright (c) 2017-2025 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief GPA Interface Loader Utility header file
 //==============================================================================
 
 // Note: For usage, copy and paste (and then uncomment) the
-// following four lines into a compilation unit that uses
+// following line into a compilation unit that uses
 // this header file. These are needed to initialize
 // static/extern data declared in this header file:
 
-// #ifdef __cplusplus
-// GpaApiManager* GpaApiManager::gpa_api_manager_ = nullptr;
-// #endif
 // GpaFuncTableInfo* gpa_function_table_info = NULL;
 
 // In order to use this header file with a debug build of GPA
@@ -580,25 +577,17 @@ class GpaApiManager
 public:
     /// @brief Returns the instance of the GpaApiManager.
     ///
-    /// @return The instance of the GpiApiManager.
+    /// @return The instance of the GpaApiManager.
     static GpaApiManager* Instance()
     {
-        if (nullptr == gpa_api_manager_)
-        {
-            gpa_api_manager_ = new (std::nothrow) GpaApiManager();
-        }
-
-        return gpa_api_manager_;
+        static GpaApiManager manager;  ///< GPA Api Manager instance.
+        return &manager;
     }
 
-    /// @brief Deletes the static instance instance.
+    /// @brief Calls GpaInterfaceLoaderClearLoader to clear the loader.
     static void DeleteInstance()
     {
-        if (nullptr != gpa_api_manager_)
-        {
-            delete gpa_api_manager_;
-            gpa_api_manager_ = nullptr;
-        }
+        GpaInterfaceLoaderClearLoader();
     }
 
     /// @brief Loads the dll and initialize the function table for the passed API type.
@@ -683,8 +672,6 @@ private:
     {
         GpaInterfaceLoaderClearLoader();
     }
-
-    static GpaApiManager* gpa_api_manager_;  ///< GPA Api Manager pointer.
 };
 
 #endif

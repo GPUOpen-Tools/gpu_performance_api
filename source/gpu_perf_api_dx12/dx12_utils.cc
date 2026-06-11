@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2015-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  DX12 utility function implementations
@@ -20,7 +20,7 @@ GpaStatus dx12_utils::Dx12GetAdapterDesc(IUnknown* device, DXGI_ADAPTER_DESC& ad
 
     if (nullptr == device)
     {
-        GPA_LOG_ERROR("Parameter 'device' is NULL.");
+        GpaLogger::Instance().LogError("Parameter 'device' is NULL.");
         status = kGpaStatusErrorNullPointer;
     }
     else
@@ -33,7 +33,7 @@ GpaStatus dx12_utils::Dx12GetAdapterDesc(IUnknown* device, DXGI_ADAPTER_DESC& ad
 
         if (FAILED(hr) || (nullptr == dxgi_factory))
         {
-            GPA_LOG_ERROR("Unable to get IDXGIFactory interface from ID3D12Device.");
+            GpaLogger::Instance().LogError("Unable to get IDXGIFactory interface from ID3D12Device.");
             status = kGpaStatusErrorFailed;
         }
         else
@@ -47,7 +47,7 @@ GpaStatus dx12_utils::Dx12GetAdapterDesc(IUnknown* device, DXGI_ADAPTER_DESC& ad
 
                 if (FAILED(hr))
                 {
-                    GPA_LOG_ERROR("Could not get adapter description, hardware cannot be supported.");
+                    GpaLogger::Instance().LogError("Could not get adapter description, hardware cannot be supported.");
                     status = kGpaStatusErrorFailed;
                 }
                 else
@@ -174,14 +174,14 @@ bool dx12_utils::GetTimestampFrequency(ID3D12Device* d3d12_device, UINT64& times
         }
         else
         {
-            GPA_LOG_ERROR("Calling GetTimestampFrequency on Direct Command Queue failed");
+            GpaLogger::Instance().LogError("Calling GetTimestampFrequency on Direct Command Queue failed");
         }
 
         queue->Release();
     }
     else
     {
-        GPA_LOG_ERROR("GetTimestampFrequency Create Command Queue failed");
+        GpaLogger::Instance().LogError("GetTimestampFrequency Create Command Queue failed");
     }
 
     return is_succeeded;

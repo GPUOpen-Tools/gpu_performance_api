@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2018-2023 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  DX12 GPA Sample Configuration Header.
@@ -9,6 +9,7 @@
 #define GPU_PERF_API_DX12_DX12_GPA_SAMPLE_CONFIG_H_
 
 #include <assert.h>
+#include <vector>
 
 #include <AmdExtGpaInterfaceApi.h>
 
@@ -111,7 +112,7 @@ struct AmdExtGpaSampleConfigPre1850
 
         if (type == AmdExtGpaSampleType::Query)
         {
-            GPA_LOG_ERROR("AmdExtGpaSampleType::Query is not supported on pre-18.50 drivers");
+            GpaLogger::Instance().LogError("AmdExtGpaSampleType::Query is not supported on pre-18.50 drivers");
             assert(type == AmdExtGpaSampleType::Query);
             type = AmdExtGpaSampleType::None;
         }
@@ -295,7 +296,8 @@ private:
     bool                  is_sample_config_initialized_;  ///< Flag indicating whether the sample config is initialized for the hardware samples.
     GpaSessionSampleType  sample_type_;                   ///< The type of samples being collected in this configuration.
 
-    std::vector<CounterResultEntry> counter_result_entries_;
+    std::vector<CounterResultEntry>  counter_result_entries_;
+    std::vector<AmdExtPerfCounterId> perf_counter_ids_storage_;  ///< Owned storage for perf counter IDs pointed to by amd_ext_sample_config_.
 };
 
 #endif

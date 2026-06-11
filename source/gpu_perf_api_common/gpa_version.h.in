@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016-@GPA_CURRENT_YEAR@ Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  Macros used for defining GPUPerfAPI version.
@@ -22,7 +22,7 @@
 #define GPA_BUILD_NUMBER_STR   "@GPA_BUILD_NUMBER@" ///< Macro for build number string.
 #define GPA_UPDATE_VERSION_STR "@GPA_UPDATE_VERSION@" ///< Macro for update version string.
 
-#define GPA_COPYRIGHT_STR "Copyright (c) 2010-@GPA_CURRENT_YEAR@ Advanced Micro Devices, Inc. All rights reserved." ///< Macro for copyright string.
+#define GPA_COPYRIGHT_STR "Copyright Advanced Micro Devices, Inc. All rights reserved." ///< Macro for copyright string.
 
 // clang-format on
 

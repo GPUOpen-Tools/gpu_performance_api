@@ -1,4 +1,4 @@
-## Copyright (C) 2023-2026 Advanced Micro Devices, Inc. All rights reserved. ##
+#/ Copyright (C) Advanced Micro Devices, Inc. All rights reserved.
 
 include(${GPA_CMAKE_MODULES_DIR}/clang_utils.cmake)
 
@@ -26,7 +26,7 @@ function(ADD_STATIC_LIBRARY STATIC_LIB_NAME)
     add_lint_passes(${STATIC_LIB_NAME} ${ARGN})
 endfunction()
 
-## MAcro to add linker flags
+## Macro to add linker flags
 macro(ADD_LINKER_FLAGS)
     ## Each Projects have debug/release linker flags
     set_property(TARGET ${GPA_PROJECT_NAME} PROPERTY LINK_FLAGS_DEBUG "${COMMON_LINKER_FLAGS} ${COMMON_DEBUG_LINKER_FLAGS} ${ADDITIONAL_LINK_OPTIONS}")
@@ -52,13 +52,8 @@ macro(ADD_GPA_COMPILE_DEFINITIONS TARGET_NAME)
     set_property(TARGET ${ARGV0} PROPERTY COMPILE_DEFINITIONS $<$<CONFIG:DEBUG>:USE_DEBUG_GPA> ${ADDITIONAL_INTERNAL_DEFINITION})
 endmacro()
 
-if(MSVC_IDE)
-    set(EXCLUDE_FROM_BUILD EXCLUDE_FROM_DEFAULT_BUILD)
-else()
-    set(EXCLUDE_FROM_BUILD EXCLUDE_FROM_ALL)
-endif()
-
-## Macro to exclude a target from the default build process
-macro(REMOVE_TARGET_FROM_BUILD TARGET_NAME)
-    set_property(TARGET ${ARGV0} PROPERTY ${EXCLUDE_FROM_BUILD} ON)
+# A special return code that can be used in tests to indicate that a test should be skipped.
+# This allows us to skip tests in a way that is distinguishable from a test failure.
+macro(ADD_GPA_SKIP_RETURN_CODE_COMPILE_DEFINITION TARGET_NAME)
+    target_compile_definitions(${TARGET_NAME} PRIVATE GPA_SKIP_RETURN_CODE=42)
 endmacro()

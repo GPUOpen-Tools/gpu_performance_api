@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2024 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  DX11 GPA Sample Implementation
@@ -45,7 +45,6 @@ Dx11GpaSample::~Dx11GpaSample()
 Dx11GpaSample::Dx11GpaSample(GpaPass* pass, IGpaCommandList* cmd_list, GpaSampleType sample_type, ClientSampleId sample_id)
     : GpaSample(pass, cmd_list, sample_type, sample_id)
     , amd_dx_ext_perf_experiment_(nullptr)
-    , amd_dx_ext_perf_counters_(nullptr)
     , gpu_time_counter_(nullptr)
 {
 }
@@ -67,7 +66,7 @@ bool Dx11GpaSample::UpdateResults()
 
             if (FAILED(gpu_time_result_status))
             {
-                GPA_LOG_ERROR("Call to ID3D11DeviceContext::GetData failed.");
+                GpaLogger::Instance().LogError("Call to ID3D11DeviceContext::GetData failed.");
             }
             else
             {
@@ -80,7 +79,7 @@ bool Dx11GpaSample::UpdateResults()
                 }
                 else
                 {
-                    GPA_LOG_DEBUG_MESSAGE("GPU Time data not yet ready.");
+                    GpaLogger::Instance().LogDebugMessage("GPU Time data not yet ready.");
                 }
             }
         }
@@ -124,7 +123,7 @@ bool Dx11GpaSample::PopulateResult()
 
                 if ((1 != counter_count) || (gpu_time_counter_data_size != counter_count * sizeof(GpaUInt64)))
                 {
-                    GPA_LOG_ERROR("Call to DX11 PopulateResult encountered invalid number of counters, or invalid number of bytes.");
+                    GpaLogger::Instance().LogError("Call to DX11 PopulateResult encountered invalid number of counters, or invalid number of bytes.");
                     return false;
                 }
 
@@ -161,7 +160,7 @@ bool Dx11GpaSample::PopulateResult()
                 else
                 {
                     assert(SUCCEEDED(hr));
-                    GPA_LOG_ERROR("Call to ID3D11DeviceContext::GetData failed.");
+                    GpaLogger::Instance().LogError("Call to ID3D11DeviceContext::GetData failed.");
                 }
 
                 d3d11_device_context->Release();
@@ -188,11 +187,7 @@ bool Dx11GpaSample::PopulateResult()
 
 void Dx11GpaSample::ReleaseSampleResources()
 {
-    if (nullptr != amd_dx_ext_perf_counters_)
-    {
-        delete[] amd_dx_ext_perf_counters_;
-        amd_dx_ext_perf_counters_ = nullptr;
-    }
+    amd_dx_ext_perf_counters_.clear();
 
     if (nullptr != amd_dx_ext_perf_experiment_)
     {
@@ -221,7 +216,7 @@ bool Dx11GpaSample::BeginRequest()
         assert(counter_accessor != nullptr);
         if (nullptr == counter_accessor)
         {
-            GPA_LOG_DEBUG_ERROR("Accessor is unassigned.");
+            GpaLogger::Instance().LogDebugError("Accessor is unassigned.");
             return success;
         }
         const GpaHardwareCounters& hardware_counters = counter_accessor->GetHardwareCounters();
@@ -264,15 +259,15 @@ bool Dx11GpaSample::BeginRequest()
                     }
                     else
                     {
-                        GPA_LOG_DEBUG_ERROR("Call to ID3D11Device::CreateCounter failed on the GPUTime counter.");
-                        GPA_LOG_ERROR("Call to ID3D11Device::CreateCounter failed.");
+                        GpaLogger::Instance().LogDebugError("Call to ID3D11Device::CreateCounter failed on the GPUTime counter.");
+                        GpaLogger::Instance().LogError("Call to ID3D11Device::CreateCounter failed.");
                         device_context->Release();
                     }
                 }
                 else
                 {
                     // Make sure any counters which worked are released.
-                    GPA_LOG_DEBUG_ERROR("Call to ID3D11Device::CheckCounter failed on the GPUTime counter.");
+                    GpaLogger::Instance().LogDebugError("Call to ID3D11Device::CheckCounter failed on the GPUTime counter.");
                     device_context->Release();
                 }
 
@@ -284,7 +279,7 @@ bool Dx11GpaSample::BeginRequest()
             if (0 == dx11_gpa_pass->GetEnabledCounterCount())
             {
                 // If there are no actual hardware counters in this sample, log a debug message and return true.
-                GPA_LOG_DEBUG_MESSAGE("No counters enabled in this sample.");
+                GpaLogger::Instance().LogDebugMessage("No counters enabled in this sample.");
                 success = true;
             }
             else if (CreateSampleExperiment() && CreateAndAddCounterToExperiment())
@@ -303,25 +298,25 @@ bool Dx11GpaSample::BeginRequest()
                     else
                     {
                         ASSERT_ON_PE_ERROR(result);
-                        GPA_LOG_DEBUG_ERROR("Call to IPerfExperiment::Begin failed.");
+                        GpaLogger::Instance().LogDebugError("Call to IPerfExperiment::Begin failed.");
                     }
                 }
                 else
                 {
                     if (result == PE_ERROR_OUT_OF_MEMORY)
                     {
-                        GPA_LOG_ERROR("Counter could not be enabled due to an Out Of Memory error.");
+                        GpaLogger::Instance().LogError("Counter could not be enabled due to an Out Of Memory error.");
                     }
                     else
                     {
                         ASSERT_ON_PE_ERROR(result);
-                        GPA_LOG_DEBUG_ERROR("Call to IPerfExperiment::Finalize failed.");
+                        GpaLogger::Instance().LogDebugError("Call to IPerfExperiment::Finalize failed.");
                     }
                 }
             }
             else
             {
-                GPA_LOG_ERROR("Unable to create the sample experiment or unable to initialize the counters.");
+                GpaLogger::Instance().LogError("Unable to create the sample experiment or unable to initialize the counters.");
             }
         }
     }
@@ -384,7 +379,7 @@ bool Dx11GpaSample::CreateSampleExperiment()
 
         if (0 == dx11_gpa_pass->GetEnabledCounterCount())
         {
-            GPA_LOG_DEBUG_MESSAGE("No counters enabled in this sample.");
+            GpaLogger::Instance().LogDebugMessage("No counters enabled in this sample.");
         }
         else
         {
@@ -420,7 +415,7 @@ bool Dx11GpaSample::CreateSampleExperiment()
                 assert(counter_accessor != nullptr);
                 if (nullptr == counter_accessor)
                 {
-                    GPA_LOG_DEBUG_ERROR("Accessor is unassigned.");
+                    GpaLogger::Instance().LogDebugError("Accessor is unassigned.");
                     return success;
                 }
                 const GpaHardwareCounters& hardware_counters = counter_accessor->GetHardwareCounters();
@@ -431,8 +426,7 @@ bool Dx11GpaSample::CreateSampleExperiment()
                         const GpaHardwareCounterDescExt* counter = &hardware_counters.hardware_counters_.at(counter_index);
                         engine_param_set_success                 = true;
 
-                        if (counter->group_id_driver == PE_BLOCK_SQ ||
-                            counter->group_id_driver == PE_BLOCK_SQWGP)
+                        if (counter->group_id_driver == PE_BLOCK_SQ || counter->group_id_driver == PE_BLOCK_SQWGP)
                         {
                             // Set all valid shader engines to the current stage mask.
                             const size_t num_shader_engines = dx11_gpa_context->GetHwInfo().GetNumberShaderEngines();
@@ -446,7 +440,7 @@ bool Dx11GpaSample::CreateSampleExperiment()
 
                                     if (PE_OK != result)
                                     {
-                                        GPA_LOG_ERROR("Unable to set the shader engine parameter.");
+                                        GpaLogger::Instance().LogError("Unable to set the shader engine parameter.");
                                         engine_param_set_success = false;
                                         break;
                                     }
@@ -463,13 +457,13 @@ bool Dx11GpaSample::CreateSampleExperiment()
 
                     if (!success)
                     {
-                        GPA_LOG_ERROR("Unable to set engine params.");
+                        GpaLogger::Instance().LogError("Unable to set engine params.");
                     }
                 }
             }
             else
             {
-                GPA_LOG_ERROR("Either the experiment has already been created or the driver extension is not available.");
+                GpaLogger::Instance().LogError("Either the experiment has already been created or the driver extension is not available.");
             }
         }
     }
@@ -481,19 +475,18 @@ bool Dx11GpaSample::CreateAndAddCounterToExperiment()
 {
     // Assuming things will succeed; gets set to false if an error occurs.
     bool success = true;
-    assert(nullptr == amd_dx_ext_perf_counters_);
+    assert(amd_dx_ext_perf_counters_.empty());
 
     CounterCount enabled_counter_count       = GetPass()->GetEnabledCounterCount();
     CounterCount enabled_counter_count_index = 0;
-    amd_dx_ext_perf_counters_                = new (std::nothrow) IAmdDxExtPerfCounter*[enabled_counter_count];
+    amd_dx_ext_perf_counters_.resize(enabled_counter_count);
 
-    if (nullptr != amd_dx_ext_perf_counters_)
     {
         IGpaCounterAccessor* counter_accessor = GpaContextCounterMediator::GetCounterAccessor(GetPass()->GetGpaSession());
         assert(counter_accessor != nullptr);
         if (nullptr == counter_accessor)
         {
-            GPA_LOG_DEBUG_ERROR("Accessor is unassigned.");
+            GpaLogger::Instance().LogDebugError("Accessor is unassigned.");
             return false;
         }
         const GpaHardwareCounters& hardware_counters = counter_accessor->GetHardwareCounters();
@@ -516,7 +509,7 @@ bool Dx11GpaSample::CreateAndAddCounterToExperiment()
 
                 if (PE_OK != result)
                 {
-                    GPA_LOG_ERROR("Unable to add counter to the experiment.");
+                    GpaLogger::Instance().LogError("Unable to add counter to the experiment.");
                     success = false;
                 }
                 else
@@ -529,7 +522,7 @@ bool Dx11GpaSample::CreateAndAddCounterToExperiment()
                         if (result != PE_OK)
                         {
                             ASSERT_ON_PE_ERROR(result);
-                            GPA_LOG_DEBUG_ERROR("call to IAmdDxExtPerfCounter::SetParam failed.");
+                            GpaLogger::Instance().LogDebugError("call to IAmdDxExtPerfCounter::SetParam failed.");
                             success = false;
                         }
                     }
@@ -551,15 +544,8 @@ bool Dx11GpaSample::CreateAndAddCounterToExperiment()
 
         if (!success)
         {
-            // If not successful, delete allocations.
-            delete[] amd_dx_ext_perf_counters_;
-            amd_dx_ext_perf_counters_ = nullptr;
+            amd_dx_ext_perf_counters_.clear();
         }
-    }
-    else
-    {
-        GPA_LOG_ERROR("Unable to allocate memory for performance counters.");
-        success = false;
     }
 
     return success;

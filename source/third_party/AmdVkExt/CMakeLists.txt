@@ -1,4 +1,4 @@
-## Copyright (C) 2025-2026 Advanced Micro Devices, Inc. All rights reserved. ##
+#/ Copyright (C) Advanced Micro Devices, Inc. All rights reserved.
 
 add_library(amd_vulkan_extensions INTERFACE)
 add_library(AMD::VulkanExtensions ALIAS amd_vulkan_extensions)
