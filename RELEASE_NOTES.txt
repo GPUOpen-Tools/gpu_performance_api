@@ -1,5 +1,8 @@
 ﻿# GPU Performance API Release Notes
----
+# Version 4.4.1
+* Added support for AMD Radeon 8040S, 8050S, 8060S, and 8065S APUs.
+* Fixed WaveOccupancyPct failing with kGpaStatusErrorInvalidCounterGroupData on GFX11.5 due to under-reported SPM capacity.
+
 # Version 4.4
 * Treat GFX11.5 GPUs as a separate HW generation.
 * Third party repos are cloned into the external/third_party directory.

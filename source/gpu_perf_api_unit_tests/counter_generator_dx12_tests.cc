@@ -250,6 +250,120 @@ TEST(CounterDllTests, Dx12CounterNamesGfx115)
     VerifyCounterNames(kGpaApiDirectx12, kGpaHwGenerationGfx115, counter_names, hardware_counter_names);
 }
 
+// Verify that HSLimitedByLds and GSLimitedByLds are SPM-only counters on gfx115: present in
+// streaming mode, absent in discrete mode.
+TEST(CounterDllTests, Dx12Gfx115ExposesHsAndGsLdsLimiterCounters)
+{
+    GpaCounterLibFuncTable gpa_counter_lib_func_table = {};
+    auto                   lib_guard                  = LoadAndVerifyCounterLib(&gpa_counter_lib_func_table);
+    if (!lib_guard)
+    {
+        return;
+    }
+
+    const GpaCounterContextHardwareInfo counter_context_hardware_info = {device_info::kAmdVendorId, kDevIdGfx11_5_0, device_info::kRevisionIdAny, nullptr, 0};
+
+    auto CounterPresent = [&](GpaSessionSampleType sample_type, const char* target_name) -> bool {
+        GpaCounterContext gpa_counter_context = nullptr;
+        GpaStatus         gpa_status          = gpa_counter_lib_func_table.GpaCounterLibOpenCounterContext(
+            kGpaApiDirectx12, sample_type, counter_context_hardware_info, kGpaOpenContextDefaultBit, &gpa_counter_context);
+        if (gpa_status != kGpaStatusOk)
+        {
+            return false;
+        }
+
+        GpaUInt32 num_counters = 0u;
+        if (gpa_counter_lib_func_table.GpaCounterLibGetNumCounters(gpa_counter_context, &num_counters) != kGpaStatusOk)
+        {
+            gpa_counter_lib_func_table.GpaCounterLibCloseCounterContext(gpa_counter_context);
+            return false;
+        }
+
+        bool found = false;
+        for (GpaUInt32 i = 0; i < num_counters && !found; ++i)
+        {
+            const char* name       = nullptr;
+            GpaStatus   get_status = gpa_counter_lib_func_table.GpaCounterLibGetCounterName(gpa_counter_context, i, &name);
+            if (get_status != kGpaStatusOk || name == nullptr)
+            {
+                continue;
+            }
+            found = (strcmp(name, target_name) == 0);
+        }
+
+        gpa_counter_lib_func_table.GpaCounterLibCloseCounterContext(gpa_counter_context);
+        return found;
+    };
+
+    // These counters are SPM-only (spm=1, discrete=0).
+    EXPECT_FALSE(CounterPresent(kGpaSessionSampleTypeDiscreteCounter, "HSLimitedByLds"))
+        << "HSLimitedByLds should not be exposed as a discrete counter for gfx115";
+    EXPECT_FALSE(CounterPresent(kGpaSessionSampleTypeDiscreteCounter, "GSLimitedByLds"))
+        << "GSLimitedByLds should not be exposed as a discrete counter for gfx115";
+    EXPECT_TRUE(CounterPresent(kGpaSessionSampleTypeStreamingCounter, "HSLimitedByLds"))
+        << "HSLimitedByLds counter not found as a streaming counter for gfx115";
+    EXPECT_TRUE(CounterPresent(kGpaSessionSampleTypeStreamingCounter, "GSLimitedByLds"))
+        << "GSLimitedByLds counter not found as a streaming counter for gfx115";
+}
+
+// Verify that the four SPI hardware events underlying HSLimitedByLds and GSLimitedByLds are
+// present in the gfx115 hardware counter list.
+TEST(CounterDllTests, Dx12Gfx115ExposesHsAndGsLdsLimiterHardwareEvents)
+{
+    GpaCounterLibFuncTable gpa_counter_lib_func_table = {};
+    auto                   lib_guard                  = LoadAndVerifyCounterLib(&gpa_counter_lib_func_table);
+    if (!lib_guard)
+    {
+        return;
+    }
+
+    GpaCounterContext             gpa_counter_context           = nullptr;
+    GpaCounterContextHardwareInfo counter_context_hardware_info = {device_info::kAmdVendorId, kDevIdGfx11_5_0, device_info::kRevisionIdAny, nullptr, 0};
+    GpaStatus                     gpa_status                    = gpa_counter_lib_func_table.GpaCounterLibOpenCounterContext(
+        kGpaApiDirectx12,
+        kGpaSessionSampleTypeDiscreteCounter,
+        counter_context_hardware_info,
+        kGpaOpenContextHideDerivedCountersBit | kGpaOpenContextEnableHardwareCountersBit,
+        &gpa_counter_context);
+    ASSERT_EQ(kGpaStatusOk, gpa_status);
+
+    GpaUInt32 num_counters = 0u;
+    ASSERT_EQ(kGpaStatusOk, gpa_counter_lib_func_table.GpaCounterLibGetNumCounters(gpa_counter_context, &num_counters));
+
+    bool found_spi0_hs = false;
+    bool found_spi0_gs = false;
+    bool found_spi1_hs = false;
+    bool found_spi1_gs = false;
+    for (GpaUInt32 i = 0; i < num_counters; ++i)
+    {
+        const char* name = nullptr;
+        ASSERT_EQ(kGpaStatusOk, gpa_counter_lib_func_table.GpaCounterLibGetCounterName(gpa_counter_context, i, &name));
+        if (strcmp(name, "SPI0_PERF_RA_LDS_CU_FULL_HS") == 0)
+        {
+            found_spi0_hs = true;
+        }
+        else if (strcmp(name, "SPI0_PERF_RA_LDS_CU_FULL_GS") == 0)
+        {
+            found_spi0_gs = true;
+        }
+        else if (strcmp(name, "SPI1_PERF_RA_LDS_CU_FULL_HS") == 0)
+        {
+            found_spi1_hs = true;
+        }
+        else if (strcmp(name, "SPI1_PERF_RA_LDS_CU_FULL_GS") == 0)
+        {
+            found_spi1_gs = true;
+        }
+    }
+
+    EXPECT_TRUE(found_spi0_hs) << "SPI0_PERF_RA_LDS_CU_FULL_HS hardware event not found for gfx115";
+    EXPECT_TRUE(found_spi0_gs) << "SPI0_PERF_RA_LDS_CU_FULL_GS hardware event not found for gfx115";
+    EXPECT_TRUE(found_spi1_hs) << "SPI1_PERF_RA_LDS_CU_FULL_HS hardware event not found for gfx115";
+    EXPECT_TRUE(found_spi1_gs) << "SPI1_PERF_RA_LDS_CU_FULL_GS hardware event not found for gfx115";
+
+    EXPECT_EQ(kGpaStatusOk, gpa_counter_lib_func_table.GpaCounterLibCloseCounterContext(gpa_counter_context));
+}
+
 TEST(CounterDllTests, Dx12CounterNamesGfx12)
 {
     std::vector<const char*> counter_names;
@@ -332,6 +446,15 @@ TEST(CounterDllTests, Dx12CounterLibTestGfx1153)
 {
     VerifyCounterLibInterface(kGpaApiDirectx12, kDevIdGfx11_5_3, device_info::kRevisionIdAny);
     VerifyCounterByPassCounterLibEntry(kGpaApiDirectx12, kDevIdGfx11_5_3, device_info::kRevisionIdAny);
+}
+
+TEST(CounterDllTests, Dx12Gfx1151RevisionsSupported)
+{
+    constexpr auto kRevisionIds = std::to_array<uint32_t>({0xCA, 0xCB, 0xCC, 0xCD, 0xCE, 0xCF, 0xDA, 0xDB, 0xDC, 0xDD});
+    for (const uint32_t revision_id : kRevisionIds)
+    {
+        VerifyCounterLibInterface(kGpaApiDirectx12, kDevIdGfx11_5_1, revision_id);
+    }
 }
 
 // Returns true if any hardware counter name in the context starts with the given prefix.
@@ -592,37 +715,42 @@ TEST(CounterDllTests, Dx12SpmCounterCapacityGfx11)
 TEST(CounterDllTests, Dx12SpmCounterCapacityGfx115)
 {
     const std::unordered_map<std::string_view, GpaUInt32> kExpected = {
-        {"CPF", 1},
-        {"CPG", 1},
-        {"CPC", 1},
-        {"CB", 1},
+        {"CPF", 4},
+        {"CPG", 4},
+        {"CPC", 4},
+        {"CB", 4},
         {"GDS", 4},
-        {"GCEA", 1},
-        {"CHA", 1},
-        {"CHC", 1},
-        {"GCR", 1},
-        {"GL1A", 1},
-        {"GL1C", 1},
-        {"GL2A", 2},
-        {"GL2C", 2},
-        {"PA_SC", 1},
-        {"RMI", 1},
-        {"SQG", 0},
-        {"SQG_GS", 0},
-        {"SQG_PS", 0},
-        {"SQG_HS", 0},
-        {"SQG_CS", 0},
-        {"SPI", 4},
-        {"SX", 2},
-        {"TA", 1},
-        {"TD", 1},
-        {"TCP", 2},
-        {"DB", 2},
-        {"GE2_DIST", 4},
-        {"GE2_SE", 4},
-        {"PA_SU", 4},
-        {"PA_PH", 4},
-        {"PC", 4},
+        {"GCEA", 4},
+        {"CHA", 4},
+        {"CHC", 4},
+        {"GCR", 4},
+        {"GL1A", 4},
+        {"GL1C", 4},
+        {"GL2A", 8},
+        {"GL2C", 8},
+        {"PA_SC", 4},
+        {"RMI", 4},
+        {"SQWGP", 16},
+        {"SQWGP_GS", 16},
+        {"SQWGP_PS", 16},
+        {"SQWGP_HS", 16},
+        {"SQWGP_CS", 16},
+        {"SQG", 8},
+        {"SQG_GS", 8},
+        {"SQG_PS", 8},
+        {"SQG_HS", 8},
+        {"SQG_CS", 8},
+        {"SPI", 16},
+        {"SX", 8},
+        {"TA", 4},
+        {"TD", 4},
+        {"TCP", 8},
+        {"DB", 8},
+        {"GE2_DIST", 16},
+        {"GE2_SE", 16},
+        {"PA_SU", 16},
+        {"PA_PH", 16},
+        {"PC", 16},
         {"ATCL2", 4},
         // no generic SPM modules => 0
         {"GRBM", 0},

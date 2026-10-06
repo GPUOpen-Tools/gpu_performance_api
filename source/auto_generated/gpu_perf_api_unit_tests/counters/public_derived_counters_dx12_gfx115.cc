@@ -1343,6 +1343,17 @@ const GpaCounterDesc kDx12Gfx115PublicCounters[kDx12Gfx115PublicCounterCount] = 
     true,
     {0x50585d16, 0xdd47, 0xed8a, {0xec, 0x13, 0x5f, 0xd1, 0xf1, 0xb1, 0x01, 0x96}}},
     {// Streaming Counter Index: 97
+    "HSLimitedByLds",
+    "WaveOccupancyLimiters",
+    "The percentage of HS wave scheduling requests that are limited by LDS availability.",
+    "0,1,sum2,2,3,max2,/,NUM_CUS,/,(100),*",
+    4,
+    kGpaDataTypeFloat64,
+    kGpaUsageTypePercentage,
+    false,
+    true,
+    {0xfdd67cc9, 0x259e, 0x4c41, {0xb4, 0x1f, 0x57, 0xe5, 0x7c, 0xe8, 0xc5, 0xcb}}},
+    {// Streaming Counter Index: 98
     "HSLimitedByScratch",
     "WaveOccupancyLimiters",
     "The percentage of HS wave scheduling requests that are limited by scratch space availability.",
@@ -1353,7 +1364,7 @@ const GpaCounterDesc kDx12Gfx115PublicCounters[kDx12Gfx115PublicCounterCount] = 
     false,
     true,
     {0xb7fe9384, 0x498b, 0x8280, {0xe3, 0x30, 0xc5, 0x54, 0xe4, 0xcd, 0xc7, 0xa7}}},
-    {// Streaming Counter Index: 98
+    {// Streaming Counter Index: 99
     "HSLimitedByBarriers",
     "WaveOccupancyLimiters",
     "The percentage of HS wave scheduling requests that are limited by barriers.",
@@ -1364,7 +1375,7 @@ const GpaCounterDesc kDx12Gfx115PublicCounters[kDx12Gfx115PublicCounterCount] = 
     false,
     true,
     {0x93c71348, 0x8437, 0x1765, {0x8c, 0x26, 0xb9, 0xc6, 0xbe, 0x24, 0x57, 0xa0}}},
-    {// Streaming Counter Index: 99
+    {// Streaming Counter Index: 100
     "GSLimitedByVgpr",
     "WaveOccupancyLimiters",
     "The percentage of GS wave scheduling requests that are limited by VGPR availability.",
@@ -1375,7 +1386,18 @@ const GpaCounterDesc kDx12Gfx115PublicCounters[kDx12Gfx115PublicCounterCount] = 
     false,
     true,
     {0x7da57982, 0x3e1c, 0x8515, {0x1c, 0x92, 0xd1, 0x83, 0x72, 0x1f, 0x4d, 0x15}}},
-    {// Streaming Counter Index: 100
+    {// Streaming Counter Index: 101
+    "GSLimitedByLds",
+    "WaveOccupancyLimiters",
+    "The percentage of GS wave scheduling requests that are limited by LDS availability.",
+    "0,1,sum2,2,3,max2,/,NUM_CUS,/,(100),*",
+    4,
+    kGpaDataTypeFloat64,
+    kGpaUsageTypePercentage,
+    false,
+    true,
+    {0x6bfbfae4, 0x7b7e, 0x112d, {0xf3, 0x5a, 0x06, 0x91, 0xa7, 0x54, 0x32, 0xd9}}},
+    {// Streaming Counter Index: 102
     "GSLimitedByScratch",
     "WaveOccupancyLimiters",
     "The percentage of GS wave scheduling requests that are limited by scratch space availability.",
@@ -1386,7 +1408,7 @@ const GpaCounterDesc kDx12Gfx115PublicCounters[kDx12Gfx115PublicCounterCount] = 
     false,
     true,
     {0x7eea8eeb, 0x6659, 0xdbd5, {0xc0, 0xc2, 0xe4, 0x04, 0xdb, 0xf7, 0xa9, 0x7d}}},
-    {// Streaming Counter Index: 101
+    {// Streaming Counter Index: 103
     "PSLimitedByLds",
     "WaveOccupancyLimiters",
     "The percentage of PS wave scheduling requests that are limited by LDS availability.",
@@ -1397,7 +1419,7 @@ const GpaCounterDesc kDx12Gfx115PublicCounters[kDx12Gfx115PublicCounterCount] = 
     false,
     true,
     {0x87e9d8b0, 0xdae4, 0x59e5, {0x97, 0x97, 0xb3, 0x10, 0x84, 0xe4, 0x37, 0x0c}}},
-    {// Streaming Counter Index: 102
+    {// Streaming Counter Index: 104
     "PSLimitedByVgpr",
     "WaveOccupancyLimiters",
     "The percentage of PS wave scheduling requests that are limited by VGPR availability.",
@@ -1408,7 +1430,7 @@ const GpaCounterDesc kDx12Gfx115PublicCounters[kDx12Gfx115PublicCounterCount] = 
     false,
     true,
     {0x5327574d, 0xa131, 0xc833, {0x44, 0xd2, 0xff, 0x4f, 0x10, 0x10, 0x35, 0x02}}},
-    {// Streaming Counter Index: 103
+    {// Streaming Counter Index: 105
     "PSLimitedByScratch",
     "WaveOccupancyLimiters",
     "The percentage of PS wave scheduling requests that are limited by scratch space availability.",
@@ -1419,7 +1441,7 @@ const GpaCounterDesc kDx12Gfx115PublicCounters[kDx12Gfx115PublicCounterCount] = 
     false,
     true,
     {0x399ee0f1, 0xdce6, 0x07fa, {0xcc, 0xab, 0x8b, 0xd9, 0x6f, 0x2f, 0x50, 0xa4}}},
-    {// Streaming Counter Index: 104
+    {// Streaming Counter Index: 106
     "CSLimitedByLds",
     "WaveOccupancyLimiters",
     "The percentage of CS wave scheduling requests that are limited by LDS availability.",
@@ -1430,7 +1452,7 @@ const GpaCounterDesc kDx12Gfx115PublicCounters[kDx12Gfx115PublicCounterCount] = 
     false,
     true,
     {0x03b6b0e1, 0x67eb, 0x688c, {0xa7, 0x33, 0xe4, 0xe3, 0x1c, 0xeb, 0x86, 0xae}}},
-    {// Streaming Counter Index: 105
+    {// Streaming Counter Index: 107
     "CSLimitedByVgpr",
     "WaveOccupancyLimiters",
     "The percentage of CS wave scheduling requests that are limited by VGPR availability.",
@@ -1441,7 +1463,7 @@ const GpaCounterDesc kDx12Gfx115PublicCounters[kDx12Gfx115PublicCounterCount] = 
     false,
     true,
     {0x7ad91320, 0xc40d, 0x6994, {0xdc, 0x34, 0x73, 0x10, 0x1a, 0x79, 0x26, 0xf7}}},
-    {// Streaming Counter Index: 106
+    {// Streaming Counter Index: 108
     "CSLimitedByScratch",
     "WaveOccupancyLimiters",
     "The percentage of CS wave scheduling requests that are limited by scratch space availability.",
@@ -1452,7 +1474,7 @@ const GpaCounterDesc kDx12Gfx115PublicCounters[kDx12Gfx115PublicCounterCount] = 
     false,
     true,
     {0x664e8676, 0xaa15, 0x9861, {0x14, 0xd5, 0xc3, 0xe4, 0xee, 0x20, 0x8f, 0xa1}}},
-    {// Streaming Counter Index: 107
+    {// Streaming Counter Index: 109
     "CSLimitedByBarriers",
     "WaveOccupancyLimiters",
     "The percentage of CS wave scheduling requests that are limited by barriers.",
@@ -1463,7 +1485,7 @@ const GpaCounterDesc kDx12Gfx115PublicCounters[kDx12Gfx115PublicCounterCount] = 
     false,
     true,
     {0xea835ad2, 0xe28a, 0x3d46, {0x3e, 0x08, 0x04, 0xd5, 0x1e, 0x07, 0x2a, 0x71}}},
-    {// Streaming Counter Index: 108
+    {// Streaming Counter Index: 110
     "CSLimitedByThreadGroupLimit",
     "WaveOccupancyLimiters",
     "The percentage of CS wave scheduling requests that are limited by the thread group limit.",

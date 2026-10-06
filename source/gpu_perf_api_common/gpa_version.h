@@ -14,13 +14,13 @@
 
 #define GPA_MAJOR_VERSION  4 ///< Macro for GPA major version.
 #define GPA_MINOR_VERSION  4 ///< Macro for GPA minor version.
-#define GPA_UPDATE_VERSION 0 ///< Macro for GPA update version.
+#define GPA_UPDATE_VERSION 1 ///< Macro for GPA update version.
 #define GPA_BUILD_NUMBER   0 /// Macro for GPA build number
 
 #define GPA_MAJOR_VERSION_STR  "4" ///< Macro for major version string.
 #define GPA_MINOR_VERSION_STR  "4" ///< Macro for minor version string.
 #define GPA_BUILD_NUMBER_STR   "0" ///< Macro for build number string.
-#define GPA_UPDATE_VERSION_STR "0" ///< Macro for update version string.
+#define GPA_UPDATE_VERSION_STR "1" ///< Macro for update version string.
 
 #define GPA_COPYRIGHT_STR "Copyright Advanced Micro Devices, Inc. All rights reserved." ///< Macro for copyright string.
 

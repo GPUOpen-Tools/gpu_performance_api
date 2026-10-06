@@ -237,9 +237,11 @@ WaveOccupancyLimiters Group
     :widths: 15, 10, 10, 65
 
     "HSLimitedByVgpr", "Streaming", "Percentage", "The percentage of HS wave scheduling requests that are limited by VGPR availability."
+    "HSLimitedByLds", "Streaming", "Percentage", "The percentage of HS wave scheduling requests that are limited by LDS availability."
     "HSLimitedByScratch", "Streaming", "Percentage", "The percentage of HS wave scheduling requests that are limited by scratch space availability."
     "HSLimitedByBarriers", "Streaming", "Percentage", "The percentage of HS wave scheduling requests that are limited by barriers."
     "GSLimitedByVgpr", "Streaming", "Percentage", "The percentage of GS wave scheduling requests that are limited by VGPR availability."
+    "GSLimitedByLds", "Streaming", "Percentage", "The percentage of GS wave scheduling requests that are limited by LDS availability."
     "GSLimitedByScratch", "Streaming", "Percentage", "The percentage of GS wave scheduling requests that are limited by scratch space availability."
     "PSLimitedByLds", "Streaming", "Percentage", "The percentage of PS wave scheduling requests that are limited by LDS availability."
     "PSLimitedByVgpr", "Streaming", "Percentage", "The percentage of PS wave scheduling requests that are limited by VGPR availability."

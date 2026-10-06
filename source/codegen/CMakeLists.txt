@@ -23,6 +23,7 @@ target_sources(PublicCounterCompiler PRIVATE
     public_counter_definitions_gfx10.txt
     public_counter_definitions_gfx103.txt
     public_counter_definitions_gfx11.txt
+    public_counter_definitions_gfx115.txt
     public_counter_definitions_gfx12.txt
 )
 

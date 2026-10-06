@@ -1502,6 +1502,17 @@ SPI*_PERF_RA_VGPR_SIMD_FULL_HS[0..1]
 SPI*_PERF_HS_BUSY[0..1]
 eqn=0..1,sum2,2..3,max2,/,NUM_SIMDS,/,(100),*
 
+name=HSLimitedByLds
+desc=#WaveOccupancyLimiters#The percentage of HS wave scheduling requests that are limited by LDS availability.
+type=gpa_float64
+usage=percentage
+spm=1
+discrete=0
+[DX12Gfx115]
+SPI*_PERF_RA_LDS_CU_FULL_HS[0..1]
+SPI*_PERF_HS_BUSY[0..1]
+eqn=0..1,sum2,2..3,max2,/,NUM_CUS,/,(100),*
+
 name=HSLimitedByScratch
 desc=#WaveOccupancyLimiters#The percentage of HS wave scheduling requests that are limited by scratch space availability.
 type=gpa_float64
@@ -1534,6 +1545,17 @@ discrete=0
 SPI*_PERF_RA_VGPR_SIMD_FULL_GS[0..1]
 SPI*_PERF_GS_BUSY[0..1]
 eqn=0..1,sum2,2..3,max2,/,NUM_SIMDS,/,(100),*
+
+name=GSLimitedByLds
+desc=#WaveOccupancyLimiters#The percentage of GS wave scheduling requests that are limited by LDS availability.
+type=gpa_float64
+usage=percentage
+spm=1
+discrete=0
+[DX12Gfx115]
+SPI*_PERF_RA_LDS_CU_FULL_GS[0..1]
+SPI*_PERF_GS_BUSY[0..1]
+eqn=0..1,sum2,2..3,max2,/,NUM_CUS,/,(100),*
 
 name=GSLimitedByScratch
 desc=#WaveOccupancyLimiters#The percentage of GS wave scheduling requests that are limited by scratch space availability.
@@ -1642,4 +1664,3 @@ discrete=0
 SPI*_PERF_RA_TGLIM_CU_FULL_CSG[0..1]
 SPI*_PERF_CSGN_BUSY[0..1]
 eqn=0..1,sum2,2..3,max2,/,NUM_CUS,/,(100),*
-

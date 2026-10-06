@@ -80,6 +80,7 @@ Graphics workloads, as well the family of GPUs and APUs on which each counter
 is available:
 
 .. include:: graphics_counter_tables_gfx12.rst
+.. include:: graphics_counter_tables_gfx115.rst
 .. include:: graphics_counter_tables_gfx11.rst
 .. include:: graphics_counter_tables_gfx103.rst
 .. include:: graphics_counter_tables_gfx10.rst

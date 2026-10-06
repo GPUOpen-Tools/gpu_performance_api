@@ -32,7 +32,7 @@ include(FetchContent)
 
 FetchContent_Populate(device_info
     GIT_REPOSITORY "git@github.com:${GITHUB_ORG}/device_info.git"
-    GIT_TAG 283b7b961ef0eda7294cf4fbf6e1fa94b10919b7
+    GIT_TAG v1.1.0
     SOURCE_DIR "${EXTERNAL_DIR}/device_info"
 )
 

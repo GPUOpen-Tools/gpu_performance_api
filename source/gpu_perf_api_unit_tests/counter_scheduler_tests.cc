@@ -32,6 +32,52 @@
 
 #include "gpu_perf_api_unit_tests/counter_generator_tests.h"
 
+#ifdef _WIN32
+// Enumerates every streaming-capable public DX12 counter reported for device_id and verifies
+// each schedules successfully on its own. Guards against SPM/streaming capacity bugs (e.g. the
+// gfx11.5 WaveOccupancyPct under-reported-capacity regression) recurring on any hardware generation.
+static void VerifyAllStreamingCountersScheduleDx12(uint32_t device_id)
+{
+    GpaCounterLibFuncTable gpa_counter_lib_func_table = {};
+    auto                   lib_guard                  = LoadAndVerifyCounterLib(&gpa_counter_lib_func_table);
+
+    if (!lib_guard)
+    {
+        return;
+    }
+
+    GpaCounterContextHardwareInfo counter_context_hardware_info = {device_info::kAmdVendorId, device_id, device_info::kRevisionIdAny, nullptr, 0};
+    GpaCounterContext             gpa_counter_context            = nullptr;
+    GpaStatus                     gpa_status                     = gpa_counter_lib_func_table.GpaCounterLibOpenCounterContext(
+        kGpaApiDirectx12, kGpaSessionSampleTypeStreamingCounter, counter_context_hardware_info, kGpaOpenContextDefaultBit, &gpa_counter_context);
+    EXPECT_EQ(kGpaStatusOk, gpa_status);
+    if (kGpaStatusOk != gpa_status)
+    {
+        return;
+    }
+
+    GpaUInt32 counter_count = 0;
+    gpa_status              = gpa_counter_lib_func_table.GpaCounterLibGetNumCounters(gpa_counter_context, &counter_count);
+    EXPECT_EQ(kGpaStatusOk, gpa_status);
+    EXPECT_GT(counter_count, 0u);
+    if (kGpaStatusOk != gpa_status)
+    {
+        gpa_counter_lib_func_table.GpaCounterLibCloseCounterContext(gpa_counter_context);
+        return;
+    }
+
+    for (GpaUInt32 i = 0; i < counter_count; ++i)
+    {
+        GpaUInt32 req_pass = 0u;
+        gpa_status         = gpa_counter_lib_func_table.GpaCounterLibGetPassCount(gpa_counter_context, &i, 1, &req_pass);
+        EXPECT_EQ(kGpaStatusOk, gpa_status) << "Streaming counter index " << i << " failed to schedule.";
+        EXPECT_GE(req_pass, 1u) << "Streaming counter index " << i << " requires 0 passes, which is unexpected.";
+    }
+
+    gpa_counter_lib_func_table.GpaCounterLibCloseCounterContext(gpa_counter_context);
+}
+#endif
+
 #ifdef GL
 TEST(CounterDllTests, OpenGlCounterScheduling)
 {
@@ -1499,6 +1545,40 @@ TEST(CounterDllTests, Dx12GpuTimeWithOtherCountersRequiresExtraPassGfx115)
     const uint32_t passes_with_gpu_time    = GetPassCount<kGpaSessionSampleTypeDiscreteCounter>(kGpaApiDirectx12, kDevIdGfx11_5_0, kCountersWithGpuTime);
 
     EXPECT_GT(passes_with_gpu_time, passes_without_gpu_time);
+}
+
+// Regression guard: WaveOccupancyPct failed with kGpaStatusErrorInvalidCounterGroupData
+// on gfx11.5 because several blocks (including SQWGP/SQG) under-reported their SPM counter capacity,
+// causing the streaming scheduler to reject a counter set that should fit.
+TEST(CounterDllTests, Dx12StreamingWaveOccupancyPctSchedulesGfx115)
+{
+    auto constexpr kCounters = std::to_array<uint32_t>({STREAMING_WAVEOCCUPANCYPCT_PUBLIC_DX12_GFX115});
+    EXPECT_EQ(GetPassCount<kGpaSessionSampleTypeStreamingCounter>(kGpaApiDirectx12, kDevIdGfx11_5_0, kCounters), 1u);
+}
+
+TEST(CounterDllTests, Dx12StreamingCounterSweepGfx10)
+{
+    VerifyAllStreamingCountersScheduleDx12(kDevIdGfx10);
+}
+
+TEST(CounterDllTests, Dx12StreamingCounterSweepGfx103)
+{
+    VerifyAllStreamingCountersScheduleDx12(kDevIdGfx10_3);
+}
+
+TEST(CounterDllTests, Dx12StreamingCounterSweepGfx11)
+{
+    VerifyAllStreamingCountersScheduleDx12(kDevIdGfx11);
+}
+
+TEST(CounterDllTests, Dx12StreamingCounterSweepGfx115)
+{
+    VerifyAllStreamingCountersScheduleDx12(kDevIdGfx11_5_0);
+}
+
+TEST(CounterDllTests, Dx12StreamingCounterSweepGfx12)
+{
+    VerifyAllStreamingCountersScheduleDx12(kDevIdGfx12_0_1);
 }
 
 #endif

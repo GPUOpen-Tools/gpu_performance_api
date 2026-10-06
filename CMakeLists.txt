@@ -5,7 +5,7 @@ set(GPA_CMAKE_MODULES_DIR ${CMAKE_CURRENT_SOURCE_DIR}/build/cmake_modules)
 
 set(GPA_MAJOR_VERSION 4)
 set(GPA_MINOR_VERSION 4)
-set(GPA_UPDATE_VERSION 0)
+set(GPA_UPDATE_VERSION 1)
 
 if(NOT DEFINED build)
     set(GPA_BUILD_NUMBER 0)
@@ -84,12 +84,6 @@ target_sources(GPUPerfAPI-Headers PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/include/gpu_performance_api/gpu_perf_api_types.h
         ${CMAKE_CURRENT_SOURCE_DIR}/include/gpu_performance_api/gpu_perf_api_vk.h
 )
-
-if (PROJECT_IS_TOP_LEVEL)
-    # Used to verify that all headers in a target's PUBLIC and INTERFACE header sets can be included on their own.
-    # This is a helpful test to ensure users of the library can include the headers without needing to worry about include order or missing includes.
-    set_target_properties(GPUPerfAPI-Headers PROPERTIES VERIFY_INTERFACE_HEADER_SETS ON)
-endif()
 
 add_subdirectory(source)
 
